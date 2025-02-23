@@ -6,7 +6,7 @@
     "message": "Protect your online activities. LinkShield checks website reliability to fight phishing but cannot ensure full security. Stay cautious and avoid sharing sensitive information."
   },
   "alertTitle": {
-    "message": "Be Careful"
+    "message": "LinkShield: Be careful!"
   },
   "alertMessage": {
     "message": "This website contains a link to:"
@@ -24,73 +24,77 @@
     "message": "Medium risk: this link may be unsafe. Proceed with caution."
   },
   "adviceCheckUrl": {
-    "message": "Only open this link if you are absolutely sure of its safety. Double-check the address carefully."
+    "message": "Only open this link if you are absolutely sure of its safety. Double-check the address carefully, and if it is a login page (for example, for your email or bank), make sure the URL is exactly correct before entering any credentials."
   },
-  "noHttps": {
-    "message": "Link does not use HTTPS. (high)"
+ "noHttps": {
+    "message": "Link does not use HTTPS. (high) - Data is transmitted in plain text and is vulnerable to interception."
   },
   "ipAsDomain": {
-    "message": "IP address used instead of domain (high)"
+    "message": "IP address used instead of domain (high) - May hide the site's true identity and bypass domain-based security checks."
   },
   "tooManySubdomains": {
-    "message": "Too many subdomains (high)"
+    "message": "Too many subdomains (high) - Excessive subdomains can be used to mimic trusted sites and confuse users."
   },
   "suspiciousKeywords": {
-    "message": "Suspicious keywords detected (medium)"
+    "message": "Suspicious keywords detected (medium) - Keywords associated with scams or malware may indicate malicious intent."
   },
   "suspiciousPattern": {
-    "message": "Suspicious URL pattern detected (high)"
+    "message": "Suspicious URL pattern detected (high) - URL structure may be designed to deceive or obfuscate malicious content."
   },
   "shortenedUrl": {
-    "message": "Shortened URL detected (high)"
+    "message": "Shortened URL detected (high) - Shortened URLs hide the real destination, increasing phishing risk."
   },
   "downloadPage": {
-    "message": "Suspicious download detected (high)"
+    "message": "Suspicious download detected (high) - May host malware or unwanted software."
   },
   "freeHosting": {
-    "message": "Free hosting platform detected (high)"
+    "message": "Free hosting platform detected (high) - Free hosting is often exploited due to weaker security controls."
   },
   "encodedCharacters": {
-    "message": "URL contains too many encoded characters (high)"
+    "message": "URL contains too many encoded characters (high) - Excessive encoding can conceal malicious payloads."
   },
   "homoglyphAttack": {
-    "message": "Homoglyph attack detected (medium)"
+    "message": "Homoglyph attack detected (medium) - Similar looking characters may mimic trusted domains to deceive users."
   },
   "metaRedirect": {
-    "message": "Meta-refresh redirect detected (high)"
+    "message": "Meta-refresh redirect detected (high) - Automatic redirects can lead users to malicious sites."
   },
   "cryptoPhishing": {
-    "message": "Crypto-related phishing detected (high)"
+    "message": "Crypto-related phishing detected (high) - Often used to steal funds through fraudulent schemes."
   },
   "externalScripts": {
-    "message": "Suspicious external scripts detected (high)"
+    "message": "Suspicious external scripts detected (high) - External scripts may load malicious content or track users."
   },
   "suspiciousIframes": {
-    "message": "Suspicious iframes detected (high)"
+    "message": "Suspicious iframes detected (high) - Iframes can embed harmful content from untrusted sources."
   },
   "suspiciousParams": {
-    "message": "Suspicious query parameters detected (medium)"
+    "message": "Suspicious query parameters detected (medium) - May be manipulated to exploit vulnerabilities."
   },
   "mixedContent": {
-    "message": "Mixed content (HTTPS/HTTP) detected (medium)"
+    "message": "Mixed content (HTTPS/HTTP) detected (medium) - Mixing secure and non-secure content undermines overall page security."
   },
   "unusualPort": {
-    "message": "Unusual port detected in URL (high)"
+    "message": "Unusual port detected in URL (high) - Non-standard ports can be used to bypass common security measures."
   },
   "javascriptScheme": {
-    "message": "JavaScript scheme used in URL (high)"
+    "message": "JavaScript scheme used in URL (high) - Using 'javascript:' can lead to execution of harmful code."
   },
   "urlFragmentTrick": {
-    "message": "Suspicious URL fragment detected (medium)"
+    "message": "Suspicious URL fragment detected (medium) - Manipulated fragments can mislead users about the real destination."
   },
   "suspiciousTLD": {
-    "message": "Suspicious top-level domain detected (high)",
+    "message": "Suspicious top-level domain detected (high) - Certain TLDs are linked to higher risk and may be used maliciously.",
     "description": "Warning for domains with suspicious TLDs"
   },
   "base64OrHex": {
-    "message": "Base64 or hexadecimal pattern detected (medium)",
+    "message": "Base64 or hexadecimal pattern detected (medium) - Obfuscated content may hide malicious instructions.",
     "description": "Warning for detection of Base64 or hexadecimal patterns"
   },
+"iframeHidden": {
+  "message": "Iframe is hidden or too small (medium) - Hidden or unusually small iframes may be used to conceal malicious content.",
+  "description": "Warning for detection of hidden or minimal iframes"
+},
   "popupTitle": {
     "message": "LinkShield: Your protection against phishing"
   },
@@ -119,7 +123,7 @@
     "message": "Upgrade to premium to unlock more features!"
   },
   "saveSettings": {
-    "message": "Save Security Settings"
+    "message": "Save security settings"
   },
   "settingsSaved": {
     "message": "Settings saved successfully!"

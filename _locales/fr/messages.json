@@ -24,72 +24,73 @@
     "message": "Risque moyen : ce lien peut être dangereux. Faites preuve de prudence."
   },
   "adviceCheckUrl": {
-    "message": "N'ouvrez ce lien que si vous êtes absolument sûr de sa sécurité. Vérifiez soigneusement l'adresse."
+    "message": "N'ouvrez ce lien que si vous êtes absolument sûr de sa sécurité. Vérifiez soigneusement l'adresse et, s'il s'agit d'une page de connexion (par exemple, pour votre e-mail ou votre banque), assurez-vous que l'URL est exactement correcte avant de saisir vos identifiants."
   },
   "noHttps": {
-    "message": "Le lien n'utilise pas HTTPS. (élevé)"
+    "message": "Le lien n'utilise pas HTTPS. (élevé) - Les données sont transmises en texte brut et sont vulnérables à l'interception."
   },
   "ipAsDomain": {
-    "message": "Adresse IP utilisée au lieu d'un nom de domaine (élevé)"
+    "message": "Une adresse IP est utilisée au lieu d'un domaine (élevé) - Peut masquer l'identité réelle du site et contourner les contrôles de sécurité basés sur les domaines."
   },
   "tooManySubdomains": {
-    "message": "Trop de sous-domaines (élevé)"
+    "message": "Trop de sous-domaines (élevé) - Des sous-domaines excessifs peuvent être utilisés pour imiter des sites de confiance et tromper les utilisateurs."
   },
   "suspiciousKeywords": {
-    "message": "Mots-clés suspects détectés (moyen)"
+    "message": "Mots-clés suspects détectés (moyen) - Les mots-clés associés aux escroqueries ou aux logiciels malveillants peuvent indiquer une intention malveillante."
   },
   "suspiciousPattern": {
-    "message": "Schéma d'URL suspect détecté (élevé)"
+    "message": "Motif d'URL suspect détecté (élevé) - La structure de l'URL peut être conçue pour tromper ou masquer du contenu malveillant."
   },
   "shortenedUrl": {
-    "message": "URL raccourcie détectée (élevé)"
+    "message": "URL raccourcie détectée (élevé) - Les URL raccourcies cachent la véritable destination, augmentant ainsi le risque d'hameçonnage."
   },
   "downloadPage": {
-    "message": "Téléchargement suspect détecté (élevé)"
+    "message": "Téléchargement suspect détecté (élevé) - Peut héberger des logiciels malveillants ou indésirables."
   },
   "freeHosting": {
-    "message": "Plateforme d'hébergement gratuit détectée (élevé)"
+    "message": "Plateforme d'hébergement gratuit détectée (élevé) - L'hébergement gratuit est souvent exploité en raison de contrôles de sécurité plus faibles."
   },
   "encodedCharacters": {
-    "message": "L'URL contient trop de caractères encodés (élevé)"
+    "message": "L'URL contient trop de caractères encodés (élevé) - Un encodage excessif peut masquer des charges utiles malveillantes."
   },
   "homoglyphAttack": {
-    "message": "Attaque par homographes détectée (moyen)"
+    "message": "Attaque par homoglyphe détectée (moyen) - Des caractères similaires peuvent imiter des domaines de confiance pour tromper les utilisateurs."
   },
   "metaRedirect": {
-    "message": "Redirection méta-refresh détectée (élevé)"
+    "message": "Redirection meta-refresh détectée (élevé) - Les redirections automatiques peuvent conduire les utilisateurs vers des sites malveillants."
   },
   "cryptoPhishing": {
-    "message": "Phishing lié aux cryptomonnaies détecté (élevé)"
+    "message": "Hameçonnage lié aux cryptomonnaies détecté (élevé) - Souvent utilisé pour voler des fonds via des stratagèmes frauduleux."
   },
   "externalScripts": {
-    "message": "Scripts externes suspects détectés (élevé)"
+    "message": "Scripts externes suspects détectés (élevé) - Les scripts externes peuvent charger du contenu malveillant ou suivre les utilisateurs."
   },
   "suspiciousIframes": {
-    "message": "Iframes suspects détectés (élevé)"
+    "message": "Iframes suspects détectés (élevé) - Les iframes peuvent intégrer du contenu nuisible provenant de sources non fiables."
   },
   "suspiciousParams": {
-    "message": "Paramètres de requête suspects détectés (moyen)"
+    "message": "Paramètres de requête suspects détectés (moyen) - Peuvent être manipulés pour exploiter des vulnérabilités."
   },
   "mixedContent": {
-    "message": "Contenu mixte (HTTPS/HTTP) détecté (moyen)"
+    "message": "Contenu mixte (HTTPS/HTTP) détecté (moyen) - Le mélange de contenu sécurisé et non sécurisé compromet la sécurité globale de la page."
   },
   "unusualPort": {
-    "message": "Port inhabituel détecté dans l'URL (élevé)"
+    "message": "Port inhabituel détecté dans l'URL (élevé) - Les ports non standard peuvent être utilisés pour contourner les mesures de sécurité courantes."
   },
   "javascriptScheme": {
-    "message": "Schéma JavaScript utilisé dans l'URL (élevé)"
+    "message": "Schéma JavaScript utilisé dans l'URL (élevé) - L'utilisation de 'javascript:' peut entraîner l'exécution de code malveillant."
   },
   "urlFragmentTrick": {
-    "message": "Fragment d'URL suspect détecté (moyen)"
+    "message": "Fragment d'URL suspect détecté (moyen) - Des fragments manipulés peuvent induire les utilisateurs en erreur sur la destination réelle."
   },
   "suspiciousTLD": {
-    "message": "Domaine de premier niveau suspect détecté (élevé)",
-    "description": "Avertissement pour les domaines avec des TLD suspects"
+    "message": "Domaine de premier niveau suspect détecté (élevé) - Certains TLD sont associés à un risque plus élevé et peuvent être utilisés de manière malveillante."
   },
   "base64OrHex": {
-    "message": "Modèle Base64 ou hexadécimal détecté (moyen)",
-    "description": "Avertissement lors de la détection de modèles Base64 ou hexadécimaux"
+    "message": "Motif Base64 ou hexadécimal détecté (moyen) - Le contenu obscurci peut masquer des instructions malveillantes."
+  },
+  "iframeHidden": {
+    "message": "Iframe caché ou trop petit détecté (moyen) - Les iframes cachés ou inhabituellement petits peuvent être utilisés pour dissimuler du contenu nuisible."
   },
   "popupTitle": {
     "message": "LinkShield : Votre protection contre le phishing"

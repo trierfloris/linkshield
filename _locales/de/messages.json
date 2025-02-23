@@ -24,72 +24,73 @@
     "message": "Mittleres Risiko: Dieser Link könnte unsicher sein. Gehen Sie vorsichtig vor."
   },
   "adviceCheckUrl": {
-    "message": "Öffnen Sie diesen Link nur, wenn Sie absolut sicher sind, dass er sicher ist. Überprüfen Sie die Adresse sorgfältig."
+    "message": "Öffnen Sie diesen Link nur, wenn Sie absolut sicher sind, dass er sicher ist. Überprüfen Sie die Adresse sorgfältig, und wenn es sich um eine Anmeldeseite handelt (z. B. für Ihre E-Mail oder Ihre Bank), stellen Sie sicher, dass die URL genau korrekt ist, bevor Sie Anmeldeinformationen eingeben."
   },
   "noHttps": {
-    "message": "Link verwendet kein HTTPS. (hoch)"
+    "message": "Der Link verwendet kein HTTPS. (hoch) - Daten werden im Klartext übertragen und sind anfällig für Abfangen."
   },
   "ipAsDomain": {
-    "message": "IP-Adresse anstelle einer Domain verwendet (hoch)"
+    "message": "IP-Adresse wird anstelle einer Domain verwendet (hoch) - Kann die wahre Identität der Website verbergen und domänenbasierte Sicherheitsprüfungen umgehen."
   },
   "tooManySubdomains": {
-    "message": "Zu viele Subdomains (hoch)"
+    "message": "Zu viele Subdomains (hoch) - Übermäßige Subdomains können verwendet werden, um vertrauenswürdige Websites zu imitieren und Benutzer zu verwirren."
   },
   "suspiciousKeywords": {
-    "message": "Verdächtige Schlüsselwörter erkannt (mittel)"
+    "message": "Verdächtige Schlüsselwörter erkannt (mittel) - Schlüsselwörter, die mit Betrug oder Malware in Verbindung stehen, können auf bösartige Absichten hinweisen."
   },
   "suspiciousPattern": {
-    "message": "Verdächtiges URL-Muster erkannt (hoch)"
+    "message": "Verdächtiges URL-Muster erkannt (hoch) - Die URL-Struktur kann darauf ausgelegt sein, Benutzer zu täuschen oder bösartige Inhalte zu verbergen."
   },
   "shortenedUrl": {
-    "message": "Verkürzte URL erkannt (hoch)"
+    "message": "Verkürzte URL erkannt (hoch) - Verkürzte URLs verbergen das tatsächliche Ziel und erhöhen das Phishing-Risiko."
   },
   "downloadPage": {
-    "message": "Verdächtiger Download erkannt (hoch)"
+    "message": "Verdächtiger Download erkannt (hoch) - Kann Malware oder unerwünschte Software enthalten."
   },
   "freeHosting": {
-    "message": "Kostenlose Hosting-Plattform erkannt (hoch)"
+    "message": "Kostenlose Hosting-Plattform erkannt (hoch) - Kostenloses Hosting wird oft aufgrund schwächerer Sicherheitskontrollen ausgenutzt."
   },
   "encodedCharacters": {
-    "message": "URL enthält zu viele codierte Zeichen (hoch)"
+    "message": "Die URL enthält zu viele codierte Zeichen (hoch) - Übermäßige Codierung kann bösartige Payloads verbergen."
   },
   "homoglyphAttack": {
-    "message": "Homoglyphen-Angriff erkannt (mittel)"
+    "message": "Homoglyphen-Angriff erkannt (mittel) - Ähnliche Zeichen können verwendet werden, um vertrauenswürdige Domains zu imitieren und Benutzer zu täuschen."
   },
   "metaRedirect": {
-    "message": "Meta-Refresh-Weiterleitung erkannt (hoch)"
+    "message": "Meta-Refresh-Weiterleitung erkannt (hoch) - Automatische Weiterleitungen können Benutzer auf bösartige Websites führen."
   },
   "cryptoPhishing": {
-    "message": "Krypto-Phishing erkannt (hoch)"
+    "message": "Krypto-Phishing erkannt (hoch) - Wird häufig verwendet, um Gelder durch betrügerische Methoden zu stehlen."
   },
   "externalScripts": {
-    "message": "Verdächtige externe Skripte erkannt (hoch)"
+    "message": "Verdächtige externe Skripte erkannt (hoch) - Externe Skripte können bösartige Inhalte laden oder Benutzer verfolgen."
   },
   "suspiciousIframes": {
-    "message": "Verdächtige iFrames erkannt (hoch)"
+    "message": "Verdächtige Iframes erkannt (hoch) - Iframes können schädliche Inhalte aus nicht vertrauenswürdigen Quellen einbetten."
   },
   "suspiciousParams": {
-    "message": "Verdächtige Abfrageparameter erkannt (mittel)"
+    "message": "Verdächtige Anfrageparameter erkannt (mittel) - Können manipuliert werden, um Schwachstellen auszunutzen."
   },
   "mixedContent": {
-    "message": "Gemischter Inhalt (HTTPS/HTTP) erkannt (mittel)"
+    "message": "Gemischte Inhalte (HTTPS/HTTP) erkannt (mittel) - Das Mischen von sicheren und unsicheren Inhalten beeinträchtigt die allgemeine Sicherheit der Seite."
   },
   "unusualPort": {
-    "message": "Ungewöhnlicher Port in URL erkannt (hoch)"
+    "message": "Ungewöhnlicher Port in URL erkannt (hoch) - Nicht standardmäßige Ports können verwendet werden, um gängige Sicherheitsmaßnahmen zu umgehen."
   },
   "javascriptScheme": {
-    "message": "JavaScript-Schema in URL verwendet (hoch)"
+    "message": "JavaScript-Schema in URL verwendet (hoch) - Die Verwendung von 'javascript:' kann zur Ausführung schädlichen Codes führen."
   },
   "urlFragmentTrick": {
-    "message": "Verdächtiges URL-Fragment erkannt (mittel)"
+    "message": "Verdächtiges URL-Fragment erkannt (mittel) - Manipulierte Fragmente können Benutzer über das tatsächliche Ziel täuschen."
   },
   "suspiciousTLD": {
-    "message": "Verdächtige Top-Level-Domain erkannt (hoch)",
-    "description": "Warnung für Domains mit verdächtigen TLDs"
+    "message": "Verdächtige Top-Level-Domain erkannt (hoch) - Bestimmte TLDs sind mit einem höheren Risiko verbunden und können bösartig verwendet werden."
   },
   "base64OrHex": {
-    "message": "Base64- oder Hexadezimalmuster erkannt (mittel)",
-    "description": "Warnung bei Erkennung von Base64- oder Hexadezimalmustern"
+    "message": "Base64- oder hexadezimales Muster erkannt (mittel) - Verschleierter Inhalt kann schädliche Anweisungen verbergen."
+  },
+  "iframeHidden": {
+    "message": "Verstecktes oder zu kleines Iframe erkannt (mittel) - Versteckte oder ungewöhnlich kleine Iframes können verwendet werden, um schädliche Inhalte zu verbergen."
   },
   "popupTitle": {
     "message": "LinkShield: Ihr Schutz vor Phishing"

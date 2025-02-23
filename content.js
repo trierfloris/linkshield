@@ -396,6 +396,8 @@ async function checkForPhishingAds(link) {
     await warnLink(link, ["An error occurred while checking this link."]); // Gebruik await
   }
 }
+
+
 function classifyAndCheckLink(link) {
   if (link.closest('div[data-text-ad], .ads-visurl')) {
     checkForPhishingAds(link);
@@ -854,18 +856,23 @@ async function hasSuspiciousIframes() {
       const iframeURL = new URL(src, window.location.origin);
       const iframeDomain = iframeURL.hostname.toLowerCase();
       if (trustedIframeDomains.includes(iframeDomain)) continue;
+      
       if (!iframeURL.protocol.startsWith("https")) {
         riskScore += 2;
-        reasons.push("No HTTPS connection.");
+        reasons.push(chrome.i18n.getMessage("noHttps"));
       }
+      
       if (globalConfig.SUSPICIOUS_TLDS.test(iframeDomain)) {
         riskScore += 3;
-        reasons.push(`Suspicious TLD: ${iframeDomain}`);
+        // Als je dynamische data wilt weergeven, kun je deze achter de vertaling plakken
+        reasons.push(chrome.i18n.getMessage("suspiciousTLD") + " " + iframeDomain);
       }
+      
       if (globalConfig.SUSPICIOUS_IFRAME_KEYWORDS && globalConfig.SUSPICIOUS_IFRAME_KEYWORDS.test(src)) {
         riskScore += 4;
-        reasons.push("Suspicious keywords in URL.");
+        reasons.push(chrome.i18n.getMessage("suspiciousKeywords"));
       }
+      
       const isHiddenOrSmall =
         iframe.offsetParent === null ||
         iframe.style.display === "none" ||
@@ -873,8 +880,10 @@ async function hasSuspiciousIframes() {
         (parseInt(iframe.width, 10) < 10 && parseInt(iframe.height, 10) < 10);
       if (isHiddenOrSmall) {
         riskScore += 2;
-        reasons.push("Iframe is hidden or too small.");
+        // Zorg dat je een vertaalde key "iframeHidden" toevoegt, anders gebruikt de fallback
+        reasons.push(chrome.i18n.getMessage("iframeHidden") || "Iframe is hidden or too small.");
       }
+      
       if (riskScore >= 7) {
         suspiciousCount++;
         logDebug(`Suspicious iframe detected: ${src}`);
@@ -912,11 +921,11 @@ async function checkForSuspiciousExternalScripts() {
       }
       if (!scriptURL.protocol.startsWith("https")) {
         riskScore += 2;
-        reasons.push("No HTTPS connection.");
+        reasons.push(chrome.i18n.getMessage("noHttps"));
       }
       if (suspiciousPatterns.some(pattern => pattern.test(src))) {
         riskScore += 4;
-        reasons.push("Suspicious keywords in script URL.");
+        reasons.push(chrome.i18n.getMessage("externalScripts"));
       }
       if (riskScore >= 7) {
         suspiciousScripts.push({
@@ -1196,7 +1205,6 @@ function checkStaticConditions(url, reasons, totalRiskRef) {
     return;
   }
   
-  // Pas de HTTPS-check aan: mailto: en tel: worden als veilig beschouwd.
   if (
     urlObj.protocol !== "https:" &&
     urlObj.protocol !== "mailto:" &&
@@ -1210,7 +1218,11 @@ function checkStaticConditions(url, reasons, totalRiskRef) {
   const domainChecks = [
     { condition: globalConfig.SUSPICIOUS_TLDS.test(domain), weight: 6, reason: "suspiciousTLD" },
     { condition: /^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/.test(domain), weight: 5, reason: "ipAsDomain" },
-    { condition: domain.split(".").length > globalConfig.MAX_SUBDOMAINS, weight: 5, reason: "tooManySubdomains" }
+    { 
+      condition: !isIpAddress(url) && domain.split(".").length > globalConfig.MAX_SUBDOMAINS, 
+      weight: 5, 
+      reason: "tooManySubdomains" 
+    }
   ];
   
   domainChecks.forEach(({ condition, weight, reason }) => {
@@ -1456,18 +1468,29 @@ function isSafeParameter(param, value) {
 }
 
 function hasMultipleSubdomains(url) {
+  logDebug(`hasMultipleSubdomains called with url: ${url}`);
   try {
+    logDebug(`Attempting to extract hostname from url: ${url}`);
     const hostname = new URL(url).hostname;
+    logDebug(`Extracted hostname: ${hostname}`);
     
     // Controleer of het een IP-adres is en sla subdomein-check over
-    if (/^(\d{1,3}\.){3}\d{1,3}$/.test(hostname)) {
+    const isIpAddress = /^(\d{1,3}\.){3}\d{1,3}$/.test(hostname);
+    logDebug(`Is hostname an IP address? ${isIpAddress}`);
+    if (isIpAddress) {
+      logDebug(`Hostname is an IP address, returning false`);
       return false;
     }
 
+    logDebug(`Splitting hostname into subdomains`);
     const subdomains = hostname.split('.').slice(0, -2);
+    logDebug(`Subdomains: ${subdomains.join(', ')}`);
     const maxAllowedSubdomains = 2;
-    return subdomains.length > maxAllowedSubdomains;
+    const hasTooManySubdomains = subdomains.length > maxAllowedSubdomains;
+    logDebug(`Number of subdomains: ${subdomains.length}, max allowed: ${maxAllowedSubdomains}, has too many: ${hasTooManySubdomains}`);
+    return hasTooManySubdomains;
   } catch (error) {
+    logDebug(`Error in hasMultipleSubdomains: ${error.message}`);
     handleError(error, "hasMultipleSubdomains");
     return false;
   }
@@ -1674,7 +1697,7 @@ function isCryptoPhishingUrl(url) {
     if (officialDomains.some(domain =>
       hostname.includes(domain.replace('.com', '')) && hostname !== domain
     )) {
-      console.log(`Suspicious: Lookalike domain detected (${hostname})`);
+      logDebug(`Suspicious: Lookalike domain detected (${hostname})`);
       return true;
     }
     if (suspiciousPatterns.some(pattern => pattern.test(`${hostname}${urlObj.pathname}`))) {
@@ -1784,7 +1807,7 @@ function checkLinks() {
         url: href,
         isSafe: false,
         risk: 0,
-        reasons: ["Suspicious TLD detected"]
+        reasons: [chrome.i18n.getMessage("suspiciousTLD")]
       });
       return;
     }
@@ -1794,7 +1817,7 @@ function checkLinks() {
         url: href,
         isSafe: false,
         risk: 0,
-        reasons: ["Insecure connection (no HTTPS)"]
+        reasons: [chrome.i18n.getMessage("noHttps")]
       });
       return;
     }

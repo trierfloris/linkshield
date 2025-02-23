@@ -1,0 +1,181 @@
+{
+  "extName": {
+    "message": "LinkShield"
+  },
+  "extDescription": {
+    "message": "अपनी ऑनलाइन गतिविधियों को सुरक्षित रखें। LinkShield वेबसाइट की विश्वसनीयता की जाँच कर फ़िशिंग से बचाता है, पर पूर्ण सुरक्षा की गारंटी नहीं देता। सतर्क रहें।"
+  },
+  "alertTitle": {
+    "message": "सावधान रहें"
+  },
+  "alertMessage": {
+    "message": "इस वेबसाइट में निम्नलिखित लिंक शामिल है:"
+  },
+  "severityLabel": {
+    "message": "गंभीरता"
+  },
+  "reasonLabel": {
+    "message": "कारण"
+  },
+  "adviceMessage": {
+    "message": "सलाह"
+  },
+  "severityMediumRisk": {
+    "message": "मध्यम जोखिम: यह लिंक असुरक्षित हो सकता है। सावधानी बरतें।"
+  },
+  "adviceCheckUrl": {
+    "message": "केवल तभी इस लिंक को खोलें जब आप इसकी सुरक्षा को लेकर पूरी तरह आश्वस्त हों। पता ध्यान से जाँचें।"
+  },
+  "noHttps": {
+    "message": "लिंक HTTPS का उपयोग नहीं करता है। (उच्च जोखिम)"
+  },
+  "ipAsDomain": {
+    "message": "डोमेन के बजाय IP पता उपयोग किया गया है (उच्च जोखिम)"
+  },
+  "tooManySubdomains": {
+    "message": "बहुत अधिक उपडोमेन (उच्च जोखिम)"
+  },
+  "suspiciousKeywords": {
+    "message": "संदिग्ध कीवर्ड पाए गए (मध्यम जोखिम)"
+  },
+  "suspiciousPattern": {
+    "message": "संदिग्ध URL पैटर्न मिला (उच्च जोखिम)"
+  },
+  "shortenedUrl": {
+    "message": "छोटी की गई URL मिली (उच्च जोखिम)"
+  },
+  "downloadPage": {
+    "message": "संदिग्ध डाउनलोड पृष्ठ मिला (उच्च जोखिम)"
+  },
+  "freeHosting": {
+    "message": "नि:शुल्क होस्टिंग प्लेटफ़ॉर्म पाया गया (उच्च जोखिम)"
+  },
+  "encodedCharacters": {
+    "message": "URL में बहुत अधिक एन्कोड किए गए अक्षर हैं (उच्च जोखिम)"
+  },
+  "homoglyphAttack": {
+    "message": "होमोग्लिफ़ हमला पाया गया (मध्यम जोखिम)"
+  },
+  "metaRedirect": {
+    "message": "मेटा-रिफ्रेश रीडायरेक्ट मिला (उच्च जोखिम)"
+  },
+  "cryptoPhishing": {
+    "message": "क्रिप्टो-संबंधित फ़िशिंग पाया गया (उच्च जोखिम)"
+  },
+  "externalScripts": {
+    "message": "संदिग्ध बाहरी स्क्रिप्ट पाई गई (उच्च जोखिम)"
+  },
+  "suspiciousIframes": {
+    "message": "संदिग्ध iFrames पाए गए (उच्च जोखिम)"
+  },
+  "suspiciousParams": {
+    "message": "संदिग्ध क्वेरी पैरामीटर मिले (मध्यम जोखिम)"
+  },
+  "mixedContent": {
+    "message": "मिश्रित सामग्री (HTTPS/HTTP) पाई गई (मध्यम जोखिम)"
+  },
+  "unusualPort": {
+    "message": "URL में असामान्य पोर्ट मिला (उच्च जोखिम)"
+  },
+  "javascriptScheme": {
+    "message": "URL में जावास्क्रिप्ट स्कीम उपयोग किया गया (उच्च जोखिम)"
+  },
+  "urlFragmentTrick": {
+    "message": "संदिग्ध URL फ्रेगमेंट पाया गया (मध्यम जोखिम)"
+  },
+  "suspiciousTLD": {
+    "message": "संदिग्ध टॉप-लेवल डोमेन मिला (उच्च जोखिम)",
+    "description": "संदिग्ध TLD वाले डोमेन के लिए चेतावनी"
+  },
+  "base64OrHex": {
+    "message": "Base64 या हेक्साडेसिमल पैटर्न पाया गया (मध्यम जोखिम)",
+    "description": "Base64 या हेक्साडेसिमल पैटर्न की पहचान के लिए चेतावनी"
+  },
+  "popupTitle": {
+    "message": "LinkShield: फ़िशिंग से आपकी सुरक्षा"
+  },
+  "popupSubtitle": {
+    "message": "रीयल-टाइम अलर्ट और उन्नत ऑनलाइन सुरक्षा के साथ अपनी सुरक्षा बढ़ाएँ।"
+  },
+  "backgroundAnalysis": {
+    "message": "पृष्ठभूमि विश्लेषण"
+  },
+  "backgroundAnalysisDescription": {
+    "message": "नवीनतम फ़िशिंग वेबसाइटों को अवरुद्ध करें।"
+  },
+  "activationRequired": {
+    "message": "इस सुविधा का उपयोग करने के लिए इसे पहले सक्रिय करें।"
+  },
+  "integratedProtection": {
+    "message": "एकीकृत मैलवेयर और फ़िशिंग सुरक्षा"
+  },
+  "integratedProtectionDescription": {
+    "message": "वेबसाइटों और लिंक का सीधा नियंत्रण।"
+  },
+  "premiumFeaturesActive": {
+    "message": "प्रीमियम सुविधाएँ सक्रिय हैं!"
+  },
+  "upgradePrompt": {
+    "message": "अधिक सुविधाओं को अनलॉक करने के लिए प्रीमियम में अपग्रेड करें!"
+  },
+  "saveSettings": {
+    "message": "सुरक्षा सेटिंग्स सहेजें"
+  },
+  "settingsSaved": {
+    "message": "सेटिंग्स सफलतापूर्वक सहेजी गईं!"
+  },
+  "licenseActivate": {
+    "message": "लाइसेंस सक्रिय करें"
+  },
+  "licenseInputPlaceholder": {
+    "message": "अपनी लाइसेंस कुंजी दर्ज करें"
+  },
+  "licenseCheck": {
+    "message": "लाइसेंस जाँचें"
+  },
+  "licenseInvalid": {
+    "message": "अमान्य लाइसेंस कुंजी।"
+  },
+  "licenseValid": {
+    "message": "लाइसेंस सफलतापूर्वक सक्रिय हुआ!"
+  },
+  "lastRuleUpdate": {
+    "message": "अंतिम फ़िशिंग डेटाबेस अपडेट: "
+  },
+  "licenseStatus": {
+    "message": "लाइसेंस:"
+  },
+  "licenseFreemium": {
+    "message": "फ्रीमियम"
+  },
+  "bulkUrlCheck": {
+    "message": "थोक URL जाँच"
+  },
+  "bulkUrlCheckDescription": {
+    "message": ".txt फ़ाइल अपलोड करें और एक साथ कई URL की जाँच करें।"
+  },
+  "fileChoose": {
+    "message": "फ़ाइल चुनें"
+  },
+  "fileCheck": {
+    "message": "फ़ाइल जाँचें"
+  },
+  "fileCheckNoUrls": {
+    "message": "फ़ाइल में कोई URL नहीं हैं।"
+  },
+  "fileCheckFailed": {
+    "message": "जाँच विफल हुई"
+  },
+  "safeDomain": {
+    "message": "यह डोमेन सुरक्षित माना जाता है।"
+  },
+  "allowedProtocol": {
+    "message": "इस लिंक में स्वीकृत प्रोटोकॉल का उपयोग किया गया है।"
+  },
+  "insecureLoginPage": {
+    "message": "यह लॉगिन पृष्ठ HTTPS का उपयोग नहीं करता और असुरक्षित हो सकता है। (उच्च जोखिम)"
+  },
+  "invalidUrl": {
+    "message": "यह URL अमान्य या गलत प्रारूप में प्रतीत होता है।"
+  }
+}

@@ -1,0 +1,181 @@
+{
+  "extName": {
+    "message": "LinkShield"
+  },
+  "extDescription": {
+    "message": "Protect your online activities. LinkShield checks website reliability to fight phishing but cannot ensure full security. Stay cautious and avoid sharing sensitive information."
+  },
+  "alertTitle": {
+    "message": "Be Careful"
+  },
+  "alertMessage": {
+    "message": "This website contains a link to:"
+  },
+  "severityLabel": {
+    "message": "Severity"
+  },
+  "reasonLabel": {
+    "message": "Reason"
+  },
+  "adviceMessage": {
+    "message": "Advice"
+  },
+  "severityMediumRisk": {
+    "message": "Medium risk: this link may be unsafe. Proceed with caution."
+  },
+  "adviceCheckUrl": {
+    "message": "Only open this link if you are absolutely sure of its safety. Double-check the address carefully."
+  },
+  "noHttps": {
+    "message": "Link does not use HTTPS. (high)"
+  },
+  "ipAsDomain": {
+    "message": "IP address used instead of domain (high)"
+  },
+  "tooManySubdomains": {
+    "message": "Too many subdomains (high)"
+  },
+  "suspiciousKeywords": {
+    "message": "Suspicious keywords detected (medium)"
+  },
+  "suspiciousPattern": {
+    "message": "Suspicious URL pattern detected (high)"
+  },
+  "shortenedUrl": {
+    "message": "Shortened URL detected (high)"
+  },
+  "downloadPage": {
+    "message": "Suspicious download detected (high)"
+  },
+  "freeHosting": {
+    "message": "Free hosting platform detected (high)"
+  },
+  "encodedCharacters": {
+    "message": "URL contains too many encoded characters (high)"
+  },
+  "homoglyphAttack": {
+    "message": "Homoglyph attack detected (medium)"
+  },
+  "metaRedirect": {
+    "message": "Meta-refresh redirect detected (high)"
+  },
+  "cryptoPhishing": {
+    "message": "Crypto-related phishing detected (high)"
+  },
+  "externalScripts": {
+    "message": "Suspicious external scripts detected (high)"
+  },
+  "suspiciousIframes": {
+    "message": "Suspicious iframes detected (high)"
+  },
+  "suspiciousParams": {
+    "message": "Suspicious query parameters detected (medium)"
+  },
+  "mixedContent": {
+    "message": "Mixed content (HTTPS/HTTP) detected (medium)"
+  },
+  "unusualPort": {
+    "message": "Unusual port detected in URL (high)"
+  },
+  "javascriptScheme": {
+    "message": "JavaScript scheme used in URL (high)"
+  },
+  "urlFragmentTrick": {
+    "message": "Suspicious URL fragment detected (medium)"
+  },
+  "suspiciousTLD": {
+    "message": "Suspicious top-level domain detected (high)",
+    "description": "Warning for domains with suspicious TLDs"
+  },
+  "base64OrHex": {
+    "message": "Base64 or hexadecimal pattern detected (medium)",
+    "description": "Warning for detection of Base64 or hexadecimal patterns"
+  },
+  "popupTitle": {
+    "message": "LinkShield: Your protection against phishing"
+  },
+  "popupSubtitle": {
+    "message": "Enhance your security with real-time alerts and advanced online protection."
+  },
+  "backgroundAnalysis": {
+    "message": "Background Analysis"
+  },
+  "backgroundAnalysisDescription": {
+    "message": "Block the most recent phishing sites."
+  },
+  "activationRequired": {
+    "message": "Activate this feature first to use it."
+  },
+  "integratedProtection": {
+    "message": "Integrated Malware & Phishing Protection"
+  },
+  "integratedProtectionDescription": {
+    "message": "Direct control of websites and links."
+  },
+  "premiumFeaturesActive": {
+    "message": "Premium features are activated!"
+  },
+  "upgradePrompt": {
+    "message": "Upgrade to premium to unlock more features!"
+  },
+  "saveSettings": {
+    "message": "Save Security Settings"
+  },
+  "settingsSaved": {
+    "message": "Settings saved successfully!"
+  },
+  "licenseActivate": {
+    "message": "Activate License"
+  },
+  "licenseInputPlaceholder": {
+    "message": "Enter your license key"
+  },
+  "licenseCheck": {
+    "message": "Check License"
+  },
+  "licenseInvalid": {
+    "message": "Invalid license key."
+  },
+  "licenseValid": {
+    "message": "License successfully activated!"
+  },
+  "lastRuleUpdate": {
+    "message": "Last phishing database update: "
+  },
+  "licenseStatus": {
+    "message": "License:"
+  },
+  "licenseFreemium": {
+    "message": "Freemium"
+  },
+  "bulkUrlCheck": {
+    "message": "Bulk URL Check"
+  },
+  "bulkUrlCheckDescription": {
+    "message": "Upload a .txt file to check multiple URLs at once."
+  },
+  "fileChoose": {
+    "message": "Choose file"
+  },
+  "fileCheck": {
+    "message": "Check file"
+  },
+  "fileCheckNoUrls": {
+    "message": "The file contains no URLs."
+  },
+  "fileCheckFailed": {
+    "message": "Check failed"
+  },
+"safeDomain": {
+    "message": "This domain is recognized as safe."
+  },
+  "allowedProtocol": {
+    "message": "This link uses an allowed protocol."
+  },
+  "insecureLoginPage": {
+    "message": "This login page does not use HTTPS and may be unsafe. (high)"
+  },
+  "invalidUrl": {
+    "message": "This URL appears to be invalid or malformed."
+  }
+}

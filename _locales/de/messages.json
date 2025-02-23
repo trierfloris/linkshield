@@ -1,0 +1,181 @@
+{
+  "extName": {
+    "message": "LinkShield"
+  },
+  "extDescription": {
+    "message": "Schützen Sie Ihre Online-Aktivitäten. LinkShield überprüft die Vertrauenswürdigkeit von Websites, bietet jedoch keinen vollständigen Schutz."
+  },
+  "alertTitle": {
+    "message": "Seien Sie vorsichtig"
+  },
+  "alertMessage": {
+    "message": "Diese Website enthält einen Link zu:"
+  },
+  "severityLabel": {
+    "message": "Schweregrad"
+  },
+  "reasonLabel": {
+    "message": "Grund"
+  },
+  "adviceMessage": {
+    "message": "Empfehlung"
+  },
+  "severityMediumRisk": {
+    "message": "Mittleres Risiko: Dieser Link könnte unsicher sein. Gehen Sie vorsichtig vor."
+  },
+  "adviceCheckUrl": {
+    "message": "Öffnen Sie diesen Link nur, wenn Sie absolut sicher sind, dass er sicher ist. Überprüfen Sie die Adresse sorgfältig."
+  },
+  "noHttps": {
+    "message": "Link verwendet kein HTTPS. (hoch)"
+  },
+  "ipAsDomain": {
+    "message": "IP-Adresse anstelle einer Domain verwendet (hoch)"
+  },
+  "tooManySubdomains": {
+    "message": "Zu viele Subdomains (hoch)"
+  },
+  "suspiciousKeywords": {
+    "message": "Verdächtige Schlüsselwörter erkannt (mittel)"
+  },
+  "suspiciousPattern": {
+    "message": "Verdächtiges URL-Muster erkannt (hoch)"
+  },
+  "shortenedUrl": {
+    "message": "Verkürzte URL erkannt (hoch)"
+  },
+  "downloadPage": {
+    "message": "Verdächtiger Download erkannt (hoch)"
+  },
+  "freeHosting": {
+    "message": "Kostenlose Hosting-Plattform erkannt (hoch)"
+  },
+  "encodedCharacters": {
+    "message": "URL enthält zu viele codierte Zeichen (hoch)"
+  },
+  "homoglyphAttack": {
+    "message": "Homoglyphen-Angriff erkannt (mittel)"
+  },
+  "metaRedirect": {
+    "message": "Meta-Refresh-Weiterleitung erkannt (hoch)"
+  },
+  "cryptoPhishing": {
+    "message": "Krypto-Phishing erkannt (hoch)"
+  },
+  "externalScripts": {
+    "message": "Verdächtige externe Skripte erkannt (hoch)"
+  },
+  "suspiciousIframes": {
+    "message": "Verdächtige iFrames erkannt (hoch)"
+  },
+  "suspiciousParams": {
+    "message": "Verdächtige Abfrageparameter erkannt (mittel)"
+  },
+  "mixedContent": {
+    "message": "Gemischter Inhalt (HTTPS/HTTP) erkannt (mittel)"
+  },
+  "unusualPort": {
+    "message": "Ungewöhnlicher Port in URL erkannt (hoch)"
+  },
+  "javascriptScheme": {
+    "message": "JavaScript-Schema in URL verwendet (hoch)"
+  },
+  "urlFragmentTrick": {
+    "message": "Verdächtiges URL-Fragment erkannt (mittel)"
+  },
+  "suspiciousTLD": {
+    "message": "Verdächtige Top-Level-Domain erkannt (hoch)",
+    "description": "Warnung für Domains mit verdächtigen TLDs"
+  },
+  "base64OrHex": {
+    "message": "Base64- oder Hexadezimalmuster erkannt (mittel)",
+    "description": "Warnung bei Erkennung von Base64- oder Hexadezimalmustern"
+  },
+  "popupTitle": {
+    "message": "LinkShield: Ihr Schutz vor Phishing"
+  },
+  "popupSubtitle": {
+    "message": "Verbessern Sie Ihre Sicherheit mit Echtzeit-Warnungen und fortschrittlichem Online-Schutz."
+  },
+  "backgroundAnalysis": {
+    "message": "Hintergrundanalyse"
+  },
+  "backgroundAnalysisDescription": {
+    "message": "Blockieren Sie die neuesten Phishing-Websites."
+  },
+  "activationRequired": {
+    "message": "Aktivieren Sie diese Funktion zuerst, um sie zu nutzen."
+  },
+  "integratedProtection": {
+    "message": "Integrierter Malware- & Phishing-Schutz"
+  },
+  "integratedProtectionDescription": {
+    "message": "Direkte Kontrolle über Websites und Links."
+  },
+  "premiumFeaturesActive": {
+    "message": "Premium-Funktionen sind aktiviert!"
+  },
+  "upgradePrompt": {
+    "message": "Upgrade auf Premium, um weitere Funktionen freizuschalten!"
+  },
+  "saveSettings": {
+    "message": "Sicherheits-Einstellungen speichern"
+  },
+  "settingsSaved": {
+    "message": "Einstellungen erfolgreich gespeichert!"
+  },
+  "licenseActivate": {
+    "message": "Lizenz aktivieren"
+  },
+  "licenseInputPlaceholder": {
+    "message": "Geben Sie Ihren Lizenzschlüssel ein"
+  },
+  "licenseCheck": {
+    "message": "Lizenz überprüfen"
+  },
+  "licenseInvalid": {
+    "message": "Ungültiger Lizenzschlüssel."
+  },
+  "licenseValid": {
+    "message": "Lizenz erfolgreich aktiviert!"
+  },
+  "lastRuleUpdate": {
+    "message": "Letztes Update der Phishing-Datenbank: "
+  },
+  "licenseStatus": {
+    "message": "Lizenz:"
+  },
+  "licenseFreemium": {
+    "message": "Freemium"
+  },
+  "bulkUrlCheck": {
+    "message": "Massen-URL-Prüfung"
+  },
+  "bulkUrlCheckDescription": {
+    "message": "Laden Sie eine .txt-Datei hoch, um mehrere URLs auf einmal zu überprüfen."
+  },
+  "fileChoose": {
+    "message": "Datei auswählen"
+  },
+  "fileCheck": {
+    "message": "Datei prüfen"
+  },
+  "fileCheckNoUrls": {
+    "message": "Die Datei enthält keine URLs."
+  },
+  "fileCheckFailed": {
+    "message": "Überprüfung fehlgeschlagen"
+  },
+  "safeDomain": {
+    "message": "Diese Domain wird als sicher erkannt."
+  },
+  "allowedProtocol": {
+    "message": "Dieser Link verwendet ein erlaubtes Protokoll."
+  },
+  "insecureLoginPage": {
+    "message": "Diese Login-Seite verwendet kein HTTPS und könnte unsicher sein. (hoch)"
+  },
+  "invalidUrl": {
+    "message": "Diese URL scheint ungültig oder fehlerhaft zu sein."
+  }
+}

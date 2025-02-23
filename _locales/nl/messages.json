@@ -1,0 +1,181 @@
+{
+  "extName": {
+    "message": "LinkShield"
+  },
+  "extDescription": {
+    "message": "LinkShield beschermt je tegen phishing door websites te controleren. Vertrouw nooit onbekende partijen met gevoelige informatie."
+  },
+  "alertTitle": {
+    "message": "Wees voorzichtig"
+  },
+  "alertMessage": {
+    "message": "Deze website bevat een link naar:"
+  },
+  "severityLabel": {
+    "message": "Ernst"
+  },
+  "reasonLabel": {
+    "message": "Reden"
+  },
+  "adviceMessage": {
+    "message": "Advies"
+  },
+  "severityMediumRisk": {
+    "message": "Gemiddeld risico: deze link kan onveilig zijn. Ga voorzichtig te werk."
+  },
+  "adviceCheckUrl": {
+    "message": "Open deze link alleen als je absoluut zeker bent van de veiligheid. Controleer het adres zorgvuldig."
+  },
+  "noHttps": {
+    "message": "Link gebruikt geen HTTPS. (hoog)"
+  },
+  "ipAsDomain": {
+    "message": "IP-adres gebruikt in plaats van een domeinnaam (hoog)"
+  },
+  "tooManySubdomains": {
+    "message": "Te veel subdomeinen (hoog)"
+  },
+  "suspiciousKeywords": {
+    "message": "Verdachte zoekwoorden gedetecteerd (gemiddeld)"
+  },
+  "suspiciousPattern": {
+    "message": "Verdacht URL-patroon gedetecteerd (hoog)"
+  },
+  "shortenedUrl": {
+    "message": "Ingekorte URL gedetecteerd (hoog)"
+  },
+  "downloadPage": {
+    "message": "Verdachte downloadpagina gedetecteerd (hoog)"
+  },
+  "freeHosting": {
+    "message": "Gratis hostingplatform gedetecteerd (hoog)"
+  },
+  "encodedCharacters": {
+    "message": "URL bevat te veel gecodeerde tekens (hoog)"
+  },
+  "homoglyphAttack": {
+    "message": "Homoglyph-aanval gedetecteerd (gemiddeld)"
+  },
+  "metaRedirect": {
+    "message": "Meta-refresh omleiding gedetecteerd (hoog)"
+  },
+  "cryptoPhishing": {
+    "message": "Crypto-gerelateerde phishing gedetecteerd (hoog)"
+  },
+  "externalScripts": {
+    "message": "Verdachte externe scripts gedetecteerd (hoog)"
+  },
+  "suspiciousIframes": {
+    "message": "Verdachte iframes gedetecteerd (hoog)"
+  },
+  "suspiciousParams": {
+    "message": "Verdachte URL-queryparameters gedetecteerd (gemiddeld)"
+  },
+  "mixedContent": {
+    "message": "Gemengde inhoud (HTTPS/HTTP) gedetecteerd (gemiddeld)"
+  },
+  "unusualPort": {
+    "message": "Ongebruikelijke poort gedetecteerd in URL (hoog)"
+  },
+  "javascriptScheme": {
+    "message": "JavaScript-schema gebruikt in URL (hoog)"
+  },
+  "urlFragmentTrick": {
+    "message": "Verdacht URL-fragment gedetecteerd (gemiddeld)"
+  },
+  "suspiciousTLD": {
+    "message": "Verdacht topleveldomein gedetecteerd (hoog)",
+    "description": "Waarschuwing voor domeinen met verdachte TLD's"
+  },
+  "base64OrHex": {
+    "message": "Base64- of hexadecimaal patroon gedetecteerd (gemiddeld)",
+    "description": "Waarschuwing bij detectie van Base64- of hexadecimale patronen"
+  },
+  "popupTitle": {
+    "message": "LinkShield: Jouw bescherming tegen phishing"
+  },
+  "popupSubtitle": {
+    "message": "Verhoog je beveiliging met realtime waarschuwingen en geavanceerde online bescherming."
+  },
+  "backgroundAnalysis": {
+    "message": "Achtergrondanalyse"
+  },
+  "backgroundAnalysisDescription": {
+    "message": "Blokkeer de meest recente phishingwebsites."
+  },
+  "activationRequired": {
+    "message": "Activeer deze functie eerst om deze te gebruiken."
+  },
+  "integratedProtection": {
+    "message": "Geïntegreerde Malware- & Phishingbescherming"
+  },
+  "integratedProtectionDescription": {
+    "message": "Directe controle van websites en links."
+  },
+  "premiumFeaturesActive": {
+    "message": "Premiumfuncties zijn geactiveerd!"
+  },
+  "upgradePrompt": {
+    "message": "Upgrade naar premium om meer functies te ontgrendelen!"
+  },
+  "saveSettings": {
+    "message": "Beveiligingsinstellingen opslaan"
+  },
+  "settingsSaved": {
+    "message": "Instellingen succesvol opgeslagen!"
+  },
+  "licenseActivate": {
+    "message": "Licentie activeren"
+  },
+  "licenseInputPlaceholder": {
+    "message": "Voer je licentiesleutel in"
+  },
+  "licenseCheck": {
+    "message": "Licentie controleren"
+  },
+  "licenseInvalid": {
+    "message": "Ongeldige licentiesleutel."
+  },
+  "licenseValid": {
+    "message": "Licentie succesvol geactiveerd!"
+  },
+  "lastRuleUpdate": {
+    "message": "Laatste update van de phishingdatabase: "
+  },
+  "licenseStatus": {
+    "message": "Licentie:"
+  },
+  "licenseFreemium": {
+    "message": "Freemium"
+  },
+  "bulkUrlCheck": {
+    "message": "Bulk-URL-controle"
+  },
+  "bulkUrlCheckDescription": {
+    "message": "Upload een .txt-bestand om meerdere URL’s tegelijk te controleren."
+  },
+  "fileChoose": {
+    "message": "Bestand kiezen"
+  },
+  "fileCheck": {
+    "message": "Bestand controleren"
+  },
+  "fileCheckNoUrls": {
+    "message": "Het bestand bevat geen URL’s."
+  },
+  "fileCheckFailed": {
+    "message": "Controle mislukt"
+  },
+  "safeDomain": {
+    "message": "Dit domein wordt herkend als veilig."
+  },
+  "allowedProtocol": {
+    "message": "Deze link gebruikt een toegestaan protocol."
+  },
+  "insecureLoginPage": {
+    "message": "Deze inlogpagina gebruikt geen HTTPS en kan onveilig zijn. (hoog)"
+  },
+  "invalidUrl": {
+    "message": "Deze URL lijkt ongeldig of verkeerd geformatteerd."
+  }
+}

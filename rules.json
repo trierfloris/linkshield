@@ -1,0 +1,354 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "url": "https://linkshield.nl/#waarschuwing"
+      }
+    },
+    "condition": {
+      "urlFilter": "http://mail.8724319-coinbase.com/review",
+      "resourceTypes": [
+        "main_frame"
+      ]
+    }
+  },
+  {
+    "id": 2,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "url": "https://linkshield.nl/#waarschuwing"
+      }
+    },
+    "condition": {
+      "urlFilter": "http://8724319-coinbase.com/awaiting",
+      "resourceTypes": [
+        "main_frame"
+      ]
+    }
+  },
+  {
+    "id": 3,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "url": "https://linkshield.nl/#waarschuwing"
+      }
+    },
+    "condition": {
+      "urlFilter": "http://8724319-coinbase.com/signin",
+      "resourceTypes": [
+        "main_frame"
+      ]
+    }
+  },
+  {
+    "id": 4,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "url": "https://linkshield.nl/#waarschuwing"
+      }
+    },
+    "condition": {
+      "urlFilter": "https://db-kontakt.ns01.info/187/",
+      "resourceTypes": [
+        "main_frame"
+      ]
+    }
+  },
+  {
+    "id": 5,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "url": "https://linkshield.nl/#waarschuwing"
+      }
+    },
+    "condition": {
+      "urlFilter": "https://ferzouriyabog.com/u/k/a/s.php",
+      "resourceTypes": [
+        "main_frame"
+      ]
+    }
+  },
+  {
+    "id": 6,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "url": "https://linkshield.nl/#waarschuwing"
+      }
+    },
+    "condition": {
+      "urlFilter": "https://server.pxs7.com/invite/87747988",
+      "resourceTypes": [
+        "main_frame"
+      ]
+    }
+  },
+  {
+    "id": 7,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "url": "https://linkshield.nl/#waarschuwing"
+      }
+    },
+    "condition": {
+      "urlFilter": "https://njtlgx.com/",
+      "resourceTypes": [
+        "main_frame"
+      ]
+    }
+  },
+  {
+    "id": 8,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "url": "https://linkshield.nl/#waarschuwing"
+      }
+    },
+    "condition": {
+      "urlFilter": "http://meta.secureassist.eu/",
+      "resourceTypes": [
+        "main_frame"
+      ]
+    }
+  },
+  {
+    "id": 9,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "url": "https://linkshield.nl/#waarschuwing"
+      }
+    },
+    "condition": {
+      "urlFilter": "http://www.is.gd/plweqc/",
+      "resourceTypes": [
+        "main_frame"
+      ]
+    }
+  },
+  {
+    "id": 10,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "url": "https://linkshield.nl/#waarschuwing"
+      }
+    },
+    "condition": {
+      "urlFilter": "http://www.hostqatar.qa/a/",
+      "resourceTypes": [
+        "main_frame"
+      ]
+    }
+  },
+  {
+    "id": 11,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "url": "https://linkshield.nl/#waarschuwing"
+      }
+    },
+    "condition": {
+      "urlFilter": "https://hotmail-104437.weeblysite.com/",
+      "resourceTypes": [
+        "main_frame"
+      ]
+    }
+  },
+  {
+    "id": 12,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "url": "https://linkshield.nl/#waarschuwing"
+      }
+    },
+    "condition": {
+      "urlFilter": "https://inc-107280.weeblysite.com/",
+      "resourceTypes": [
+        "main_frame"
+      ]
+    }
+  },
+  {
+    "id": 13,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "url": "https://linkshield.nl/#waarschuwing"
+      }
+    },
+    "condition": {
+      "urlFilter": "http://temporal-gossamer-vulture.glitch.me/",
+      "resourceTypes": [
+        "main_frame"
+      ]
+    }
+  },
+  {
+    "id": 14,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "url": "https://linkshield.nl/#waarschuwing"
+      }
+    },
+    "condition": {
+      "urlFilter": "https://login-screen-107572.weeblysite.com/",
+      "resourceTypes": [
+        "main_frame"
+      ]
+    }
+  },
+  {
+    "id": 15,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "url": "https://linkshield.nl/#waarschuwing"
+      }
+    },
+    "condition": {
+      "urlFilter": "https://athome-101274.weeblysite.com/",
+      "resourceTypes": [
+        "main_frame"
+      ]
+    }
+  },
+  {
+    "id": 16,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "url": "https://linkshield.nl/#waarschuwing"
+      }
+    },
+    "condition": {
+      "urlFilter": "https://login-screen-102475.weeblysite.com/",
+      "resourceTypes": [
+        "main_frame"
+      ]
+    }
+  },
+  {
+    "id": 17,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "url": "https://linkshield.nl/#waarschuwing"
+      }
+    },
+    "condition": {
+      "urlFilter": "https://login-screen-103764.weeblysite.com/",
+      "resourceTypes": [
+        "main_frame"
+      ]
+    }
+  },
+  {
+    "id": 18,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "url": "https://linkshield.nl/#waarschuwing"
+      }
+    },
+    "condition": {
+      "urlFilter": "http://distrosourcess4.sg-host.com/",
+      "resourceTypes": [
+        "main_frame"
+      ]
+    }
+  },
+  {
+    "id": 19,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "url": "https://linkshield.nl/#waarschuwing"
+      }
+    },
+    "condition": {
+      "urlFilter": "https://scss.orfnd.top/mum",
+      "resourceTypes": [
+        "main_frame"
+      ]
+    }
+  },
+  {
+    "id": 20,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "url": "https://linkshield.nl/#waarschuwing"
+      }
+    },
+    "condition": {
+      "urlFilter": "https://ultrasound.stayswagged.info/ga/click/2-224179950-20086-73404-145479-88140-89162a02ba-84f49e78f5",
+      "resourceTypes": [
+        "main_frame"
+      ]
+    }
+  },
+  {
+    "id": 21,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "url": "https://linkshield.nl/#waarschuwing"
+      }
+    },
+    "condition": {
+      "urlFilter": "https://mail.8724319-coinbase.com/review",
+      "resourceTypes": [
+        "main_frame"
+      ]
+    }
+  },
+  {
+    "id": 22,
+    "priority": 1,
+    "action": {
+      "type": "redirect",
+      "redirect": {
+        "url": "https://linkshield.nl/#waarschuwing"
+      }
+    },
+    "condition": {
+      "urlFilter": "http://example.com",
+      "resourceTypes": [
+        "main_frame"
+      ]
+    }
+  }
+]

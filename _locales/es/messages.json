@@ -1,0 +1,181 @@
+{
+  "extName": {
+    "message": "LinkShield"
+  },
+  "extDescription": {
+    "message": "Protege tus actividades en línea. LinkShield verifica la fiabilidad de sitios web para combatir el phishing, pero no garantiza seguridad completa. Mantente alerta."
+  },
+  "alertTitle": {
+    "message": "Ten cuidado"
+  },
+  "alertMessage": {
+    "message": "Este sitio web contiene un enlace a:"
+  },
+  "severityLabel": {
+    "message": "Gravedad"
+  },
+  "reasonLabel": {
+    "message": "Motivo"
+  },
+  "adviceMessage": {
+    "message": "Consejo"
+  },
+  "severityMediumRisk": {
+    "message": "Riesgo medio: este enlace puede ser inseguro. Procede con precaución."
+  },
+  "adviceCheckUrl": {
+    "message": "Abre este enlace solo si estás completamente seguro de su seguridad. Verifica cuidadosamente la dirección."
+  },
+  "noHttps": {
+    "message": "El enlace no usa HTTPS. (alto)"
+  },
+  "ipAsDomain": {
+    "message": "Se usa una dirección IP en lugar de un dominio (alto)"
+  },
+  "tooManySubdomains": {
+    "message": "Demasiados subdominios (alto)"
+  },
+  "suspiciousKeywords": {
+    "message": "Se detectaron palabras clave sospechosas (medio)"
+  },
+  "suspiciousPattern": {
+    "message": "Se detectó un patrón de URL sospechoso (alto)"
+  },
+  "shortenedUrl": {
+    "message": "Se detectó una URL acortada (alto)"
+  },
+  "downloadPage": {
+    "message": "Se detectó una descarga sospechosa (alto)"
+  },
+  "freeHosting": {
+    "message": "Se detectó una plataforma de alojamiento gratuito (alto)"
+  },
+  "encodedCharacters": {
+    "message": "La URL contiene demasiados caracteres codificados (alto)"
+  },
+  "homoglyphAttack": {
+    "message": "Se detectó un ataque de homógrafos (medio)"
+  },
+  "metaRedirect": {
+    "message": "Se detectó una redirección meta-refresh (alto)"
+  },
+  "cryptoPhishing": {
+    "message": "Se detectó phishing relacionado con criptomonedas (alto)"
+  },
+  "externalScripts": {
+    "message": "Se detectaron scripts externos sospechosos (alto)"
+  },
+  "suspiciousIframes": {
+    "message": "Se detectaron iframes sospechosos (alto)"
+  },
+  "suspiciousParams": {
+    "message": "Se detectaron parámetros de consulta sospechosos (medio)"
+  },
+  "mixedContent": {
+    "message": "Se detectó contenido mixto (HTTPS/HTTP) (medio)"
+  },
+  "unusualPort": {
+    "message": "Se detectó un puerto inusual en la URL (alto)"
+  },
+  "javascriptScheme": {
+    "message": "Se usa un esquema de JavaScript en la URL (alto)"
+  },
+  "urlFragmentTrick": {
+    "message": "Se detectó un fragmento de URL sospechoso (medio)"
+  },
+  "suspiciousTLD": {
+    "message": "Se detectó un dominio de nivel superior sospechoso (alto)",
+    "description": "Advertencia para dominios con TLDs sospechosos"
+  },
+  "base64OrHex": {
+    "message": "Se detectó un patrón en Base64 o hexadecimal (medio)",
+    "description": "Advertencia al detectar patrones en Base64 o hexadecimal"
+  },
+  "popupTitle": {
+    "message": "LinkShield: Tu protección contra el phishing"
+  },
+  "popupSubtitle": {
+    "message": "Mejora tu seguridad con alertas en tiempo real y protección avanzada en línea."
+  },
+  "backgroundAnalysis": {
+    "message": "Análisis en segundo plano"
+  },
+  "backgroundAnalysisDescription": {
+    "message": "Bloquea los sitios de phishing más recientes."
+  },
+  "activationRequired": {
+    "message": "Activa esta función primero para poder usarla."
+  },
+  "integratedProtection": {
+    "message": "Protección integrada contra malware y phishing"
+  },
+  "integratedProtectionDescription": {
+    "message": "Control directo de sitios web y enlaces."
+  },
+  "premiumFeaturesActive": {
+    "message": "¡Funciones premium activadas!"
+  },
+  "upgradePrompt": {
+    "message": "¡Actualiza a la versión premium para desbloquear más funciones!"
+  },
+  "saveSettings": {
+    "message": "Guardar configuración de seguridad"
+  },
+  "settingsSaved": {
+    "message": "¡Configuración guardada con éxito!"
+  },
+  "licenseActivate": {
+    "message": "Activar licencia"
+  },
+  "licenseInputPlaceholder": {
+    "message": "Introduce tu clave de licencia"
+  },
+  "licenseCheck": {
+    "message": "Verificar licencia"
+  },
+  "licenseInvalid": {
+    "message": "Clave de licencia no válida."
+  },
+  "licenseValid": {
+    "message": "¡Licencia activada con éxito!"
+  },
+  "lastRuleUpdate": {
+    "message": "Última actualización de la base de datos de phishing: "
+  },
+  "licenseStatus": {
+    "message": "Licencia:"
+  },
+  "licenseFreemium": {
+    "message": "Freemium"
+  },
+  "bulkUrlCheck": {
+    "message": "Verificación masiva de URL"
+  },
+  "bulkUrlCheckDescription": {
+    "message": "Sube un archivo .txt para verificar varias URL a la vez."
+  },
+  "fileChoose": {
+    "message": "Elegir archivo"
+  },
+  "fileCheck": {
+    "message": "Verificar archivo"
+  },
+  "fileCheckNoUrls": {
+    "message": "El archivo no contiene URL."
+  },
+  "fileCheckFailed": {
+    "message": "Verificación fallida"
+  },
+  "safeDomain": {
+    "message": "Este dominio se reconoce como seguro."
+  },
+  "allowedProtocol": {
+    "message": "Este enlace usa un protocolo permitido."
+  },
+  "insecureLoginPage": {
+    "message": "Esta página de inicio de sesión no usa HTTPS y puede ser insegura. (alto)"
+  },
+  "invalidUrl": {
+    "message": "Esta URL parece ser inválida o estar mal formada."
+  }
+}

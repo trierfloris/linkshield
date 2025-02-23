@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="alertTitle"></title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+            color: #34495e;
+        }
+
+        #warning-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            border: 3px solid #e67e22;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+        }
+
+        h1 {
+            color: #e67e22;
+            font-size: 24px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        #url-info {
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+
+        .risk-level {
+            background-color: rgba(230, 126, 34, 0.1);
+            border-left: 4px solid #e67e22;
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            font-style: italic;
+            border-radius: 6px;
+        }
+
+        .reasons ul {
+            margin: 10px 0;
+            padding: 0 20px;
+            list-style: disc;
+        }
+
+        .reasons ul li {
+            margin-bottom: 8px;
+        }
+
+        .advice {
+            background: #e67e22;
+            color: #fff;
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .buttons button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .buttons button#close-warning {
+            background-color: #ccc;
+            color: #444;
+        }
+
+        .buttons button#mark-safe {
+            background-color: #3498db;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div id="warning-container">
+        <h1 data-i18n="alertTitle"></h1>
+        <p id="url-info">
+            <span data-i18n="alertMessage"></span>
+            <span id="site-name" style="color: #3498db; font-weight: bold;"></span>:
+            <a id="url-link" href="#" target="_blank" style="color: #e74c3c; text-decoration: underline;"></a>
+        </p>
+        <div id="severity-info" class="risk-level">
+            <strong data-i18n="severityLabel"></strong>: <span id="severity-text"></span>
+        </div>
+        <div class="reasons">
+            <strong data-i18n="reasonLabel"></strong>:
+            <ul id="reason-list"></ul>
+        </div>
+        <div id="advice" class="advice" data-i18n="adviceMessage"></div>
+    </div>
+
+    <script src="alert.js"></script>
+</body>
+</html>

@@ -552,73 +552,103 @@ function getAbsoluteUrl(relativeUrl) {
 }
 
 async function calculateRiskScore(url) {
-  let score = 0;
-  let reasons = [];
-  try {
-    const urlObj = new URL(url);
-    const domain = normalizeDomain(url);
-    if (!domain) return { score: -1, reasons: ["Invalid URL."] };
-    const path = urlObj.pathname.toLowerCase();
-    const addRisk = (points, reason, severity = "low") => {
-      score += points;
-      reasons.push(`${reason} (${severity})`);
-    };
-    if (urlObj.protocol !== 'https:') {
-      addRisk(15, "URL uses HTTP instead of HTTPS", "medium");
-    }
-    if (isLoginPage() && urlObj.protocol !== 'https:') {
-      addRisk(20, "Login page detected without HTTPS", "high");
-    }
-    const urlParts = sanitizeInput(url.toLowerCase()).split(/[\/?#]/);
-    if (urlParts.some(word => globalConfig.PHISHING_KEYWORDS.has(word))) {
-      addRisk(10, "URL contains phishing keywords", "high");
-    }
-    const ext = urlObj.pathname.toLowerCase().match(/\.[0-9a-z]+$/i);
-    if (ext && globalConfig.MALWARE_EXTENSIONS.test(ext[0])) {
-      addRisk(10, "URL points to a suspicious file type", "high");
-    }
-    if (/^(?:https?:\/\/)?(\d{1,3}\.){3}\d{1,3}(?::\d+)?(?:\/|$)/.test(url)) {
-      addRisk(10, "URL contains an IP address", "medium");
-    }
-    const shortenedUrlDomains = new Set(globalConfig.SHORTENED_URL_DOMAINS);
-    if (shortenedUrlDomains.has(domain)) {
-      addRisk(6, "URL shortener detected", "medium");
-      try {
-        const response = await fetch(url, { method: 'HEAD', redirect: 'follow' });
-        const finalUrl = response.url;
-        if (finalUrl && finalUrl !== url) {
-          addRisk(10, `Shortened URL resolved to: ${finalUrl}`, "medium");
+    let score = 0;
+    let reasons = [];
+
+    try {
+        const urlObj = new URL(url);
+        const domain = normalizeDomain(url);
+        if (!domain) return { score: -1, reasons: ["Invalid URL."] };
+
+        const path = urlObj.pathname.toLowerCase();
+        const addRisk = (points, reason, severity = "low") => {
+            if (!reasons.includes(reason)) {
+                score += points;
+                reasons.push(`${reason} (${severity})`);
+            }
+        };
+
+        // 1️⃣ HTTPS-controle (verhoogd risico)
+        if (urlObj.protocol !== 'https:') {
+            addRisk(15, "URL uses HTTP instead of HTTPS", "high");
         }
-      } catch (error) {
-        addRisk(5, "Error resolving shortened URL", "low");
-        handleError(error, "calculateRiskScore (shortened URL)");
-      }
+
+        if (isLoginPage() && urlObj.protocol !== 'https:') {
+            addRisk(20, "Login page detected without HTTPS", "high");
+        }
+
+        // 2️⃣ Controle op phishing-gerelateerde termen in URL
+        const urlParts = sanitizeInput(url.toLowerCase()).split(/[\/?#]/);
+        if (urlParts.some(word => globalConfig.PHISHING_KEYWORDS.has(word))) {
+            addRisk(10, "URL contains phishing keywords", "high");
+        }
+
+        // 3️⃣ Verdachte bestandsextensies
+        const ext = urlObj.pathname.toLowerCase().match(/\.[0-9a-z]+$/i);
+        if (ext && globalConfig.MALWARE_EXTENSIONS.test(ext[0])) {
+            addRisk(12, "URL points to a suspicious file type", "high");
+        }
+
+        // 4️⃣ IP-adres als domeinnaam + ongebruikelijke poort
+        if (/^(?:https?:\/\/)?(\d{1,3}\.){3}\d{1,3}(?::\d+)?(?:\/|$)/.test(url)) {
+            addRisk(12, "URL contains an IP address", "high");
+
+            // Controleer ongebruikelijke poorten
+            if (urlObj.port && !["80", "443"].includes(urlObj.port)) {
+                addRisk(6, "URL uses an unusual port", "high");
+            }
+        }
+
+        // 5️⃣ Verkorte URL-detectie met fetch (indien nodig)
+        if (globalConfig.SHORTENED_URL_DOMAINS.has(domain)) {
+            addRisk(6, "URL shortener detected", "medium");
+
+            try {
+                const response = await fetch(url, { method: 'HEAD', redirect: 'follow' });
+                const finalUrl = response.url;
+                if (finalUrl && finalUrl !== url) {
+                    addRisk(10, `Shortened URL resolved to: ${finalUrl}`, "medium");
+                }
+            } catch (error) {
+                addRisk(5, "Error resolving shortened URL", "low");
+                handleError(error, "calculateRiskScore (shortened URL)");
+            }
+        }
+
+        // 6️⃣ Verdachte TLD's
+        if (globalConfig.SUSPICIOUS_TLDS.test(domain)) {
+            addRisk(15, "URL uses a suspicious top-level domain", "high");
+        }
+
+        // 7️⃣ Controle op ongewoon lange URL's
+        const maxLength = globalConfig.MAX_URL_LENGTH || 2000;
+        if (url.length > maxLength) {
+            addRisk(8, "URL is unusually long", "medium");
+        }
+
+        // 8️⃣ Gecodeerde tekens (mogelijk Base64 of HEX)
+        if (/%[0-9A-Fa-f]{2}/.test(url)) {
+            addRisk(6, "URL contains encoded characters", "medium");
+        }
+
+        // 9️⃣ Overmatig gebruik van subdomeinen
+        if (domain.split(".").length > 3) {
+            addRisk(5, "URL has excessive subdomains", "medium");
+        }
+
+        // 🔟 Mogelijk Base64 of hexadecimale encoding in URL
+        if (/^(javascript|data):/.test(url) || /[a-f0-9]{32,}/.test(url)) {
+            addRisk(12, "Possible Base64 or hexadecimal encoding in URL", "high");
+        }
+
+        // Logging en resultaat
+        logDebug(`Risk score for ${url}: ${score}. Reasons: ${reasons.join(', ')}`);
+        return { score, reasons };
+
+    } catch (error) {
+        handleError(error, "calculateRiskScore");
+        return { score: -1, reasons: ["Error calculating risk score."] };
     }
-    if (globalConfig.SUSPICIOUS_TLDS.test(domain)) {
-      addRisk(15, "URL uses a suspicious top-level domain", "high");
-    }
-    const maxLength = globalConfig.MAX_URL_LENGTH || 2000;
-    if (url.length > maxLength) {
-      addRisk(5, "URL is unusually long", "low");
-    }
-    if (url.includes("@") && !url.toLowerCase().startsWith("mailto:")) {
-      addRisk(4, "Email address in URL without 'mailto:' protocol", "medium");
-    }
-    if (/%[0-9A-Fa-f]{2}/.test(url)) {
-      addRisk(3, "URL contains encoded characters", "low");
-    }
-    if (domain.split(".").length > 3) {
-      addRisk(5, "URL has excessive subdomains", "medium");
-    }
-    if (/^(javascript|data):/.test(url) || /[a-f0-9]{32,}/.test(url)) {
-      addRisk(10, "Possible Base64 or hexadecimal encoding in URL", "high");
-    }
-    logDebug(`Risk score for ${url}: ${score}. Reasons: ${reasons.join(', ')}`);
-    return { score, reasons };
-  } catch (error) {
-    handleError(error, "calculateRiskScore");
-    return { score: -1, reasons: ["Error calculating risk score."] };
-  }
 }
 
 function isSearchResultPage() {
@@ -1157,33 +1187,47 @@ function getCheckString(domain, fullUrl) {
   return fullUrl ? new URL(domain).hostname.toLowerCase().normalize('NFC') : normalizedDomain;
 }
 
-/* Aangepaste versie van content.js zodat deze overeenkomt met oud.js */
-
-/* Aangepaste versie van content.js zodat deze overeenkomt met oud.js */
-
 async function performSuspiciousChecks(url) {
-  const isEnabled = await isProtectionEnabled();
-  if (!isEnabled) {
-    logDebug("Protection is disabled. Skipping checks for URL:", url);
-    return { isSafe: true, reasons: [], risk: 0 };
-  }
+    const isEnabled = await isProtectionEnabled();
+    if (!isEnabled) {
+        logDebug("Protection is disabled. Skipping checks for URL:", url);
+        return { isSafe: true, reasons: [], risk: 0 };
+    }
+    
+    const reasons = new Set();
+    const totalRiskRef = { value: 0 };
+
+    if (!globalConfig) {
+        logError("❌ globalConfig is niet geladen! Kan geen checks uitvoeren.");
+        return { isSafe: false, reasons: ["Configuratiefout"], risk: 10 };
+    }
+
+    // ✅ Hier zorgen we ervoor dat `await` correct wordt gebruikt binnen een async functie
+    await checkStaticConditions(url, reasons, totalRiskRef);
+    await checkDynamicConditions(url, reasons, totalRiskRef);
+
+    logDebug("🔍 Eindscore voor URL:", url, "| Risicoscore:", totalRiskRef.value);
+
+    const isSafe = totalRiskRef.value < 10;
+    return createAnalysisResult(isSafe, Array.from(reasons), totalRiskRef.value);
+}
+
+
+
+(async () => {
+  const url = window.location.href; // Example URL, adjust as needed
   const reasons = new Set();
   const totalRiskRef = { value: 0 };
 
-  if (!globalConfig) {
-  logError("❌ globalConfig is niet geladen! Kan geen checks uitvoeren.");
-  return { isSafe: false, reasons: ["Configuratiefout"], risk: 10 };
-}
+  await checkStaticConditions(url, reasons, totalRiskRef);
+  await checkDynamicConditions(url, reasons, totalRiskRef);
 
-await checkStaticConditions(url, reasons, totalRiskRef);
-await checkDynamicConditions(url, reasons, totalRiskRef);
-
-logDebug("🔍 Eindscore voor URL:", url, "| Risicoscore:", totalRiskRef.value);
-
+  logDebug("🔍 Eindscore voor URL:", url, "| Risicoscore:", totalRiskRef.value);
 
   const isSafe = totalRiskRef.value < (globalConfig.RISK_THRESHOLD || 5);
-  return createAnalysisResult(isSafe, Array.from(reasons), totalRiskRef.value);
-}
+  const result = createAnalysisResult(isSafe, Array.from(reasons), totalRiskRef.value);
+  console.log(result); // Example usage
+})();
 
 
 function checkStaticConditions(url, reasons, totalRiskRef) {

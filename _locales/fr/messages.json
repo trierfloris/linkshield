@@ -3,127 +3,127 @@
     "message": "LinkShield"
   },
   "extDescription": {
-    "message": "Protégez vos activités en ligne. LinkShield vérifie la fiabilité des sites pour lutter contre le phishing, mais ne garantit pas une sécurité totale. Restez vigilant."
+    "message": "LinkShield vous aide à reconnaître les sites Web dangereux. Ne partagez jamais d’informations sensibles avec des sites inconnus."
   },
   "alertTitle": {
-    "message": "Soyez prudent"
+    "message": "Attention !"
   },
   "alertMessage": {
-    "message": "Ce site contient un lien vers :"
+    "message": "Ce site Web contient un lien vers :"
   },
   "severityLabel": {
-    "message": "Gravité"
+    "message": "Risque"
   },
   "reasonLabel": {
-    "message": "Raison"
+    "message": "Pourquoi ?"
   },
   "adviceMessage": {
-    "message": "Conseil"
+    "message": "Que pouvez-vous faire ?"
   },
   "severityMediumRisk": {
-    "message": "Risque moyen : ce lien peut être dangereux. Faites preuve de prudence."
+    "message": "Risque moyen : ce lien peut être dangereux. Soyez prudent."
   },
   "adviceCheckUrl": {
-    "message": "N'ouvrez ce lien que si vous êtes absolument sûr de sa sécurité. Vérifiez soigneusement l'adresse et, s'il s'agit d'une page de connexion (par exemple, pour votre e-mail ou votre banque), assurez-vous que l'URL est exactement correcte avant de saisir vos identifiants."
+    "message": "Ouvrez ce lien uniquement si vous êtes certain qu'il est sûr. Vérifiez attentivement l'adresse Web. Ne vous connectez jamais si vous avez des doutes sur son authenticité."
   },
   "noHttps": {
-    "message": "Le lien n'utilise pas HTTPS. (élevé) - Les données sont transmises en texte brut et sont vulnérables à l'interception."
+    "message": "Ce lien n'utilise pas HTTPS (risque élevé). Vos données peuvent être facilement volées."
   },
   "ipAsDomain": {
-    "message": "Une adresse IP est utilisée au lieu d'un domaine (élevé) - Peut masquer l'identité réelle du site et contourner les contrôles de sécurité basés sur les domaines."
+    "message": "Ce site Web utilise une adresse IP au lieu d'un nom de domaine (risque élevé). Cela peut être une tentative de tromperie."
   },
   "tooManySubdomains": {
-    "message": "Trop de sous-domaines (élevé) - Des sous-domaines excessifs peuvent être utilisés pour imiter des sites de confiance et tromper les utilisateurs."
+    "message": "Cette adresse Web contient de nombreuses sous-parties (risque élevé). Cela peut indiquer un site frauduleux."
   },
   "suspiciousKeywords": {
-    "message": "Mots-clés suspects détectés (moyen) - Les mots-clés associés aux escroqueries ou aux logiciels malveillants peuvent indiquer une intention malveillante."
+    "message": "Mots suspects détectés (risque moyen). Ces mots sont souvent utilisés dans les escroqueries."
   },
   "suspiciousPattern": {
-    "message": "Motif d'URL suspect détecté (élevé) - La structure de l'URL peut être conçue pour tromper ou masquer du contenu malveillant."
+    "message": "L'adresse Web semble suspecte (risque élevé). Cela pourrait être une tentative de fraude."
   },
   "shortenedUrl": {
-    "message": "URL raccourcie détectée (élevé) - Les URL raccourcies cachent la véritable destination, augmentant ainsi le risque d'hameçonnage."
+    "message": "Il s'agit d'un lien raccourci (risque élevé). Vous ne pouvez pas voir où il mène réellement."
   },
   "downloadPage": {
-    "message": "Téléchargement suspect détecté (élevé) - Peut héberger des logiciels malveillants ou indésirables."
+    "message": "Cette page propose un téléchargement suspect (risque élevé). Il pourrait contenir un logiciel malveillant."
   },
   "freeHosting": {
-    "message": "Plateforme d'hébergement gratuit détectée (élevé) - L'hébergement gratuit est souvent exploité en raison de contrôles de sécurité plus faibles."
+    "message": "Ce site Web utilise un hébergement gratuit (risque élevé). Ces sites sont souvent moins sécurisés."
   },
   "encodedCharacters": {
-    "message": "L'URL contient trop de caractères encodés (élevé) - Un encodage excessif peut masquer des charges utiles malveillantes."
+    "message": "Cette adresse Web contient de nombreux caractères inhabituels (risque élevé). Cela peut cacher quelque chose de dangereux."
   },
   "homoglyphAttack": {
-    "message": "Attaque par homoglyphe détectée (moyen) - Des caractères similaires peuvent imiter des domaines de confiance pour tromper les utilisateurs."
+    "message": "Cette adresse Web utilise des caractères similaires (risque moyen). Cela pourrait imiter un vrai site Web."
   },
   "metaRedirect": {
-    "message": "Redirection meta-refresh détectée (élevé) - Les redirections automatiques peuvent conduire les utilisateurs vers des sites malveillants."
+    "message": "Ce site Web vous redirige automatiquement (risque élevé). Cela pourrait vous conduire vers un site dangereux."
   },
   "cryptoPhishing": {
-    "message": "Hameçonnage lié aux cryptomonnaies détecté (élevé) - Souvent utilisé pour voler des fonds via des stratagèmes frauduleux."
+    "message": "Cette adresse Web semble être une arnaque liée aux cryptomonnaies (risque élevé). Faites attention à ne pas perdre d'argent."
   },
   "externalScripts": {
-    "message": "Scripts externes suspects détectés (élevé) - Les scripts externes peuvent charger du contenu malveillant ou suivre les utilisateurs."
+    "message": "Ce site Web charge des scripts suspects (risque élevé). Cela peut être dangereux."
   },
   "suspiciousIframes": {
-    "message": "Iframes suspects détectés (élevé) - Les iframes peuvent intégrer du contenu nuisible provenant de sources non fiables."
+    "message": "Ce site Web contient des fenêtres intégrées suspectes (risque élevé). Elles peuvent être utilisées pour vous tromper."
   },
   "suspiciousParams": {
-    "message": "Paramètres de requête suspects détectés (moyen) - Peuvent être manipulés pour exploiter des vulnérabilités."
+    "message": "Cette adresse Web contient des paramètres suspects (risque moyen). Ils pourraient être utilisés pour contourner la sécurité."
   },
   "mixedContent": {
-    "message": "Contenu mixte (HTTPS/HTTP) détecté (moyen) - Le mélange de contenu sécurisé et non sécurisé compromet la sécurité globale de la page."
+    "message": "Cette page utilise à la fois du contenu sécurisé et non sécurisé (risque moyen). Cela peut affaiblir la sécurité."
   },
   "unusualPort": {
-    "message": "Port inhabituel détecté dans l'URL (élevé) - Les ports non standard peuvent être utilisés pour contourner les mesures de sécurité courantes."
+    "message": "Ce site Web utilise un port inhabituel (risque élevé). Cela peut contourner les mesures de sécurité."
   },
   "javascriptScheme": {
-    "message": "Schéma JavaScript utilisé dans l'URL (élevé) - L'utilisation de 'javascript:' peut entraîner l'exécution de code malveillant."
+    "message": "Cette adresse Web utilise JavaScript (risque élevé). Cela peut être utilisé pour exécuter du code malveillant."
   },
   "urlFragmentTrick": {
-    "message": "Fragment d'URL suspect détecté (moyen) - Des fragments manipulés peuvent induire les utilisateurs en erreur sur la destination réelle."
+    "message": "Cette adresse Web contient un fragment suspect (risque moyen). Cela peut vous induire en erreur sur votre emplacement réel."
   },
   "suspiciousTLD": {
-    "message": "Domaine de premier niveau suspect détecté (élevé) - Certains TLD sont associés à un risque plus élevé et peuvent être utilisés de manière malveillante."
+    "message": "Cette adresse Web utilise un domaine risqué (risque élevé). Certains domaines sont plus souvent utilisés pour la fraude."
   },
   "base64OrHex": {
-    "message": "Motif Base64 ou hexadécimal détecté (moyen) - Le contenu obscurci peut masquer des instructions malveillantes."
+    "message": "Cette adresse Web contient des informations codées (risque moyen). Cela peut cacher quelque chose de dangereux."
   },
   "iframeHidden": {
-    "message": "Iframe caché ou trop petit détecté (moyen) - Les iframes cachés ou inhabituellement petits peuvent être utilisés pour dissimuler du contenu nuisible."
+    "message": "Ce site Web utilise une fenêtre cachée (risque moyen). Cela peut être une tentative de dissimulation."
   },
   "popupTitle": {
-    "message": "LinkShield : Votre protection contre le phishing"
+    "message": "LinkShield : Protégez-vous contre le phishing"
   },
   "popupSubtitle": {
-    "message": "Améliorez votre sécurité avec des alertes en temps réel et une protection avancée en ligne."
+    "message": "Restez en sécurité avec des alertes et une protection renforcée."
   },
   "backgroundAnalysis": {
     "message": "Analyse en arrière-plan"
   },
   "backgroundAnalysisDescription": {
-    "message": "Bloquez les sites de phishing les plus récents."
+    "message": "Bloquez les sites Web dangereux avant de les visiter."
   },
   "activationRequired": {
     "message": "Activez cette fonctionnalité avant de l'utiliser."
   },
   "integratedProtection": {
-    "message": "Protection intégrée contre les malwares et le phishing"
+    "message": "Protection intégrée contre le phishing et les logiciels malveillants"
   },
   "integratedProtectionDescription": {
-    "message": "Contrôle direct des sites web et des liens."
+    "message": "Cette fonctionnalité vérifie instantanément les sites Web et les liens."
   },
   "premiumFeaturesActive": {
-    "message": "Les fonctionnalités premium sont activées !"
+    "message": "Vous utilisez maintenant la version premium !"
   },
   "upgradePrompt": {
-    "message": "Passez à la version premium pour débloquer plus de fonctionnalités !"
+    "message": "Passez à la version premium pour obtenir des fonctionnalités supplémentaires."
   },
   "saveSettings": {
-    "message": "Enregistrer les paramètres de sécurité"
+    "message": "Enregistrer les paramètres"
   },
   "settingsSaved": {
-    "message": "Paramètres enregistrés avec succès !"
+    "message": "Paramètres enregistrés !"
   },
   "licenseActivate": {
     "message": "Activer la licence"
@@ -135,10 +135,10 @@
     "message": "Vérifier la licence"
   },
   "licenseInvalid": {
-    "message": "Clé de licence invalide."
+    "message": "Licence invalide."
   },
   "licenseValid": {
-    "message": "Licence activée avec succès !"
+    "message": "Licence activée !"
   },
   "lastRuleUpdate": {
     "message": "Dernière mise à jour de la base de données de phishing : "
@@ -147,13 +147,13 @@
     "message": "Licence :"
   },
   "licenseFreemium": {
-    "message": "Freemium"
+    "message": "Version gratuite"
   },
   "bulkUrlCheck": {
-    "message": "Vérification en masse des URL"
+    "message": "Vérifier plusieurs liens"
   },
   "bulkUrlCheckDescription": {
-    "message": "Téléchargez un fichier .txt pour vérifier plusieurs URL à la fois."
+    "message": "Téléchargez un fichier .txt pour vérifier plusieurs liens en même temps."
   },
   "fileChoose": {
     "message": "Choisir un fichier"
@@ -162,21 +162,45 @@
     "message": "Vérifier le fichier"
   },
   "fileCheckNoUrls": {
-    "message": "Le fichier ne contient aucune URL."
+    "message": "Le fichier ne contient aucun lien."
   },
   "fileCheckFailed": {
-    "message": "Échec de la vérification"
+    "message": "Échec de la vérification."
   },
   "safeDomain": {
-    "message": "Ce domaine est reconnu comme sûr."
+    "message": "Ce site Web est sécurisé."
   },
   "allowedProtocol": {
-    "message": "Ce lien utilise un protocole autorisé."
+    "message": "Ce lien utilise un protocole sécurisé."
   },
   "insecureLoginPage": {
-    "message": "Cette page de connexion n'utilise pas HTTPS et peut être non sécurisée. (élevé)"
+    "message": "Cette page de connexion n'utilise pas HTTPS (risque élevé). Vos données pourraient être volées."
   },
   "invalidUrl": {
-    "message": "Cette URL semble invalide ou mal formée."
+    "message": "Cette adresse Web est incorrecte ou mal saisie."
+  },
+  "loadingMessage": {
+    "message": "Un instant, le système effectue des vérifications..."
+  },
+  "cannotRetrieveSiteStatus": {
+    "message": "⚠️ Impossible de récupérer l'état du site."
+  },
+  "unknownRisk": {
+    "message": "⚠️ Risque inconnu"
+  },
+  "highRisk": {
+    "message": "🔴 Risque élevé : très dangereux !"
+  },
+  "mediumRisk": {
+    "message": "🟠 Risque moyen : soyez prudent."
+  },
+  "lowRisk": {
+    "message": "🟢 Risque faible : probablement sûr."
+  },
+  "noSuspiciousFeatures": {
+    "message": "✅ Aucun élément suspect détecté."
+  },
+  "siteStatusNotAvailable": {
+    "message": "⚠️ État du site non disponible."
   }
 }

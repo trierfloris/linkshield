@@ -234,8 +234,8 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
                         sendResponse({ status: 'skipped' });
                         return;
                     }
-                    const { isSafe, reasons, url } = request;
-                    updateIconBasedOnSafety(isSafe, reasons, url);
+                    const { isSafe, reasons, risk, url } = request; // Haal risk expliciet uit het request
+                    updateIconBasedOnSafety(isSafe, reasons, risk, url); // Geef risk mee aan de functie
                     sendResponse({ status: 'received' });
                 });
                 return true; // Nodig omdat sendResponse in een callback zit
@@ -260,7 +260,6 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
     }
     return true;
 });
-
 
 // --- Icon Animation and Tab Safety ---
 
@@ -417,8 +416,8 @@ chrome.storage.onChanged.addListener(async (changes, namespace) => {
 
 chrome.runtime.setUninstallURL("https://linkshield.nl/#uninstall");
 
-function updateIconBasedOnSafety(isSafe, reasons, url) {
-    //console.log("🛠 updateIconBasedOnSafety() aangeroepen:", { isSafe, reasons, url });
+function updateIconBasedOnSafety(isSafe, reasons, risk, url) {
+    //console.log("🛠 updateIconBasedOnSafety() aangeroepen:", { isSafe, reasons, risk, url });
 
     chrome.action.setIcon({
         path: isSafe
@@ -438,14 +437,13 @@ function updateIconBasedOnSafety(isSafe, reasons, url) {
         title: isSafe ? "This site is safe." : `Unsafe site detected:\n${reasons.join("\n")}`
     });
 
-    // **🔴 Toegevoegde foutafhandeling**
     chrome.storage.local.set({
-        currentSiteStatus: { isSafe, reasons, url }
+        currentSiteStatus: { isSafe, reasons, risk, url }
     }, () => {
         if (chrome.runtime.lastError) {
             //console.error("❌ Fout bij opslaan van currentSiteStatus:", chrome.runtime.lastError);
         } else {
-            //console.log("✅ currentSiteStatus succesvol opgeslagen!", { isSafe, reasons, url });
+            //console.log("✅ currentSiteStatus succesvol opgeslagen!", { isSafe, reasons, risk, url });
         }
     });
 
@@ -453,7 +451,6 @@ function updateIconBasedOnSafety(isSafe, reasons, url) {
         startSmoothIconAnimation(60000, 1000);
     }
 }
-
 
 
 

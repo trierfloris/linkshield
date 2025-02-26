@@ -72,7 +72,15 @@ const defaultConfig = {
   MALWARE_EXTENSIONS: /\.(exe|bat|sh)$/i
 };
 
+// Voeg een vlag toe om te controleren of de configuratie al is geladen
+let configLoaded = false;
+
 async function loadConfig() {
+  if (configLoaded) {
+    logDebug("Configuration already loaded, skipping.");
+    return; // Voorkom herhaalde laadtijden als de config al geladen is
+  }
+
   try {
     if (window.CONFIG && typeof window.CONFIG === 'object') {
       globalConfig = validateConfig({ ...defaultConfig, ...window.CONFIG });
@@ -81,15 +89,18 @@ async function loadConfig() {
       throw new Error("window.CONFIG is not available or invalid.");
     }
   } catch (error) {
-    handleError(error, "loadConfig");
-    globalConfig = validateConfig(defaultConfig); // Fallback naar standaard
+    handleError(error, "loadConfig: Kon configuratie niet laden van window.CONFIG");
+    globalConfig = validateConfig(defaultConfig);
     logDebug("Using default configuration:", globalConfig);
   }
+
+  configLoaded = true; // Markeer als geladen
 }
 
 (async () => {
   await loadConfig();
 })();
+
 
 // Cache voor JSON-bestanden met expiratie
 const jsonCache = {};
@@ -111,7 +122,7 @@ async function fetchCachedJson(fileName) {
     jsonCache[fileName] = { data: json, timestamp: now };
     return json;
   } catch (error) {
-    handleError(error, "fetchCachedJson");
+    handleError(error, `fetchCachedJson: Kon ${fileName} niet laden`);
     return null;
   }
 }
@@ -122,7 +133,7 @@ async function fetchJson(url) {
     if (!response.ok) throw new Error(`Error fetching ${url}: ${response.statusText}`);
     return await response.json();
   } catch (error) {
-    handleError(error, "fetchJson");
+    handleError(error, `fetchJson: Kon ${url} niet laden`);
     return null;
   }
 }
@@ -140,7 +151,7 @@ async function initializeSafeDomains() {
     safeDomainsInitialized = true;
     logDebug("Trusted domains loaded successfully:", safeDomains);
   } catch (error) {
-    handleError(error, "initializeSafeDomains");
+    handleError(error, `initializeSafeDomains: Kon TrustedDomains.json niet laden of verwerken`);
     safeDomains = [];
     safeDomainsInitialized = false;
   }
@@ -174,7 +185,7 @@ async function getStoredSettings() {
       integratedProtection: Boolean(settings.integratedProtection)
     };
   } catch (error) {
-    handleError(error, "getStoredSettings");
+    handleError(error, `getStoredSettings: Kon instellingen niet ophalen uit chrome.storage.sync`);
     return { backgroundSecurity: true, integratedProtection: true };
   }
 }
@@ -188,7 +199,7 @@ function checkCurrentUrl() {
     logDebug("[Content] URL changed to:", currentUrl);
     performSuspiciousChecks(currentUrl).then((result) => {
       logDebug("[Content] Check result:", result);
-      console.log("Analysis result:", result);
+      logDebug("Analysis result:", result);
       chrome.runtime.sendMessage({
         type: "checkResult",
         isSafe: result.isSafe,
@@ -240,7 +251,7 @@ async function applyDynamicChecks(dynamicChecks, url, reasons, totalRiskRef) {
         logDebug(`After adding: Current risk=${totalRiskRef.value}`);
       }
     } catch (error) {
-      handleError(error, `applyDynamicChecks (${message})`);
+      handleError(error, `applyDynamicChecks: Fout bij uitvoeren van ${message} op URL ${url}`);
     }
   }
   logDebug("Finished applyDynamicChecks: Current risk:", totalRiskRef.value);
@@ -260,18 +271,25 @@ const trailingSlashRegex = /\/$/;
 
 function normalizeDomain(url) {
   try {
-    if (!/^https?:\/\//i.test(url)) {
-      url = `http://${sanitizeInput(url)}`;
+    // Controleer of de URL al een protocol heeft (bijv. http://, mailto:)
+    if (/^[a-z]+:\/\//i.test(url)) {
+      const parsedUrl = new URL(url);
+      // Alleen http en https hebben een relevant domein
+      if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
+        return null; // Bijv. mailto: heeft geen domein
+      }
+      let hostname = parsedUrl.hostname.toLowerCase();
+      hostname = hostname.replace(/^www\./, "").replace(/\/$/, "");
+      return hostname;
+    } else {
+      // Relatieve URL: los op ten opzichte van de huidige pagina
+      const absoluteUrl = new URL(url, window.location.href);
+      let hostname = absoluteUrl.hostname.toLowerCase();
+      hostname = hostname.replace(/^www\./, "").replace(/\/$/, "");
+      return hostname;
     }
-    const parsedUrl = new URL(url);
-    let hostname = sanitizeInput(parsedUrl.hostname.toLowerCase());
-    hostname = hostname.replace(domainRegex, "").replace(trailingSlashRegex, "");
-    if (globalConfig?.SUSPICIOUS_TLDS?.test(hostname)) {
-      logDebug(`Suspicious TLD detected: ${hostname}`);
-    }
-    return hostname;
   } catch (error) {
-    handleError(error, "normalizeDomain");
+    handleError(error, `normalizeDomain: Fout bij normaliseren van URL ${url}`);
     return null;
   }
 }
@@ -308,18 +326,20 @@ function debounce(func, delay = 250) {
 function setupGoogleSearchProtection() {
   logDebug("Google Search Protection started...");
   const searchContainer = document.querySelector('#search') || document.body;
-  const observer = new MutationObserver(debounce((mutations) => {
+  const observer = new MutationObserver(async (mutations) => {
+    // Debounced call naar checkForSuspiciousExternalScripts
+    await checkForSuspiciousExternalScripts();
+
     mutations.forEach(mutation => {
       mutation.addedNodes.forEach(node => {
-        if (node.nodeType === Node.ELEMENT_NODE) {
-          const newLinks = node.querySelectorAll('a');
-          newLinks.forEach(link => {
-            if (isValidURL(link.href)) classifyAndCheckLink(link);
-          });
-        }
+        if (node.nodeType !== Node.ELEMENT_NODE) return;
+        const newLinks = node.querySelectorAll('a');
+        newLinks.forEach(link => {
+          if (isValidURL(link.href)) classifyAndCheckLink(link);
+        });
       });
     });
-  }, 150));
+  });
   observer.observe(searchContainer, { childList: true, subtree: true });
   debounceCheckGoogleSearchResults();
   injectWarningIconStyles();
@@ -392,13 +412,30 @@ async function checkForPhishingAds(link) {
       link.title = `Warning: This ad may be unsafe. \n${specificReasons.join("\n")}`;
     }
   } catch (error) {
-    handleError(error, "checkForPhishingAds");
+    handleError(error, `checkForPhishingAds: Fout bij controleren van link ${link.href}`);
     await warnLink(link, ["An error occurred while checking this link."]); // Gebruik await
   }
 }
 
 
 function classifyAndCheckLink(link) {
+  if (!link || !link.href) {
+    logDebug(`Skipping classification: Invalid or missing link: ${link || 'undefined'}`);
+    return; // Sla volledig ongeldige links over
+  }
+
+  // Controleer expliciet of het een SVG-element is en sla het over
+  if (link.ownerSVGElement) {
+    logDebug(`Skipping SVG link: ${link.href || 'undefined'}, Type: ${typeof link.href}`);
+    return; // Sla alle SVG-links over, ongeacht de href
+  }
+
+  // Controleer of href een geldige URL is
+  if (!isValidURL(link.href)) {
+    logDebug(`Skipping classification: Invalid URL in link: ${link.href || 'undefined'}`);
+    return;
+  }
+
   if (link.closest('div[data-text-ad], .ads-visurl')) {
     checkForPhishingAds(link);
   } else {
@@ -508,29 +545,48 @@ function sanitizeInput(input) {
 
 
 async function analyzeDomainAndUrl(link) {
-  const url = new URL(link.href);
-  const hostname = url.hostname;
-  const isInternalIp = (hostname) => {
-    return (
-      /^127\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(hostname) ||
-      /^192\.168\.\d{1,3}\.\d{1,3}$/.test(hostname) ||
-      /^10\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(hostname) ||
-      /^172\.(1[6-9]|2[0-9]|3[0-1])\.\d{1,3}\.\d{1,3}$/.test(hostname)
-    );
-  };
-  if (isInternalIp(hostname) || hostname.endsWith(".local") || hostname === "localhost") {
-    logDebug(`Internal server detected: ${hostname}. Skipping checks.`);
-    return;
+  // Log de input voor debugging
+  logDebug(`Analyzing link with href: ${link.href}, Type: ${typeof link.href}, Instance: ${link.href instanceof SVGAnimatedString ? 'SVGAnimatedString' : 'Other'}`);
+  
+  if (!link || !link.href || !isValidURL(link.href)) {
+    logDebug(`Skipping analysis: Invalid or missing URL in link: ${link.href || 'undefined'}`);
+    return; // Skip processing if the URL is invalid
   }
-  if (globalConfig.SUSPICIOUS_TLDS.test(hostname) || !isHttps(link.href)) {
-    const result = await performSuspiciousChecks(link.href);
-    if (!result.isSafe || result.reasons.length > 0) {
-      const primaryReason = result.reasons.length > 0 ? result.reasons[0] : "unknownWarning";
-      logDebug(`[analyzeDomainAndUrl] Using messageKey: ${primaryReason}`);
-      await warnLink(link, result.reasons, primaryReason); // Gebruik await
+
+  try {
+    const url = new URL(link.href);
+    const hostname = url.hostname;
+    const isInternalIp = (hostname) => {
+      return (
+        /^127\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(hostname) ||
+        /^192\.168\.\d{1,3}\.\d{1,3}$/.test(hostname) ||
+        /^10\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(hostname) ||
+        /^172\.(1[6-9]|2[0-9]|3[0-1])\.\d{1,3}\.\d{1,3}$/.test(hostname)
+      );
+    };
+    if (isInternalIp(hostname) || hostname.endsWith(".local") || hostname === "localhost") {
+      logDebug(`Internal server detected: ${hostname}. Skipping checks.`);
+      return;
     }
+    if (globalConfig.SUSPICIOUS_TLDS.test(hostname) || !isHttps(link.href)) {
+      const result = await performSuspiciousChecks(link.href);
+      if (!result.isSafe || result.reasons.length > 0) {
+        const primaryReason = result.reasons.length > 0 ? result.reasons[0] : "unknownWarning";
+        logDebug(`[analyzeDomainAndUrl] Using messageKey: ${primaryReason}`);
+        await warnLink(link, result.reasons, primaryReason);
+      }
+    }
+  } catch (error) {
+    // Controleer expliciet of de fout een TypeError is en handel het af
+    if (error instanceof TypeError && error.message.includes('Failed to construct \'URL\'')) {
+      handleError(error, `analyzeDomainAndUrl: Ongeldige URL (mogelijk SVGAniatedString) in link ${link.href || 'undefined'}`);
+    } else {
+      handleError(error, `analyzeDomainAndUrl: Fout bij analyseren van URL ${link.href || 'undefined'}`);
+    }
+    return; // Skip verdere verwerking bij een ongeldige URL
   }
 }
+
 
 function ensureProtocol(url) {
   if (url.startsWith('tel:')) {
@@ -546,7 +602,7 @@ function getAbsoluteUrl(relativeUrl) {
   try {
     return new URL(relativeUrl, window.location.href).href;
   } catch (error) {
-    handleError(error, "getAbsoluteUrl");
+    handleError(error, `getAbsoluteUrl: Fout bij omzetten van relatieve URL ${relativeUrl}`);
     return relativeUrl;
   }
 }
@@ -611,7 +667,7 @@ async function calculateRiskScore(url) {
                 }
             } catch (error) {
                 addRisk(5, "Error resolving shortened URL", "low");
-                handleError(error, "calculateRiskScore (shortened URL)");
+                handleError(error, `calculateRiskScore: Kon verkorte URL ${url} niet oplossen`);
             }
         }
 
@@ -646,11 +702,10 @@ async function calculateRiskScore(url) {
         return { score, reasons };
 
     } catch (error) {
-        handleError(error, "calculateRiskScore");
+        handleError(error, `calculateRiskScore: Fout bij risicoberekening voor URL ${url}`);
         return { score: -1, reasons: ["Error calculating risk score."] };
     }
 }
-
 function isSearchResultPage() {
   const url = new URL(window.location.href);
   return url.hostname.includes("google.") && (url.pathname === "/search" || url.pathname === "/imgres");
@@ -658,9 +713,17 @@ function isSearchResultPage() {
 
 
 function isLoginPage() {
-  const result = document.querySelector('input[type="password"]') !== null;
-  logDebug("Login Page Detected:", result);
-  return result;
+  try {
+    const hasPasswordField = document.querySelector('input[type="password"]') !== null;
+    const loginPatterns = /(login|signin|auth|authenticate)/i;
+    const hasLoginText = document.body.textContent.match(loginPatterns) !== null;
+    const result = hasPasswordField || hasLoginText;
+    logDebug("Login Page Detected: Password field present = ", hasPasswordField, ", Login text present = ", hasLoginText, result);
+    return result;
+  } catch (error) {
+    handleError(error, `isLoginPage: Fout bij detecteren van loginpagina op pagina ${window.location.href}`);
+    return false;
+  }
 }
 
 function isHttps(url) {
@@ -685,7 +748,7 @@ function isHttps(url) {
     logDebug(`Unsupported protocol detected: ${protocol}`);
     return false;
   } catch (e) {
-    handleError(e, "isHttps");
+    handleError(e, `isHttps: Fout bij controleren van protocol voor URL ${url}`);
     return false;
   }
 }
@@ -728,7 +791,7 @@ async function hasSuspiciousPattern(url) {
     }
     return false;
   } catch (error) {
-    handleError(error, "hasSuspiciousPattern");
+    handleError(error, `hasSuspiciousPattern: Fout bij controleren van patronen in URL ${url}`);
     return false;
   }
 }
@@ -761,7 +824,7 @@ async function isDownloadPage() {
         }
       }
     } catch (error) {
-      handleError(error, "isDownloadPage");
+      handleError(error, `isDownloadPage: Fout bij controleren van downloadlink ${link.href}`);
     }
   }
   return false;
@@ -796,7 +859,7 @@ function isUrlTooLong(url) {
       queryLength > MAX_QUERY_LENGTH &&
       paramCount > MAX_PARAMETERS;
   } catch (error) {
-    handleError(error, "isUrlTooLong");
+    handleError(error, `isUrlTooLong: Fout bij controleren van URL-lengte voor ${url}`);
     return false;
   }
 }
@@ -868,111 +931,118 @@ function hasSuspiciousUrlPattern(url) {
 }
 
 async function hasSuspiciousIframes() {
-  let trustedIframeDomains = [];
-  try {
-    trustedIframeDomains = await fetchCachedJson('trustedIframes.json');
-  } catch (error) {
-    handleError(error, "hasSuspiciousIframes");
-    trustedIframeDomains = [];
-  }
-  const iframes = document.querySelectorAll("iframe");
-  let suspiciousCount = 0;
-  for (const iframe of iframes) {
-    const src = iframe.getAttribute("src");
-    if (!src) continue;
-    let riskScore = 0;
-    const reasons = [];
+  const debouncedCheck = debounce(async () => {
+    let trustedIframeDomains = [];
     try {
-      const iframeURL = new URL(src, window.location.origin);
-      const iframeDomain = iframeURL.hostname.toLowerCase();
-      if (trustedIframeDomains.includes(iframeDomain)) continue;
-      
-      if (!iframeURL.protocol.startsWith("https")) {
-        riskScore += 2;
-        reasons.push(chrome.i18n.getMessage("noHttps"));
-      }
-      
-      if (globalConfig.SUSPICIOUS_TLDS.test(iframeDomain)) {
-        riskScore += 3;
-        // Als je dynamische data wilt weergeven, kun je deze achter de vertaling plakken
-        reasons.push(chrome.i18n.getMessage("suspiciousTLD") + " " + iframeDomain);
-      }
-      
-      if (globalConfig.SUSPICIOUS_IFRAME_KEYWORDS && globalConfig.SUSPICIOUS_IFRAME_KEYWORDS.test(src)) {
-        riskScore += 4;
-        reasons.push(chrome.i18n.getMessage("suspiciousKeywords"));
-      }
-      
-      const isHiddenOrSmall =
-        iframe.offsetParent === null ||
-        iframe.style.display === "none" ||
-        iframe.style.visibility === "hidden" ||
-        (parseInt(iframe.width, 10) < 10 && parseInt(iframe.height, 10) < 10);
-      if (isHiddenOrSmall) {
-        riskScore += 2;
-        // Zorg dat je een vertaalde key "iframeHidden" toevoegt, anders gebruikt de fallback
-        reasons.push(chrome.i18n.getMessage("iframeHidden") || "Iframe is hidden or too small.");
-      }
-      
-      if (riskScore >= 7) {
-        suspiciousCount++;
-        logDebug(`Suspicious iframe detected: ${src}`);
-        console.table(reasons);
-      }
+      trustedIframeDomains = await fetchCachedJson('trustedIframes.json');
     } catch (error) {
-      handleError(error, "hasSuspiciousIframes");
+      handleError(error, `hasSuspiciousIframes: Kon trustedIframes.json niet laden`);
+      trustedIframeDomains = [];
     }
-  }
-  return suspiciousCount > 0;
-}
+    const iframes = document.querySelectorAll("iframe");
+    let suspiciousCount = 0;
+    for (const iframe of iframes) {
+      const src = iframe.getAttribute("src");
+      if (!src) continue;
+      let riskScore = 0;
+      const reasons = [];
+      try {
+        const iframeURL = new URL(src, window.location.origin);
+        const iframeDomain = iframeURL.hostname.toLowerCase();
+        if (trustedIframeDomains.includes(iframeDomain)) continue;
+        
+        if (!iframeURL.protocol.startsWith("https")) {
+          riskScore += 2;
+          reasons.push(chrome.i18n.getMessage("noHttps"));
+        }
+        
+        if (globalConfig.SUSPICIOUS_TLDS.test(iframeDomain)) {
+          riskScore += 3;
+          reasons.push(chrome.i18n.getMessage("suspiciousTLD") + " " + iframeDomain);
+        }
+        
+        if (globalConfig.SUSPICIOUS_IFRAME_KEYWORDS && globalConfig.SUSPICIOUS_IFRAME_KEYWORDS.test(src)) {
+          riskScore += 4;
+          reasons.push(chrome.i18n.getMessage("suspiciousKeywords"));
+        }
+        
+        const isHiddenOrSmall =
+          iframe.offsetParent === null ||
+          iframe.style.display === "none" ||
+          iframe.style.visibility === "hidden" ||
+          (parseInt(iframe.width, 10) < 10 && parseInt(iframe.height, 10) < 10);
+        if (isHiddenOrSmall) {
+          riskScore += 2;
+          reasons.push(chrome.i18n.getMessage("iframeHidden") || "Iframe is hidden or too small.");
+        }
+        
+        if (riskScore >= 7) {
+          suspiciousCount++;
+          logDebug(`Suspicious iframe detected: ${src}`);
+          console.table(reasons);
+        }
+      } catch (error) {
+        handleError(error, `hasSuspiciousIframes: Fout bij controleren van iframe met src ${src}`);
+      }
+    }
+    return suspiciousCount > 0;
+  }, 500); // Debounce met 500ms (aanpasbaar)
 
+  return await debouncedCheck();
+}
 async function checkForSuspiciousExternalScripts() {
-  let trustedScripts = [];
-  let suspiciousScripts = [];
-  try {
-    trustedScripts = await fetchCachedJson('trustedScripts.json') || [];
-  } catch (error) {
-    handleError(error, "checkForSuspiciousExternalScripts");
-    trustedScripts = []; // Fallback naar lege array
-  }
-  const suspiciousPatterns = globalConfig.SUSPICIOUS_SCRIPT_PATTERNS || [];
-  const scripts = document.querySelectorAll("script[src]");
-  for (const script of scripts) {
-    const src = script.getAttribute("src");
-    if (!src) continue;
-    let riskScore = 0;
-    const reasons = [];
+  // Wrap de hele functie in een debounced versie
+  const debouncedCheck = debounce(async () => {
+    let trustedScripts = [];
+    let suspiciousScripts = [];
     try {
-      const scriptURL = new URL(src, window.location.origin);
-      const scriptDomain = scriptURL.hostname.toLowerCase();
-      // Controleer of trustedScripts een array is voordat .includes() wordt gebruikt
-      if (Array.isArray(trustedScripts) && trustedScripts.includes(scriptDomain)) {
-        continue;
-      }
-      if (!scriptURL.protocol.startsWith("https")) {
-        riskScore += 2;
-        reasons.push(chrome.i18n.getMessage("noHttps"));
-      }
-      if (suspiciousPatterns.some(pattern => pattern.test(src))) {
-        riskScore += 4;
-        reasons.push(chrome.i18n.getMessage("externalScripts"));
-      }
-      if (riskScore >= 7) {
-        suspiciousScripts.push({
-          src,
-          riskScore,
-          reasons
-        });
-      }
+      trustedScripts = await fetchCachedJson('trustedScripts.json') || [];
     } catch (error) {
-      handleError(error, "checkForSuspiciousExternalScripts");
+      handleError(error, `checkForSuspiciousExternalScripts: Kon trustedScripts.json niet laden`);
+      trustedScripts = []; // Fallback naar lege array
     }
-  }
-  suspiciousScripts.forEach(({ src, riskScore, reasons }) => {
-    logDebug(`Suspicious script detected: ${src}, Risk Score: ${riskScore}`);
-    console.table(reasons);
-  });
-  return suspiciousScripts.length > 0;
+    const suspiciousPatterns = globalConfig.SUSPICIOUS_SCRIPT_PATTERNS || [];
+    const scripts = document.querySelectorAll("script[src]");
+    for (const script of scripts) {
+      const src = script.getAttribute("src");
+      if (!src) continue;
+      let riskScore = 0;
+      const reasons = [];
+      try {
+        const scriptURL = new URL(src, window.location.origin);
+        const scriptDomain = scriptURL.hostname.toLowerCase();
+        // Controleer of trustedScripts een array is voordat .includes() wordt gebruikt
+        if (Array.isArray(trustedScripts) && trustedScripts.includes(scriptDomain)) {
+          continue;
+        }
+        if (!scriptURL.protocol.startsWith("https")) {
+          riskScore += 2;
+          reasons.push(chrome.i18n.getMessage("noHttps"));
+        }
+        if (suspiciousPatterns.some(pattern => pattern.test(src))) {
+          riskScore += 4;
+          reasons.push(chrome.i18n.getMessage("externalScripts"));
+        }
+        if (riskScore >= 7) {
+          suspiciousScripts.push({
+            src,
+            riskScore,
+            reasons
+          });
+        }
+      } catch (error) {
+        handleError(error, `checkForSuspiciousExternalScripts: Fout bij controleren van script met src ${src}`);
+      }
+    }
+    suspiciousScripts.forEach(({ src, riskScore, reasons }) => {
+      logDebug(`Suspicious script detected: ${src}, Risk Score: ${riskScore}`);
+      console.table(reasons);
+    });
+    return suspiciousScripts.length > 0;
+  }, 500); // Debounce met 500ms (aanpasbaar)
+
+  // Roep de debounced functie aan en wacht op het resultaat
+  return await debouncedCheck();
 }
 
 async function analyzeScriptContent(scriptUrl) {
@@ -1002,7 +1072,7 @@ async function analyzeScriptContent(scriptUrl) {
     logDebug(`Script is safe: ${scriptUrl.href}`);
     return false;
   } catch (error) {
-    handleError(error, "analyzeScriptContent");
+    handleError(error, `analyzeScriptContent: Fout bij analyseren van script ${scriptUrl.href}`);
     if (error.message.includes("Failed to fetch")) {
       return false;
     }
@@ -1021,7 +1091,7 @@ async function checkScriptMinification(scriptUrl) {
     }
     return false;
   } catch (error) {
-    handleError(error, "checkScriptMinification");
+   handleError(error, `checkScriptMinification: Fout bij controleren van scriptminificatie voor ${scriptUrl.href}`);
     return false;
   }
 }
@@ -1044,29 +1114,48 @@ async function checkScriptObfuscation(scriptUrl) {
 }
 
 function isValidURL(string) {
-  if (!string || typeof string !== 'string') {
-    return false;
-  }
   try {
-    const url = new URL(string, window.location.href);
+    // Controleer en normaliseer `SVGAniatedString` expliciet
+    let normalizedString = string;
+    if (string && typeof string === 'object' && string instanceof SVGAnimatedString) {
+      // Probeer `baseVal` of `animVal` te krijgen, of gebruik een lege string als fallback
+      normalizedString = string.baseVal || string.animVal || '';
+      logDebug(`Normalized SVGAniatedString to: ${normalizedString}`);
+    } else if (typeof string !== 'string') {
+      // Als het geen string is, probeer het te converteren naar een string
+      normalizedString = String(string) || '';
+      logDebug(`Converted non-string input to: ${normalizedString}, Original type: ${typeof string}`);
+    }
+    // Zorg ervoor dat we een niet-lege string hebben
+    if (typeof normalizedString !== 'string' || normalizedString.trim() === '') {
+      return false;
+    }
+
+    const url = new URL(normalizedString, window.location.href);
     const protocol = url.protocol;
-    if (!globalConfig.ALLOWED_PROTOCOLS.includes(protocol)) {
+
+    const ALLOWED_PROTOCOLS = ['http:', 'https:', 'mailto:', 'tel:'];
+    
+    if (!ALLOWED_PROTOCOLS.includes(protocol)) {
       return false;
     }
-    if ((protocol === 'http:' || protocol === 'https:') && !url.hostname) {
+    
+    if (['http:', 'https:'].includes(protocol) && !url.hostname) {
       return false;
     }
+    
     return true;
   } catch (error) {
+    handleError(error, `isValidURL: Fout bij valideren van URL ${normalizedString || string}`);
     return false;
   }
 }
-
 function ensureValidURL(string) {
   if (isValidURL(string)) {
     return string;
   }
-  return 'https://linkshield.nl';
+  handleError(new Error('Ongeldige URL gedetecteerd'), `ensureValidURL: URL ${string} is ongeldig, fallback gebruikt`);
+  return 'https://linkshield.nl'; // Of retourneer null en laat de beller beslissen
 }
 
 // Standaard homoglyph-mappings als fallback
@@ -1149,7 +1238,7 @@ function isHomoglyphAttack(domain) {
 
     return false;
   } catch (error) {
-    handleError(error, 'isHomoglyphAttack');
+    handleError(error, `isHomoglyphAttack: Fout bij controleren van homoglyph-aanval op domein ${domain}`);
     return false;
   }
 }
@@ -1188,30 +1277,29 @@ function getCheckString(domain, fullUrl) {
 }
 
 async function performSuspiciousChecks(url) {
-    const isEnabled = await isProtectionEnabled();
-    if (!isEnabled) {
-        logDebug("Protection is disabled. Skipping checks for URL:", url);
-        return { isSafe: true, reasons: [], risk: 0 };
-    }
-    
-    const reasons = new Set();
-    const totalRiskRef = { value: 0 };
+  const isEnabled = await isProtectionEnabled();
+  if (!isEnabled) {
+    logDebug("Protection is disabled. Skipping checks for URL:", url);
+    return { isSafe: true, reasons: [], risk: 0 };
+  }
+  
+  const reasons = new Set();
+  const totalRiskRef = { value: 0 };
 
-    if (!globalConfig) {
-        logError("❌ globalConfig is niet geladen! Kan geen checks uitvoeren.");
-        return { isSafe: false, reasons: ["Configuratiefout"], risk: 10 };
-    }
+  if (!globalConfig) {
+    handleError(new Error('Configuratie niet geladen'), `performSuspiciousChecks: globalConfig niet beschikbaar voor URL ${url}`);
+    return { isSafe: false, reasons: ["Configuratiefout"], risk: 10 };
+  }
 
-    // ✅ Hier zorgen we ervoor dat `await` correct wordt gebruikt binnen een async functie
-    await checkStaticConditions(url, reasons, totalRiskRef);
-    await checkDynamicConditions(url, reasons, totalRiskRef);
+  // ✅ Hier zorgen we ervoor dat `await` correct wordt gebruikt binnen een async functie
+  await checkStaticConditions(url, reasons, totalRiskRef);
+  await checkDynamicConditions(url, reasons, totalRiskRef);
 
-    logDebug("🔍 Eindscore voor URL:", url, "| Risicoscore:", totalRiskRef.value);
+  logDebug("🔍 Eindscore voor URL:", url, "| Risicoscore:", totalRiskRef.value);
 
-    const isSafe = totalRiskRef.value < 10;
-    return createAnalysisResult(isSafe, Array.from(reasons), totalRiskRef.value);
+  const isSafe = totalRiskRef.value < 5;
+  return createAnalysisResult(isSafe, Array.from(reasons), totalRiskRef.value);
 }
-
 
 
 (async () => {
@@ -1226,7 +1314,7 @@ async function performSuspiciousChecks(url) {
 
   const isSafe = totalRiskRef.value < (globalConfig.RISK_THRESHOLD || 5);
   const result = createAnalysisResult(isSafe, Array.from(reasons), totalRiskRef.value);
-  console.log(result); // Example usage
+  logDebug(result); // Example usage
 })();
 
 
@@ -1238,7 +1326,7 @@ function checkStaticConditions(url, reasons, totalRiskRef) {
     logDebug(`Safe domain detected: ${domain}`);
     reasons.add("safeDomain");
     totalRiskRef.value = 0.1;
-    return;
+    
   }
   
   const allowedProtocols = ['ftp:', 'data:', 'javascript:'];
@@ -1246,7 +1334,7 @@ function checkStaticConditions(url, reasons, totalRiskRef) {
     logDebug(`Allowed protocol detected: ${urlObj.protocol}`);
     reasons.add("allowedProtocol");
     totalRiskRef.value = 0.1;
-    return;
+    //return;
   }
   
   if (
@@ -1313,6 +1401,7 @@ async function checkDynamicConditions(url, reasons, totalRiskRef) {
     }
   }
 }
+
 function addReason(map, reason, severity) {
   if (!map.has(reason)) {
     map.set(reason, severity);
@@ -1354,7 +1443,7 @@ async function isLoginPageFromUrl(url) {
     logDebug(`No login page detected: ${url}`);
     return false;
   } catch (error) {
-    handleError(error, "isLoginPageFromUrl");
+    handleError(error, `isLoginPageFromUrl: Fout bij controleren van loginpagina voor URL ${url}`);
     return false;
   }
 }
@@ -1382,7 +1471,7 @@ function constructResult(isSafe, reasons, priorRisk) {
       risk: priorRisk.toFixed(2),
     };
   } catch (error) {
-    handleError(error, "constructResult");
+    handleError(error, `constructResult: Fout bij construeren van resultaat met risico ${priorRisk}`);
     return {
       isSafe: false,
       reasons: ["Unexpected error in result construction."],
@@ -1446,13 +1535,16 @@ function hasSuspiciousQueryParameters(url) {
     const urlObj = new URL(url);
     for (const [key, value] of urlObj.searchParams) {
       if (suspiciousParams.test(key) || suspiciousParams.test(value)) {
-        return true;
+        if (!isSafeParameter(key, value)) {
+          return true;
+        }
       }
     }
+    return false;
   } catch (error) {
-    handleError(error, "hasSuspiciousQueryParameters");
+    handleError(error, `hasSuspiciousQueryParameters: Fout bij controleren van queryparameters voor URL ${url}`);
+    return false; // Terugvallen op default false bij fout
   }
-  return false;
 }
 
 function hasMixedContent(url) {
@@ -1460,7 +1552,7 @@ function hasMixedContent(url) {
     const urlObj = new URL(url);
     return urlObj.protocol === "https:" && urlObj.href.includes("http://");
   } catch (error) {
-    handleError(error, "hasMixedContent");
+    handleError(error, `hasMixedContent: Fout bij controleren van gemengde inhoud voor URL ${url}`);
   }
   return false;
 }
@@ -1541,28 +1633,58 @@ function hasMultipleSubdomains(url) {
 }
 
 
+// Definieer de cache buiten de functie om persistentie te garanderen
+const shortenedUrlCache = new Map();
+const MAX_CACHE_SIZE = 1000; // Maximale grootte van de cache
+
 async function isShortenedUrl(url) {
   try {
+    // Controleer of het resultaat al in de cache staat
+    if (shortenedUrlCache.has(url)) {
+      logDebug(`Cache hit voor URL: ${url}`);
+      return shortenedUrlCache.get(url);
+    }
+
+    // Controleer configuratie
     if (!globalConfig || !Array.isArray(globalConfig.SHORTENED_URL_DOMAINS)) {
       logDebug("SHORTENED_URL_DOMAINS not loaded correctly!");
       return false;
     }
+
     const shortenedDomains = new Set(globalConfig.SHORTENED_URL_DOMAINS.map(d => d.toLowerCase().trim()));
     const domain = new URL(url).hostname.toLowerCase().replace(/^www\./, "");
+
+    // Als het domein niet in de verkorte domeinenlijst staat, geen verdere controle nodig
     if (!shortenedDomains.has(domain)) {
       logDebug(`No shortener detected for: ${url}`);
+      shortenedUrlCache.set(url, false); // Cache het resultaat
       return false;
     }
-    console.debug(`Detecting shortened URL: ${url}`);
+
+    logDebug(`Detecting shortened URL: ${url}`);
     const finalUrl = await resolveShortenedUrlWithRetry(url);
+
+    // Bepaal het resultaat
+    let result;
     if (finalUrl === url) {
       logDebug(`Could not resolve shortened URL, assuming it is still shortened: ${url}`);
-      return true;
+      result = true;
+    } else {
+      logDebug(`Shortened URL resolved: ${url} → ${finalUrl}`);
+      result = true;
     }
-    logDebug(`Shortened URL resolved: ${url} → ${finalUrl}`);
-    return true;
+
+    // Voeg resultaat toe aan de cache
+    if (shortenedUrlCache.size >= MAX_CACHE_SIZE) {
+      shortenedUrlCache.clear(); // Reset de cache als de limiet is bereikt
+      logDebug("Cache limiet bereikt, cache gereset.");
+    }
+    shortenedUrlCache.set(url, result);
+    return result;
+
   } catch (error) {
-    handleError(error, "isShortenedUrl");
+    handleError(error, `isShortenedUrl: Fout bij controleren van verkorte URL ${url}`);
+    shortenedUrlCache.set(url, false); // Cache ook bij fouten om herhaalde pogingen te vermijden
     return false;
   }
 }
@@ -1590,7 +1712,7 @@ async function resolveShortenedUrlWithRetry(url, retries = 3, delay = 1000) {
       } else if (error.message.includes('CORS')) {
         logError(`CORS issue for ${url}: ${error.message}`);
       } else {
-        handleError(error, `resolveShortenedUrlWithRetry (Attempt ${attempt})`);
+        handleError(error, `resolveShortenedUrlWithRetry: Fout bij poging ${attempt} voor URL ${url}`);
       }
       if (attempt === retries) return url;
       await new Promise(resolve => setTimeout(resolve, delay));
@@ -1611,7 +1733,7 @@ function hasEncodedCharacters(url) {
     const minEncodedCount = 50;
     return totalEncodedCount > minEncodedCount && (path.length > 150 || query.length > 400);
   } catch (error) {
-    handleError(error, "hasEncodedCharacters");
+    handleError(error, `hasEncodedCharacters: Fout bij controleren van gecodeerde tekens voor URL ${url}`);
     return false;
   }
 }
@@ -1644,7 +1766,7 @@ function hasBase64OrHex(url) {
     }
     return false;
   } catch (error) {
-    handleError(error, "hasBase64OrHex");
+    handleError(error, `hasBase64OrHex: Fout bij controleren van Base64/Hex voor URL ${url}`);
     return false;
   }
 }
@@ -1657,7 +1779,7 @@ function detectLoginPage(url) {
     logDebug(`Login detection: URL indication: ${urlIndicatesLogin}, Password field: ${hasPasswordField}`);
     return urlIndicatesLogin || hasPasswordField;
   } catch (error) {
-    logError("Error in detectLoginPage:", error);
+    handleError(error, `detectLoginPage: Fout bij detecteren van loginpagina voor URL ${url}`);
     return false;
   }
 }
@@ -1679,7 +1801,7 @@ function isFreeHostingDomain(url) {
     }
     return false;
   } catch (error) {
-    handleError(error, "isFreeHostingDomain");
+    handleError(error, `isFreeHostingDomain: Fout bij controleren van gratis hostingdomein voor URL ${url}`);
     return true;
   }
 }
@@ -1751,7 +1873,7 @@ function isCryptoPhishingUrl(url) {
     logDebug(`Safe: No suspicious characteristics found (${hostname})`);
     return false;
   } catch (error) {
-    handleError(error, "isCryptoPhishingUrl");
+    handleError(error, `isCryptoPhishingUrl: Fout bij controleren van crypto-phishing voor URL ${url}`);
     return false;
   }
 }
@@ -1792,7 +1914,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
         logDebug(`✅ Check complete: isSafe=${isSafe}, risk=${result.risk}, reasons=${result.reasons.join(", ")}`);
       })
-      .catch(error => handleError(error, "Initial URL Check"));
+      .catch(error => handleError(error, `Initial URL Check: Fout bij controleren van URL ${currentUrl}`));
 
     let attempts = 0;
     const maxAttempts = 10;
@@ -1820,7 +1942,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     }, checkInterval);
   } catch (error) {
-    handleError(error, "DOMContentLoaded");
+    handleError(error, `DOMContentLoaded: Fout bij initialiseren van content script voor pagina ${window.location.href}`);
   }
 });
 
@@ -1830,7 +1952,6 @@ document.addEventListener('DOMContentLoaded', async () => {
  * Aangepaste versie van checkLinks() die overslaat als we op een Google zoekpagina zitten.
  */
 function checkLinks() {
-  // Als het een Google zoekpagina is, overslaan om te voorkomen dat google.com zelf gecontroleerd wordt.
   if (isSearchResultPage()) {
     logDebug("Google search page detected, skipping global link check.");
     return;
@@ -1842,6 +1963,7 @@ function checkLinks() {
     const linkDomain = new URL(link.href).hostname;
     return linkDomain.endsWith(currentDomain) && !scannedLinks.has(link.href);
   });
+  
   links.forEach(link => {
     const href = link.href;
     scannedLinks.add(href);
@@ -1863,17 +1985,18 @@ function checkLinks() {
         risk: 0,
         reasons: [chrome.i18n.getMessage("noHttps")]
       });
-      return;
     }
-    performSuspiciousChecks(href).then(({ isSafe, reasons, risk }) => {
-      chrome.runtime.sendMessage({
-        type: 'checkResult',
-        url: href,
-        isSafe,
-        risk,
-        reasons
-      });
-    });
+    performSuspiciousChecks(href)
+      .then(({ isSafe, reasons, risk }) => {
+        chrome.runtime.sendMessage({
+          type: 'checkResult',
+          url: href,
+          isSafe,
+          risk,
+          reasons
+        });
+      })
+      .catch(error => handleError(error, `checkLinks: Fout bij controleren van URL ${href}`));
   });
 }
 
@@ -1886,7 +2009,7 @@ getStoredSettings().then(settings => {
 
 function injectWarningStyles() {
   if (document.head.querySelector("#linkshield-warning-styles")) {
-    console.debug("Warning styles already present, skipping.");
+    logDebug("Warning styles already present, skipping.");
     return;
   }
   const style = document.createElement("style");
@@ -1928,7 +2051,7 @@ function determineRiskSeverity(score) {
   try {
     // Extra initialisatiecode (indien nodig)
   } catch (error) {
-    handleError(error, "init");
+    handleError(error, `init: Fout bij algemene initialisatie`);
   }
 })();
 
@@ -2028,7 +2151,7 @@ async function unifiedCheckLinkSafety(link, eventType, event) {
       }
     }
   } catch (error) {
-    handleError(error, "unifiedCheckLinkSafety");
+    handleError(error, `unifiedCheckLinkSafety: Fout bij controleren van link ${href} op event ${eventType}`);
   }
 }
 
@@ -2039,7 +2162,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         sendResponse({ isSafe: result.isSafe, reasons: result.reasons, risk: result.risk });
       })
       .catch((error) => {
-        handleError(error, "chrome.runtime.onMessage");
+        handleError(error, `chrome.runtime.onMessage: Fout bij testen van URL ${message.url}`);
         sendResponse({ isSafe: false, reasons: ["An error occurred."], risk: 0 });
       });
     return true;

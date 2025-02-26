@@ -140,27 +140,29 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     async function displayLastRuleUpdate() {
-        try {
-            const data = await chrome.storage.local.get('lastRuleUpdate');
-            if (data.lastRuleUpdate && lastRuleUpdateDisplay) {
-                lastRuleUpdateDisplay.textContent = chrome.i18n.getMessage("lastRuleUpdate") +
-                    new Intl.DateTimeFormat('nl-NL', {
-                        day: '2-digit',
-                        month: 'long',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        second: '2-digit',
-                        hour12: false,
-                        timeZone: 'Europe/Amsterdam'
-                    }).format(new Date(data.lastRuleUpdate));
-            } else if (lastRuleUpdateDisplay) {
-                lastRuleUpdateDisplay.textContent = chrome.i18n.getMessage("lastRuleUpdateNone");
-            }
-        } catch (error) {
-            handleError(error, "displayLastRuleUpdate");
+    try {
+        const data = await chrome.storage.local.get('lastRuleUpdate');
+        if (data.lastRuleUpdate && lastRuleUpdateDisplay) {
+            lastRuleUpdateDisplay.innerHTML = chrome.i18n.getMessage("lastRuleUpdate") +
+                "<br>" +
+                new Intl.DateTimeFormat('nl-NL', {
+                    day: '2-digit',
+                    month: 'long',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false,
+                    timeZone: 'Europe/Amsterdam'
+                }).format(new Date(data.lastRuleUpdate));
+        } else if (lastRuleUpdateDisplay) {
+            lastRuleUpdateDisplay.textContent = chrome.i18n.getMessage("lastRuleUpdateNone");
         }
+    } catch (error) {
+        handleError(error, "displayLastRuleUpdate");
     }
+}
+
 
     // -------------------------------
     // Popup UI Logica

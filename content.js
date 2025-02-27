@@ -46,15 +46,114 @@ let globalConfig = null;
  */
 function validateConfig(config) {
   const validated = { ...config };
+
+  // Basic type checks and defaults
   if (typeof validated.DEBUG_MODE !== 'boolean') {
     validated.DEBUG_MODE = false;
   }
   if (!Array.isArray(validated.ALLOWED_PROTOCOLS)) {
-    validated.ALLOWED_PROTOCOLS = ['https:', 'http:', 'mailto:', 'tel:'];
+    validated.ALLOWED_PROTOCOLS = ['https:', 'http:', 'mailto:', 'tel:', 'ftp:'];
   }
   if (!(validated.SUSPICIOUS_TLDS instanceof RegExp)) {
-    validated.SUSPICIOUS_TLDS = /(?:xyz|test)$/i;
+    validated.SUSPICIOUS_TLDS = /\.(academy|accountant|accountants|agency|ap|app|art|asia|auto|bank|bar|beauty|bet|bid|bio|biz|blog|buzz|cam|capital|casa|casino|cfd|charity|cheap|church|city|claims|click|club|company|crispsalt|cyou|data|date|design|dev|digital|directory|download|email|energy|estate|events|exchange|expert|exposed|express|finance|fit|forsale|foundation|fun|games|gle|goog|gq|guide|guru|health|help|home|host|html|icu|ink|institute|investments|ip|jobs|life|limited|link|live|loan|lol|ltd|ly|mall|market|me|media|men|ml|mom|money|monster|mov|network|one|online|page|partners|party|php|pics|play|press|pro|promo|pw|quest|racing|rest|review|rocks|run|sbs|school|science|services|shop|shopping|site|software|solutions|space|store|stream|support|team|tech|tickets|to|today|tools|top|trade|trading|uno|ventures|vip|website|wiki|win|work|world|xin|xyz|zip|zone|co|cc|tv|name|team|live|stream|quest|sbs)$/i;
   }
+  if (!(validated.MALWARE_EXTENSIONS instanceof RegExp)) {
+    validated.MALWARE_EXTENSIONS = /\.(exe|zip|bak|tar|gz|msi|dmg|jar|rar|7z|iso|bin|scr|bat|cmd|sh|vbs|lnk|chm|ps2|apk|ps1|py|js|vbscript|dll|docm|xlsm|pptm|doc|xls|ppt|rtf|torrent|wsf|hta|jse|reg|swf|svg|lnk|chm)$/i;
+  }
+  // Convert SHORTENED_URL_DOMAINS to a Set if it's an array or not a Set
+  if (!validated.SHORTENED_URL_DOMAINS || !(validated.SHORTENED_URL_DOMAINS instanceof Set)) {
+    validated.SHORTENED_URL_DOMAINS = new Set(validated.SHORTENED_URL_DOMAINS || ['bit.ly', 'tinyurl.com', 'goo.gl', 't.co']);
+  }
+  if (!(validated.PHISHING_KEYWORDS instanceof Set)) {
+    validated.PHISHING_KEYWORDS = new Set(validated.PHISHING_KEYWORDS || ['login', 'password', 'verify', 'access', 'account', 'auth', 'blocked', 'bonus', 'captcha', 'claim', 'click', 'credentials', 'free', 'gift', 'notification', 'pay', 'pending', 'prize', 'recover', 'secure', 'signin', 'unlock', 'unusual', 'update', 'urgent', 'validate', 'win']);
+  }
+  if (!(validated.DOWNLOAD_KEYWORDS instanceof Set)) {
+    validated.DOWNLOAD_KEYWORDS = new Set(validated.DOWNLOAD_KEYWORDS || ['download', 'install', 'setup', 'file', 'update', 'patch', 'plugin', 'installer', 'software', 'driver', 'execute', 'run', 'launch', 'tool', 'patcher', 'application', 'program', 'app', 'fix', 'crack', 'keygen', 'serial', 'activation', 'license', 'trial', 'demo', 'zip', 'archive', 'compressed', 'installer_package', 'upgrade', 'update_tool', 'free', 'fixer', 'repair', 'optimizer', 'restore', 'reset', 'unlock', 'backup', 'configuration', 'config', 'module', 'library', 'framework', 'macro', 'enable', 'torrent', 'seed', 'payload', 'exploit', 'dropper', 'loader', 'package', 'binary', 'release', 'beta', 'mod', 'hack']);
+  }
+  if (typeof validated.RISK_THRESHOLD !== 'number' || validated.RISK_THRESHOLD < 0) {
+    validated.RISK_THRESHOLD = 5;
+  }
+  if (typeof validated.MAX_SUBDOMAINS !== 'number' || validated.MAX_SUBDOMAINS < 0) {
+    validated.MAX_SUBDOMAINS = 3;
+  }
+  if (typeof validated.CACHE_DURATION_MS !== 'number' || validated.CACHE_DURATION_MS <= 0) {
+    validated.CACHE_DURATION_MS = 24 * 60 * 60 * 1000; // 24 hours
+  }
+  if (typeof validated.SUSPICION_THRESHOLD !== 'number' || validated.SUSPICION_THRESHOLD < 0 || validated.SUSPICION_THRESHOLD > 1) {
+    validated.SUSPICION_THRESHOLD = 0.1;
+  }
+  if (!Array.isArray(validated.TRUSTED_IFRAME_DOMAINS) || validated.TRUSTED_IFRAME_DOMAINS.some(domain => typeof domain !== 'string')) {
+    validated.TRUSTED_IFRAME_DOMAINS = ['youtube.com', 'vimeo.com', 'google.com'];
+  }
+  if (!(validated.LOGIN_PATTERNS instanceof RegExp)) {
+    validated.LOGIN_PATTERNS = /(login|account|auth|authenticate|signin|wp-login|sign-in|log-in|dashboard|portal|session|user|profile|dashboard|portal|session|user|profile)/i;
+  }
+  if (!Array.isArray(validated.FREE_HOSTING_DOMAINS) || validated.FREE_HOSTING_DOMAINS.some(domain => typeof domain !== 'string')) {
+    validated.FREE_HOSTING_DOMAINS = [
+      'sites.net', 'angelfire.com', 'geocities.ws', '000a.biz', '000webhostapp.com', 'weebly.com', 'wixsite.com', 
+      'freehosting.com', 'glitch.me', 'firebaseapp.com', 'herokuapp.com', 'freehostia.com', 'netlify.app', 'webs.com', 
+      'yolasite.com', 'github.io', 'bravenet.com', 'zyro.com', 'altervista.org', 'tripod.com', 'jimdo.com', 'ucoz.com', 
+      'blogspot.com', 'square.site', 'pages.dev', 'r2.dev', 'mybluehost.me', '000space.com', 'awardspace.com', 
+      'byethost.com', 'biz.nf', 'hyperphp.com', 'infinityfree.net', '50webs.com', 'tripod.lycos.com', 'site123.me', 
+      'webflow.io', 'strikingly.com', 'x10hosting.com', 'freehostingnoads.net', '000freewebhost.com', 'mystrikingly.com', 
+      'sites.google.com', 'appspot.com', 'vercel.app', 'weeblysite.com', 's3.amazonaws.com', 'bubbleapps.io', 
+      'typedream.app', 'codeanyapp.com', 'carrd.co', 'surge.sh', 'replit.dev', 'fly.dev', 'render.com', 'onrender.com',
+      'netlify.app', 'vercel.app'
+    ];
+  }
+  if (!Array.isArray(validated.CRYPTO_DOMAINS) || validated.CRYPTO_DOMAINS.some(domain => typeof domain !== 'string')) {
+    validated.CRYPTO_DOMAINS = [
+      "binance.com", "kraken.com", "metamask.io", "wallet-connect.org", "coinbase.com", "bybit.com", "okx.com", 
+      "kucoin.com", "hashkey.com", "binance.us", "raydium.io"
+    ];
+  }
+  if (typeof validated.HOMOGLYPHS !== 'object' || validated.HOMOGLYPHS === null) {
+    validated.HOMOGLYPHS = {
+      'a': ['а', 'ä', 'α', 'ạ', 'å'],
+      'b': ['Ь', 'β', 'ḅ'],
+      'c': ['с', 'ç', 'ć'],
+      'e': ['е', 'ë', 'ε', 'ẹ'],
+      'i': ['і', 'ï', 'ι', 'ḯ'],
+      'l': ['ӏ', 'ł', 'ḷ'],
+      'o': ['о', 'ö', 'ο', 'ọ', 'ø'],
+      'p': ['р', 'ρ', 'ṗ'],
+      's': ['ѕ', 'ś', 'ṣ'],
+      'u': ['υ', 'ü', 'µ', 'ṵ'],
+      'v': ['ν', 'ṽ'],
+      'w': ['ω', 'ẉ'],
+      'x': ['х', 'χ'],
+      'y': ['у', 'ÿ', 'γ'],
+      'z': ['ž', 'ƶ', 'ź', 'ż', 'ẑ', 'ẓ', 'ẕ', 'ƹ', 'ɀ']
+    };
+  }
+  if (!Array.isArray(validated.SUSPICIOUS_URL_PATTERNS) || validated.SUSPICIOUS_URL_PATTERNS.some(p => !(p instanceof RegExp))) {
+    validated.SUSPICIOUS_URL_PATTERNS = [
+      /\/(payment|invoice|billing|money|bank|secure|login|checkout|subscription|refund|delivery)\//i,
+      /(Base64|hexadecimal|b64|encode|urlencode|obfuscate|crypt)/i,
+      /\/(signup|register|confirmation|securepayment|order|tracking|verify-account|reset-password|oauth)\//i,
+      /(?:\bsecurepay\b|\baccountverify\b|\bresetpassword\b|\bverifyemail\b|\bupdateinfo\b)/i,
+      /(qr-code|qrcode|qr\.|generate-qr|scan|qrserver|qrcodes\.)/i,
+      /(fake|clone|spoof|impersonate|fraud|scam|phish)/i,
+      /[^a-zA-Z0-9]{2,}/,
+      /(http[s]?:\/\/[^\/]+){2,}/i,
+      /(qr-code|qrcode|qr\.|generate-qr|scan)/i
+    ];
+  }
+  if (!Array.isArray(validated.SUSPICIOUS_SCRIPT_PATTERNS) || validated.SUSPICIOUS_SCRIPT_PATTERNS.some(p => !(p instanceof RegExp))) {
+    validated.SUSPICIOUS_SCRIPT_PATTERNS = [
+      /(?:base64_decode|base64_encode|rot13|hex|md5|sha1|sha256|xor|hash|eval64|obfuscate)/i,
+      /(?:document\.write|eval|Function|setTimeout|setInterval|atob|btoa|escape|unescape|innerHTML|outerHTML|appendChild|insertBefore|replaceChild|removeChild|location\.href|window\.location|localStorage|sessionStorage|XMLHttpRequest|fetch|WebSocket|prototype\.call|Object\.defineProperty|new Function)/i,
+      /(?:download|execute|payload|install|load|unpack|update|patch|plugin|setup|plugin\.js|install\.js|update\.js|loader\.js|miner\.js|coinimp|cryptonight|wasm)/i,
+      /(?:iframe|srcdoc|data:text\/html|javascript:|onload|onerror|onclick|onsubmit|onmouseover|onfocus|onblur|onchange|onscroll|onkeydown|onkeyup|onkeypress)/i,
+      /(?:malicious|unsafe|tracker|adserver|spy|hack|exploit|virus|malware|phish|redirect|inject|clickjacking|xss|keylogger|trojan|worm|ransomware|payload|obfuscated|obfuscate|backdoor|rootkit|sqlinjection|sqli|bufferoverflow|overflow|csrf|cryptojacking|mining)/i,
+      /(RTCPeerConnection|RTCDataChannel|mozRTCPeerConnection|webkitRTCPeerConnection|iceCandidate|peerconnection|stun:|turn:)/i,
+      /(navigator\.geolocation|navigator\.permissions|navigator\.mediaDevices|Clipboard|ServiceWorker|PushManager|WebAssembly)/i,
+      /\.(php|asp|cgi|exe|bin|dll|dat|py|sh|vb|vbs|cmd|bat|pl|ps1|psm1|jar|class|js|jsp|aspx|cfm|rb|ts|mjs|apk|swift|go|lua|wasm)$/i,
+      /script|eval/i,
+      /(RTCPeerConnection|RTCDataChannel|mozRTCPeerConnection|webkitRTCPeerConnection|iceCandidate)/i
+    ];
+  }
+
   return validated;
 }
 
@@ -63,38 +162,102 @@ function validateConfig(config) {
  */
 const defaultConfig = {
   DEBUG_MODE: false,
-  ALLOWED_PROTOCOLS: ['https:', 'http:', 'mailto:', 'tel:'],
-  SUSPICIOUS_TLDS: /(?:xyz|test)$/i,
+  ALLOWED_PROTOCOLS: ['https:', 'http:', 'mailto:', 'tel:', 'ftp:'], // Match window.CONFIG
+  SUSPICIOUS_TLDS: /\.(academy|accountant|accountants|agency|ap|app|art|asia|auto|bank|bar|beauty|bet|bid|bio|biz|blog|buzz|cam|capital|casa|casino|cfd|charity|cheap|church|city|claims|click|club|company|crispsalt|cyou|data|date|design|dev|digital|directory|download|email|energy|estate|events|exchange|expert|exposed|express|finance|fit|forsale|foundation|fun|games|gle|goog|gq|guide|guru|health|help|home|host|html|icu|ink|institute|investments|ip|jobs|life|limited|link|live|loan|lol|ltd|ly|mall|market|me|media|men|ml|mom|money|monster|mov|network|one|online|page|partners|party|php|pics|play|press|pro|promo|pw|quest|racing|rest|review|rocks|run|sbs|school|science|services|shop|shopping|site|software|solutions|space|store|stream|support|team|tech|tickets|to|today|tools|top|trade|trading|uno|ventures|vip|website|wiki|win|work|world|xin|xyz|zip|zone|co|cc|tv|name|team|live|stream|quest|sbs)$/i,
+  MALWARE_EXTENSIONS: /\.(exe|zip|bak|tar|gz|msi|dmg|jar|rar|7z|iso|bin|scr|bat|cmd|sh|vbs|lnk|chm|ps2|apk|ps1|py|js|vbscript|dll|docm|xlsm|pptm|doc|xls|ppt|rtf|torrent|wsf|hta|jse|reg|swf|svg|lnk|chm)$/i,
+  SHORTENED_URL_DOMAINS: new Set(['bit.ly', 'tinyurl.com', 'goo.gl', 't.co']),
+  PHISHING_KEYWORDS: new Set(['login', 'password', 'verify', 'access', 'account', 'auth', 'blocked', 'bonus', 'captcha', 'claim', 'click', 'credentials', 'free', 'gift', 'notification', 'pay', 'pending', 'prize', 'recover', 'secure', 'signin', 'unlock', 'unusual', 'update', 'urgent', 'validate', 'win']),
+  DOWNLOAD_KEYWORDS: new Set(['download', 'install', 'setup', 'file', 'update', 'patch', 'plugin', 'installer', 'software', 'driver', 'execute', 'run', 'launch', 'tool', 'patcher', 'application', 'program', 'app', 'fix', 'crack', 'keygen', 'serial', 'activation', 'license', 'trial', 'demo', 'zip', 'archive', 'compressed', 'installer_package', 'upgrade', 'update_tool', 'free', 'fixer', 'repair', 'optimizer', 'restore', 'reset', 'unlock', 'backup', 'configuration', 'config', 'module', 'library', 'framework', 'macro', 'enable', 'torrent', 'seed', 'payload', 'exploit', 'dropper', 'loader', 'package', 'binary', 'release', 'beta', 'mod', 'hack']),
   RISK_THRESHOLD: 5,
   MAX_SUBDOMAINS: 3,
-  SHORTENED_URL_DOMAINS: ['bit.ly', 't.co', 'tinyurl.com'],
-  PHISHING_KEYWORDS: new Set(['login', 'password', 'verify']),
-  MALWARE_EXTENSIONS: /\.(exe|bat|sh)$/i
+  CACHE_DURATION_MS: 24 * 60 * 60 * 1000, // 24 hours
+  SUSPICION_THRESHOLD: 0.1,
+  TRUSTED_IFRAME_DOMAINS: ['youtube.com', 'vimeo.com', 'google.com'],
+  LOGIN_PATTERNS: /(login|account|auth|authenticate|signin|wp-login|sign-in|log-in|dashboard|portal|session|user|profile|dashboard|portal|session|user|profile)/i,
+  FREE_HOSTING_DOMAINS: [
+    'sites.net', 'angelfire.com', 'geocities.ws', '000a.biz', '000webhostapp.com', 'weebly.com', 'wixsite.com', 
+    'freehosting.com', 'glitch.me', 'firebaseapp.com', 'herokuapp.com', 'freehostia.com', 'netlify.app', 'webs.com', 
+    'yolasite.com', 'github.io', 'bravenet.com', 'zyro.com', 'altervista.org', 'tripod.com', 'jimdo.com', 'ucoz.com', 
+    'blogspot.com', 'square.site', 'pages.dev', 'r2.dev', 'mybluehost.me', '000space.com', 'awardspace.com', 
+    'byethost.com', 'biz.nf', 'hyperphp.com', 'infinityfree.net', '50webs.com', 'tripod.lycos.com', 'site123.me', 
+    'webflow.io', 'strikingly.com', 'x10hosting.com', 'freehostingnoads.net', '000freewebhost.com', 'mystrikingly.com', 
+    'sites.google.com', 'appspot.com', 'vercel.app', 'weeblysite.com', 's3.amazonaws.com', 'bubbleapps.io', 
+    'typedream.app', 'codeanyapp.com', 'carrd.co', 'surge.sh', 'replit.dev', 'fly.dev', 'render.com', 'onrender.com',
+    'netlify.app', 'vercel.app'
+  ],
+  CRYPTO_DOMAINS: [
+    "binance.com", "kraken.com", "metamask.io", "wallet-connect.org", "coinbase.com", "bybit.com", "okx.com", 
+      "kucoin.com", "hashkey.com", "binance.us", "raydium.io"
+  ],
+  HOMOGLYPHS: {
+    'a': ['а', 'ä', 'α', 'ạ', 'å'],
+    'b': ['Ь', 'β', 'ḅ'],
+    'c': ['с', 'ç', 'ć'],
+    'e': ['е', 'ë', 'ε', 'ẹ'],
+    'i': ['і', 'ï', 'ι', 'ḯ'],
+    'l': ['ӏ', 'ł', 'ḷ'],
+    'o': ['о', 'ö', 'ο', 'ọ', 'ø'],
+    'p': ['р', 'ρ', 'ṗ'],
+    's': ['ѕ', 'ś', 'ṣ'],
+    'u': ['υ', 'ü', 'µ', 'ṵ'],
+    'v': ['ν', 'ṽ'],
+    'w': ['ω', 'ẉ'],
+    'x': ['х', 'χ'],
+    'y': ['у', 'ÿ', 'γ'],
+    'z': ['ž', 'ƶ', 'ź', 'ż', 'ẑ', 'ẓ', 'ẕ', 'ƹ', 'ɀ']
+  },
+  SUSPICIOUS_URL_PATTERNS: [
+    /\/(payment|invoice|billing|money|bank|secure|login|checkout|subscription|refund|delivery)\//i,
+    /(Base64|hexadecimal|b64|encode|urlencode|obfuscate|crypt)/i,
+    /\/(signup|register|confirmation|securepayment|order|tracking|verify-account|reset-password|oauth)\//i,
+    /(?:\bsecurepay\b|\baccountverify\b|\bresetpassword\b|\bverifyemail\b|\bupdateinfo\b)/i,
+    /(qr-code|qrcode|qr\.|generate-qr|scan|qrserver|qrcodes\.)/i,
+    /(fake|clone|spoof|impersonate|fraud|scam|phish)/i,
+    /[^a-zA-Z0-9]{2,}/,
+    /(http[s]?:\/\/[^\/]+){2,}/i,
+    /(qr-code|qrcode|qr\.|generate-qr|scan)/i
+  ],
+  SUSPICIOUS_SCRIPT_PATTERNS: [
+    /(?:base64_decode|base64_encode|rot13|hex|md5|sha1|sha256|xor|hash|eval64|obfuscate)/i,
+    /(?:document\.write|eval|Function|setTimeout|setInterval|atob|btoa|escape|unescape|innerHTML|outerHTML|appendChild|insertBefore|replaceChild|removeChild|location\.href|window\.location|localStorage|sessionStorage|XMLHttpRequest|fetch|WebSocket|prototype\.call|Object\.defineProperty|new Function)/i,
+    /(?:download|execute|payload|install|load|unpack|update|patch|plugin|setup|plugin\.js|install\.js|update\.js|loader\.js|miner\.js|coinimp|cryptonight|wasm)/i,
+    /(?:iframe|srcdoc|data:text\/html|javascript:|onload|onerror|onclick|onsubmit|onmouseover|onfocus|onblur|onchange|onscroll|onkeydown|onkeyup|onkeypress)/i,
+    /(?:malicious|unsafe|tracker|adserver|spy|hack|exploit|virus|malware|phish|redirect|inject|clickjacking|xss|keylogger|trojan|worm|ransomware|payload|obfuscated|obfuscate|backdoor|rootkit|sqlinjection|sqli|bufferoverflow|overflow|csrf|cryptojacking|mining)/i,
+    /(RTCPeerConnection|RTCDataChannel|mozRTCPeerConnection|webkitRTCPeerConnection|iceCandidate|peerconnection|stun:|turn:)/i,
+    /(navigator\.geolocation|navigator\.permissions|navigator\.mediaDevices|Clipboard|ServiceWorker|PushManager|WebAssembly)/i,
+    /\.(php|asp|cgi|exe|bin|dll|dat|py|sh|vb|vbs|cmd|bat|pl|ps1|psm1|jar|class|js|jsp|aspx|cfm|rb|ts|mjs|apk|swift|go|lua|wasm)$/i,
+    /script|eval/i,
+    /(RTCPeerConnection|RTCDataChannel|mozRTCPeerConnection|webkitRTCPeerConnection|iceCandidate)/i
+  ]
 };
 
 // Voeg een vlag toe om te controleren of de configuratie al is geladen
 let configLoaded = false;
+let configLoadAttempts = 0;
+const maxConfigLoadAttempts = 3;
 
 async function loadConfig() {
-  if (configLoaded) {
-    logDebug("Configuration already loaded, skipping.");
-    return; // Voorkom herhaalde laadtijden als de config al geladen is
-  }
-
+  if (configLoaded || configLoadAttempts >= maxConfigLoadAttempts) return;
+  configLoadAttempts++;
   try {
     if (window.CONFIG && typeof window.CONFIG === 'object') {
       globalConfig = validateConfig({ ...defaultConfig, ...window.CONFIG });
       logDebug("Configuration loaded successfully:", globalConfig);
+      configLoaded = true;
     } else {
       throw new Error("window.CONFIG is not available or invalid.");
     }
   } catch (error) {
-    handleError(error, "loadConfig: Kon configuratie niet laden van window.CONFIG");
-    globalConfig = validateConfig(defaultConfig);
-    logDebug("Using default configuration:", globalConfig);
+    handleError(error, "loadConfig: Kon configuratie niet laden");
+    if (configLoadAttempts < maxConfigLoadAttempts) {
+      logDebug(`Config load failed, retrying... (Attempt ${configLoadAttempts})`);
+      setTimeout(loadConfig, 1000); // Probeer na 1 seconde opnieuw
+    } else {
+      globalConfig = validateConfig(defaultConfig);
+      logDebug("Using default configuration after failed attempts:", globalConfig);
+      configLoaded = true; // Voorkom verdere pogingen
+    }
   }
-
-  configLoaded = true; // Markeer als geladen
 }
 
 (async () => {
@@ -113,17 +276,15 @@ async function fetchCachedJson(fileName) {
     return cached.data;
   }
   try {
-    const url = (typeof chrome !== 'undefined' && chrome.runtime?.getURL)
-      ? chrome.runtime.getURL(fileName)
-      : fileName;
+    const url = chrome.runtime.getURL(fileName);
     const response = await fetch(url);
-    if (!response.ok) throw new Error(`Error fetching ${fileName}: ${response.statusText}`);
+    if (!response.ok) throw new Error(`Fetch failed: ${response.status}`);
     const json = await response.json();
     jsonCache[fileName] = { data: json, timestamp: now };
     return json;
   } catch (error) {
     handleError(error, `fetchCachedJson: Kon ${fileName} niet laden`);
-    return null;
+    return []; // Fallback naar lege array in plaats van null
   }
 }
 
@@ -152,20 +313,13 @@ async function initializeSafeDomains() {
     logDebug("Trusted domains loaded successfully:", safeDomains);
   } catch (error) {
     handleError(error, `initializeSafeDomains: Kon TrustedDomains.json niet laden of verwerken`);
-    safeDomains = [];
-    safeDomainsInitialized = false;
+    safeDomains = ['example.com', 'google.com']; // Hardcoded fallback
+    safeDomainsInitialized = true;
   }
 }
 
 initializeSafeDomains();
 
-let warningDiv = null;
-
-function isChromeStorageSyncAvailable() {
-  return typeof chrome !== 'undefined' &&
-    typeof chrome.storage !== 'undefined' &&
-    typeof chrome.storage.sync !== 'undefined';
-}
 
 async function isProtectionEnabled() {
   const settings = await getStoredSettings();
@@ -347,7 +501,7 @@ function setupGoogleSearchProtection() {
 
 function debounceCheckGoogleSearchResults() {
   clearTimeout(debounceTimer);
-  debounceTimer = setTimeout(checkGoogleSearchResults, 150);
+  debounceTimer = setTimeout(checkGoogleSearchResults, 250);
 }
 
 function checkGoogleSearchResults() {
@@ -627,10 +781,13 @@ async function calculateRiskScore(url) {
         // 1️⃣ HTTPS-controle (verhoogd risico)
         if (urlObj.protocol !== 'https:') {
             addRisk(15, "URL uses HTTP instead of HTTPS", "high");
-        }
-
-        if (isLoginPage() && urlObj.protocol !== 'https:') {
-            addRisk(20, "Login page detected without HTTPS", "high");
+            // Wacht op DOM-lading als deze nog niet compleet is
+            if (document.readyState !== 'complete') {
+                await new Promise(resolve => document.addEventListener('DOMContentLoaded', resolve, { once: true }));
+            }
+            if (isLoginPage(url)) { // URL meegeven aan isLoginPage
+                addRisk(20, "Login page detected without HTTPS", "high");
+            }
         }
 
         // 2️⃣ Controle op phishing-gerelateerde termen in URL
@@ -706,22 +863,24 @@ async function calculateRiskScore(url) {
         return { score: -1, reasons: ["Error calculating risk score."] };
     }
 }
+
 function isSearchResultPage() {
   const url = new URL(window.location.href);
   return url.hostname.includes("google.") && (url.pathname === "/search" || url.pathname === "/imgres");
 }
 
 
-function isLoginPage() {
+function isLoginPage(url = window.location.href) {
   try {
     const hasPasswordField = document.querySelector('input[type="password"]') !== null;
-    const loginPatterns = /(login|signin|auth|authenticate)/i;
+    const loginPatterns = /(login|signin|auth|authenticate|wp-login)/i;
     const hasLoginText = document.body.textContent.match(loginPatterns) !== null;
-    const result = hasPasswordField || hasLoginText;
-    logDebug("Login Page Detected: Password field present = ", hasPasswordField, ", Login text present = ", hasLoginText, result);
+    const hasLoginInUrl = loginPatterns.test(url); // Nieuwe check op URL
+    const result = hasPasswordField || hasLoginText || hasLoginInUrl;
+    logDebug("Login Page Detected: Password field present = ", hasPasswordField, ", Login text present = ", hasLoginText, ", URL match = ", hasLoginInUrl, "Result = ", result);
     return result;
   } catch (error) {
-    handleError(error, `isLoginPage: Fout bij detecteren van loginpagina op pagina ${window.location.href}`);
+    handleError(error, `isLoginPage: Fout bij detecteren van loginpagina op URL ${url}`);
     return false;
   }
 }
@@ -1115,48 +1274,18 @@ async function checkScriptObfuscation(scriptUrl) {
 
 function isValidURL(string) {
   try {
-    // Controleer en normaliseer `SVGAniatedString` expliciet
-    let normalizedString = string;
-    if (string && typeof string === 'object' && string instanceof SVGAnimatedString) {
-      // Probeer `baseVal` of `animVal` te krijgen, of gebruik een lege string als fallback
-      normalizedString = string.baseVal || string.animVal || '';
-      logDebug(`Normalized SVGAniatedString to: ${normalizedString}`);
-    } else if (typeof string !== 'string') {
-      // Als het geen string is, probeer het te converteren naar een string
-      normalizedString = String(string) || '';
-      logDebug(`Converted non-string input to: ${normalizedString}, Original type: ${typeof string}`);
-    }
-    // Zorg ervoor dat we een niet-lege string hebben
-    if (typeof normalizedString !== 'string' || normalizedString.trim() === '') {
-      return false;
-    }
-
-    const url = new URL(normalizedString, window.location.href);
+    const url = new URL(string, window.location.href);
     const protocol = url.protocol;
-
-    const ALLOWED_PROTOCOLS = ['http:', 'https:', 'mailto:', 'tel:'];
-    
-    if (!ALLOWED_PROTOCOLS.includes(protocol)) {
-      return false;
-    }
-    
-    if (['http:', 'https:'].includes(protocol) && !url.hostname) {
-      return false;
-    }
-    
+    const allowedProtocols = ['http:', 'https:', 'mailto:', 'tel:', 'ftp:'];
+    if (!allowedProtocols.includes(protocol)) return false;
+    if (['http:', 'https:', 'ftp:'].includes(protocol) && !url.hostname) return false;
     return true;
   } catch (error) {
-    handleError(error, `isValidURL: Fout bij valideren van URL ${normalizedString || string}`);
+    logDebug(`isValidURL: Ongeldige URL gedetecteerd: ${string}`);
     return false;
   }
 }
-function ensureValidURL(string) {
-  if (isValidURL(string)) {
-    return string;
-  }
-  handleError(new Error('Ongeldige URL gedetecteerd'), `ensureValidURL: URL ${string} is ongeldig, fallback gebruikt`);
-  return 'https://linkshield.nl'; // Of retourneer null en laat de beller beslissen
-}
+
 
 // Standaard homoglyph-mappings als fallback
 const DEFAULT_HOMOGLYPHS = {
@@ -1243,38 +1372,6 @@ function isHomoglyphAttack(domain) {
   }
 }
 
-function analyzeParts(checkString) {
-  const parts = checkString.split(/[./?=#]/);
-  for (let part of parts) {
-    if (isPartSuspicious(part)) {
-      return true;
-    }
-  }
-  return false;
-}
-
-function isPartSuspicious(part) {
-  const normalChars = part.split('').filter(char => !homoglyphSet.has(char)).join('');
-  const homoglyphsUsed = part.split('').filter(char => homoglyphSet.has(char));
-  if (homoglyphsUsed.length > normalChars.length) {
-    return true;
-  }
-  if (/(www|login|mail|bank|secure|account)/i.test(part)) {
-    for (let char of homoglyphsUsed) {
-      for (let [normalChar, homoglyphVariants] of Object.entries(globalConfig.HOMOGLYPHS || {})) {
-        if (homoglyphVariants.includes(char) && char !== normalChar) {
-          return true;
-        }
-      }
-    }
-  }
-  return false;
-}
-
-function getCheckString(domain, fullUrl) {
-  const normalizedDomain = domain.toLowerCase().normalize('NFC');
-  return fullUrl ? new URL(domain).hostname.toLowerCase().normalize('NFC') : normalizedDomain;
-}
 
 async function performSuspiciousChecks(url) {
   const isEnabled = await isProtectionEnabled();
@@ -1282,7 +1379,7 @@ async function performSuspiciousChecks(url) {
     logDebug("Protection is disabled. Skipping checks for URL:", url);
     return { isSafe: true, reasons: [], risk: 0 };
   }
-  
+
   const reasons = new Set();
   const totalRiskRef = { value: 0 };
 
@@ -1291,13 +1388,26 @@ async function performSuspiciousChecks(url) {
     return { isSafe: false, reasons: ["Configuratiefout"], risk: 10 };
   }
 
-  // ✅ Hier zorgen we ervoor dat `await` correct wordt gebruikt binnen een async functie
+  // Voeg de logica van calculateRiskScore toe
+  const urlObj = new URL(url);
+  if (urlObj.protocol !== 'https:') {
+    reasons.add("noHttps");
+    totalRiskRef.value += 15;
+    if (document.readyState !== 'complete') {
+      await new Promise(resolve => document.addEventListener('DOMContentLoaded', resolve, { once: true }));
+    }
+    if (isLoginPage(url)) {
+      reasons.add("Login page detected without HTTPS");
+      totalRiskRef.value += 20;
+    }
+  }
+
+  // Voer de bestaande checks uit
   await checkStaticConditions(url, reasons, totalRiskRef);
   await checkDynamicConditions(url, reasons, totalRiskRef);
 
   logDebug("🔍 Eindscore voor URL:", url, "| Risicoscore:", totalRiskRef.value);
-
-  const isSafe = totalRiskRef.value < 5;
+  const isSafe = totalRiskRef.value < (globalConfig.RISK_THRESHOLD || 5);
   return createAnalysisResult(isSafe, Array.from(reasons), totalRiskRef.value);
 }
 
@@ -1428,12 +1538,15 @@ function addUniqueReason(reasonsMap, reason, severity) {
 
 async function isLoginPageFromUrl(url) {
   try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000); // 5 seconden timeout
     const loginPatterns = globalConfig.LOGIN_PATTERNS || /(login|signin|authenticate)/i;
     if (loginPatterns.test(url)) {
       logDebug(`Login page detected based on URL pattern: ${url}`);
       return true;
     }
-    const response = await fetch(url);
+    const response = await fetch(url, { signal: controller.signal });
+    clearTimeout(timeout);
     const html = await response.text();
     const hasPasswordField = /<input[^>]*type=["']?password["']?/i.test(html);
     if (hasPasswordField) {
@@ -1692,28 +1805,18 @@ async function isShortenedUrl(url) {
 async function resolveShortenedUrlWithRetry(url, retries = 3, delay = 1000) {
   for (let attempt = 1; attempt <= retries; attempt++) {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 5000);
+    const timeout = setTimeout(() => controller.abort(), 3000); // 3 seconden timeout
     try {
       const response = await fetch(url, {
         method: 'HEAD',
         redirect: 'follow',
         signal: controller.signal,
-        headers: { 'Accept': '*/*' }
       });
       clearTimeout(timeout);
       if (response.ok) return response.url;
       throw new Error(`Fetch failed: ${response.status}`);
     } catch (error) {
       clearTimeout(timeout);
-      if (error.name === 'AbortError') {
-        logError(`Request timed out for ${url} on attempt ${attempt}`);
-      } else if (error.message.includes('network')) {
-        logError(`Network error for ${url}: ${error.message}`);
-      } else if (error.message.includes('CORS')) {
-        logError(`CORS issue for ${url}: ${error.message}`);
-      } else {
-        handleError(error, `resolveShortenedUrlWithRetry: Fout bij poging ${attempt} voor URL ${url}`);
-      }
       if (attempt === retries) return url;
       await new Promise(resolve => setTimeout(resolve, delay));
     }
@@ -1806,39 +1909,6 @@ function isFreeHostingDomain(url) {
   }
 }
 
-function generateLookalikeKeywords(baseKeywords) {
-  const replacements = {
-    "o": ["0", "°"],
-    "i": ["1", "l", "!"],
-    "e": ["3", "€"],
-    "a": ["@", "4"],
-    "s": ["$", "5", "z"],
-    "t": ["7", "+"],
-    "b": ["8"],
-    "l": ["1", "|"],
-    "c": ["ç", "k"]
-  };
-  const lookalikeKeywords = new Set();
-  baseKeywords.forEach(keyword => {
-    const chars = keyword.split("");
-    const variations = new Set([keyword]);
-    chars.forEach((char, index) => {
-      if (replacements[char]) {
-        replacements[char].forEach(replacement => {
-          const newVariation = chars.slice(0, index).join("") + replacement + chars.slice(index + 1).join("");
-          variations.add(newVariation);
-        });
-      }
-    });
-    variations.forEach(variation => {
-      lookalikeKeywords.add(variation);
-      lookalikeKeywords.add(`secure-${variation}`);
-      lookalikeKeywords.add(`${variation}-login`);
-      lookalikeKeywords.add(`${variation}-support`);
-    });
-  });
-  return Array.from(lookalikeKeywords);
-}
 
 function isCryptoPhishingUrl(url) {
   const officialDomains = (globalConfig && globalConfig.CRYPTO_DOMAINS) || [];
@@ -1883,15 +1953,6 @@ function hasMetaRedirect() {
   return Boolean(metaTag && /^\s*\d+\s*;\s*url=/i.test(metaTag.getAttribute("content")));
 }
 
-function isRightClickDisabled() {
-  return document.body.oncontextmenu !== null || document.body.hasAttribute('oncontextmenu');
-}
-
-if (isChromeStorageSyncAvailable()) {
-  logDebug("chrome.storage.sync is available.");
-} else {
-  logError("chrome.storage.sync is not available. Defaulting to empty settings.");
-}
 
 document.addEventListener('DOMContentLoaded', async () => {
   try {
@@ -2105,7 +2166,7 @@ const observer = new MutationObserver(debounce((mutations) => {
       }
     });
   });
-}, 250));
+}, 500));
 observer.observe(document.body, { childList: true, subtree: true });
 
 document.addEventListener('mouseover', debounce((event) => {

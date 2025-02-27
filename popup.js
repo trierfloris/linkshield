@@ -1,9 +1,9 @@
 // =============================
-// popup.js - Aangepaste Versie
+// popup.js - Versie met hard-coded FREE_END_DATE
 // =============================
 
 document.addEventListener('DOMContentLoaded', function () {
-    // Elementreferenties
+    // Elementverwijzingen
     const saveButton = document.getElementById('saveSettings');
     const showLicenseForm = document.getElementById('showLicenseForm');
     const licenseForm = document.getElementById('licenseForm');
@@ -16,36 +16,34 @@ document.addEventListener('DOMContentLoaded', function () {
     const confirmationMessage = document.getElementById('confirmationMessage');
     const premiumFeature = document.getElementById('premiumFeature');
     const activationMessage = document.getElementById('activationMessage');
-    const licenseStatus = chrome.i18n.getMessage('licenseStatus'); // "License:" label
-    const licenseFreemium = chrome.i18n.getMessage('licenseFreemium'); // "Freemium" label
 
-    // Free trial end date (hard-coded)
-    const FREE_END_DATE = new Date('2025-03-01T23:59:59');
+    // Hard-coded einddatum voor de proefperiode
+    const FREE_END_DATE = new Date('2026-01-01T23:59:59');
 
     // -------------------------------
-    // Helper Functies
+    // Hulpfunctions
     // -------------------------------
 
     /**
-     * Centrale foutafhandelingsfunctie.
+     * Centrale foutafhandeling.
      * @param {Error} error - De fout.
      * @param {string} context - Context waarin de fout optrad.
      */
     function handleError(error, context) {
         console.error(`[${context}] ${error.message}`, error);
+        showConfirmationMessage(chrome.i18n.getMessage("errorOccurred"), 'red');
     }
 
     /**
-     * Update de tekst van een element als het bestaat, met fallback.
-     * @param {string} id - De ID van het element.
-     * @param {string} messageKey - De i18n key.
-     * @param {string} [fallback] - Een optionele fallbacktekst.
+     * Tekst instellen van een element als het bestaat, met een fallback.
+     * @param {string} id - Element-ID.
+     * @param {string} messageKey - i18n-sleutel.
+     * @param {string} [fallback] - Optionele fallback-tekst.
      */
     function setText(id, messageKey, fallback = '') {
         const element = document.getElementById(id);
         if (element) {
-            const translated = chrome.i18n.getMessage(messageKey) || fallback;
-            element.textContent = translated;
+            element.textContent = chrome.i18n.getMessage(messageKey) || fallback;
         }
     }
 
@@ -66,15 +64,16 @@ document.addEventListener('DOMContentLoaded', function () {
         setText('confirmationMessage', 'confirmationMessage');
         setText('licenseLabel', 'licenseLabel');
         setText('validateButton', 'validateButton');
-        setText('licenseStatus', 'licenseStatus');
         setText('licenseIndicator', 'licenseFreemium');
     }
 
     // -------------------------------
-    // Free Trial en UI Helpers
+    // Proefperiode en UI-hulpfuncties
     // -------------------------------
 
-    const isFreeTrialPeriod = () => new Date() <= FREE_END_DATE;
+    function isFreeTrialPeriod() {
+        return new Date() <= FREE_END_DATE;
+    }
 
     function showConfirmationMessage(message, color = 'green', duration = 3000) {
         if (confirmationMessage) {
@@ -88,84 +87,62 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function updateUIForTrialPeriod(isFreeTrial) {
-        if (backgroundSecurity) {
-            backgroundSecurity.disabled = !isFreeTrial;
-        }
-        if (showLicenseForm) {
-            showLicenseForm.disabled = isFreeTrial;
-        }
-        if (activationMessage) {
-            activationMessage.style.display = isFreeTrial ? 'none' : 'block';
-        }
+        if (backgroundSecurity) backgroundSecurity.disabled = !isFreeTrial;
+        if (showLicenseForm) showLicenseForm.disabled = isFreeTrial;
+        if (activationMessage) activationMessage.style.display = isFreeTrial ? 'none' : 'block';
     }
 
     // -------------------------------
     // Instellingen initialiseren
     // -------------------------------
 
-    /**
-     * Valideert of de storage data het juiste format heeft.
-     * @param {object} data
-     * @returns {boolean}
-     */
-    function validateStorageData(data) {
-        return typeof data === "object" &&
-            "backgroundSecurity" in data &&
-            typeof data.backgroundSecurity === "boolean" &&
-            "integratedProtection" in data &&
-            typeof data.integratedProtection === "boolean";
-    }
-
     async function initializeSettings() {
         try {
             let result = await chrome.storage.sync.get(['backgroundSecurity', 'integratedProtection']);
             result = result || {};
 
-            if (!validateStorageData(result)) {
-                console.warn("Invalid storage data found. Using default settings.");
+            if (typeof result !== "object" || !("backgroundSecurity" in result) || !("integratedProtection" in result)) {
+                console.warn("Ongeldige opslagdata gevonden. Standaardinstellingen worden gebruikt.");
                 result = { backgroundSecurity: false, integratedProtection: false };
             }
 
-            if (backgroundSecurity) {
-                backgroundSecurity.checked = result.backgroundSecurity;
-            }
-            if (integratedProtection) {
-                integratedProtection.checked = result.integratedProtection;
-            }
+            if (backgroundSecurity) backgroundSecurity.checked = result.backgroundSecurity;
+            if (integratedProtection) integratedProtection.checked = result.integratedProtection;
 
-            updateUIForTrialPeriod(isFreeTrialPeriod());
+            const isTrial = isFreeTrialPeriod();
+            updateUIForTrialPeriod(isTrial);
         } catch (error) {
             handleError(error, "initializeSettings");
         }
     }
 
     async function displayLastRuleUpdate() {
-    try {
-        const data = await chrome.storage.local.get('lastRuleUpdate');
-        if (data.lastRuleUpdate && lastRuleUpdateDisplay) {
-            lastRuleUpdateDisplay.innerHTML = chrome.i18n.getMessage("lastRuleUpdate") +
-                "<br>" +
-                new Intl.DateTimeFormat('nl-NL', {
-                    day: '2-digit',
-                    month: 'long',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit',
-                    hour12: false,
-                    timeZone: 'Europe/Amsterdam'
-                }).format(new Date(data.lastRuleUpdate));
-        } else if (lastRuleUpdateDisplay) {
-            lastRuleUpdateDisplay.textContent = chrome.i18n.getMessage("lastRuleUpdateNone");
+        try {
+            const { lastRuleUpdate } = await chrome.storage.local.get('lastRuleUpdate');
+            if (lastRuleUpdate && lastRuleUpdateDisplay) {
+                const locale = chrome.i18n.getUILanguage() || 'en-US';
+                lastRuleUpdateDisplay.innerHTML = chrome.i18n.getMessage("lastRuleUpdate") +
+                    "<br>" +
+                    new Intl.DateTimeFormat(locale, {
+                        day: '2-digit',
+                        month: 'long',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit',
+                        hour12: false,
+                        timeZone: 'Europe/Amsterdam'
+                    }).format(new Date(lastRuleUpdate));
+            } else if (lastRuleUpdateDisplay) {
+                lastRuleUpdateDisplay.textContent = chrome.i18n.getMessage("lastRuleUpdateNone");
+            }
+        } catch (error) {
+            handleError(error, "displayLastRuleUpdate");
         }
-    } catch (error) {
-        handleError(error, "displayLastRuleUpdate");
     }
-}
-
 
     // -------------------------------
-    // Popup UI Logica
+    // Popup UI-logica
     // -------------------------------
 
     if (saveButton) {
@@ -175,18 +152,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 integratedProtection: integratedProtection ? integratedProtection.checked : false,
             };
 
-            if (!validateStorageData(settings)) {
-                console.error("Attempt to save invalid settings:", settings);
-                showConfirmationMessage(chrome.i18n.getMessage("invalidSettings"), "red");
-                return;
-            }
-
             try {
                 await chrome.storage.sync.set(settings);
                 showConfirmationMessage(chrome.i18n.getMessage("settingsSaved"));
             } catch (error) {
                 handleError(error, "saveSettings");
-                showConfirmationMessage(chrome.i18n.getMessage("settingsSaveError"), 'red');
             }
         });
     }
@@ -209,11 +179,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     chrome.runtime.sendMessage(
                         { type: 'validateLicense', licenseKey: licenseCode },
                         (response) => {
-                            if (chrome.runtime.lastError) {
-                                reject(chrome.runtime.lastError);
-                            } else {
-                                resolve(response);
-                            }
+                            if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+                            else resolve(response);
                         }
                     );
                 });
@@ -226,7 +193,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 } else {
                     await chrome.storage.sync.set({ license: { valid: true, code: licenseCode } });
                     showConfirmationMessage(chrome.i18n.getMessage("licenseActivated"));
-                    updatePremiumFeatures(true);
                     licenseForm.style.display = 'none';
                     showLicenseForm.style.display = 'block';
                 }
@@ -234,70 +200,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 validateButton.textContent = chrome.i18n.getMessage("validateButton");
                 validateButton.disabled = false;
                 handleError(error, "validateLicenseButton");
-                showConfirmationMessage(chrome.i18n.getMessage("licenseError"), 'red', 5000);
             }
         });
     }
 
-    function updatePremiumFeatures(isLicensed) {
-        const upgradePrompt = document.getElementById('upgradePrompt');
-        const licenseSection = document.getElementById('licenseSection');
-
-        if (isLicensed || isFreeTrialPeriod()) {
-            if (premiumFeature) premiumFeature.style.display = 'block';
-            if (upgradePrompt) upgradePrompt.style.display = 'none';
-            if (licenseSection) licenseSection.style.display = 'none';
-        } else {
-            if (premiumFeature) premiumFeature.style.display = 'none';
-            if (upgradePrompt) upgradePrompt.style.display = 'block';
-            if (licenseSection) licenseSection.style.display = 'block';
-        }
-    }
-
     async function updateLicenseIndicator() {
         const licenseIndicator = document.getElementById('licenseIndicator');
-        const licenseImageContainer = document.getElementById('licenseImageContainer');
-
-        if (licenseImageContainer) {
-            licenseImageContainer.innerHTML = '';
-        }
-
         const { license } = await chrome.storage.sync.get('license');
-        if (license && license.valid) {
-            if (licenseIndicator) {
-                licenseIndicator.textContent = `License: ${license.code}`;
-            }
-        } else {
-            if (licenseIndicator) {
-                licenseIndicator.textContent = 'License: Freemium';
-            }
-
-            if (licenseImageContainer) {
-                const link = document.createElement('a');
-                link.href = 'https://buymeacoffee.com/linkshield.nl';
-                link.target = '_blank';
-                link.rel = 'noopener noreferrer';
-
-                const img = document.createElement('img');
-                img.src = 'icons/buymeacoffee.png';
-                img.alt = 'Support with Buy Me a Coffee';
-                img.style.width = '100px';
-                img.style.marginTop = '10px';
-
-                link.appendChild(img);
-                licenseImageContainer.appendChild(link);
-            }
+        if (license && license.valid && licenseIndicator) {
+            licenseIndicator.textContent = `License: ${license.code}`;
+        } else if (licenseIndicator) {
+            licenseIndicator.textContent = 'License: Freemium';
         }
     }
-
-    chrome.storage.onChanged.addListener((changes, namespace) => {
-        if (namespace === 'local' && changes.lastRuleUpdate && lastRuleUpdateDisplay) {
-            const newValue = changes.lastRuleUpdate.newValue;
-            lastRuleUpdateDisplay.textContent = newValue
-                ? chrome.i18n.getMessage("lastRuleUpdate") + new Date(newValue).toLocaleString()
-                : chrome.i18n.getMessage("lastRuleUpdateNone");
-        }
-    });
 
     (async function initializePopup() {
         loadTranslations();
@@ -307,11 +222,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         await initializeSettings();
         await displayLastRuleUpdate();
+        await updateLicenseIndicator();
     })();
-
 });
 
-// Stel de containerbreedte in als het element bestaat
+// Containerbreedte instellen
 const container = document.querySelector('.container');
 if (container) {
     container.style.width = "225px";

@@ -516,61 +516,40 @@ function checkGoogleSearchResults() {
 }
 
 async function checkForPhishingAds(link) {
-  const url = sanitizeInput(link.href);
-  const urlObj = new URL(url);
-  const domain = normalizeDomain(url);
-  if (!domain) return false;
-  const checks = [
-    {
-      func: () => /^(crypto|coins|wallet|exchange|ico|airdrop)/i.test(domain),
-      score: 5,
-      message: "Warning: This appears to be a crypto-related phishing ad."
-    },
-    {
-      func: () => /adclick|gclid|utm_source/i.test(sanitizeInput(urlObj.search)),
-      score: 2,
-      message: "Warning: Suspicious ad URL structure."
-    },
-    {
-      func: () => globalConfig.SUSPICIOUS_TLDS.test(domain),
-      score: 3,
-      message: "Warning: This domain has a suspicious TLD."
-    },
-    {
-      func: () => isHomoglyphAttack(domain),
-      score: 4,
-      message: "Warning: Possible homoglyph attack in ad URL."
-    },
-    {
-      func: () => /^(amazon|google|microsoft|paypal)/i.test(domain),
-      score: 5,
-      message: "Warning: Potential misuse of brand name without official domain."
+    const url = sanitizeInput(link.href);
+    const urlObj = new URL(url);
+    const domain = normalizeDomain(url);
+    if (!domain) return false;
+    const checks = [
+        { func: () => /^(crypto|coins|wallet|exchange|ico|airdrop)/i.test(domain), score: 5, messageKey: "cryptoPhishingAd" },
+        { func: () => /adclick|gclid|utm_source/i.test(sanitizeInput(urlObj.search)), score: 2, messageKey: "suspiciousAdStructure" },
+        { func: () => globalConfig.SUSPICIOUS_TLDS.test(domain), score: 3, messageKey: "suspiciousAdTLD" },
+        { func: () => isHomoglyphAttack(domain), score: 4, messageKey: "homoglyphAdAttack" },
+        { func: () => /^(amazon|google|microsoft|paypal)/i.test(domain), score: 5, messageKey: "brandMisuse" }
+    ];
+    try {
+        const results = checks.map(check => {
+            const result = check.func();
+            return result ? { score: check.score, messageKey: check.messageKey } : null;
+        }).filter(result => result !== null);
+        const totalRiskScore = results.reduce((sum, result) => sum + result.score, 0);
+        const specificReasons = results.map(result => result.messageKey);
+        if (specificReasons.length > 0) {
+            await warnLink(link, specificReasons);
+            const warningIcon = document.createElement("span");
+            warningIcon.className = "phishing-warning-icon";
+            warningIcon.textContent = "⚠️";
+            warningIcon.style = "position: relative; top: 0; left: 5px; color: #ff0000;";
+            link.insertAdjacentElement("afterend", warningIcon);
+            link.style.border = "2px solid #ff0000";
+            link.style.color = "#ff0000";
+            link.title = chrome.i18n.getMessage("alertMessage") + "\n" + specificReasons.map(key => chrome.i18n.getMessage(key)).join("\n");
+        }
+    } catch (error) {
+        handleError(error, `checkForPhishingAds: Fout bij controleren van link ${link.href}`);
+        await warnLink(link, ["fileCheckFailed"]); // Gebruik een bestaande key
     }
-  ];
-  try {
-    const results = checks.map(check => {
-      const result = check.func();
-      return result ? { score: check.score, message: check.message } : null;
-    }).filter(result => result !== null);
-    const totalRiskScore = results.reduce((sum, result) => sum + result.score, 0);
-    const specificReasons = results.map(result => result.message);
-    if (specificReasons.length > 0) {
-      await warnLink(link, specificReasons); // Gebruik await
-      const warningIcon = document.createElement("span");
-      warningIcon.className = "phishing-warning-icon";
-      warningIcon.textContent = "⚠️";
-      warningIcon.style = "position: relative; top: 0; left: 5px; color: #ff0000;";
-      link.insertAdjacentElement("afterend", warningIcon);
-      link.style.border = "2px solid #ff0000";
-      link.style.color = "#ff0000";
-      link.title = `Warning: This ad may be unsafe. \n${specificReasons.join("\n")}`;
-    }
-  } catch (error) {
-    handleError(error, `checkForPhishingAds: Fout bij controleren van link ${link.href}`);
-    await warnLink(link, ["An error occurred while checking this link."]); // Gebruik await
-  }
 }
-
 
 function classifyAndCheckLink(link) {
   if (!link || !link.href) {
@@ -597,99 +576,96 @@ function classifyAndCheckLink(link) {
   }
 }
 
-async function warnLink(link, reasons, messageKey = null) {
-  if (!link || !link.href || !isValidURL(link.href)) {
-    logError("Invalid link provided to warnLink:", link);
-    return;
-  }
+async function warnLink(link, reasons) {
+    if (!link || !link.href || !isValidURL(link.href)) {
+        logError("Invalid link provided to warnLink:", link);
+        return;
+    }
 
-  // Get the current domain and the link's domain
-  const currentDomain = normalizeDomain(window.location.href);
-  const linkDomain = normalizeDomain(link.href);
-  const isSameDomain = currentDomain && linkDomain && linkDomain.endsWith(currentDomain);
+    const currentDomain = normalizeDomain(window.location.href);
+    const linkDomain = normalizeDomain(link.href);
+    const isSameDomain = currentDomain && linkDomain && linkDomain.endsWith(currentDomain);
 
-  // Calculate risk score asynchronously
-  const riskResult = await calculateRiskScore(link.href);
-  const isHighRisk = riskResult.score >= (globalConfig.RISK_THRESHOLD || 5);
+    const riskResult = await calculateRiskScore(link.href);
+    const isHighRisk = riskResult.score >= (globalConfig.RISK_THRESHOLD || 5);
 
-  // Sanitize and prepare reasons for display
-  const translatedReasons = Array.from(reasons)
-    .map(reason => chrome.i18n.getMessage(reason) || `Translation missing for: ${reason}`)
-    .join("\n");
-  logDebug(`[warnLink] Marking link as suspicious: ${link.href}, Same domain: ${isSameDomain}, Reasons:`, translatedReasons);
+    // Vertaling van redenen
+    const translatedReasons = Array.from(reasons)
+        .map(key => chrome.i18n.getMessage(key) || `Translation missing for: ${key}`)
+        .join("\n");
+    logDebug(`[warnLink] Marking link as suspicious: ${link.href}, Same domain: ${isSameDomain}, Risk: ${riskResult.score}, Reasons:`, translatedReasons);
 
-  // Remove existing warnings to avoid duplicates
-  const existingIcon = link.nextElementSibling;
-  if (existingIcon && existingIcon.classList.contains('phishing-warning-icon')) {
-    existingIcon.remove();
-  }
-  link.style.border = ''; // Reset any existing border
-  link.style.color = ''; // Reset color
+    // Verwijder bestaande waarschuwingen
+    const existingIcon = link.nextElementSibling;
+    if (existingIcon && existingIcon.classList.contains('phishing-warning-icon')) {
+        existingIcon.remove();
+    }
+    link.style.border = '';
+    link.style.color = '';
 
-  // Create or update warning based on domain and risk
-  const warningIcon = document.createElement('span');
-  warningIcon.className = 'phishing-warning-icon';
-  warningIcon.textContent = '⚠️';
+    // Maak waarschuwingsicoon
+    const warningIcon = document.createElement('span');
+    warningIcon.className = 'phishing-warning-icon';
+    warningIcon.textContent = '⚠️';
 
-  if (isSameDomain) {
-    // Subtle warning for same-domain links: just an icon with a tooltip
-    warningIcon.style.cssText = `
-      font-size: 12px;
-      color: #ff9800; /* Softer orange instead of red */
-      vertical-align: middle;
-      margin-left: 5px;
-      cursor: help;
-    `;
-    warningIcon.title = translatedReasons; // Tooltip with details
-  } else if (isHighRisk) {
-    // More prominent warning for external or high-risk links
-    warningIcon.style.cssText = `
-      font-size: 16px;
-      color: #ff0000;
-      vertical-align: middle;
-      margin-left: 5px;
-      cursor: help;
-    `;
-    link.style.border = '1px dashed #ff0000'; // Dashed border instead of solid
-    link.style.color = '#ff0000';
-  } else {
-    // Moderate warning for external low-risk links
-    warningIcon.style.cssText = `
-      font-size: 14px;
-      color: #ff5722; /* Orange-red for moderate risk */
-      vertical-align: middle;
-      margin-left: 5px;
-      cursor: help;
-    `;
-    link.style.border = '1px dotted #ff5722'; // Dotted border for low risk
-  }
+    if (isSameDomain) {
+        warningIcon.className += ' subtle-warning'; // Gebruik een klasse
+        warningIcon.title = translatedReasons;
+    } else if (isHighRisk) {
+        warningIcon.className += ' high-risk-warning';
+        link.className += ' high-risk-link';
+        link.title = translatedReasons;
+    } else {
+        warningIcon.className += ' moderate-warning';
+        link.className += ' moderate-risk-link';
+        link.title = translatedReasons;
+    }
 
-  link.title = translatedReasons; // Set tooltip on the link itself
-  link.insertAdjacentElement('afterend', warningIcon);
-
-  // Ensure warning styles are injected
-  injectWarningIconStyles();
+    link.insertAdjacentElement('afterend', warningIcon);
+    injectWarningIconStyles();
 }
 
-// Helper function to ensure warning styles are injected (updated for subtlety)
+
 function injectWarningIconStyles() {
-  if (!document.head.querySelector('#phishing-warning-styles')) {
-    const style = document.createElement('style');
-    style.id = 'phishing-warning-styles';
-    style.textContent = `
-      .phishing-warning-icon {
-        position: relative;
-        top: 0;
-        left: 5px;
-        transition: color 0.3s ease;
-      }
-      .phishing-warning-icon:hover {
-        color: #d32f2f; /* Darker red on hover for emphasis */
-      }
-    `;
-    document.head.appendChild(style);
-  }
+    if (!document.head.querySelector('#phishing-warning-styles')) {
+        const style = document.createElement('style');
+        style.id = 'phishing-warning-styles';
+        style.textContent = `
+            .phishing-warning-icon {
+                position: relative;
+                vertical-align: middle;
+                margin-left: 5px;
+                cursor: help;
+                transition: color 0.3s ease;
+            }
+            .subtle-warning {
+                font-size: 12px;
+                color: #ff9800; /* Softer orange */
+            }
+            .high-risk-warning {
+                font-size: 16px;
+                color: #ff0000;
+            }
+            .high-risk-link {
+                border: 1px dashed #ff0000;
+                color: #ff0000;
+            }
+            .moderate-warning {
+                font-size: 14px;
+                color: #ff5722; /* Orange-red */
+            }
+            .moderate-risk-link {
+                border: 1px dotted #ff5722;
+            }
+            .phishing-warning-icon:hover {
+                color: #d32f2f; /* Darker red on hover */
+            }
+        `;
+        document.head.appendChild(style);
+    }
 }
+
+
 function sanitizeInput(input) {
   const tempDiv = document.createElement('div');
   tempDiv.textContent = input;
@@ -765,96 +741,92 @@ async function calculateRiskScore(url) {
     let score = 0;
     let reasons = [];
 
+    const addRisk = (points, reasonKey, severity = "low") => {
+        if (!reasons.includes(reasonKey)) {
+            score += points;
+            reasons.push(reasonKey); // Gebruik alleen de key, geen formatted string
+        }
+    };
+
     try {
         const urlObj = new URL(url);
         const domain = normalizeDomain(url);
-        if (!domain) return { score: -1, reasons: ["Invalid URL."] };
+        if (!domain) return { score: -1, reasons: ["invalidUrl"] };
 
         const path = urlObj.pathname.toLowerCase();
-        const addRisk = (points, reason, severity = "low") => {
-            if (!reasons.includes(reason)) {
-                score += points;
-                reasons.push(`${reason} (${severity})`);
-            }
-        };
+        const urlParts = sanitizeInput(url.toLowerCase()).split(/[\/?#]/);
+        const ext = urlObj.pathname.toLowerCase().match(/\.[0-9a-z]+$/i);
+        const maxLength = globalConfig.MAX_URL_LENGTH || 2000;
 
-        // 1️⃣ HTTPS-controle (verhoogd risico)
+        // 1. HTTPS-controle
         if (urlObj.protocol !== 'https:') {
-            addRisk(15, "URL uses HTTP instead of HTTPS", "high");
-            // Wacht op DOM-lading als deze nog niet compleet is
+            addRisk(15, "noHttps", "high");
             if (document.readyState !== 'complete') {
                 await new Promise(resolve => document.addEventListener('DOMContentLoaded', resolve, { once: true }));
             }
-            if (isLoginPage(url)) { // URL meegeven aan isLoginPage
-                addRisk(20, "Login page detected without HTTPS", "high");
+            if (isLoginPage(url)) {
+                addRisk(20, "insecureLoginPage", "high");
             }
         }
 
-        // 2️⃣ Controle op phishing-gerelateerde termen in URL
-        const urlParts = sanitizeInput(url.toLowerCase()).split(/[\/?#]/);
+        // 2. Phishing keywords
         if (urlParts.some(word => globalConfig.PHISHING_KEYWORDS.has(word))) {
-            addRisk(10, "URL contains phishing keywords", "high");
+            addRisk(10, "suspiciousKeywords", "high");
         }
 
-        // 3️⃣ Verdachte bestandsextensies
-        const ext = urlObj.pathname.toLowerCase().match(/\.[0-9a-z]+$/i);
+        // 3. Verdachte bestandsextensies
         if (ext && globalConfig.MALWARE_EXTENSIONS.test(ext[0])) {
-            addRisk(12, "URL points to a suspicious file type", "high");
+            addRisk(12, "downloadPage", "high"); // "downloadPage" lijkt passend
         }
 
-        // 4️⃣ IP-adres als domeinnaam + ongebruikelijke poort
+        // 4. IP-adres als domeinnaam + ongebruikelijke poort
         if (/^(?:https?:\/\/)?(\d{1,3}\.){3}\d{1,3}(?::\d+)?(?:\/|$)/.test(url)) {
-            addRisk(12, "URL contains an IP address", "high");
-
-            // Controleer ongebruikelijke poorten
+            addRisk(12, "ipAsDomain", "high");
             if (urlObj.port && !["80", "443"].includes(urlObj.port)) {
-                addRisk(6, "URL uses an unusual port", "high");
+                addRisk(6, "unusualPort", "high");
             }
         }
 
-        // 5️⃣ Verkorte URL-detectie met fetch (indien nodig)
+        // 5. Verkorte URL-detectie
         if (globalConfig.SHORTENED_URL_DOMAINS.has(domain)) {
-            addRisk(6, "URL shortener detected", "medium");
-
+            addRisk(6, "shortenedUrl", "medium");
             try {
                 const response = await fetch(url, { method: 'HEAD', redirect: 'follow' });
                 const finalUrl = response.url;
                 if (finalUrl && finalUrl !== url) {
-                    addRisk(10, `Shortened URL resolved to: ${finalUrl}`, "medium");
+                    addRisk(10, "shortenedUrl", "medium"); // Hergebruik key, geen dynamische tekst
                 }
             } catch (error) {
-                addRisk(5, "Error resolving shortened URL", "low");
+                addRisk(5, "shortenedUrl", "low"); // Fallback bij fout
                 handleError(error, `calculateRiskScore: Kon verkorte URL ${url} niet oplossen`);
             }
         }
 
-        // 6️⃣ Verdachte TLD's
+        // 6. Verdachte TLD's
         if (globalConfig.SUSPICIOUS_TLDS.test(domain)) {
-            addRisk(15, "URL uses a suspicious top-level domain", "high");
+            addRisk(15, "suspiciousTLD", "high");
         }
 
-        // 7️⃣ Controle op ongewoon lange URL's
-        const maxLength = globalConfig.MAX_URL_LENGTH || 2000;
+        // 7. Ongewoon lange URL's
         if (url.length > maxLength) {
-            addRisk(8, "URL is unusually long", "medium");
+            addRisk(8, "urlFragmentTrick", "medium"); // Geen exacte match, maar dichtbij
         }
 
-        // 8️⃣ Gecodeerde tekens (mogelijk Base64 of HEX)
+        // 8. Gecodeerde tekens
         if (/%[0-9A-Fa-f]{2}/.test(url)) {
-            addRisk(6, "URL contains encoded characters", "medium");
+            addRisk(6, "encodedCharacters", "medium");
         }
 
-        // 9️⃣ Overmatig gebruik van subdomeinen
+        // 9. Overmatig gebruik van subdomeinen
         if (domain.split(".").length > 3) {
-            addRisk(5, "URL has excessive subdomains", "medium");
+            addRisk(5, "tooManySubdomains", "medium");
         }
 
-        // 🔟 Mogelijk Base64 of hexadecimale encoding in URL
+        // 10. Base64 of hexadecimale encoding
         if (/^(javascript|data):/.test(url) || /[a-f0-9]{32,}/.test(url)) {
-            addRisk(12, "Possible Base64 or hexadecimal encoding in URL", "high");
+            addRisk(12, "base64OrHex", "high");
         }
 
-        // Logging en resultaat
         logDebug(`Risk score for ${url}: ${score}. Reasons: ${reasons.join(', ')}`);
         return { score, reasons };
 
@@ -863,6 +835,7 @@ async function calculateRiskScore(url) {
         return { score: -1, reasons: ["Error calculating risk score."] };
     }
 }
+
 
 function isSearchResultPage() {
   const url = new URL(window.location.href);
@@ -1090,65 +1063,76 @@ function hasSuspiciousUrlPattern(url) {
 }
 
 async function hasSuspiciousIframes() {
-  const debouncedCheck = debounce(async () => {
-    let trustedIframeDomains = [];
-    try {
-      trustedIframeDomains = await fetchCachedJson('trustedIframes.json');
-    } catch (error) {
-      handleError(error, `hasSuspiciousIframes: Kon trustedIframes.json niet laden`);
-      trustedIframeDomains = [];
-    }
-    const iframes = document.querySelectorAll("iframe");
-    let suspiciousCount = 0;
-    for (const iframe of iframes) {
-      const src = iframe.getAttribute("src");
-      if (!src) continue;
-      let riskScore = 0;
-      const reasons = [];
-      try {
-        const iframeURL = new URL(src, window.location.origin);
-        const iframeDomain = iframeURL.hostname.toLowerCase();
-        if (trustedIframeDomains.includes(iframeDomain)) continue;
-        
-        if (!iframeURL.protocol.startsWith("https")) {
-          riskScore += 2;
-          reasons.push(chrome.i18n.getMessage("noHttps"));
+    const debouncedCheck = debounce(async () => {
+        let trustedIframeDomains = [];
+        try {
+            trustedIframeDomains = await fetchCachedJson('trustedIframes.json');
+        } catch (error) {
+            handleError(error, `hasSuspiciousIframes: Kon trustedIframes.json niet laden`);
+            trustedIframeDomains = [];
         }
-        
-        if (globalConfig.SUSPICIOUS_TLDS.test(iframeDomain)) {
-          riskScore += 3;
-          reasons.push(chrome.i18n.getMessage("suspiciousTLD") + " " + iframeDomain);
-        }
-        
-        if (globalConfig.SUSPICIOUS_IFRAME_KEYWORDS && globalConfig.SUSPICIOUS_IFRAME_KEYWORDS.test(src)) {
-          riskScore += 4;
-          reasons.push(chrome.i18n.getMessage("suspiciousKeywords"));
-        }
-        
-        const isHiddenOrSmall =
-          iframe.offsetParent === null ||
-          iframe.style.display === "none" ||
-          iframe.style.visibility === "hidden" ||
-          (parseInt(iframe.width, 10) < 10 && parseInt(iframe.height, 10) < 10);
-        if (isHiddenOrSmall) {
-          riskScore += 2;
-          reasons.push(chrome.i18n.getMessage("iframeHidden") || "Iframe is hidden or too small.");
-        }
-        
-        if (riskScore >= 7) {
-          suspiciousCount++;
-          logDebug(`Suspicious iframe detected: ${src}`);
-          console.table(reasons);
-        }
-      } catch (error) {
-        handleError(error, `hasSuspiciousIframes: Fout bij controleren van iframe met src ${src}`);
-      }
-    }
-    return suspiciousCount > 0;
-  }, 500); // Debounce met 500ms (aanpasbaar)
 
-  return await debouncedCheck();
+        const iframes = document.querySelectorAll("iframe");
+        const suspiciousIframes = []; // Verzamel iframes met hun redenen
+
+        for (const iframe of iframes) {
+            const src = iframe.getAttribute("src");
+            if (!src) continue;
+
+            let riskScore = 0;
+            const reasons = new Set(); // Gebruik een Set om duplicaten te vermijden
+
+            try {
+                const iframeURL = new URL(src, window.location.origin);
+                const iframeDomain = iframeURL.hostname.toLowerCase();
+
+                if (trustedIframeDomains.includes(iframeDomain)) continue;
+
+                if (!iframeURL.protocol.startsWith("https")) {
+                    riskScore += 2;
+                    reasons.add("noHttps");
+                }
+
+                if (globalConfig.SUSPICIOUS_TLDS.test(iframeDomain)) {
+                    riskScore += 3;
+                    reasons.add("suspiciousTLD"); // Alleen de key, geen dynamische tekst
+                }
+
+                if (globalConfig.SUSPICIOUS_IFRAME_KEYWORDS && globalConfig.SUSPICIOUS_IFRAME_KEYWORDS.test(src)) {
+                    riskScore += 4;
+                    reasons.add("suspiciousKeywords");
+                }
+
+                const isHiddenOrSmall =
+                    iframe.offsetParent === null ||
+                    iframe.style.display === "none" ||
+                    iframe.style.visibility === "hidden" ||
+                    (parseInt(iframe.width, 10) < 10 && parseInt(iframe.height, 10) < 10);
+                if (isHiddenOrSmall) {
+                    riskScore += 2;
+                    reasons.add("iframeHidden");
+                }
+
+                if (riskScore >= 7) {
+                    suspiciousIframes.push({ src, riskScore, reasons: Array.from(reasons) });
+                    logDebug(`Suspicious iframe detected: ${src}, Risk Score: ${riskScore}, Reasons:`, reasons);
+                }
+            } catch (error) {
+                handleError(error, `hasSuspiciousIframes: Fout bij controleren van iframe met src ${src}`);
+            }
+        }
+
+        // Retourneer een object met een boolean en de redenen
+        return {
+            isSuspicious: suspiciousIframes.length > 0,
+            reasons: suspiciousIframes.length > 0 ? suspiciousIframes[0].reasons : [] // Geef redenen van de eerste verdachte iframe
+        };
+    }, 500);
+
+    return await debouncedCheck();
 }
+
+
 async function checkForSuspiciousExternalScripts() {
   // Wrap de hele functie in een debounced versie
   const debouncedCheck = debounce(async () => {
@@ -1373,6 +1357,8 @@ function isHomoglyphAttack(domain) {
 }
 
 
+const nonHttpProtocols = ['mailto:', 'tel:'];
+
 async function performSuspiciousChecks(url) {
   const isEnabled = await isProtectionEnabled();
   if (!isEnabled) {
@@ -1388,21 +1374,22 @@ async function performSuspiciousChecks(url) {
     return { isSafe: false, reasons: ["Configuratiefout"], risk: 10 };
   }
 
-  // Voeg de logica van calculateRiskScore toe
   const urlObj = new URL(url);
-  if (urlObj.protocol !== 'https:') {
-    reasons.add("noHttps");
-    totalRiskRef.value += 15;
-    if (document.readyState !== 'complete') {
-      await new Promise(resolve => document.addEventListener('DOMContentLoaded', resolve, { once: true }));
-    }
-    if (isLoginPage(url)) {
-      reasons.add("Login page detected without HTTPS");
-      totalRiskRef.value += 20;
+  const nonHttpProtocols = ['mailto:', 'tel:'];
+  if (!nonHttpProtocols.includes(urlObj.protocol)) {
+    if (urlObj.protocol !== 'https:') {
+      reasons.add("noHttps");
+      totalRiskRef.value += 15;
+      if (document.readyState !== 'complete') {
+        await new Promise(resolve => document.addEventListener('DOMContentLoaded', resolve, { once: true }));
+      }
+      if (isLoginPage(url)) {
+        reasons.add("insecureLoginPage");
+        totalRiskRef.value += 20;
+      }
     }
   }
 
-  // Voer de bestaande checks uit
   await checkStaticConditions(url, reasons, totalRiskRef);
   await checkDynamicConditions(url, reasons, totalRiskRef);
 
@@ -1759,12 +1746,12 @@ async function isShortenedUrl(url) {
     }
 
     // Controleer configuratie
-    if (!globalConfig || !Array.isArray(globalConfig.SHORTENED_URL_DOMAINS)) {
+    if (!globalConfig || !(globalConfig.SHORTENED_URL_DOMAINS instanceof Set)) {
       logDebug("SHORTENED_URL_DOMAINS not loaded correctly!");
       return false;
     }
 
-    const shortenedDomains = new Set(globalConfig.SHORTENED_URL_DOMAINS.map(d => d.toLowerCase().trim()));
+    const shortenedDomains = globalConfig.SHORTENED_URL_DOMAINS; // Het is al een Set, geen conversie nodig
     const domain = new URL(url).hostname.toLowerCase().replace(/^www\./, "");
 
     // Als het domein niet in de verkorte domeinenlijst staat, geen verdere controle nodig
@@ -1797,7 +1784,7 @@ async function isShortenedUrl(url) {
 
   } catch (error) {
     handleError(error, `isShortenedUrl: Fout bij controleren van verkorte URL ${url}`);
-    shortenedUrlCache.set(url, false); // Cache ook bij fouten om herhaalde pogingen te vermijden
+    shortenedUrlCache.set(url, false);
     return false;
   }
 }
@@ -1985,17 +1972,17 @@ document.addEventListener('DOMContentLoaded', async () => {
       attempts++;
 
       const isLogin = detectLoginPage(currentUrl);
-      if (isLogin) {
+       if (isLogin) {
         clearInterval(interval);
         chrome.runtime.sendMessage({
-          type: "checkResult",
-          url: currentUrl,
-          isSafe: false,
-          risk: 7, // Extra risico voor login-pagina's
-          reasons: ["⚠️ Login page detected without HTTPS!"]
+            type: "checkResult",
+            url: currentUrl,
+            isSafe: false,
+            risk: 7,
+            reasons: ["insecureLoginPage"] // Aangepast
         });
         logDebug(`❌ Login page detected: ${currentUrl}`);
-      }
+    }
 
       if (attempts >= maxAttempts) {
         clearInterval(interval);
@@ -2184,11 +2171,23 @@ document.addEventListener('click', debounce((event) => {
 const processedLinks = new Set();
 
 async function unifiedCheckLinkSafety(link, eventType, event) {
-  if (!link || !isValidURL(link.href)) return;
+  // Controleer of link en href bestaan en geldig zijn
+  if (!link || !link.href || !isValidURL(link.href)) {
+    logDebug(`Skipping unifiedCheckLinkSafety: Invalid or missing URL in link: ${link.href || 'undefined'}`);
+    return;
+  }
+
+  // Extra controle voor SVG-links
+  if (link.href instanceof SVGAnimatedString) {
+    logDebug(`Skipping SVG link: ${link.href.baseVal || 'undefined'}`);
+    return;
+  }
+
   const href = link.href;
-  if (processedLinks.has(href)) return;
+  if (processedLinks.has(href)) return; // Sla eerder verwerkte links over
   processedLinks.add(href);
-  setTimeout(() => processedLinks.delete(href), 2000);
+  setTimeout(() => processedLinks.delete(href), 2000); // Verwijder na 2 seconden
+
   try {
     const { isSafe, reasons, risk } = await performSuspiciousChecks(href);
     chrome.runtime.sendMessage({
@@ -2199,15 +2198,16 @@ async function unifiedCheckLinkSafety(link, eventType, event) {
       reasons
     });
     logDebug(`Checked link ${href} on ${eventType}: isSafe: ${isSafe}, risk: ${risk}, reasons:`, reasons);
+
     if (eventType === 'click') {
       const linkDomain = new URL(href).hostname;
       const currentDomain = new URL(window.location.href).hostname;
       if (!linkDomain.endsWith(currentDomain)) {
         if (!isSafe) {
-          event.preventDefault();
+          event.preventDefault(); // Blokkeer klik als de link niet veilig is
         } else {
           event.preventDefault();
-          window.location.href = href;
+          window.location.href = href; // Ga door als veilig
         }
       }
     }

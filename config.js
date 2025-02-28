@@ -1,6 +1,6 @@
 window.CONFIG = {
     // Verdachte Top-Level Domeinen (TLD’s)
-    SUSPICIOUS_TLDS: /\.(academy|accountant|accountants|agency|ap|app|art|asia|auto|bank|bar|beauty|bet|bid|bio|biz|blog|buzz|cam|capital|casa|casino|cfd|charity|cheap|church|city|claims|click|club|company|crispsalt|cyou|data|date|design|dev|digital|directory|download|email|energy|estate|events|exchange|expert|exposed|express|finance|fit|forsale|foundation|fun|games|gle|goog|gq|guide|guru|health|help|home|host|html|icu|ink|institute|investments|ip|jobs|life|limited|link|live|loan|lol|ltd|ly|mall|market|me|media|men|ml|mom|money|monster|mov|network|one|online|page|partners|party|php|pics|play|press|pro|promo|pw|quest|racing|rest|review|rocks|run|sbs|school|science|services|shop|shopping|site|software|solutions|space|store|stream|support|team|tech|tickets|to|today|tools|top|trade|trading|uno|ventures|vip|website|wiki|win|work|world|xin|xyz|zip|zone|co|cc|tv|name|team|live|stream|quest|sbs)$/i,
+    SUSPICIOUS_TLDS: /\.(academy|accountant|accountants|agency|ap|app|art|asia|auto|bank|bar|beauty|bet|bid|bio|biz|blog|buzz|cam|capital|casa|casino|cfd|charity|cheap|church|city|claims|click|club|company|crispsalt|cyou|data|date|design|dev|digital|directory|download|email|energy|estate|events|exchange|expert|exposed|express|finance|fit|forsale|foundation|fun|games|gle|goog|gq|guide|guru|health|help|home|host|html|icu|ink|institute|investments|ip|jobs|life|limited|link|live|loan|lol|ltd|ly|mall|market|me|media|men|ml|mom|money|monster|mov|network|one|online|page|partners|party|php|pics|play|press|pro|promo|pw|quest|racing|rest|review|rocks|run|sbs|school|science|services|shop|shopping|site|software|solutions|space|store|stream|support|team|tech|tickets|to|today|tools|top|trade|trading|uno|ventures|vip|website|wiki|win|work|world|xin|xyz|zip|zone|co|cc|tv|name|team|live|stream|quest|sbs|lat|click|monster)$/i,
 
     // Debug Modus
     DEBUG_MODE: false, // Zet op true voor debugging, false voor productie
@@ -9,7 +9,7 @@ window.CONFIG = {
     ALLOWED_PROTOCOLS: ['http:', 'https:', 'mailto:', 'tel:', 'ftp:'],
 
     // Verdachte Bestandsextensies
-    MALWARE_EXTENSIONS: /\.(exe|zip|bak|tar|gz|msi|dmg|jar|rar|7z|iso|bin|scr|bat|cmd|sh|vbs|lnk|chm|ps2|apk|ps1|py|js|vbscript|dll|docm|xlsm|pptm|doc|xls|ppt|rtf|torrent|wsf|hta|jse|reg|swf|svg|lnk|chm)$/i,
+    MALWARE_EXTENSIONS: /\.(exe|zip|bak|tar|gz|msi|dmg|jar|rar|7z|iso|bin|scr|bat|cmd|sh|vbs|lnk|chm|ps2|apk|ps1|py|js|vbscript|dll|docm|xlsm|pptm|doc|xls|ppt|rtf|torrent|wsf|hta|jse|reg|swf|svg|lnk|chm|wsh|pif)$/i,
 
     // Trefwoorden voor Verdachte Downloads
     DOWNLOAD_KEYWORDS: new Set([
@@ -22,7 +22,7 @@ window.CONFIG = {
         "backup", "configuration", "config", "module", "library", "framework",
         "macro", "enable", "torrent", "seed", "payload", "exploit", "dropper",
         "loader", "package", "binary", "release", "beta", "mod", "hack",
-        "crack", "keygen", "serial"
+        "crack", "keygen", "serial", "unlocker", "generator", "premium"
     ]),
 
     // Phishing Trefwoorden
@@ -32,11 +32,11 @@ window.CONFIG = {
         "update", "urgent", "validate", "verify", "win", "password", "bank", "security", "alert", "suspended",
         "confirm", "identity", "renew", "subscription", "billing", "refund", "delivery", "tracking", "survey",
         "reward", "promo", "deal", "offer", "urgent-action", "reset", "phishing", "scan", "qr", "qrcode",
-        "urgent", "confirm", "alert", "suspended", "billing", "invoice"
+        "urgent", "confirm", "alert", "suspended", "billing", "invoice", "2fa", "mfa", "otp", "verification"
     ]),
 
     // Verdachte Iframe Trefwoorden
-    SUSPICIOUS_IFRAME_KEYWORDS: /(malicious|phish|track|adserver|spy|exploit|redirect|inject|unsafe|popup|banner|ads|clickjacking|overlay|hidden|cloak|ads|popup|banner|clickjacking|overlay)/i,
+    SUSPICIOUS_IFRAME_KEYWORDS: /(malicious|phish|track|adserver|spy|exploit|redirect|inject|unsafe|popup|banner|ads|clickjacking|overlay|hidden|cloak|fake-login|overlay-login)/i,
 
     // Cache Duur (in milliseconden)
     CACHE_DURATION_MS: 24 * 60 * 60 * 1000, // 24 uur
@@ -48,7 +48,7 @@ window.CONFIG = {
     TRUSTED_IFRAME_DOMAINS: ['youtube.com', 'vimeo.com', 'google.com'],
 
     // Inlogpatronen
-    LOGIN_PATTERNS: /(login|account|auth|authenticate|signin|wp-login|sign-in|log-in|dashboard|portal|session|user|profile|dashboard|portal|session|user|profile)/i,
+    LOGIN_PATTERNS: /(login|account|auth|authenticate|signin|wp-login|sign-in|log-in|dashboard|portal|session|user|profile)/i,
 
     // Gratis Hosting Domeinen
     FREE_HOSTING_DOMAINS: [
@@ -60,7 +60,7 @@ window.CONFIG = {
         'webflow.io', 'strikingly.com', 'x10hosting.com', 'freehostingnoads.net', '000freewebhost.com', 'mystrikingly.com', 
         'sites.google.com', 'appspot.com', 'vercel.app', 'weeblysite.com', 's3.amazonaws.com', 'bubbleapps.io', 
         'typedream.app', 'codeanyapp.com', 'carrd.co', 'surge.sh', 'replit.dev', 'fly.dev', 'render.com', 'onrender.com',
-        'netlify.app', 'vercel.app'
+        'netlify.app', 'vercel.app', 'fly.io', 'workers.dev'
     ],
 
     // Verkorte URL Domeinen
@@ -73,20 +73,19 @@ window.CONFIG = {
         "xurl.es", "xup.pl", "b.link", "x.gd", "n9.cl", "zi.pe", "qr.ae", "0rz.tw", "qqc.co", "h6y.eu",
         "fw.to", "lnk2.me", "shurl.net", "mrk.to", "clk.im", "u.to", "ezurl.cc", "fur.ly", "v.gd", "2ty.cc", "sh.ky",
         "s.coop", "cutt.us", "bitly.com", "q.gs", "i.cut", "s.id", "linklyhq.com", "slkt.io", "pp.gg", "short.url",
-        "zpr.io", "me.qr", "short.io", "dub.co", "cl.ly", "bl.ink", "go.ly", "soo.gd", "jmp.sh", "u.nu"
+        "zpr.io", "me.qr", "short.io", "dub.co", "cl.ly", "bl.ink", "go.ly", "soo.gd", "jmp.sh", "u.nu", "t2m.io", "short.link"
     ],
 
     // Verdachte URL Patronen
     SUSPICIOUS_URL_PATTERNS: [
-        /\/(payment|invoice|billing|money|bank|secure|login|checkout|subscription|refund|delivery)\//i,
+        /\/(payment|invoice|billing|money|bank|secure|login|checkout|subscription|refund|delivery|2fa|mfa)\//i,
         /(Base64|hexadecimal|b64|encode|urlencode|obfuscate|crypt)/i,
         /\/(signup|register|confirmation|securepayment|order|tracking|verify-account|reset-password|oauth)\//i,
         /(?:\bsecurepay\b|\baccountverify\b|\bresetpassword\b|\bverifyemail\b|\bupdateinfo\b)/i,
         /(qr-code|qrcode|qr\.|generate-qr|scan|qrserver|qrcodes\.)/i,
         /(fake|clone|spoof|impersonate|fraud|scam|phish)/i,
         /[^a-zA-Z0-9]{2,}/,
-        /(http[s]?:\/\/[^\/]+){2,}/i,
-        /(qr-code|qrcode|qr\.|generate-qr|scan)/i
+        /(http[s]?:\/\/[^\/]+){2,}/i
     ],
 
     // Verdachte Script Patronen
@@ -98,9 +97,9 @@ window.CONFIG = {
         /(?:malicious|unsafe|tracker|adserver|spy|hack|exploit|virus|malware|phish|redirect|inject|clickjacking|xss|keylogger|trojan|worm|ransomware|payload|obfuscated|obfuscate|backdoor|rootkit|sqlinjection|sqli|bufferoverflow|overflow|csrf|cryptojacking|mining)/i,
         /(RTCPeerConnection|RTCDataChannel|mozRTCPeerConnection|webkitRTCPeerConnection|iceCandidate|peerconnection|stun:|turn:)/i,
         /(navigator\.geolocation|navigator\.permissions|navigator\.mediaDevices|Clipboard|ServiceWorker|PushManager|WebAssembly)/i,
+        /(Notification|requestPermission|push)/i, // Nieuwe detectie voor notificatie-misbruik
         /\.(php|asp|cgi|exe|bin|dll|dat|py|sh|vb|vbs|cmd|bat|pl|ps1|psm1|jar|class|js|jsp|aspx|cfm|rb|ts|mjs|apk|swift|go|lua|wasm)$/i,
-        /script|eval/i,
-        /(RTCPeerConnection|RTCDataChannel|mozRTCPeerConnection|webkitRTCPeerConnection|iceCandidate)/i
+        /script|eval/i
     ],
 
     // Toegestane Paden en Query Parameters

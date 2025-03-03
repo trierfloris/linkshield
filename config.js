@@ -1,6 +1,6 @@
 window.CONFIG = {
     // Verdachte Top-Level Domeinen (TLD’s)
-    SUSPICIOUS_TLDS: /\.(academy|accountant|accountants|agency|ap|app|art|asia|auto|bank|bar|beauty|bet|bid|bio|biz|blog|buzz|cam|capital|casa|casino|cfd|charity|cheap|church|city|claims|click|club|company|crispsalt|cyou|data|date|design|dev|digital|directory|download|email|energy|estate|events|exchange|expert|exposed|express|finance|fit|forsale|foundation|fun|games|gle|goog|gq|guide|guru|health|help|home|host|html|icu|ink|institute|investments|ip|jobs|life|limited|link|live|loan|lol|ltd|ly|mall|market|me|media|men|ml|mom|money|monster|mov|network|one|online|page|partners|party|php|pics|play|press|pro|promo|pw|quest|racing|rest|review|rocks|run|sbs|school|science|services|shop|shopping|site|software|solutions|space|store|stream|support|team|tech|tickets|to|today|tools|top|trade|trading|uno|ventures|vip|website|wiki|win|work|world|xin|xyz|zip|zone|co|cc|tv|name|team|live|stream|quest|sbs|lat|click|monster)$/i,
+    SUSPICIOUS_TLDS: /\.(academy|accountant|accountants|agency|ap|app|art|asia|auto|bank|bar|beauty|bet|bid|bio|biz|blog|buzz|cam|capital|casa|casino|cfd|charity|cheap|church|city|claims|click|club|company|crispsalt|cyou|data|date|design|dev|digital|directory|download|email|energy|estate|events|exchange|expert|exposed|express|finance|fit|forsale|foundation|fun|games|gle|goog|gq|guide|guru|health|help|home|host|html|icu|ink|institute|investments|ip|jobs|life|limited|link|live|loan|lol|ltd|ly|mall|market|me|media|men|ml|mom|money|monster|mov|network|one|online|page|partners|party|php|pics|play|press|pro|promo|pw|quest|racing|rest|review|rocks|run|sbs|school|science|services|shop|shopping|site|software|solutions|space|store|stream|support|team|tech|tickets|to|today|tools|top|trade|trading|uno|ventures|vip|website|wiki|win|work|world|xin|xyz|zip|zone|co|cc|tv|name|team|live|stream|quest|sbs|lat|click|monster|bond|cyou|store|crypto|wallet)$/i,
 
     // Debug Modus
     DEBUG_MODE: false, // Zet op true voor debugging, false voor productie
@@ -22,7 +22,8 @@ window.CONFIG = {
         "backup", "configuration", "config", "module", "library", "framework",
         "macro", "enable", "torrent", "seed", "payload", "exploit", "dropper",
         "loader", "package", "binary", "release", "beta", "mod", "hack",
-        "crack", "keygen", "serial", "unlocker", "generator", "premium"
+        "crack", "keygen", "serial", "unlocker", "generator", "premium",
+        "ai", "quantum", "crypto", "wallet"
     ]),
 
     // Phishing Trefwoorden
@@ -32,7 +33,8 @@ window.CONFIG = {
         "update", "urgent", "validate", "verify", "win", "password", "bank", "security", "alert", "suspended",
         "confirm", "identity", "renew", "subscription", "billing", "refund", "delivery", "tracking", "survey",
         "reward", "promo", "deal", "offer", "urgent-action", "reset", "phishing", "scan", "qr", "qrcode",
-        "urgent", "confirm", "alert", "suspended", "billing", "invoice", "2fa", "mfa", "otp", "verification"
+        "urgent", "confirm", "alert", "suspended", "billing", "invoice", "2fa", "mfa", "otp", "verification",
+        "authenticator", "token", "code", "ai", "quantum", "crypto", "wallet"
     ]),
 
     // Verdachte Iframe Trefwoorden
@@ -78,14 +80,15 @@ window.CONFIG = {
 
     // Verdachte URL Patronen
     SUSPICIOUS_URL_PATTERNS: [
-        /\/(payment|invoice|billing|money|bank|secure|login|checkout|subscription|refund|delivery|2fa|mfa)\//i,
+        /\/(payment|invoice|billing|money|bank|secure|login|checkout|subscription|refund|delivery|2fa|mfa|ai|quantum|crypto|wallet)\//i,
         /(Base64|hexadecimal|b64|encode|urlencode|obfuscate|crypt)/i,
         /\/(signup|register|confirmation|securepayment|order|tracking|verify-account|reset-password|oauth)\//i,
         /(?:\bsecurepay\b|\baccountverify\b|\bresetpassword\b|\bverifyemail\b|\bupdateinfo\b)/i,
         /(qr-code|qrcode|qr\.|generate-qr|scan|qrserver|qrcodes\.)/i,
         /(fake|clone|spoof|impersonate|fraud|scam|phish)/i,
         /[^a-zA-Z0-9]{2,}/,
-        /(http[s]?:\/\/[^\/]+){2,}/i
+        /(http[s]?:\/\/[^\/]+){2,}/i,
+        /\/(chat|ai|machine-learning|quantum|crypto|wallet)\//i // Nieuwe detectie voor AI-, quantum-, en crypto-gerelateerde phishing
     ],
 
     // Verdachte Script Patronen
@@ -96,8 +99,9 @@ window.CONFIG = {
         /(?:iframe|srcdoc|data:text\/html|javascript:|onload|onerror|onclick|onsubmit|onmouseover|onfocus|onblur|onchange|onscroll|onkeydown|onkeyup|onkeypress)/i,
         /(?:malicious|unsafe|tracker|adserver|spy|hack|exploit|virus|malware|phish|redirect|inject|clickjacking|xss|keylogger|trojan|worm|ransomware|payload|obfuscated|obfuscate|backdoor|rootkit|sqlinjection|sqli|bufferoverflow|overflow|csrf|cryptojacking|mining)/i,
         /(RTCPeerConnection|RTCDataChannel|mozRTCPeerConnection|webkitRTCPeerConnection|iceCandidate|peerconnection|stun:|turn:)/i,
-        /(navigator\.geolocation|navigator\.permissions|navigator\.mediaDevices|Clipboard|ServiceWorker|PushManager|WebAssembly)/i,
-        /(Notification|requestPermission|push)/i, // Nieuwe detectie voor notificatie-misbruik
+        /(navigator\.geolocation|navigator\.permissions|navigator\.mediaDevices|Clipboard|ServiceWorker|PushManager|WebAssembly|Worker)/i,
+        /(Notification|requestPermission|push)/i,
+        /(Clipboard\.write|Clipboard\.read)/i, // Detectie voor clipboard-manipulatie
         /\.(php|asp|cgi|exe|bin|dll|dat|py|sh|vb|vbs|cmd|bat|pl|ps1|psm1|jar|class|js|jsp|aspx|cfm|rb|ts|mjs|apk|swift|go|lua|wasm)$/i,
         /script|eval/i
     ],
@@ -160,9 +164,35 @@ window.CONFIG = {
 
     // Typosquatting Patronen
     TYPOSQUATTING_PATTERNS: [
-        /(g00gle|go0gle|goggle|paypa1|paypall|faceb00k|facbook|tw1tter|twiiter|amaz0n|amzon|micr0soft|micsoft)/i,
+        /(g00gle|go0gle|goggle|gooogle|paypa1|paypall|faceb00k|facbook|tw1tter|twiiter|amaz0n|amzon|amazzon|micr0soft|micsoft)/i,
         /(.)\1{2,}/,
         /xn--/,
         /\d{1,2}[a-z]{2,}/i
-    ]
+    ],
+
+    // Legitieme Domeinen (uitgebreid)
+    legitimateDomains: [
+        'microsoft.com', 'apple.com', 'google.com', 'linkedin.com', 'alibaba.com',
+        'whatsapp.com', 'amazon.com', 'x.com', 'facebook.com', 'adobe.com',
+        'paypal.com', 'netflix.com', 'instagram.com', 'outlook.com', 'dropbox.com'
+    ],
+
+    // Domein Risicogewichten (verfijnd met recente data)
+    domainRiskWeights: {
+        'microsoft.com': 10,  // Hoog risico: vaak nagebootst in phishing (bijv. Office 365 scams)
+        'paypal.com': 8,      // Veel gebruikt in betaalphishing
+        'outlook.com': 7,     // Veel voorkomende e-mailphishing
+        'apple.com': 6,       // Regelmatige iCloud-phishing
+        'google.com': 5,      // Gmail en Google Drive scams
+        'linkedin.com': 4,    // Professionele netwerkphishing
+        'amazon.com': 3,      // Webshop- en bezorgscams
+        'facebook.com': 3,    // Social media phishing
+        'instagram.com': 3,   // Accountovername-pogingen
+        'netflix.com': 2,     // Abonnementsphishing
+        'whatsapp.com': 2,    // Berichtenscams
+        'x.com': 2,           // Opkomend risico door populariteit
+        'alibaba.com': 1,     // Minder frequent doelwit
+        'adobe.com': 1,       // Lage frequentie
+        'dropbox.com': 1      // Lage frequentie, maar potentieel risico
+    }
 };

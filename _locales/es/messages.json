@@ -92,6 +92,9 @@
   "iframeHidden": {
     "message": "Este sitio web usa una ventana oculta (riesgo medio). Esto podría usarse para ocultar información maliciosa."
   },
+  "similarToLegitimateDomain": {
+    "message": "Esta dirección web se parece mucho a un sitio seguro y conocido (alto riesgo). Esto podría ser un truco para engañarte."
+},
   "popupTitle": {
     "message": "LinkShield: Protégete del phishing"
   },

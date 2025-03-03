@@ -92,6 +92,9 @@
   "iframeHidden": {
     "message": "This website uses a hidden frame (medium risk). This may be a way to hide something."
   },
+  "similarToLegitimateDomain": {
+    "message": "This web address closely resembles a well-known secure site (high risk). This may be a trick to mislead you."
+},
   "popupTitle": {
     "message": "LinkShield: Protect Yourself from Phishing"
   },

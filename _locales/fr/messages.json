@@ -92,6 +92,9 @@
   "iframeHidden": {
     "message": "Ce site Web utilise une fenêtre cachée (risque moyen). Cela peut être une tentative de dissimulation."
   },
+  "similarToLegitimateDomain": {
+    "message": "Cette adresse web ressemble fortement à un site sécurisé bien connu (risque élevé). Cela pourrait être une astuce pour vous tromper."
+},
   "popupTitle": {
     "message": "LinkShield : Protégez-vous contre le phishing"
   },

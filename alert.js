@@ -61,7 +61,16 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             reasons.forEach(reason => {
                 const li = document.createElement('li');
-                li.textContent = chrome.i18n.getMessage(reason) || `⚠️ ${reason}`;
+                // Splits de reden op ": " om sleutel en extra info te scheiden
+                const [key, ...extraInfo] = reason.split(": ");
+                const translatedMessage = chrome.i18n.getMessage(key);
+                if (translatedMessage) {
+                    // Als er extra info is, voeg deze toe
+                    li.textContent = extraInfo.length > 0 ? `${translatedMessage} (${extraInfo.join(": ")})` : translatedMessage;
+                } else {
+                    // Fallback als vertaling mislukt
+                    li.textContent = `⚠️ ${reason}`;
+                }
                 reasonList.appendChild(li);
             });
         }

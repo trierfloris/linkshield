@@ -92,6 +92,9 @@
   "iframeHidden": {
     "message": "Deze website gebruikt een verborgen venster (gemiddeld risico). Dit kan een manier zijn om iets te verbergen."
   },
+  "similarToLegitimateDomain": {
+    "message": "Dit webadres lijkt sterk op een bekende veilige site (hoog risico). Dit kan een truc zijn om je te misleiden."
+  },
   "popupTitle": {
     "message": "LinkShield: Bescherm jezelf tegen phishing"
   },

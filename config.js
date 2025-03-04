@@ -1,6 +1,6 @@
 window.CONFIG = {
     // Verdachte Top-Level Domeinen (TLD’s)
-    SUSPICIOUS_TLDS: /\.(academy|accountant|accountants|agency|ap|app|art|asia|auto|bank|bar|beauty|bet|bid|bio|biz|blog|buzz|cam|capital|casa|casino|cfd|charity|cheap|church|city|claims|click|club|company|crispsalt|cyou|data|date|design|dev|digital|directory|download|email|energy|estate|events|exchange|expert|exposed|express|finance|fit|forsale|foundation|fun|games|gle|goog|gq|guide|guru|health|help|home|host|html|icu|ink|institute|investments|ip|jobs|life|limited|link|live|loan|lol|ltd|ly|mall|market|me|media|men|ml|mom|money|monster|mov|network|one|online|page|partners|party|php|pics|play|press|pro|promo|pw|quest|racing|rest|review|rocks|run|sbs|school|science|services|shop|shopping|site|software|solutions|space|store|stream|support|team|tech|tickets|to|today|tools|top|trade|trading|uno|ventures|vip|website|wiki|win|work|world|xin|xyz|zip|zone|co|cc|tv|name|team|live|stream|quest|sbs|lat|click|monster|bond|cyou|store|crypto|wallet)$/i,
+    SUSPICIOUS_TLDS: /\.(academy|accountant|accountants|agency|ap|app|art|asia|auto|bank|bar|beauty|bet|bid|bio|biz|blog|buzz|cam|capital|casa|casino|cfd|charity|cheap|church|city|claims|click|club|company|crispsalt|cyou|data|date|design|dev|digital|directory|download|email|energy|estate|events|exchange|expert|exposed|express|finance|fit|forsale|foundation|fun|games|gle|goog|gq|guide|guru|health|help|home|host|html|icu|ink|institute|investments|ip|jobs|life|limited|link|live|loan|lol|ltd|ly|mall|market|me|media|men|ml|mom|money|monster|mov|network|one|online|page|partners|party|php|pics|play|press|pro|promo|pw|quest|racing|rest|review|rocks|run|sbs|school|science|services|shop|shopping|site|software|solutions|space|store|stream|support|team|tech|tickets|to|today|tools|top|trade|trading|uno|ventures|vip|website|wiki|win|work|world|xin|xyz|zip|zone|co|cc|tv|name|team|live|stream|quest|sbs|lat|click|monster|bond|cyou|store|crypto|wallet|quantum)$/i,
 
     // Debug Modus
     DEBUG_MODE: false, // Zet op true voor debugging, false voor productie
@@ -9,7 +9,7 @@ window.CONFIG = {
     ALLOWED_PROTOCOLS: ['http:', 'https:', 'mailto:', 'tel:', 'ftp:'],
 
     // Verdachte Bestandsextensies
-    MALWARE_EXTENSIONS: /\.(exe|zip|bak|tar|gz|msi|dmg|jar|rar|7z|iso|bin|scr|bat|cmd|sh|vbs|lnk|chm|ps2|apk|ps1|py|js|vbscript|dll|docm|xlsm|pptm|doc|xls|ppt|rtf|torrent|wsf|hta|jse|reg|swf|svg|lnk|chm|wsh|pif)$/i,
+    MALWARE_EXTENSIONS: /\.(exe|zip|bak|tar|gz|msi|dmg|jar|rar|7z|iso|bin|scr|bat|cmd|sh|vbs|lnk|chm|ps2|apk|ps1|py|js|vbscript|dll|docm|xlsm|pptm|doc|xls|ppt|rtf|torrent|wsf|hta|jse|reg|swf|svg|lnk|chm|wsh|pif|wasm)$/i,
 
     // Trefwoorden voor Verdachte Downloads
     DOWNLOAD_KEYWORDS: new Set([
@@ -23,7 +23,7 @@ window.CONFIG = {
         "macro", "enable", "torrent", "seed", "payload", "exploit", "dropper",
         "loader", "package", "binary", "release", "beta", "mod", "hack",
         "crack", "keygen", "serial", "unlocker", "generator", "premium",
-        "ai", "quantum", "crypto", "wallet"
+        "ai", "quantum", "crypto", "wallet", "blockchain", "ledger"
     ]),
 
     // Phishing Trefwoorden
@@ -34,7 +34,7 @@ window.CONFIG = {
         "confirm", "identity", "renew", "subscription", "billing", "refund", "delivery", "tracking", "survey",
         "reward", "promo", "deal", "offer", "urgent-action", "reset", "phishing", "scan", "qr", "qrcode",
         "urgent", "confirm", "alert", "suspended", "billing", "invoice", "2fa", "mfa", "otp", "verification",
-        "authenticator", "token", "code", "ai", "quantum", "crypto", "wallet"
+        "authenticator", "token", "code", "ai", "quantum", "crypto", "wallet", "blockchain", "ledger"
     ]),
 
     // Verdachte Iframe Trefwoorden
@@ -80,7 +80,7 @@ window.CONFIG = {
 
     // Verdachte URL Patronen
     SUSPICIOUS_URL_PATTERNS: [
-        /\/(payment|invoice|billing|money|bank|secure|login|checkout|subscription|refund|delivery|2fa|mfa|ai|quantum|crypto|wallet)\//i,
+        /\/(payment|invoice|billing|money|bank|secure|login|checkout|subscription|refund|delivery|2fa|mfa|ai|quantum|crypto|wallet|blockchain|ledger)\//i,
         /(Base64|hexadecimal|b64|encode|urlencode|obfuscate|crypt)/i,
         /\/(signup|register|confirmation|securepayment|order|tracking|verify-account|reset-password|oauth)\//i,
         /(?:\bsecurepay\b|\baccountverify\b|\bresetpassword\b|\bverifyemail\b|\bupdateinfo\b)/i,
@@ -88,7 +88,7 @@ window.CONFIG = {
         /(fake|clone|spoof|impersonate|fraud|scam|phish)/i,
         /[^a-zA-Z0-9]{2,}/,
         /(http[s]?:\/\/[^\/]+){2,}/i,
-        /\/(chat|ai|machine-learning|quantum|crypto|wallet)\//i // Nieuwe detectie voor AI-, quantum-, en crypto-gerelateerde phishing
+        /\/(chat|ai|machine-learning|quantum|crypto|wallet|blockchain|ledger)\//i // Versterkte detectie voor opkomende technologieën
     ],
 
     // Verdachte Script Patronen

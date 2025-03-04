@@ -74,7 +74,7 @@ function validateConfig(config) {
         'i'
       );
     } catch (error) {
-      console.error(`Ongeldig RegExp-patroon voor SUSPICIOUS_TLDS: ${error.message}`);
+      logError(`Ongeldig RegExp-patroon voor SUSPICIOUS_TLDS: ${error.message}`);
       validated.SUSPICIOUS_TLDS = /.*/; // Fallback naar veilige RegExp
     }
   }
@@ -87,7 +87,7 @@ function validateConfig(config) {
         'i'
       );
     } catch (error) {
-      console.error(`Ongeldig RegExp-patroon voor MALWARE_EXTENSIONS: ${error.message}`);
+      logError(`Ongeldig RegExp-patroon voor MALWARE_EXTENSIONS: ${error.message}`);
       validated.MALWARE_EXTENSIONS = /.*/; // Fallback naar veilige RegExp
     }
   }
@@ -134,7 +134,7 @@ function validateConfig(config) {
         'i'
       );
     } catch (error) {
-      console.error(`Ongeldig RegExp-patroon voor LOGIN_PATTERNS: ${error.message}`);
+      logError(`Ongeldig RegExp-patroon voor LOGIN_PATTERNS: ${error.message}`);
       validated.LOGIN_PATTERNS = /.*/; // Fallback naar veilige RegExp
     }
   }
@@ -200,7 +200,7 @@ function validateConfig(config) {
       try {
         return new RegExp(pattern, 'i');
       } catch (error) {
-        console.error(`Ongeldig RegExp-patroon voor SUSPICIOUS_URL_PATTERNS: ${pattern}. Fout: ${error.message}`);
+        logError(`Ongeldig RegExp-patroon voor SUSPICIOUS_URL_PATTERNS: ${pattern}. Fout: ${error.message}`);
         return null;
       }
     }).filter(regex => regex !== null);
@@ -243,7 +243,7 @@ function validateConfig(config) {
       try {
         return new RegExp(pattern, 'i');
       } catch (error) {
-        console.error(`Ongeldig RegExp-patroon voor SUSPICIOUS_SCRIPT_PATTERNS: ${pattern}. Fout: ${error.message}`);
+        logError(`Ongeldig RegExp-patroon voor SUSPICIOUS_SCRIPT_PATTERNS: ${pattern}. Fout: ${error.message}`);
         return null;
       }
     }).filter(regex => regex !== null);
@@ -395,6 +395,23 @@ async function loadConfig() {
 
 // Cache voor JSON-bestanden met expiratie
 const jsonCache = {};
+
+// Voeg dit toe direct na de declaratie van jsonCache
+const CACHE_TTL_MS = 3600000; // TTL van 1 uur
+
+function cleanupJsonCache() {
+  const now = Date.now();
+  for (const [key, entry] of Object.entries(jsonCache)) {
+    if (now - entry.timestamp > CACHE_TTL_MS) {
+      delete jsonCache[key];
+      logDebug(`Cache entry '${key}' verwijderd omdat deze ouder is dan ${CACHE_TTL_MS / 1000} seconden.`);
+    }
+  }
+}
+
+// Start de cleanup op een interval (bijv. elke 1 uur)
+setInterval(cleanupJsonCache, CACHE_TTL_MS);
+
 
 
 async function fetchCachedJson(fileName) {

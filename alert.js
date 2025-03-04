@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const maxRetries = 5;
     let retryCount = 0;
 
@@ -80,9 +80,10 @@ document.addEventListener('DOMContentLoaded', () => {
             "🔍 Open deze link alleen als je zeker weet dat het veilig is.";
     }
 
-    // **Functie om site-status op te halen met retry-logica**
-    function getSiteStatus() {
-        chrome.storage.local.get("currentSiteStatus", ({ currentSiteStatus }) => {
+    // **Functie om site-status op te halen met retry-logica (async/await versie)**
+    async function getSiteStatus() {
+        try {
+            const { currentSiteStatus } = await chrome.storage.local.get("currentSiteStatus");
             console.log("currentSiteStatus:", currentSiteStatus); // Logging voor debugging
             if (currentSiteStatus && typeof currentSiteStatus === 'object') {
                 updateSiteStatus(currentSiteStatus);
@@ -92,11 +93,19 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 document.getElementById('severity-text').textContent = chrome.i18n.getMessage("siteStatusNotAvailable") || "⚠️ Site-status niet beschikbaar.";
             }
-        });
+        } catch (error) {
+            console.error("❌ Fout bij ophalen van site-status:", error);
+            if (retryCount < maxRetries) {
+                retryCount++;
+                setTimeout(getSiteStatus, 1000);
+            } else {
+                document.getElementById('severity-text').textContent = chrome.i18n.getMessage("siteStatusNotAvailable") || "⚠️ Site-status niet beschikbaar.";
+            }
+        }
     }
 
     // **Initiële oproep om de status op te halen**
-    getSiteStatus();
+    await getSiteStatus();
 
     // **Luister naar veranderingen in chrome.storage.local**
     chrome.storage.onChanged.addListener((changes, namespace) => {

@@ -151,13 +151,16 @@ async function validateLicenseKey(licenseKey) {
 // --- Suspicious Link Handling ---
 
 async function handleSuspiciousLink(url) {
-    chrome.storage.sync.get('suspiciousUrls', (result) => {
+    try {
+        const result = await chrome.storage.sync.get('suspiciousUrls');
         const urls = new Set(result.suspiciousUrls || []);
         if (!urls.has(url)) {
             urls.add(url);
-            chrome.storage.sync.set({ suspiciousUrls: Array.from(urls) });
+            await chrome.storage.sync.set({ suspiciousUrls: Array.from(urls) });
         }
-    });
+    } catch (error) {
+        // Optional: log error if needed
+    }
 }
 
 // --- Installation and Alarms ---
@@ -229,16 +232,19 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
                 return true;
 
             case 'checkResult':
-                chrome.storage.sync.get(['integratedProtection'], (settings) => {
+                try {
+                    const settings = await chrome.storage.sync.get(['integratedProtection']);
                     if (!settings.integratedProtection) {
                         sendResponse({ status: 'skipped' });
-                        return;
+                    } else {
+                        const { isSafe, reasons, risk, url } = request; // Haal risk expliciet uit het request
+                        await updateIconBasedOnSafety(isSafe, reasons, risk, url); // Gebruik async versie
+                        sendResponse({ status: 'received' });
                     }
-                    const { isSafe, reasons, risk, url } = request; // Haal risk expliciet uit het request
-                    updateIconBasedOnSafety(isSafe, reasons, risk, url); // Geef risk mee aan de functie
-                    sendResponse({ status: 'received' });
-                });
-                return true; // Nodig omdat sendResponse in een callback zit
+                } catch (error) {
+                    sendResponse({ status: 'error', error: error.message });
+                }
+                return true;
 
             case 'getStatus':
                 try {
@@ -320,14 +326,17 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     }
 });
 
-chrome.tabs.onActivated.addListener(({ tabId }) => {
+chrome.tabs.onActivated.addListener(async ({ tabId }) => {
     stopIconAnimation();  // Stop animation when switching tabs
-    resetCurrentSiteStatus();
-    chrome.tabs.get(tabId, (tab) => {
+    await resetCurrentSiteStatus();
+    try {
+        const tab = await chrome.tabs.get(tabId);
         if (tab && tab.url) {
             checkTabSafety(tab.url);
         }
-    });
+    } catch (error) {
+        // Optional: log error if needed
+    }
 });
 
 function resetIconToNeutral() {
@@ -349,9 +358,13 @@ function checkTabSafety(url) {
         return;
     }
     checkedUrls.set(url, now);
-    chrome.storage.local.get("suspiciousUrls", ({ suspiciousUrls = [] }) => {
+    chrome.storage.local.get("suspiciousUrls").then(result => {
+        const suspiciousUrls = result.suspiciousUrls || [];
         const isSafe = !suspiciousUrls.includes(url);
         handleSafetyCheck(isSafe, url);
+    }).catch(() => {
+        // Fallback: als er iets misgaat, beschouw de site als veilig
+        handleSafetyCheck(true, url);
     });
 }
 
@@ -398,12 +411,15 @@ function stopIconAnimation() {
     }
 }
 
-chrome.action.onClicked.addListener(() => {
-    chrome.storage.local.get("currentSiteStatus", ({ currentSiteStatus }) => {
+chrome.action.onClicked.addListener(async () => {
+    try {
+        const { currentSiteStatus } = await chrome.storage.local.get("currentSiteStatus");
         if (currentSiteStatus && currentSiteStatus.isSafe) {
-            chrome.storage.local.remove("currentSiteStatus");
+            await chrome.storage.local.remove("currentSiteStatus");
         }
-    });
+    } catch (error) {
+        // Optional: log error if needed
+    }
 });
 
 chrome.storage.onChanged.addListener(async (changes, namespace) => {
@@ -416,9 +432,7 @@ chrome.storage.onChanged.addListener(async (changes, namespace) => {
 
 chrome.runtime.setUninstallURL("https://linkshield.nl/#uninstall");
 
-function updateIconBasedOnSafety(isSafe, reasons, risk, url) {
-    //console.log("🛠 updateIconBasedOnSafety() aangeroepen:", { isSafe, reasons, risk, url });
-
+async function updateIconBasedOnSafety(isSafe, reasons, risk, url) {
     chrome.action.setIcon({
         path: isSafe
             ? {
@@ -437,21 +451,15 @@ function updateIconBasedOnSafety(isSafe, reasons, risk, url) {
         title: isSafe ? "This site is safe." : `Unsafe site detected:\n${reasons.join("\n")}`
     });
 
-    chrome.storage.local.set({
-        currentSiteStatus: { isSafe, reasons, risk, url }
-    }, () => {
-        if (chrome.runtime.lastError) {
-            //console.error("❌ Fout bij opslaan van currentSiteStatus:", chrome.runtime.lastError);
-        } else {
-            //console.log("✅ currentSiteStatus succesvol opgeslagen!", { isSafe, reasons, risk, url });
-        }
-    });
+    try {
+        await chrome.storage.local.set({
+            currentSiteStatus: { isSafe, reasons, risk, url }
+        });
+    } catch (error) {
+        // Optional: log error if needed
+    }
 
     if (!isSafe) {
         startSmoothIconAnimation(60000, 1000);
     }
 }
-
-
-
-

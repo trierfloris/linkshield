@@ -21,58 +21,39 @@ async function manageDNRules() {
 async function fetchAndLoadRules() {
     try {
         const { backgroundSecurity } = await chrome.storage.sync.get('backgroundSecurity');
-
         if (!backgroundSecurity) {
-            // Background security is disabled. Remove all active rules.
-            let remainingRules = await chrome.declarativeNetRequest.getDynamicRules();
-            while (remainingRules.length > 0) {
-                const batch = remainingRules.slice(0, 500).map(rule => rule.id);
-                await chrome.declarativeNetRequest.updateDynamicRules({ removeRuleIds: batch });
-                await new Promise(resolve => setTimeout(resolve, 200)); // Prevent throttling
-                remainingRules = await chrome.declarativeNetRequest.getDynamicRules();
-            }
-            return; // Stop here if background security is off.
-        }
-
-        // If background security is enabled, fetch new rules.
-        const rulesResponse = await fetchWithRetry('https://linkshield.nl/files/rules.json');
-
-        if (!rulesResponse.ok) {
-            throw new Error('Error fetching rules.');
-        }
-
-        const newRules = await rulesResponse.json();
-
-        // Remove existing dynamic rules before adding new ones.
-        let remainingRules = await chrome.declarativeNetRequest.getDynamicRules();
-        while (remainingRules.length > 0) {
-            const batch = remainingRules.slice(0, 500).map(rule => rule.id);
-            await chrome.declarativeNetRequest.updateDynamicRules({ removeRuleIds: batch });
-            await new Promise(resolve => setTimeout(resolve, 200));
-            remainingRules = await chrome.declarativeNetRequest.getDynamicRules();
-        }
-
-        if (!Array.isArray(newRules) || newRules.length === 0) {
+            await clearDynamicRules();
             return;
         }
 
+        const rulesResponse = await fetchWithRetry('https://linkshield.nl/files/rules.json');
+        if (!rulesResponse.ok) {
+            throw new Error(`Failed to fetch rules: ${rulesResponse.status}`);
+        }
+
+        const newRules = await rulesResponse.json();
+        if (!Array.isArray(newRules) || newRules.length === 0) {
+            handleBackgroundError(new Error("Invalid or empty rules"), "fetchAndLoadRules");
+            return;
+        }
+
+        // Valideer en filter regels
         const { lastCounter = 1000000 } = await chrome.storage.local.get('lastCounter');
-        let counter = Math.floor(lastCounter);
-
+        let counter = Math.max(1000000, Math.floor(lastCounter)); // Zorg voor een minimum ID
         const validDynamicRules = [];
-        for (const rule of newRules) {
-            if (!rule.condition?.urlFilter || !rule.action) {
-                continue;
-            }
+        const seenIds = new Set();
 
-            const ruleId = Math.floor(counter++);
-            if (!Number.isInteger(ruleId)) {
-                throw new Error(`[ERROR] Rule ID is not an integer: ${ruleId}`);
+        for (const rule of newRules) {
+            if (!rule.condition?.urlFilter || !rule.action || typeof rule.priority !== 'number') {
+                continue; // Sla ongeldige regels over
             }
+            const ruleId = counter++;
+            if (seenIds.has(ruleId)) continue; // Voorkom duplicaten
+            seenIds.add(ruleId);
 
             validDynamicRules.push({
                 id: ruleId,
-                priority: rule.priority || 1,
+                priority: rule.priority,
                 action: rule.action,
                 condition: {
                     urlFilter: rule.condition.urlFilter,
@@ -81,21 +62,36 @@ async function fetchAndLoadRules() {
             });
         }
 
-        await chrome.storage.local.set({ lastCounter: counter });
+        if (validDynamicRules.length === 0) {
+            handleBackgroundError(new Error("No valid rules after filtering"), "fetchAndLoadRules");
+            return;
+        }
 
+        await clearDynamicRules();
         const addBatchSize = 1000;
         for (let i = 0; i < validDynamicRules.length; i += addBatchSize) {
             const batch = validDynamicRules.slice(i, i + addBatchSize);
             await chrome.declarativeNetRequest.updateDynamicRules({ addRules: batch });
+            await new Promise(resolve => setTimeout(resolve, 200)); // Prevent throttling
         }
 
+        await chrome.storage.local.set({ lastCounter: counter });
         await updateLastRuleUpdate();
     } catch (error) {
-        // Uncomment the next line for debugging if needed:
-        // console.error('Error fetching and loading rules:', error.message);
+        handleBackgroundError(error, "fetchAndLoadRules");
+        // Fallback: behoud bestaande regels als fetch mislukt
     }
 }
 
+async function clearDynamicRules() {
+    let remainingRules = await chrome.declarativeNetRequest.getDynamicRules();
+    while (remainingRules.length > 0) {
+        const batch = remainingRules.slice(0, 500).map(rule => rule.id);
+        await chrome.declarativeNetRequest.updateDynamicRules({ removeRuleIds: batch });
+        await new Promise(resolve => setTimeout(resolve, 200));
+        remainingRules = await chrome.declarativeNetRequest.getDynamicRules();
+    }
+}
 async function updateLastRuleUpdate() {
     const now = new Date().toISOString();
     try {
@@ -152,14 +148,14 @@ async function validateLicenseKey(licenseKey) {
 
 async function handleSuspiciousLink(url) {
     try {
-        const result = await chrome.storage.sync.get('suspiciousUrls');
-        const urls = new Set(result.suspiciousUrls || []);
+        const { suspiciousUrls = [] } = await chrome.storage.sync.get('suspiciousUrls');
+        const urls = new Set(suspiciousUrls);
         if (!urls.has(url)) {
             urls.add(url);
             await chrome.storage.sync.set({ suspiciousUrls: Array.from(urls) });
         }
     } catch (error) {
-        // Optional: log error if needed
+        handleBackgroundError(error, "handleSuspiciousLink");
     }
 }
 
@@ -256,6 +252,22 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
                 }
                 return true;
 
+            case 'alert':
+                try {
+                    chrome.notifications.create({
+                        type: 'basic',
+                        iconUrl: 'icons/icon128.png', // Controleer of dit pad klopt
+                        title: 'Waarschuwing',
+                        message: request.message || 'Deze pagina bevat verdachte links!',
+                        priority: 2
+                    });
+                    sendResponse({ status: 'alert_shown' });
+                } catch (error) {
+                    //console.error("[alert] Error showing notification:", error);
+                    sendResponse({ status: 'error', error: error.message });
+                }
+                return true;
+
             default:
                 //console.warn("[onMessage] Onbekend request type:", request.type || request.action);
                 sendResponse({ success: false, error: "Unknown message type" });
@@ -327,16 +339,11 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
 });
 
 chrome.tabs.onActivated.addListener(async ({ tabId }) => {
-    stopIconAnimation();  // Stop animation when switching tabs
+    stopIconAnimation();
+    resetIconToNeutral(); // Reset naar neutrale staat
     await resetCurrentSiteStatus();
-    try {
-        const tab = await chrome.tabs.get(tabId);
-        if (tab && tab.url) {
-            checkTabSafety(tab.url);
-        }
-    } catch (error) {
-        // Optional: log error if needed
-    }
+    const tab = await chrome.tabs.get(tabId);
+    if (tab && tab.url) checkTabSafety(tab.url);
 });
 
 function resetIconToNeutral() {
@@ -358,13 +365,18 @@ function checkTabSafety(url) {
         return;
     }
     checkedUrls.set(url, now);
-    chrome.storage.local.get("suspiciousUrls").then(result => {
-        const suspiciousUrls = result.suspiciousUrls || [];
-        const isSafe = !suspiciousUrls.includes(url);
-        handleSafetyCheck(isSafe, url);
-    }).catch(() => {
-        // Fallback: als er iets misgaat, beschouw de site als veilig
-        handleSafetyCheck(true, url);
+
+    chrome.storage.local.get("currentSiteStatus", (result) => {
+        const status = result.currentSiteStatus;
+        if (status && status.url === url) {
+            handleSafetyCheck(status.isSafe, url, status.risk);
+        } else {
+            chrome.storage.sync.get("suspiciousUrls", (syncResult) => {
+                const suspiciousUrls = syncResult.suspiciousUrls || [];
+                const isSafe = !suspiciousUrls.includes(url);
+                handleSafetyCheck(isSafe, url);
+            });
+        }
     });
 }
 
@@ -377,24 +389,18 @@ setInterval(() => {
     });
 }, 60000);
 
-function handleSafetyCheck(isSafe, url) {
+function handleSafetyCheck(isSafe, url, risk = 0) {
     if (!isSafe) {
         chrome.action.setIcon({
-            path: {
-                "16": "icons/red-circle-16.png",
-                "48": "icons/red-circle-48.png",
-                "128": "icons/red-circle-128.png"
-            }
+            path: { "16": "icons/red-circle-16.png", "48": "icons/red-circle-48.png", "128": "icons/red-circle-128.png" }
         });
-        chrome.action.setTitle({ title: "Unsafe site detected!" });
-        startSmoothIconAnimation(30000, 2000);
+        chrome.action.setTitle({ title: `Unsafe site detected (Risk: ${risk})` });
+        const animationSpeed = risk >= 10 ? 500 : risk >= 5 ? 1000 : 2000;
+        startSmoothIconAnimation(30000, animationSpeed);
+        handleSuspiciousLink(url); // Voeg toe aan suspiciousUrls
     } else {
         chrome.action.setIcon({
-            path: {
-                "16": "icons/green-circle-16.png",
-                "48": "icons/green-circle-48.png",
-                "128": "icons/green-circle-128.png"
-            }
+            path: { "16": "icons/green-circle-16.png", "48": "icons/green-circle-48.png", "128": "icons/green-circle-128.png" }
         });
         chrome.action.setTitle({ title: "Site is safe." });
     }
@@ -433,33 +439,25 @@ chrome.storage.onChanged.addListener(async (changes, namespace) => {
 chrome.runtime.setUninstallURL("https://linkshield.nl/#uninstall");
 
 async function updateIconBasedOnSafety(isSafe, reasons, risk, url) {
-    chrome.action.setIcon({
-        path: isSafe
-            ? {
-                "16": "icons/green-circle-16.png",
-                "48": "icons/green-circle-48.png",
-                "128": "icons/green-circle-128.png"
-            }
-            : {
-                "16": "icons/red-circle-16.png",
-                "48": "icons/red-circle-48.png",
-                "128": "icons/red-circle-128.png"
-            }
-    });
+    const iconPaths = isSafe
+        ? { "16": "icons/green-circle-16.png", "48": "icons/green-circle-48.png", "128": "icons/green-circle-128.png" }
+        : { "16": "icons/red-circle-16.png", "48": "icons/red-circle-48.png", "128": "icons/red-circle-128.png" };
 
+    chrome.action.setIcon({ path: iconPaths });
     chrome.action.setTitle({
-        title: isSafe ? "This site is safe." : `Unsafe site detected:\n${reasons.join("\n")}`
+        title: isSafe ? "This site is safe." : `Unsafe site detected (Risk: ${risk}):\n${reasons.join("\n")}`
     });
 
     try {
         await chrome.storage.local.set({
-            currentSiteStatus: { isSafe, reasons, risk, url }
+            currentSiteStatus: { isSafe, reasons, risk: Number(risk), url }
         });
     } catch (error) {
-        // Optional: log error if needed
+        handleBackgroundError(error, "updateIconBasedOnSafety: Failed to save currentSiteStatus");
     }
 
     if (!isSafe) {
-        startSmoothIconAnimation(60000, 1000);
+        const animationSpeed = risk >= 10 ? 500 : risk >= 5 ? 1000 : 2000; // Sneller bij hoger risico
+        startSmoothIconAnimation(60000, animationSpeed);
     }
 }

@@ -177,6 +177,12 @@ window.CONFIG = {
         'paypal.com', 'netflix.com', 'instagram.com', 'outlook.com', 'dropbox.com'
     ],
 
+    COMPOUND_TLDS: [
+        'co.uk', 'org.uk', 'gov.uk', 'ac.uk',
+        'com.au', 'org.au',
+        'co.nz'
+    ],
+
     // Domein Risicogewichten (verfijnd met recente data)
     domainRiskWeights: {
         'microsoft.com': 10,  // Hoog risico: vaak nagebootst in phishing (bijv. Office 365 scams)

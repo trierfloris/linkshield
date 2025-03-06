@@ -217,6 +217,14 @@ function validateConfig(config) {
     ];
   }
 
+if (!Array.isArray(validated.COMPOUND_TLDS)) {
+  validated.COMPOUND_TLDS = [
+    'co.uk', 'org.uk', 'gov.uk', 'ac.uk',
+    'com.au', 'org.au',
+    'co.nz'
+  ];
+}
+
   // domainRiskWeights
   if (typeof validated.domainRiskWeights !== 'object' || validated.domainRiskWeights === null) {
     validated.domainRiskWeights = {
@@ -650,15 +658,12 @@ function normalizeDomain(url) {
 
 async function initContentScript() {
   logDebug("Starting initialization of content script...");
-
   try {
     // Wacht op configuratie en veilige domeinen
     await Promise.all([loadConfig(), initializeSafeDomains()]);
-
-    // Controleer of globalConfig is geladen
     if (!globalConfig) {
       logError("globalConfig is niet geladen na loadConfig(). Gebruik standaardconfiguratie.");
-      globalConfig = validateConfig(defaultConfig); // Fallback naar standaardconfiguratie
+      globalConfig = validateConfig(defaultConfig);
     }
 
     // Controleer of de bescherming is ingeschakeld
@@ -672,23 +677,18 @@ async function initContentScript() {
     if (isSearchResultPage()) {
       logDebug("Setting up Google search protection...");
       setupGoogleSearchProtection();
+    } else {
+      logDebug("Checking links...");
+      await checkLinks(); // Controleert hoofddomein en externe links
+      // Geen extra 'alert'-bericht meer nodig
     }
-
-    // Voer linkcontroles uit
-    logDebug("Checking links...");
-    await checkLinks();
-
-    // Voer de initiële URL-controle uit
-    logDebug("Performing initial URL check for the current page...");
-    checkCurrentUrl();
 
     logDebug("Initialization complete.");
   } catch (error) {
-    logDebug(`Error during initialization: ${error.message}`);
+    logError(`Error during initialization: ${error.message}`);
     throw error; // Optioneel: fout doorsluizen
   }
 }
-
 
 let debounceTimer = null;
 const checkedLinks = new Set();
@@ -812,13 +812,11 @@ async function warnLink(link, reasons) {
     return;
   }
 
-  const currentDomain = normalizeDomain(window.location.href);
-  const linkDomain = normalizeDomain(link.href);
-  const isSameDomain = currentDomain && linkDomain && linkDomain.endsWith(currentDomain);
+  const url = link.href;
+  const riskResult = await performSuspiciousChecks(url); // Gebruikt cache
+  const isHighRisk = riskResult.risk >= (globalConfig.RISK_THRESHOLD || 5);
 
-  const riskResult = await calculateRiskScore(link.href);
-  const isHighRisk = riskResult.score >= (globalConfig.RISK_THRESHOLD || 5);
-
+  // Verwijder bestaande waarschuwingsiconen
   const existingIcon = link.nextElementSibling;
   if (existingIcon && existingIcon.classList.contains('phishing-warning-icon')) {
     existingIcon.remove();
@@ -826,44 +824,35 @@ async function warnLink(link, reasons) {
   link.style.border = '';
   link.style.color = '';
 
+  if (!isHighRisk && riskResult.reasons.length === 0) {
+    return; // Geen waarschuwing als veilig
+  }
+
   const warningIcon = document.createElement('span');
   warningIcon.className = 'phishing-warning-icon';
   warningIcon.textContent = '⚠️';
 
-  logDebug("Ruwe redenen:", reasons);
-  const translatedReasons = reasons.map(reason => {
-    if (reason.startsWith("similarToLegitimateDomain:")) {
-      const [key, domain] = reason.split(": ");
-      const translatedMessage = chrome.i18n.getMessage(key);
-      logDebug(`Vertaling voor key '${key}':`, translatedMessage || `Translation missing for: ${key}`);
-      return translatedMessage ? `${translatedMessage} (${domain})` : `Translation missing for: ${key} (${domain})`;
-    }
-    const translated = chrome.i18n.getMessage(reason);
-    logDebug(`Vertaling voor reason '${reason}':`, translated || `Translation missing for: ${reason}`);
-    return translated || `Translation missing for: ${reason}`;
+  const translatedReasons = riskResult.reasons.map(reason => {
+    const translated = chrome.i18n.getMessage(reason) || reason;
+    logDebug(`Vertaling voor reason '${reason}':`, translated);
+    return translated;
   }).join("\n");
 
   const tooltipText = `${chrome.i18n.getMessage("reasonLabel") || "Why?"}:\n${translatedReasons}`;
   logDebug(`[warnLink] Tooltip text:`, tooltipText);
 
-  if (isSameDomain) {
-    warningIcon.className += ' subtle-warning';
-    warningIcon.title = tooltipText;
-    link.title = tooltipText;
-  } else if (isHighRisk) {
+  warningIcon.title = tooltipText;
+  link.title = tooltipText;
+
+  if (isHighRisk) {
     warningIcon.className += ' high-risk-warning';
     link.className += ' high-risk-link';
-    warningIcon.title = tooltipText;
-    link.title = tooltipText;
   } else {
     warningIcon.className += ' moderate-warning';
     link.className += ' moderate-risk-link';
-    warningIcon.title = tooltipText;
-    link.title = tooltipText;
   }
 
-  logDebug(`[warnLink] Marking link as suspicious: ${link.href}, Same domain: ${isSameDomain}, Risk: ${riskResult.score}, Translated Reasons:`, translatedReasons);
-
+  logDebug(`[warnLink] Marking external link as suspicious: ${url}, Risk: ${riskResult.risk}, Translated Reasons:`, translatedReasons);
   link.insertAdjacentElement('afterend', warningIcon);
   injectWarningIconStyles();
 }
@@ -1088,16 +1077,6 @@ function isSearchResultPage() {
 
 function isLoginPage(url = window.location.href) {
   try {
-    // Wacht op DOM indien nodig
-    if (document.readyState !== 'complete') {
-      console.warn("DOM is not fully loaded yet. Waiting for DOMContentLoaded.");
-      return new Promise((resolve) => {
-        document.addEventListener('DOMContentLoaded', () => {
-          resolve(isLoginPage(url));
-        }, { once: true });
-      });
-    }
-
     // Controleer op wachtwoordveld
     let hasPasswordField = false;
     try {
@@ -1212,7 +1191,10 @@ function isLoginPage(url = window.location.href) {
     handleError(error, `isLoginPage: Unexpected error while detecting login page on URL ${url}. Details: ${error.message}`);
     return false;
   }
-}function isHttps(url) {
+}
+
+
+function isHttps(url) {
   try {
     if (globalConfig && Array.isArray(globalConfig.ALLOWED_PROTOCOLS)) {
       for (const protocol of globalConfig.ALLOWED_PROTOCOLS) {
@@ -1288,32 +1270,19 @@ function countMatches(pattern, ...strings) {
 
 let trustedDownloadDomains = new Set();
 
-async function isDownloadPage() {
-  const links = document.querySelectorAll('a');
-  let suspiciousLinkCount = 0;
-  let contextLinkCount = 0;
-  const totalLinkCount = links.length;
-  for (const link of links) {
-    try {
-      const linkUrl = new URL(link.href, window.location.origin);
-      const hostname = linkUrl.hostname;
-      if (globalConfig.SUSPICIOUS_TLDS.test(hostname) && globalConfig.MALWARE_EXTENSIONS.test(linkUrl.pathname)) {
-        suspiciousLinkCount++;
-        if (isInDownloadContext(link)) {
-          contextLinkCount++;
-        }
-        if (
-          suspiciousLinkCount / totalLinkCount >= globalConfig.SUSPICION_THRESHOLD ||
-          contextLinkCount >= 1
-        ) {
-          return true;
-        }
-      }
-    } catch (error) {
-      handleError(error, `isDownloadPage: Fout bij controleren van downloadlink ${link.href}`);
+function isDownloadPage(url) {
+  try {
+    const urlObj = new URL(url);
+    const ext = urlObj.pathname.toLowerCase().match(/\.[0-9a-z]+$/i);
+    if (ext && globalConfig.MALWARE_EXTENSIONS.test(ext[0])) {
+      logDebug(`Download extension detected in URL: ${url}`);
+      return true;
     }
+    return false;
+  } catch (error) {
+    handleError(error, `isDownloadPage: Fout bij controleren van downloadpagina voor URL ${url}`);
+    return false;
   }
-  return false;
 }
 
 function isInDownloadContext(link) {
@@ -1416,152 +1385,125 @@ function hasSuspiciousUrlPattern(url) {
   return matches.length >= 2;
 }
 
-async function hasSuspiciousIframes() {
-  const now = Date.now();
-
-  // Controleer alleen als het langer dan CHECK_INTERVAL_MS geleden is
-  if (now - lastIframeCheck < CHECK_INTERVAL_MS) {
-    logDebug(`Skipping hasSuspiciousIframes: Last check was ${Math.round((now - lastIframeCheck) / 1000)}s ago`);
-    return { isSuspicious: false, reasons: [] }; // Veilige standaardretour
-  }
-
-  const iframes = document.querySelectorAll("iframe");
-  if (iframes.length === 0) {
-    lastIframeCheck = now;
-    logDebug("No iframes found on the page.");
-    return { isSuspicious: false, reasons: [] }; // Geen iframes = geen risico
-  }
-
-  let trustedIframeDomains = jsonCache['trustedIframes.json']?.data || globalConfig.TRUSTED_IFRAME_DOMAINS;
-  const suspiciousIframes = [];
+function hasSuspiciousIframes() {
+  const iframes = Array.from(document.getElementsByTagName('iframe')).filter(iframe => iframe.src);
+  const suspiciousReasons = [];
+  const trustedDomains = globalConfig?.TRUSTED_IFRAME_DOMAINS || ['youtube.com', 'vimeo.com', 'google.com'];
 
   for (const iframe of iframes) {
-    const src = iframe.getAttribute("src");
+    const src = iframe.src;
     if (!src) continue;
 
-    let riskScore = 0;
-    const reasons = new Set();
+    try {
+      const urlObj = new URL(src);
+      const hostname = urlObj.hostname.toLowerCase();
+      const protocol = urlObj.protocol;
+
+      // Skip vertrouwde domeinen
+      if (trustedDomains.some(domain => hostname === domain || hostname.endsWith(`.${domain}`))) {
+        logDebug(`Safe iframe detected: ${src}`);
+        continue;
+      }
+
+      // Mixed content detectie (ongewijzigd)
+      if (protocol === 'http:' && window.location.protocol === 'https:') {
+        suspiciousReasons.push({ reason: 'mixedContent', risk: 10, src });
+        logDebug(`Suspicious iframe (mixed content): ${src}`);
+      }
+
+      // Verdachte TLDs (ongewijzigd)
+      if (globalConfig.SUSPICIOUS_TLDS.test(hostname)) {
+        suspiciousReasons.push({ reason: 'suspiciousTLD', risk: 6, src });
+        logDebug(`Suspicious iframe (suspicious TLD): ${src}`);
+      }
+
+      // Verborgen iframes: specifieker maken
+      const style = window.getComputedStyle(iframe);
+      const isHidden = style.display === 'none' || style.visibility === 'hidden' || 
+                       (parseInt(style.width) === 0 && parseInt(style.height) === 0);
+      const hasSuspiciousAttributes = iframe.hasAttribute('onload') || iframe.hasAttribute('onerror') || 
+                                      iframe.src.startsWith('javascript:');
+      if (isHidden && hasSuspiciousAttributes) { // Alleen verdacht met kwaadaardige kenmerken
+        suspiciousReasons.push({ reason: 'iframeHidden', risk: 3, src });
+        logDebug(`Suspicious iframe (hidden with suspicious attributes): ${src}`);
+      }
+
+      // Base64/Hex check later apart behandeld
+    } catch (error) {
+      handleError(error, `hasSuspiciousIframes: Error analyzing iframe ${src}`);
+    }
+  }
+
+  if (suspiciousReasons.length > 0) {
+    logDebug(`Suspicious iframes detected: ${JSON.stringify(suspiciousReasons)}`);
+    return suspiciousReasons;
+  }
+
+  logDebug('No suspicious iframes found');
+  return [];
+}
+
+function checkForSuspiciousExternalScripts() {
+  const scripts = Array.from(document.getElementsByTagName('script')).filter(script => script.src);
+  const suspiciousReasons = [];
+  const trustedScripts = globalConfig?.TRUSTED_SCRIPTS || new Set(['googleapis.com', 'cloudflare.com', 'cdnjs.cloudflare.com']);
+  const freeHostingDomains = Array.isArray(globalConfig?.FREE_HOSTING_DOMAINS) 
+    ? new Set(globalConfig.FREE_HOSTING_DOMAINS) 
+    : new Set();
+
+  for (const script of scripts) {
+    const src = script.src;
+    if (!src) continue;
 
     try {
-      const iframeURL = new URL(src, window.location.origin);
-      const iframeDomain = iframeURL.hostname.toLowerCase();
+      const urlObj = new URL(src);
+      const hostname = urlObj.hostname.toLowerCase();
+      const protocol = urlObj.protocol;
 
-      if (trustedIframeDomains.includes(iframeDomain)) continue;
-
-      if (!iframeURL.protocol.startsWith("https")) {
-        riskScore += 2;
-        reasons.add("noHttps");
+      // Skip vertrouwde scripts en populaire CDN’s
+      if (trustedScripts.has(hostname) || hostname.endsWith('.edu') || hostname.endsWith('.org')) {
+        logDebug(`Safe script detected: ${src}`);
+        continue;
       }
 
-      if (globalConfig.SUSPICIOUS_TLDS.test(iframeDomain)) {
-        riskScore += 3;
-        reasons.add("suspiciousTLD");
+      // Mixed content detectie
+      if (protocol === 'http:' && window.location.protocol === 'https:') {
+        suspiciousReasons.push({ reason: 'mixedContent', risk: 10, src });
+        logDebug(`Suspicious script (mixed content): ${src}`);
       }
 
-      const isHiddenOrSmall =
-        iframe.offsetParent === null ||
-        iframe.style.display === "none" ||
-        iframe.style.visibility === "hidden" ||
-        (parseInt(iframe.width, 10) < 10 && parseInt(iframe.height, 10) < 10);
-      if (isHiddenOrSmall) {
-        riskScore += 2;
-        reasons.add("iframeHidden");
+      // Verdachte TLDs alleen als niet vertrouwd
+      if (globalConfig?.SUSPICIOUS_TLDS?.test(hostname) && !trustedScripts.has(hostname)) {
+        suspiciousReasons.push({ reason: 'suspiciousTLD', risk: 6, src });
+        logDebug(`Suspicious script (suspicious TLD): ${src}`);
       }
 
-      if (riskScore >= 7) {
-        suspiciousIframes.push({ src, riskScore, reasons: Array.from(reasons) });
-        logDebug(`Suspicious iframe detected: ${src}, Risk Score: ${riskScore}, Reasons:`, reasons);
+      // IP-adressen
+      if (/^\d+\.\d+\.\d+\.\d+$/.test(hostname)) {
+        suspiciousReasons.push({ reason: 'ipAsDomain', risk: 5, src });
+        logDebug(`Suspicious script (IP as domain): ${src}`);
       }
+
+      // Gratis hosting: specifieker maken
+      if (freeHostingDomains.has(hostname) && !/cdn|static|assets/i.test(src)) {
+        suspiciousReasons.push({ reason: 'freeHosting', risk: 5, src });
+        logDebug(`Suspicious script (free hosting): ${src}`);
+      }
+
+      // Base64/Hex: apart behandeld
     } catch (error) {
-      handleError(error, `hasSuspiciousIframes: Fout bij controleren van iframe met src ${src}`);
+      handleError(error, `checkForSuspiciousExternalScripts: Error analyzing script ${src}`);
     }
   }
 
-  lastIframeCheck = now;
-  const result = {
-    isSuspicious: suspiciousIframes.length > 0,
-    reasons: suspiciousIframes.length > 0 ? suspiciousIframes.flatMap(i => i.reasons) : []
-  };
-  logDebug("hasSuspiciousIframes result:", result);
-  return result;
-}
-
-
-async function checkForSuspiciousExternalScripts() {
-  const now = Date.now();
-
-  // Skip if called too soon since the last check
-  if (now - lastScriptCheck < CHECK_INTERVAL_MS) {
-    logDebug(`Skipping checkForSuspiciousExternalScripts: Last check was ${Math.round((now - lastScriptCheck) / 1000)}s ago`);
-    return false; // Early return with safe result
+  if (suspiciousReasons.length > 0) {
+    logDebug(`Suspicious external scripts detected: ${JSON.stringify(suspiciousReasons)}`);
+    return suspiciousReasons;
   }
 
-  const debouncedCheck = debounce(async () => {
-    let trustedScripts = jsonCache['trustedScripts.json']?.data;
-    const cacheTimestamp = jsonCache['trustedScripts.json']?.timestamp || 0;
-
-    // Fetch only if cache is missing or expired
-    if (!trustedScripts || (now - cacheTimestamp > CACHE_DURATION_MS)) {
-      try {
-        trustedScripts = await fetchCachedJson('trustedScripts.json') || [];
-        logDebug(`Refreshed trustedScripts from trustedScripts.json`);
-      } catch (error) {
-        handleError(error, `checkForSuspiciousExternalScripts: Kon trustedScripts.json niet laden`);
-        trustedScripts = []; // Fallback to empty array
-      }
-    }
-
-    const suspiciousPatterns = globalConfig.SUSPICIOUS_SCRIPT_PATTERNS || [];
-    const scripts = document.querySelectorAll("script[src]");
-    const suspiciousScripts = [];
-
-    for (const script of scripts) {
-      const src = script.getAttribute("src");
-      if (!src) continue;
-
-      let riskScore = 0;
-      const reasons = [];
-
-      try {
-        const scriptURL = new URL(src, window.location.origin);
-        const scriptDomain = scriptURL.hostname.toLowerCase();
-
-        if (Array.isArray(trustedScripts) && trustedScripts.includes(scriptDomain)) {
-          continue;
-        }
-
-        if (!scriptURL.protocol.startsWith("https")) {
-          riskScore += 2;
-          reasons.push(chrome.i18n.getMessage("noHttps"));
-        }
-
-        if (suspiciousPatterns.some(pattern => pattern.test(src))) {
-          riskScore += 4;
-          reasons.push(chrome.i18n.getMessage("externalScripts"));
-        }
-
-        if (riskScore >= 7) {
-          suspiciousScripts.push({ src, riskScore, reasons });
-        }
-      } catch (error) {
-        handleError(error, `checkForSuspiciousExternalScripts: Fout bij controleren van script met src ${src}`);
-      }
-    }
-
-    if (suspiciousScripts.length > 0) {
-      suspiciousScripts.forEach(({ src, riskScore, reasons }) => {
-        logDebug(`Suspicious script detected: ${src}, Risk Score: ${riskScore}`);
-        console.table(reasons);
-      });
-    }
-
-    lastScriptCheck = now; // Update last check time only after full execution
-    return suspiciousScripts.length > 0;
-  }, 500); // Debounce rapid DOM changes within 500ms
-
-  return await debouncedCheck();
+  logDebug('No suspicious external scripts found');
+  return [];
 }
-
 
 async function analyzeScriptContent(scriptUrl) {
   try {
@@ -1680,23 +1622,33 @@ const homoglyphRegex = new RegExp(
  * @returns {boolean} - True als een homoglyph-aanval wordt gedetecteerd, anders false.
  */
 function isHomoglyphAttack(domain) {
-  if (!domain || typeof domain !== 'string') {
-    logError('Invalid domain input:', domain);
+  // Controleer of de invoer geldig is (niet null, undefined, geen string, of leeg)
+  if (!domain || typeof domain !== 'string' || domain.trim() === '') {
+    logError('Ongeldige domeininvoer:', domain);
     return false;
   }
 
   try {
+    // Normaliseer de domeinnaam naar kleine letters en NFC-formaat
     const normalizedDomain = domain.toLowerCase().normalize('NFC');
+    
+    // Snelle controle: als er geen homoglyphs zijn, stoppen we hier
     if (!homoglyphRegex.test(normalizedDomain)) {
-      logDebug(`No homoglyphs detected in ${normalizedDomain}`);
+      logDebug(`Geen homoglyphs gedetecteerd in ${normalizedDomain}`);
       return false;
     }
 
+    // Converteer homoglyphConfig naar een Map voor efficiënte lookups
     const homoglyphMap = new Map(Object.entries(homoglyphConfig));
+    // Maak een set van alle karakters in de domeinnaam voor snelle controle
+    const domainChars = new Set(normalizedDomain);
+
+    // Controleer elk karakter in de domeinnaam
     for (let i = 0; i < normalizedDomain.length; i++) {
       const char = normalizedDomain[i];
       if (homoglyphSet.has(char)) {
         let originalChar = null;
+        // Zoek het originele karakter dat overeenkomt met de homoglyph
         for (const [key, variants] of homoglyphMap) {
           if (variants.includes(char)) {
             originalChar = key;
@@ -1704,26 +1656,22 @@ function isHomoglyphAttack(domain) {
           }
         }
 
-        if (originalChar) {
-          const windowSize = 3;
-          const start = Math.max(0, i - windowSize);
-          const end = Math.min(normalizedDomain.length, i + windowSize + 1);
-          const window = normalizedDomain.slice(start, end);
-
-          if (!window.includes(originalChar)) {
-            logDebug(`Homoglyph attack detected: ${char} (replacing ${originalChar}) in ${normalizedDomain}`);
-            return true;
-          }
+        // Als het originele karakter niet in de domeinnaam voorkomt, is het een aanval
+        if (originalChar && !domainChars.has(originalChar)) {
+          logDebug(`Homoglyph-aanval gedetecteerd: ${char} (vervangt ${originalChar}) in ${normalizedDomain}`);
+          return true;
         }
       }
     }
 
+    // Controleer op meerdere homoglyphs als extra beveiliging
     const homoglyphCount = (normalizedDomain.match(homoglyphRegex) || []).length;
     if (homoglyphCount > 1) {
-      logDebug(`Multiple homoglyphs detected in ${normalizedDomain}: ${homoglyphCount}`);
+      logDebug(`Meerdere homoglyphs gedetecteerd in ${normalizedDomain}: ${homoglyphCount}`);
       return true;
     }
 
+    logDebug(`Geen homoglyph-aanval gedetecteerd in ${normalizedDomain}`);
     return false;
   } catch (error) {
     handleError(error, `isHomoglyphAttack: Fout bij controleren van homoglyph-aanval op domein ${domain}`);
@@ -1731,107 +1679,180 @@ function isHomoglyphAttack(domain) {
   }
 }
 
-
 const nonHttpProtocols = ['mailto:', 'tel:'];
 
-async function performSuspiciousChecks(url) {
-  const isEnabled = await isProtectionEnabled();
-  if (!isEnabled) {
-    logDebug("Protection is disabled. Skipping checks for URL:", url);
-    return { isSafe: true, reasons: [], risk: 0 };
+// Cache-definitie buiten de functie met TTL en groottebeheer
+
+const MAX_CACHE_SIZE = 1000; // Maximaal 1000 items in cache
+const linkRiskCache = new Map();
+
+function storeInCache(url, result) {
+  if (linkRiskCache.size >= MAX_CACHE_SIZE) {
+    const oldestKey = linkRiskCache.keys().next().value;
+    linkRiskCache.delete(oldestKey);
+    logDebug(`Cache size exceeded (${MAX_CACHE_SIZE}), removed oldest entry: ${oldestKey}`);
   }
-
-  const reasons = new Set();
-  const totalRiskRef = { value: 0 };
-
-  if (!globalConfig) {
-    handleError(new Error('Configuratie niet geladen'), `performSuspiciousChecks: globalConfig niet beschikbaar voor URL ${url}`);
-    return { isSafe: false, reasons: ["Configuratiefout"], risk: 10 };
-  }
-
-  const urlObj = new URL(url);
-  const nonHttpProtocols = ['mailto:', 'tel:'];
-  const isHttpProtocol = ['http:', 'https:'].includes(urlObj.protocol);
-
-  // Controleer protocol-specifieke risico's
-  if (!nonHttpProtocols.includes(urlObj.protocol)) {
-    if (urlObj.protocol !== 'https:') {
-      reasons.add("noHttps");
-      totalRiskRef.value += 15;
-      if (document.readyState !== 'complete') {
-        await new Promise(resolve => document.addEventListener('DOMContentLoaded', resolve, { once: true }));
-      }
-      if (isLoginPage(url)) {
-        reasons.add("insecureLoginPage");
-        totalRiskRef.value += 20;
-      }
-    }
-  } else {
-    logDebug(`Skipping HTTP-specific checks for non-HTTP protocol: ${urlObj.protocol}`);
-  }
-
-  // Voer statische en dynamische controles uit
-  await checkStaticConditions(url, reasons, totalRiskRef);
-  await checkDynamicConditions(url, reasons, totalRiskRef);
-
-  // Controleer iframes alleen voor HTTP/HTTPS-URL's
-  if (isHttpProtocol) {
-    const iframeResult = await hasSuspiciousIframes();
-    if (iframeResult.isSuspicious) {
-      iframeResult.reasons.forEach(reason => reasons.add(reason));
-      totalRiskRef.value += 3.5; // Risico voor verdachte iframes
-      logDebug(`Suspicious iframes detected for ${url}. Added reasons:`, iframeResult.reasons);
-    } else {
-      logDebug(`No suspicious iframes found for ${url}`);
-      // Verwijder 'suspiciousIframes' als deze per ongeluk is toegevoegd door checkDynamicConditions
-      if (reasons.has("suspiciousIframes")) {
-        reasons.delete("suspiciousIframes");
-        totalRiskRef.value = Math.max(0, totalRiskRef.value - 3.5); // Trek het risico weer af
-        logDebug(`Removed erroneous 'suspiciousIframes' reason and adjusted risk for ${url}`);
-      }
-    }
-  }
-
-  logDebug("🔍 Eindscore voor URL:", url, "| Risicoscore:", totalRiskRef.value);
-  const isSafe = totalRiskRef.value < (globalConfig.RISK_THRESHOLD || 5);
-  return createAnalysisResult(isSafe, Array.from(reasons), totalRiskRef.value);
+  linkRiskCache.set(url, { result, timestamp: Date.now() });
+  logDebug(`Cached result for ${url}:`, result);
 }
 
-(async () => {
-  const url = window.location.href; // Example URL, adjust as needed
+async function performSuspiciousChecks(url) {
+  const cached = linkRiskCache.get(url);
+  if (cached && (Date.now() - cached.timestamp < CACHE_TTL_MS)) {
+    logDebug(`Cache hit for suspicious checks: ${url}`);
+    return cached.result;
+  }
+
+  const isEnabled = await isProtectionEnabled();
+  if (!isEnabled) {
+    const result = { isSafe: true, reasons: [], risk: 0 };
+    storeInCache(url, result);
+    return result;
+  }
+
   const reasons = new Set();
   const totalRiskRef = { value: 0 };
+  const urlObj = new URL(url);
+  const isHttpProtocol = ['http:', 'https:'].includes(urlObj.protocol);
 
+  // Safe domain check
+  const domain = normalizeDomain(url); // Gebruik normalizeDomain voor consistente validatie
+  const isSafeDomain = safeDomains.some(pattern => new RegExp(pattern).test(domain || ''));
+
+  if (isSafeDomain && domain) {
+    reasons.add("safeDomain");
+    totalRiskRef.value = 0.1;
+    logDebug(`Safe domain detected: ${domain}`);
+  }
+
+  if (!isHttpProtocol) {
+    logDebug(`Skipping HTTP-specific checks for non-HTTP protocol: ${urlObj.protocol}`);
+    if (['mailto:', 'tel:', 'ftp:', 'javascript:'].includes(urlObj.protocol)) {
+      reasons.add("allowedProtocol");
+      totalRiskRef.value += 0.1;
+    }
+    if (urlObj.protocol === 'javascript:') {
+      reasons.add("javascriptScheme");
+      totalRiskRef.value += 5;
+    }
+  } else if (urlObj.protocol !== 'https:' && domain) {
+    reasons.add("noHttps");
+    totalRiskRef.value += 15;
+    if (isLoginPage(url)) {
+      reasons.add("insecureLoginPage");
+      totalRiskRef.value += 20;
+    }
+  }
+
+  // Fast-track voor safeDomain
+  if (isSafeDomain && totalRiskRef.value < 10 && domain) {
+    logDebug(`Safe domain fast-track applied for ${url}`);
+    const result = createAnalysisResult(true, ["safeDomain"], 0.1);
+    storeInCache(url, result);
+    return result;
+  }
+
+  // Statische condities (bestaande functie)
   await checkStaticConditions(url, reasons, totalRiskRef);
-  await checkDynamicConditions(url, reasons, totalRiskRef);
 
-  logDebug("🔍 Eindscore voor URL:", url, "| Risicoscore:", totalRiskRef.value);
+  // Extra statische checks
+  if (/^\d+\.\d+\.\d+\.\d+$/.test(urlObj.hostname) && domain) {
+    reasons.add("ipAsDomain");
+    totalRiskRef.value += 5;
+  }
+  const subdomains = (domain || '').split('.').length - 2;
+  if (subdomains > globalConfig.MAX_SUBDOMAINS && !isSafeDomain && domain) {
+    reasons.add("tooManySubdomains");
+    totalRiskRef.value += 5;
+  }
+  if (domain && isHomoglyphAttack(domain) && !isSafeDomain) { // Gebruik genormaliseerd domain
+    reasons.add("homoglyphAttack");
+    totalRiskRef.value += 10;
+  }
+
+  // Dynamische condities met jouw bestaande functies
+  const dynamicChecks = [
+    { func: hasBase64OrHex, messageKey: "base64OrHex", risk: 2.0 },
+    { func: isShortenedUrl, messageKey: "shortenedUrl", risk: 4.0 },
+    { func: hasEncodedCharacters, messageKey: "encodedCharacters", risk: 3.0 },
+    { func: hasUnusualPort, messageKey: "unusualPort", risk: 3.0 },
+    { func: hasSuspiciousKeywords, messageKey: "suspiciousKeywords", risk: 3.0 },
+    { func: hasSuspiciousPattern, messageKey: "suspiciousPattern", risk: 4.0 },
+    { func: isDownloadPage, messageKey: "downloadPage", risk: 5.0 },
+    { func: usesUrlFragmentTrick, messageKey: "urlFragmentTrick", risk: 3.0 },
+    { func: isCryptoPhishingUrl, messageKey: "cryptoPhishing", risk: 10.0 },
+    ...(isHttpProtocol ? [
+      { func: checkForSuspiciousExternalScripts, messageKey: "externalScripts", risk: 4.0 },
+      { func: hasSuspiciousIframes, messageKey: "suspiciousIframes", risk: 3.5 },
+    ] : []),
+  ];
+
+  for (const { func, messageKey, risk } of dynamicChecks) {
+    try {
+      const result = await func(url);
+      if (func === hasBase64OrHex || func === isShortenedUrl || func === hasEncodedCharacters || 
+          func === hasUnusualPort || func === hasSuspiciousKeywords || func === hasSuspiciousPattern || 
+          func === isDownloadPage || func === usesUrlFragmentTrick || func === isCryptoPhishingUrl) {
+        if (result === true && domain) {
+          reasons.add(messageKey);
+          totalRiskRef.value += risk;
+          logDebug(`Added ${messageKey} with risk ${risk} for ${url}`);
+        }
+      } else {
+        if (result && Array.isArray(result) && result.length > 0 && domain) {
+          result.forEach(({ reason, risk: subRisk }) => reasons.add(reason));
+          totalRiskRef.value += risk;
+          logDebug(`Added ${messageKey} with risk ${risk} for ${url}, reasons: ${result.map(r => r.reason).join(', ')}`);
+        }
+      }
+    } catch (error) {
+      handleError(error, `performSuspiciousChecks (${messageKey})`);
+    }
+  }
+
+  // Laatste safeDomain override
+  if (isSafeDomain && totalRiskRef.value < 10 && domain) {
+    logDebug(`Safe domain override applied for ${url}`);
+    totalRiskRef.value = 0.1;
+    reasons.clear();
+    reasons.add("safeDomain");
+  }
 
   const isSafe = totalRiskRef.value < (globalConfig.RISK_THRESHOLD || 5);
   const result = createAnalysisResult(isSafe, Array.from(reasons), totalRiskRef.value);
-  logDebug(result); // Example usage
-})();
+  storeInCache(url, result);
+  return result;
+}
 
+
+// Optionele periodieke cache-schoonmaak (voeg dit toe aan je script)
+setInterval(() => {
+  const now = Date.now();
+  for (const [url, { timestamp }] of linkRiskCache) {
+    if (now - timestamp >= CACHE_TTL_MS) {
+      linkRiskCache.delete(url);
+      logDebug(`Removed expired cache entry for ${url}`);
+    }
+  }
+}, CACHE_TTL_MS);
 
 function checkStaticConditions(url, reasons, totalRiskRef) {
   const urlObj = new URL(url);
   const domain = urlObj.hostname.toLowerCase();
-  
+
   if (safeDomains.some(pattern => new RegExp(pattern).test(domain))) {
     logDebug(`Safe domain detected: ${domain}`);
     reasons.add("safeDomain");
     totalRiskRef.value = 0.1;
-    
   }
-  
+
   const allowedProtocols = ['ftp:', 'data:', 'javascript:'];
   if (allowedProtocols.includes(urlObj.protocol)) {
     logDebug(`Allowed protocol detected: ${urlObj.protocol}`);
     reasons.add("allowedProtocol");
     totalRiskRef.value = 0.1;
-    //return;
   }
-  
+
   if (
     urlObj.protocol !== "https:" &&
     urlObj.protocol !== "mailto:" &&
@@ -1841,24 +1862,36 @@ function checkStaticConditions(url, reasons, totalRiskRef) {
     reasons.add("noHttps");
     totalRiskRef.value += 6.0;
   }
-  
+
+  // Bereken het aantal subdomeinen met compound TLD-ondersteuning
+  const compoundTLDs = globalConfig.COMPOUND_TLDS || [];
+  let effectiveSubdomains = domain.split(".");
+  let tldLength = 1; // Standaard TLD-lengte (bijv. .com)
+  compoundTLDs.forEach(compoundTLD => {
+    if (domain.endsWith(`.${compoundTLD}`) || domain === compoundTLD) {
+      tldLength = compoundTLD.split(".").length; // Bijv. 2 voor .co.uk
+    }
+  });
+  const subdomainCount = effectiveSubdomains.length - tldLength;
+
   const domainChecks = [
     { condition: globalConfig.SUSPICIOUS_TLDS.test(domain), weight: 6, reason: "suspiciousTLD" },
     { condition: /^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/.test(domain), weight: 5, reason: "ipAsDomain" },
     { 
-      condition: !isIpAddress(url) && domain.split(".").length > globalConfig.MAX_SUBDOMAINS, 
+      condition: !isIpAddress(url) && subdomainCount > globalConfig.MAX_SUBDOMAINS, 
       weight: 5, 
       reason: "tooManySubdomains" 
     }
   ];
-  
+
   domainChecks.forEach(({ condition, weight, reason }) => {
     if (condition && !reasons.has(reason)) {
       reasons.add(reason);
       totalRiskRef.value += weight;
     }
   });
-if (globalConfig.legitimateDomains && globalConfig.domainRiskWeights) {
+
+  if (globalConfig.legitimateDomains && globalConfig.domainRiskWeights) {
     for (const legitDomain of globalConfig.legitimateDomains) {
       const distance = levenshteinDistance(domain, legitDomain);
       if (distance > 0 && distance <= 2) { // Vergelijkbaar maar niet identiek
@@ -1871,7 +1904,6 @@ if (globalConfig.legitimateDomains && globalConfig.domainRiskWeights) {
     }
   }
 }
-
 
 async function checkDynamicConditions(url, reasons, totalRiskRef) {
   const urlObj = new URL(url);
@@ -2127,7 +2159,6 @@ function hasMultipleSubdomains(url) {
     const hostname = new URL(url).hostname;
     logDebug(`Extracted hostname: ${hostname}`);
     
-    // Controleer of het een IP-adres is en sla subdomein-check over
     const isIpAddress = /^(\d{1,3}\.){3}\d{1,3}$/.test(hostname);
     logDebug(`Is hostname an IP address? ${isIpAddress}`);
     if (isIpAddress) {
@@ -2138,7 +2169,7 @@ function hasMultipleSubdomains(url) {
     logDebug(`Splitting hostname into subdomains`);
     const subdomains = hostname.split('.').slice(0, -2);
     logDebug(`Subdomains: ${subdomains.join(', ')}`);
-    const maxAllowedSubdomains = 2;
+    const maxAllowedSubdomains = globalConfig.MAX_SUBDOMAINS || 3;
     const hasTooManySubdomains = subdomains.length > maxAllowedSubdomains;
     logDebug(`Number of subdomains: ${subdomains.length}, max allowed: ${maxAllowedSubdomains}, has too many: ${hasTooManySubdomains}`);
     return hasTooManySubdomains;
@@ -2152,75 +2183,51 @@ function hasMultipleSubdomains(url) {
 
 // Definieer de cache buiten de functie om persistentie te garanderen
 const shortenedUrlCache = new Map();
-const MAX_CACHE_SIZE = 1000; // Maximale grootte van de cache
+
 
 async function isShortenedUrl(url) {
   try {
-    // Controleer of het resultaat al in de cache staat
     if (shortenedUrlCache.has(url)) {
       logDebug(`Cache hit voor URL: ${url}`);
       return shortenedUrlCache.get(url);
     }
 
-    // Controleer configuratie
-    if (!globalConfig || !(globalConfig.SHORTENED_URL_DOMAINS instanceof Set)) {
-      logDebug("SHORTENED_URL_DOMAINS not loaded correctly!");
-      return false;
-    }
-
-    const shortenedDomains = globalConfig.SHORTENED_URL_DOMAINS; // Het is al een Set, geen conversie nodig
+    const shortenedDomains = globalConfig.SHORTENED_URL_DOMAINS;
     const domain = new URL(url).hostname.toLowerCase().replace(/^www\./, "");
 
-    // Als het domein niet in de verkorte domeinenlijst staat, geen verdere controle nodig
     if (!shortenedDomains.has(domain)) {
       logDebug(`No shortener detected for: ${url}`);
-      shortenedUrlCache.set(url, false); // Cache het resultaat
+      shortenedUrlCache.set(url, false);
       return false;
     }
 
     logDebug(`Detecting shortened URL: ${url}`);
     const finalUrl = await resolveShortenedUrlWithRetry(url);
+    const result = finalUrl === url || shortenedDomains.has(domain); // Vertrouw op domein als fetch faalt
 
-    // Bepaal het resultaat
-    let result;
-    if (finalUrl === url) {
-      logDebug(`Could not resolve shortened URL, assuming it is still shortened: ${url}`);
-      result = true;
-    } else {
-      logDebug(`Shortened URL resolved: ${url} → ${finalUrl}`);
-      result = true;
-    }
-
-    // Voeg resultaat toe aan de cache
     if (shortenedUrlCache.size >= MAX_CACHE_SIZE) {
-      shortenedUrlCache.clear(); // Reset de cache als de limiet is bereikt
+      shortenedUrlCache.clear();
       logDebug("Cache limiet bereikt, cache gereset.");
     }
     shortenedUrlCache.set(url, result);
     return result;
-
   } catch (error) {
     handleError(error, `isShortenedUrl: Fout bij controleren van verkorte URL ${url}`);
-    shortenedUrlCache.set(url, false);
-    return false;
+    shortenedUrlCache.set(url, true); // Conservatief: assume shortened bij fout
+    return true;
   }
 }
 
 async function resolveShortenedUrlWithRetry(url, retries = 3, delay = 1000) {
   for (let attempt = 1; attempt <= retries; attempt++) {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 3000); // 3 seconden timeout
     try {
       const response = await fetch(url, {
         method: 'HEAD',
         redirect: 'follow',
-        signal: controller.signal,
+        mode: 'no-cors', // Voorkom CORS-blokkering
       });
-      clearTimeout(timeout);
-      if (response.ok) return response.url;
-      throw new Error(`Fetch failed: ${response.status}`);
+      return response.url || url; // Fallback naar originele URL als no-cors geen redirect geeft
     } catch (error) {
-      clearTimeout(timeout);
       if (attempt === retries) return url;
       await new Promise(resolve => setTimeout(resolve, delay));
     }
@@ -2234,11 +2241,8 @@ function hasEncodedCharacters(url) {
     const path = urlObj.pathname;
     const query = urlObj.search;
     const encodedCharPattern = /%[0-9A-Fa-f]{2}/g;
-    const pathEncodedCount = (path.match(encodedCharPattern) || []).length;
-    const queryEncodedCount = (query.match(encodedCharPattern) || []).length;
-    const totalEncodedCount = pathEncodedCount + queryEncodedCount;
-    const minEncodedCount = 50;
-    return totalEncodedCount > minEncodedCount && (path.length > 150 || query.length > 400);
+    const totalEncodedCount = (path.match(encodedCharPattern) || []).length + (query.match(encodedCharPattern) || []).length;
+    return totalEncodedCount > 0; // Detecteer zelfs één encoded karakter
   } catch (error) {
     handleError(error, `hasEncodedCharacters: Fout bij controleren van gecodeerde tekens voor URL ${url}`);
     return false;
@@ -2247,27 +2251,60 @@ function hasEncodedCharacters(url) {
 
 function hasBase64OrHex(url) {
   const base64Pattern = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
-  const hexPattern = /\b[a-f0-9]{32,}\b/gi;
-  const uuidPattern = /\b[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\b/gi;
+  const hexPattern = /\b[a-f0-9]{16,}\b/i; // Verhoogd naar 16 tekens voor Hex
+  const minLengthThreshold = 12; // Strengere drempel
+  const allowedProtocols = globalConfig?.ALLOWED_PROTOCOLS || ['https:', 'http:', 'ftp:'];
+
   try {
     const urlObj = new URL(url);
-    const components = [urlObj.pathname, urlObj.search, urlObj.hash];
+    const protocol = urlObj.protocol;
+
+    // Skip niet-relevante protocollen
+    if (!allowedProtocols.includes(protocol)) {
+      logDebug(`Skipping Base64/Hex check for non-relevant protocol: ${url}`);
+      return false;
+    }
+
+    const components = [
+      urlObj.pathname.slice(1),
+      urlObj.search.slice(1),
+      urlObj.hash.slice(1),
+    ].filter(Boolean);
+
     for (const component of components) {
-      const segments = component.split(/[\/&=?]/).filter(s => s.length > 20);
+      if (component.length < minLengthThreshold) continue;
+
+      const segments = component.split(/[/?#&=]+/).filter(seg => seg.length >= minLengthThreshold);
       for (const segment of segments) {
+        // Base64: vereis decodeerbare inhoud met verdachte kenmerken
         if (base64Pattern.test(segment)) {
-          logDebug(`Base64 pattern found in: ${segment}`);
-          return true;
+          try {
+            const decoded = atob(segment.replace(/=+$/, ''));
+            const suspiciousContent = /script|eval|javascript|onload|onclick/i.test(decoded);
+            if (suspiciousContent) {
+              logDebug(`Valid Base64 with suspicious content detected in ${url}: ${segment} -> ${decoded}`);
+              return true;
+            }
+          } catch (e) {
+            logDebug(`Base64 matched but invalid decoding: ${segment} in ${url}`);
+          }
         }
-        if (hexPattern.test(segment) && !uuidPattern.test(segment)) {
-          logDebug(`Hexadecimal pattern found in: ${segment}`);
-          return true;
+
+        // Hex: alleen lange reeksen met context
+        const hexMatches = segment.match(hexPattern);
+        if (hexMatches && hexMatches.some(match => match.length >= minLengthThreshold)) {
+          const hasSuspiciousContext = /script|js|exec|load|data/i.test(component);
+          if (hasSuspiciousContext) {
+            logDebug(`Suspicious Hex detected in ${url}: ${hexMatches.join(', ')}`);
+            return true;
+          }
         }
       }
     }
+    logDebug(`No suspicious Base64 or Hex detected in ${url}`);
     return false;
   } catch (error) {
-    handleError(error, `hasBase64OrHex: Fout bij controleren van Base64/Hex voor URL ${url}`);
+    handleError(error, `hasBase64OrHex: Error checking Base64/Hex for URL ${url}`);
     return false;
   }
 }
@@ -2310,39 +2347,56 @@ function isFreeHostingDomain(url) {
 
 function isCryptoPhishingUrl(url) {
   const officialDomains = (globalConfig && globalConfig.CRYPTO_DOMAINS) || [];
-  const cryptoDomains = officialDomains.map(domain => domain.split('.')[0]);
-  const suspiciousPatterns = [
-    /secure.*login/i,
-    /wallet.*connect/i,
-    /auth.*crypto/i,
-    /locked.*account/i,
-    new RegExp(`2fa.*(${cryptoDomains.join('|')})`, 'i'),
-    /free.*crypto/i,
-    /earn.*bitcoin/i,
-    /airdrop.*crypto/i
+  const cryptoBrands = officialDomains.map(domain => domain.split('.')[0].toLowerCase());
+  const cryptoKeywords = [
+    'crypto', 'bitcoin', 'btc', 'eth', 'ether', 'wallet', 'coin', 'token', 'blockchain', 'ledger', 'exchange', 'airdrop'
   ];
+
+  // Strengere patronen die een crypto-context vereisen
+  const suspiciousPatterns = [
+    /^(?:secure|auth|verify|2fa|locked)-?(?:wallet|crypto|coin|exchange|token|account)$/i, // Bijv. secure-wallet, auth-token
+    /wallet[-_]?connect/i, // wallet-connect of wallet_connect
+    /crypto[-_]?auth/i,    // crypto-auth of crypto_auth
+    /(?:free|earn|claim|bonus)[-_]?(?:crypto|bitcoin|btc|eth|coin)/i, // free-crypto, earn-bitcoin
+    /airdrop[-_]?(?:crypto|coin|token)/i, // airdrop-crypto
+    new RegExp(`(?:2fa|verify)[-_]?(?:${cryptoBrands.join('|')})`, 'i'), // 2fa-binance, verify-kraken
+  ];
+
   try {
     const urlObj = new URL(url);
     const hostname = urlObj.hostname.toLowerCase();
+    const fullPath = `${hostname}${urlObj.pathname}`.toLowerCase();
+
+    // Controleer of het een officieel domein is
     if (officialDomains.some(domain => hostname === domain || hostname.endsWith(`.${domain}`))) {
-      logDebug(`Safe: Official domain detected (${hostname})`);
+      logDebug(`Safe: Official crypto domain detected (${hostname})`);
       return false;
     }
-    if (officialDomains.some(domain =>
-      hostname.includes(domain.replace('.com', '')) && hostname !== domain
-    )) {
-      logDebug(`Suspicious: Lookalike domain detected (${hostname})`);
+
+    // Controleer op lookalike-domeinen (met minimale gelijkenis-drempel)
+    const isLookalike = officialDomains.some(domain => {
+      const brand = domain.split('.')[0];
+      const distance = levenshteinDistance(hostname, domain);
+      return hostname.includes(brand) && hostname !== domain && distance <= 3; // Max 3 tekens verschil
+    });
+    if (isLookalike) {
+      logDebug(`Suspicious: Lookalike crypto domain detected (${hostname})`);
       return true;
     }
-    if (suspiciousPatterns.some(pattern => pattern.test(`${hostname}${urlObj.pathname}`))) {
-      logDebug(`Suspicious: Suspicious patterns detected (${hostname})`);
+
+    // Controleer op crypto-specifieke patronen EN keywords
+    const hasCryptoKeyword = cryptoKeywords.some(keyword => fullPath.includes(keyword));
+    const matchesPattern = suspiciousPatterns.some(pattern => pattern.test(fullPath));
+    if (matchesPattern && hasCryptoKeyword) {
+      logDebug(`Suspicious: Crypto phishing pattern detected in (${fullPath})`);
       return true;
     }
-    logDebug(`Safe: No suspicious characteristics found (${hostname})`);
+
+    logDebug(`Safe: No crypto phishing characteristics found (${hostname})`);
     return false;
   } catch (error) {
-    handleError(error, `isCryptoPhishingUrl: Fout bij controleren van crypto-phishing voor URL ${url}`);
-    return false;
+    handleError(error, `isCryptoPhishingUrl: Error checking crypto phishing for URL ${url}`);
+    return false; // Conservatieve fallback bij ongeldige URL
   }
 }
 
@@ -2356,116 +2410,144 @@ document.addEventListener('DOMContentLoaded', async () => {
   try {
     logDebug("🚀 Initializing content script...");
     await initContentScript();
-    
+
     const currentUrl = window.location.href;
     logDebug(`🔍 Checking the current page: ${currentUrl}`);
 
-    // Directe controle uitvoeren bij laden van de pagina
-    performSuspiciousChecks(currentUrl)
-      .then(result => {
-        const isSafe = result.reasons.length === 0; // Voorkom false positives
-        chrome.runtime.sendMessage({
-          type: "checkResult",
-          url: currentUrl,
-          isSafe,
-          risk: result.risk,
-          reasons: result.reasons
-        });
-        logDebug(`✅ Check complete: isSafe=${isSafe}, risk=${result.risk}, reasons=${result.reasons.join(", ")}`);
-      })
-      .catch(error => handleError(error, `Initial URL Check: Fout bij controleren van URL ${currentUrl}`));
-
-    let attempts = 0;
-    const maxAttempts = 10;
-    const checkInterval = 500;
-
-    const interval = setInterval(async () => {
-      attempts++;
-
-      const isLogin = detectLoginPage(currentUrl);
-       if (isLogin) {
-        clearInterval(interval);
-        chrome.runtime.sendMessage({
-            type: "checkResult",
-            url: currentUrl,
-            isSafe: false,
-            risk: 7,
-            reasons: ["insecureLoginPage"] // Aangepast
-        });
-        logDebug(`❌ Login page detected: ${currentUrl}`);
+    // Controleer of het een login-pagina is
+    const isLogin = detectLoginPage(currentUrl);
+    if (isLogin) {
+      chrome.runtime.sendMessage({
+        type: "checkResult",
+        url: currentUrl,
+        isSafe: false,
+        risk: 7,
+        reasons: ["insecureLoginPage"]
+      });
+      logDebug(`❌ Login page detected: ${currentUrl}`);
+    } else {
+      // Directe controle uitvoeren bij laden van de pagina als het geen login-pagina is
+      const result = await performSuspiciousChecks(currentUrl);
+      const isSafe = result.reasons.length === 0; // Voorkom false positives
+      chrome.runtime.sendMessage({
+        type: "checkResult",
+        url: currentUrl,
+        isSafe,
+        risk: result.risk,
+        reasons: result.reasons
+      });
+      logDebug(`✅ Check complete: isSafe=${isSafe}, risk=${result.risk}, reasons=${result.reasons.join(", ")}`);
     }
-
-      if (attempts >= maxAttempts) {
-        clearInterval(interval);
-        logDebug("🛑 Maximum login detection attempts reached.");
-      }
-    }, checkInterval);
   } catch (error) {
     handleError(error, `DOMContentLoaded: Fout bij initialiseren van content script voor pagina ${window.location.href}`);
   }
 });
 
 
-
-/**
- * Aangepaste versie van checkLinks() die overslaat als we op een Google zoekpagina zitten.
- */
-function checkLinks() {
+async function checkLinks() {
   if (isSearchResultPage()) {
-    logDebug("Google search page detected, skipping global link check.");
-    return;
+    logDebug("Zoekresultatenpagina gedetecteerd, linkcontrole wordt overgeslagen.");
+    return false;
   }
 
-  const currentDomain = new URL(window.location.href).hostname;
-  const links = Array.from(document.querySelectorAll('a')).filter(link => {
-    if (!link.href || !isValidURL(link.href)) return false;
-    const linkDomain = new URL(link.href).hostname;
-    return linkDomain.endsWith(currentDomain) && !scannedLinks.has(link.href);
+  const currentUrl = window.location.href;
+  let currentDomain;
+  try {
+    currentDomain = new URL(currentUrl).hostname;
+    logDebug(`Hoofddomein van de pagina: ${currentDomain}`);
+  } catch (error) {
+    logError(`Kon hoofddomein niet bepalen uit ${currentUrl}:`, error);
+    return false;
+  }
+
+  const mainUrlCheck = await performSuspiciousChecks(currentUrl);
+  chrome.runtime.sendMessage({
+    type: 'checkResult',
+    url: currentUrl,
+    isSafe: mainUrlCheck.isSafe,
+    risk: mainUrlCheck.risk,
+    reasons: mainUrlCheck.reasons
   });
-  
-  links.forEach(link => {
+
+  const MAX_LINKS_TO_SCAN = 1000;
+  const links = Array.from(document.querySelectorAll('a'))
+    .filter(link => link.href && isValidURL(link.href) && !scannedLinks.has(link.href))
+    .slice(0, MAX_LINKS_TO_SCAN);
+
+  const totalLinks = document.querySelectorAll('a').length;
+  if (totalLinks > MAX_LINKS_TO_SCAN) {
+    logDebug(`Aantal links (${totalLinks}) overschrijdt limiet (${MAX_LINKS_TO_SCAN}), alleen eerste ${MAX_LINKS_TO_SCAN} worden gecontroleerd.`);
+  }
+
+  if (links.length === 0) {
+    logDebug(`Geen links om te controleren. Resultaat gebaseerd op hoofdpagina: ${mainUrlCheck.isSafe}`);
+    return !mainUrlCheck.isSafe;
+  }
+
+  const linkChecks = links.map(async (link) => {
     const href = link.href;
     scannedLinks.add(href);
-    if (globalConfig.SUSPICIOUS_TLDS.test(new URL(href).hostname)) {
-      chrome.runtime.sendMessage({
-        type: 'checkResult',
-        url: href,
-        isSafe: false,
-        risk: 0,
-        reasons: [chrome.i18n.getMessage("suspiciousTLD")]
-      });
-      return;
+
+    let urlObj;
+    try {
+      urlObj = new URL(href);
+    } catch (error) {
+      logError(`Ongeldige URL gedetecteerd: ${href}`, error);
+      return { href, isSuspicious: false };
     }
-    if (!href.startsWith('https:')) {
-      chrome.runtime.sendMessage({
-        type: 'checkResult',
-        url: href,
-        isSafe: false,
-        risk: 0,
-        reasons: [chrome.i18n.getMessage("noHttps")]
-      });
+
+    const linkDomain = urlObj.hostname;
+    if (linkDomain === currentDomain || linkDomain.endsWith(`.${currentDomain}`)) {
+      logDebug(`Link ${href} behoort tot hoofddomein ${currentDomain}, geen visuele waarschuwing.`);
+      return { href, isSuspicious: false };
     }
-    performSuspiciousChecks(href)
-      .then(({ isSafe, reasons, risk }) => {
-        chrome.runtime.sendMessage({
-          type: 'checkResult',
-          url: href,
-          isSafe,
-          risk,
-          reasons
-        });
-      })
-      .catch(error => handleError(error, `checkLinks: Fout bij controleren van URL ${href}`));
+
+    const protocol = urlObj.protocol;
+    const isHttpProtocol = ['http:', 'https:'].includes(protocol);
+
+    const addWarning = async (reasons) => {
+      await warnLink(link, reasons);
+      logDebug(`Externe link ${href} gemarkeerd als verdacht. Redenen: ${reasons.join(', ')}`);
+      return true;
+    };
+
+    if (!isHttpProtocol) {
+      logDebug(`Skipping HTTPS/TLD checks for non-HTTP protocol: ${href}`);
+      return { href, isSuspicious: false };
+    }
+
+    if (globalConfig.SUSPICIOUS_TLDS.test(linkDomain)) {
+      return { href, isSuspicious: await addWarning(["suspiciousTLD"]) };
+    }
+
+    if (protocol !== 'https:') {
+      return { href, isSuspicious: await addWarning(["noHttps"]) };
+    }
+
+    const { isSafe, reasons, risk } = await performSuspiciousChecks(href);
+    if (!isSafe) {
+      return { href, isSuspicious: await addWarning(reasons) };
+    }
+
+    logDebug(`Externe link ${href} is veilig. Redenen: ${reasons.length > 0 ? reasons.join(', ') : 'geen'}`);
+    return { href, isSuspicious: false };
   });
+
+  const results = await Promise.all(linkChecks);
+  const hasSuspiciousExternalLinks = results.some(result => result.isSuspicious);
+  const finalResult = hasSuspiciousExternalLinks || !mainUrlCheck.isSafe;
+
+  logDebug(`Eindresultaat checkLinks: ${finalResult}. Hoofdpagina veilig: ${mainUrlCheck.isSafe}, Verdachte externe links: ${hasSuspiciousExternalLinks}`);
+  return finalResult;
 }
 
-// In de initialisatie wordt checkLinks() alleen aangeroepen als we niet op een Google zoekpagina zitten.
+
+// In de initialisatie wordt checkLinks() alleen aangeroepen als we niet op een Google-zoekpagina zitten
 getStoredSettings().then(settings => {
   if (settings.integratedProtection && !isSearchResultPage()) {
     checkLinks();
   }
 });
-
 function injectWarningStyles() {
   if (document.head.querySelector("#linkshield-warning-styles")) {
     logDebug("Warning styles already present, skipping.");
@@ -2496,15 +2578,6 @@ function injectWarningStyles() {
   document.head.appendChild(style);
 }
 
-function determineRiskSeverity(score) {
-  if (score <= 10) {
-    return "low";
-  } else if (score <= 20) {
-    return "medium";
-  } else {
-    return "high";
-  }
-}
 
 (async function init() {
   try {
@@ -2514,42 +2587,7 @@ function determineRiskSeverity(score) {
   }
 })();
 
-function unmarkLinksAsSuspicious(url) {
-  document.querySelectorAll('a').forEach(link => {
-    if (link.href === url) {
-      link.classList.remove('suspicious-link');
-      const warningIcon = link.nextElementSibling;
-      if (warningIcon && warningIcon.classList.contains('linkshield-warning')) {
-        warningIcon.remove();
-      }
-    }
-  });
-}
 
-function showConfirmationMessage(message) {
-  const confirmationMessage = document.createElement('div');
-  confirmationMessage.textContent = message;
-  confirmationMessage.style.cssText = `
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #fff;
-    border: 2px solid green;
-    padding: 10px;
-    z-index: 10001;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
-    max-width: 90%;
-    width: 300px;
-    text-align: center;
-    font-family: 'Arial', sans-serif;
-    color: #2c3e50;
-    background-color: lightgreen;
-  `;
-  document.body.appendChild(confirmationMessage);
-  setTimeout(() => confirmationMessage.remove(), 3000);
-}
 
 const observer = new MutationObserver(debounce(async (mutations) => {
   if (!(await isProtectionEnabled())) return;
@@ -2596,6 +2634,7 @@ const processedLinks = new Set();
 
 async function unifiedCheckLinkSafety(link, eventType, event) {
   if (!(await isProtectionEnabled())) return;
+
   // Controleer of link en href bestaan en geldig zijn
   if (!link || !link.href || !isValidURL(link.href)) {
     logDebug(`Skipping unifiedCheckLinkSafety: Invalid or missing URL in link: ${link.href || 'undefined'}`);
@@ -2603,8 +2642,9 @@ async function unifiedCheckLinkSafety(link, eventType, event) {
   }
 
   // Extra controle voor SVG-links
-  if (link.href instanceof SVGAnimatedString) {
-    logDebug(`Skipping SVG link: ${link.href.baseVal || 'undefined'}`);
+  if (link.ownerSVGElement || link.href instanceof SVGAnimatedString) {
+    const hrefValue = link.href instanceof SVGAnimatedString ? link.href.baseVal : link.href;
+    logDebug(`Skipping SVG link: ${hrefValue || 'undefined'} (ownerSVGElement: ${!!link.ownerSVGElement}, SVGAnimatedString: ${link.href instanceof SVGAnimatedString})`);
     return;
   }
 
@@ -2640,6 +2680,7 @@ async function unifiedCheckLinkSafety(link, eventType, event) {
     handleError(error, `unifiedCheckLinkSafety: Fout bij controleren van link ${href} op event ${eventType}`);
   }
 }
+
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === 'testURL') {

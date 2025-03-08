@@ -527,23 +527,64 @@ async function getStoredSettings() {
 
 let lastCheckedUrl = null;
 
-function checkCurrentUrl() {
+async function checkCurrentUrl() {
   const currentUrl = window.location.href;
   if (currentUrl !== lastCheckedUrl) {
     lastCheckedUrl = currentUrl;
     logDebug("[Content] URL changed to:", currentUrl);
-    performSuspiciousChecks(currentUrl).then((result) => {
-      logDebug("[Content] Check result:", result);
-      logDebug("Analysis result:", result);
-      chrome.runtime.sendMessage({
-        type: "checkResult",
-        isSafe: result.isSafe,
-        risk: result.risk,
-        reasons: result.reasons,
-        url: currentUrl
-      });
+
+    // Controleer op meta-refresh URL
+    const metaRefreshUrl = getMetaRefreshUrl();
+    let finalUrl;
+
+    if (metaRefreshUrl) {
+      finalUrl = metaRefreshUrl;
+      logDebug("[Content] Meta-refresh URL detected:", finalUrl);
+    } else {
+      // Haal de uiteindelijke URL op na HTTP-redirects
+      finalUrl = await getFinalUrl(currentUrl);
+      logDebug("[Content] Final URL after redirects:", finalUrl);
+    }
+
+    // Voer de check uit op de uiteindelijke URL
+    const result = await performSuspiciousChecks(finalUrl);
+    logDebug("[Content] Check result:", result);
+    logDebug("Analysis result:", result);
+    chrome.runtime.sendMessage({
+      type: "checkResult",
+      isSafe: result.isSafe,
+      risk: result.risk,
+      reasons: result.reasons,
+      url: finalUrl // Gebruik de uiteindelijke URL in het bericht
     });
   }
+}
+
+async function getFinalUrl(url) {
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 seconden timeout
+    const response = await fetch(url, { 
+      method: 'HEAD', 
+      redirect: 'follow', 
+      signal: controller.signal 
+    });
+    clearTimeout(timeoutId);
+    return response.url;
+  } catch (error) {
+    console.error(`Fout bij ophalen uiteindelijke URL voor ${url}:`, error);
+    return url;
+  }
+}
+
+function getMetaRefreshUrl() {
+  const metaTag = document.querySelector('meta[http-equiv="refresh"]');
+  if (metaTag) {
+    const content = metaTag.getAttribute('content');
+    const match = content.match(/url=(.+)/i);
+    if (match) return match[1];
+  }
+  return null;
 }
 
 function levenshteinDistance(a, b) {
@@ -1694,6 +1735,8 @@ function storeInCache(url, result) {
   }
   linkRiskCache.set(url, { result, timestamp: Date.now() });
   logDebug(`Cached result for ${url}:`, result);
+  // Voeg deze regel toe om de volledige cache te loggen
+  logDebug('Huidige cache-inhoud:', Object.fromEntries(linkRiskCache));
 }
 
 async function performSuspiciousChecks(url) {
@@ -1770,17 +1813,18 @@ async function performSuspiciousChecks(url) {
     totalRiskRef.value += 10;
   }
 
-  // Dynamische condities met jouw bestaande functies
+  // Dynamische condities met jouw bestaande functies, uitgebreid met isFreeHostingDomain
   const dynamicChecks = [
     { func: hasBase64OrHex, messageKey: "base64OrHex", risk: 2.0 },
     { func: isShortenedUrl, messageKey: "shortenedUrl", risk: 4.0 },
     { func: hasEncodedCharacters, messageKey: "encodedCharacters", risk: 3.0 },
-    { func: hasUnusualPort, messageKey: "unusualPort", risk: 3.0 },
+    { func: hasUnusualPort, messageKey: "unusualPort", risk: 5 },
     { func: hasSuspiciousKeywords, messageKey: "suspiciousKeywords", risk: 3.0 },
     { func: hasSuspiciousPattern, messageKey: "suspiciousPattern", risk: 4.0 },
     { func: isDownloadPage, messageKey: "downloadPage", risk: 5.0 },
     { func: usesUrlFragmentTrick, messageKey: "urlFragmentTrick", risk: 3.0 },
     { func: isCryptoPhishingUrl, messageKey: "cryptoPhishing", risk: 10.0 },
+    { func: isFreeHostingDomain, messageKey: "freeHosting", risk: 5 }, // Nieuwe check toegevoegd
     ...(isHttpProtocol ? [
       { func: checkForSuspiciousExternalScripts, messageKey: "externalScripts", risk: 4.0 },
       { func: hasSuspiciousIframes, messageKey: "suspiciousIframes", risk: 3.5 },
@@ -1792,7 +1836,8 @@ async function performSuspiciousChecks(url) {
       const result = await func(url);
       if (func === hasBase64OrHex || func === isShortenedUrl || func === hasEncodedCharacters || 
           func === hasUnusualPort || func === hasSuspiciousKeywords || func === hasSuspiciousPattern || 
-          func === isDownloadPage || func === usesUrlFragmentTrick || func === isCryptoPhishingUrl) {
+          func === isDownloadPage || func === usesUrlFragmentTrick || func === isCryptoPhishingUrl || 
+          func === isFreeHostingDomain) { // Nieuwe functie toegevoegd aan de controle
         if (result === true && domain) {
           reasons.add(messageKey);
           totalRiskRef.value += risk;
@@ -1823,7 +1868,6 @@ async function performSuspiciousChecks(url) {
   storeInCache(url, result);
   return result;
 }
-
 
 // Optionele periodieke cache-schoonmaak (voeg dit toe aan je script)
 setInterval(() => {
@@ -1928,7 +1972,7 @@ async function checkDynamicConditions(url, reasons, totalRiskRef) {
     { func: isCryptoPhishingUrl, messageKey: "cryptoPhishing", risk: 5 },
     { func: hasSuspiciousQueryParameters, messageKey: "suspiciousParams", risk: 2.5 },
     { func: hasMixedContent, messageKey: "mixedContent", risk: 2.0 },
-    { func: hasUnusualPort, messageKey: "unusualPort", risk: 3.5 },
+    { func: hasUnusualPort, messageKey: "unusualPort", risk: 5 },
     { func: hasJavascriptScheme, messageKey: "javascriptScheme", risk: 4.0 },
     { func: usesUrlFragmentTrick, messageKey: "urlFragmentTrick", risk: 2.0 }
   ];

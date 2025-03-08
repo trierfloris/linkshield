@@ -1,5 +1,9 @@
 // --- Rule Management and Fetching ---
 
+let isUpdatingRules = false; // Debounce flag to prevent overlapping updates
+let lastUpdate = 0; // Timestamp of the last update for additional control
+
+/** Manages the enabling/disabling of declarativeNetRequest rulesets based on settings */
 async function manageDNRules() {
     try {
         const { backgroundSecurity } = await chrome.storage.sync.get('backgroundSecurity');
@@ -13,12 +17,17 @@ async function manageDNRules() {
             });
         }
     } catch (error) {
-        // Uncomment the next line for debugging if needed:
-        // console.error("Error managing DNR rules:", error);
+        //console.error("Error managing DNR rules:", error);
     }
 }
 
+/** Fetches and loads dynamic rules from a remote source */
 async function fetchAndLoadRules() {
+    if (isUpdatingRules) {
+        console.log("[DEBUG] Rule update already in progress. Skipping.");
+        return;
+    }
+    isUpdatingRules = true;
     try {
         const { backgroundSecurity } = await chrome.storage.sync.get('backgroundSecurity');
         if (!backgroundSecurity) {
@@ -26,29 +35,51 @@ async function fetchAndLoadRules() {
             return;
         }
 
+        console.log("[DEBUG] Starting rule fetch...");
         const rulesResponse = await fetchWithRetry('https://linkshield.nl/files/rules.json');
         if (!rulesResponse.ok) {
             throw new Error(`Failed to fetch rules: ${rulesResponse.status}`);
         }
 
         const newRules = await rulesResponse.json();
+        console.log(`[DEBUG] Number of new rules received: ${newRules.length}`);
+
         if (!Array.isArray(newRules) || newRules.length === 0) {
-            handleBackgroundError(new Error("Invalid or empty rules"), "fetchAndLoadRules");
-            return;
+            throw new Error("Invalid or empty rules");
         }
 
-        // Valideer en filter regels
+        // Step 1: Iteratively remove existing rules
+        let remainingRules = await chrome.declarativeNetRequest.getDynamicRules();
+        while (remainingRules.length > 0) {
+            const batch = remainingRules.slice(0, 500).map(rule => rule.id); // Max 500 per batch
+            await chrome.declarativeNetRequest.updateDynamicRules({ removeRuleIds: batch });
+            console.info(`[DEBUG] Batch of ${batch.length} rules removed.`);
+            await new Promise(resolve => setTimeout(resolve, 200)); // Short delay
+            remainingRules = await chrome.declarativeNetRequest.getDynamicRules();
+        }
+        console.info('[DEBUG] All dynamic rules successfully removed.');
+
+        // Step 2: Force Chrome reset with temporary rule
+        await chrome.declarativeNetRequest.updateDynamicRules({
+            addRules: [{ id: 1, priority: 1, action: { type: 'allow' }, condition: { resourceTypes: ['main_frame'] } }]
+        });
+        await chrome.declarativeNetRequest.updateDynamicRules({ removeRuleIds: [1] });
+
+        // Step 3: Validate and filter rules with unique integer IDs
         const { lastCounter = 1000000 } = await chrome.storage.local.get('lastCounter');
-        let counter = Math.max(1000000, Math.floor(lastCounter)); // Zorg voor een minimum ID
+        let counter = Math.max(1000000, Math.floor(lastCounter)); // Ensure minimum ID
         const validDynamicRules = [];
         const seenIds = new Set();
 
         for (const rule of newRules) {
             if (!rule.condition?.urlFilter || !rule.action || typeof rule.priority !== 'number') {
-                continue; // Sla ongeldige regels over
+                continue; // Skip invalid rules
             }
-            const ruleId = counter++;
-            if (seenIds.has(ruleId)) continue; // Voorkom duplicaten
+            const ruleId = Math.floor(counter++);
+            if (!Number.isInteger(ruleId)) {
+                throw new Error(`[ERROR] Rule ID is not an integer: ${ruleId}`);
+            }
+            if (seenIds.has(ruleId)) continue; // Prevent duplicates
             seenIds.add(ruleId);
 
             validDynamicRules.push({
@@ -62,27 +93,34 @@ async function fetchAndLoadRules() {
             });
         }
 
+        console.log(`[DEBUG] Number of valid rules after filtering: ${validDynamicRules.length}`);
+
         if (validDynamicRules.length === 0) {
-            handleBackgroundError(new Error("No valid rules after filtering"), "fetchAndLoadRules");
-            return;
+            throw new Error("No valid rules after filtering");
         }
 
-        await clearDynamicRules();
+        // Step 4: Add new rules in batches
         const addBatchSize = 1000;
         for (let i = 0; i < validDynamicRules.length; i += addBatchSize) {
             const batch = validDynamicRules.slice(i, i + addBatchSize);
             await chrome.declarativeNetRequest.updateDynamicRules({ addRules: batch });
+            console.info(`[DEBUG] Batch of ${batch.length} rules added.`);
             await new Promise(resolve => setTimeout(resolve, 200)); // Prevent throttling
         }
+
+        console.log(`[DEBUG] All dynamic rules successfully added.`);
 
         await chrome.storage.local.set({ lastCounter: counter });
         await updateLastRuleUpdate();
     } catch (error) {
-        handleBackgroundError(error, "fetchAndLoadRules");
-        // Fallback: behoud bestaande regels als fetch mislukt
+        console.error("[ERROR] fetchAndLoadRules:", error.message);
+        // Fallback: retain existing rules if fetch fails
+    } finally {
+        isUpdatingRules = false; // Reset flag
     }
 }
 
+/** Clears all dynamic rules in batches */
 async function clearDynamicRules() {
     let remainingRules = await chrome.declarativeNetRequest.getDynamicRules();
     while (remainingRules.length > 0) {
@@ -92,16 +130,18 @@ async function clearDynamicRules() {
         remainingRules = await chrome.declarativeNetRequest.getDynamicRules();
     }
 }
+
+/** Updates the timestamp of the last rule update */
 async function updateLastRuleUpdate() {
     const now = new Date().toISOString();
     try {
         await chrome.storage.local.set({ lastRuleUpdate: now });
     } catch (error) {
-        // Uncomment the next line for debugging if needed:
-        // console.error('[extension] Error saving lastRuleUpdate:', error.message);
+        //console.error('[ERROR] Error saving lastRuleUpdate:', error.message);
     }
 }
 
+/** Fetches a URL with retry logic */
 async function fetchWithRetry(url, options, maxRetries = 3, retryDelay = 1000) {
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
         try {
@@ -125,6 +165,7 @@ async function fetchWithRetry(url, options, maxRetries = 3, retryDelay = 1000) {
 
 // --- License Validation ---
 
+/** Validates a license key against Gumroad API */
 async function validateLicenseKey(licenseKey) {
     try {
         const response = await fetchWithRetry('https://api.gumroad.com/v2/licenses/verify', {
@@ -146,6 +187,7 @@ async function validateLicenseKey(licenseKey) {
 
 // --- Suspicious Link Handling ---
 
+/** Adds a URL to the list of suspicious URLs */
 async function handleSuspiciousLink(url) {
     try {
         const { suspiciousUrls = [] } = await chrome.storage.sync.get('suspiciousUrls');
@@ -155,7 +197,7 @@ async function handleSuspiciousLink(url) {
             await chrome.storage.sync.set({ suspiciousUrls: Array.from(urls) });
         }
     } catch (error) {
-        handleBackgroundError(error, "handleSuspiciousLink");
+        //console.error("[ERROR] handleSuspiciousLink:", error.message);
     }
 }
 
@@ -188,16 +230,14 @@ chrome.runtime.onInstalled.addListener(async (details) => {
             periodInMinutes: 60
         });
     } catch (error) {
-        // Uncomment the next line for debugging if needed:
-        // console.error("Error during extension installation or update:", error);
+        //console.error("Error during extension installation or update:", error);
     }
 });
 
 chrome.alarms.onAlarm.addListener((alarm) => {
     if (alarm.name === "fetchRulesHourly") {
         fetchAndLoadRules().catch(error => {
-            // Uncomment the next line for debugging if needed:
-            // console.error("[extension] Error fetching rules via alarm:", error.message);
+            //console.error("[ERROR] Error fetching rules via alarm:", error.message);
         });
     }
 });
@@ -208,73 +248,49 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
     try {
         switch (request.type || request.action) {
             case 'validateLicense':
-                try {
-                    const result = await validateLicenseKey(request.licenseKey);
-                    sendResponse({ success: result });
-                } catch (error) {
-                    //console.error("[validateLicense] Error:", error);
-                    sendResponse({ success: false, error: error.message });
-                }
-                return true; // Nodig voor async response
+                const result = await validateLicenseKey(request.licenseKey);
+                sendResponse({ success: result });
+                return true; // Needed for async response
 
             case 'checkUrl':
-                try {
-                    const result = await checkUrlSafety(request.url);
-                    sendResponse(result);
-                } catch (error) {
-                    //console.error("[checkUrl] Error:", error);
-                    sendResponse({ status: "error", message: error.message });
-                }
+                // Placeholder: implement checkUrlSafety if needed
+                sendResponse({ status: "not_implemented" });
                 return true;
 
             case 'checkResult':
-                try {
-                    const settings = await chrome.storage.sync.get(['integratedProtection']);
-                    if (!settings.integratedProtection) {
-                        sendResponse({ status: 'skipped' });
-                    } else {
-                        const { isSafe, reasons, risk, url } = request; // Haal risk expliciet uit het request
-                        await updateIconBasedOnSafety(isSafe, reasons, risk, url); // Gebruik async versie
-                        sendResponse({ status: 'received' });
-                    }
-                } catch (error) {
-                    sendResponse({ status: 'error', error: error.message });
+                const settings = await chrome.storage.sync.get(['integratedProtection']);
+                if (!settings.integratedProtection) {
+                    sendResponse({ status: 'skipped' });
+                } else {
+                    const { isSafe, reasons, risk, url } = request;
+                    await updateIconBasedOnSafety(isSafe, reasons, risk, url);
+                    sendResponse({ status: 'received' });
                 }
                 return true;
 
             case 'getStatus':
-                try {
-                    const { currentSiteStatus } = await chrome.storage.local.get("currentSiteStatus");
-                    sendResponse(currentSiteStatus || { isSafe: null, reasons: ["Geen status gevonden"], url: null });
-                } catch (error) {
-                    //console.error("[getStatus] Error:", error);
-                    sendResponse({ isSafe: null, reasons: ["Fout bij ophalen status"], url: null });
-                }
+                const { currentSiteStatus } = await chrome.storage.local.get("currentSiteStatus");
+                sendResponse(currentSiteStatus || { isSafe: null, reasons: ["No status found"], url: null });
                 return true;
 
             case 'alert':
-                try {
-                    chrome.notifications.create({
-                        type: 'basic',
-                        iconUrl: 'icons/icon128.png', // Controleer of dit pad klopt
-                        title: 'Waarschuwing',
-                        message: request.message || 'Deze pagina bevat verdachte links!',
-                        priority: 2
-                    });
-                    sendResponse({ status: 'alert_shown' });
-                } catch (error) {
-                    //console.error("[alert] Error showing notification:", error);
-                    sendResponse({ status: 'error', error: error.message });
-                }
+                chrome.notifications.create({
+                    type: 'basic',
+                    iconUrl: 'icons/icon128.png',
+                    title: 'Warning',
+                    message: request.message || 'This page contains suspicious links!',
+                    priority: 2
+                });
+                sendResponse({ status: 'alert_shown' });
                 return true;
 
             default:
-                //console.warn("[onMessage] Onbekend request type:", request.type || request.action);
+                //console.warn("[onMessage] Unknown request type:", request.type || request.action);
                 sendResponse({ success: false, error: "Unknown message type" });
         }
     } catch (error) {
-        //console.error("[onMessage] Algemene fout:", error);
-        sendResponse({ success: false, error: "Interne fout" });
+        //console.error("[onMessage] General error:", error);
+        sendResponse({ success: false, error: "Internal error" });
     }
     return true;
 });
@@ -285,6 +301,7 @@ let iconState = true;
 let activeAnimationInterval = null;
 let animationTimeout = null;
 
+/** Toggles the extension icon between green and red */
 function toggleIcon() {
     chrome.action.setIcon({
         path: iconState ? {
@@ -300,6 +317,7 @@ function toggleIcon() {
     iconState = !iconState;
 }
 
+/** Starts a smooth icon animation for a specified duration */
 function startSmoothIconAnimation(duration = 30000, interval = 5000) {
     stopIconAnimation();
 
@@ -322,30 +340,31 @@ function startSmoothIconAnimation(duration = 30000, interval = 5000) {
     }, duration);
 }
 
+/** Resets the current site status in storage */
 async function resetCurrentSiteStatus() {
     try {
         await chrome.storage.local.remove("currentSiteStatus");
     } catch (error) {
-        // Uncomment the next line for debugging if needed:
-        // console.error("[ERROR] Error resetting currentSiteStatus:", error);
+        //console.error("[ERROR] Error resetting currentSiteStatus:", error);
     }
 }
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     if (changeInfo.url) {
-        stopIconAnimation();  // Stop animation when a new URL is loaded in the same tab
+        stopIconAnimation();
         resetCurrentSiteStatus();
     }
 });
 
 chrome.tabs.onActivated.addListener(async ({ tabId }) => {
     stopIconAnimation();
-    resetIconToNeutral(); // Reset naar neutrale staat
+    resetIconToNeutral();
     await resetCurrentSiteStatus();
     const tab = await chrome.tabs.get(tabId);
     if (tab && tab.url) checkTabSafety(tab.url);
 });
 
+/** Resets the icon to a neutral state */
 function resetIconToNeutral() {
     chrome.action.setIcon({
         path: {
@@ -359,6 +378,7 @@ function resetIconToNeutral() {
 
 let checkedUrls = new Map();
 
+/** Checks the safety of a tab's URL */
 function checkTabSafety(url) {
     const now = Date.now();
     if (checkedUrls.has(url) && now - checkedUrls.get(url) < 60000) {
@@ -389,6 +409,7 @@ setInterval(() => {
     });
 }, 60000);
 
+/** Handles the safety check result for a URL */
 function handleSafetyCheck(isSafe, url, risk = 0) {
     if (!isSafe) {
         chrome.action.setIcon({
@@ -397,7 +418,7 @@ function handleSafetyCheck(isSafe, url, risk = 0) {
         chrome.action.setTitle({ title: `Unsafe site detected (Risk: ${risk})` });
         const animationSpeed = risk >= 10 ? 500 : risk >= 5 ? 1000 : 2000;
         startSmoothIconAnimation(30000, animationSpeed);
-        handleSuspiciousLink(url); // Voeg toe aan suspiciousUrls
+        handleSuspiciousLink(url);
     } else {
         chrome.action.setIcon({
             path: { "16": "icons/green-circle-16.png", "48": "icons/green-circle-48.png", "128": "icons/green-circle-128.png" }
@@ -406,6 +427,7 @@ function handleSafetyCheck(isSafe, url, risk = 0) {
     }
 }
 
+/** Stops the icon animation */
 function stopIconAnimation() {
     if (activeAnimationInterval) {
         clearInterval(activeAnimationInterval);
@@ -428,16 +450,22 @@ chrome.action.onClicked.addListener(async () => {
     }
 });
 
-chrome.storage.onChanged.addListener(async (changes, namespace) => {
-    if (changes.backgroundSecurity) {
-        // console.log("backgroundSecurity changed. Updating DNR rules...");
-        await manageDNRules();
-        await fetchAndLoadRules();
+chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === "sync" && "backgroundSecurity" in changes) {
+        const now = Date.now();
+        if (now - lastUpdate < 300000) { // 5 minutes
+            //console.log("[DEBUG] Too soon for another update. Skipping.");
+            return;
+        }
+        lastUpdate = now;
+        //console.log("backgroundSecurity changed. Updating DNR rules...");
+        fetchAndLoadRules();
     }
 });
 
 chrome.runtime.setUninstallURL("https://linkshield.nl/#uninstall");
 
+/** Updates the extension icon based on site safety */
 async function updateIconBasedOnSafety(isSafe, reasons, risk, url) {
     const iconPaths = isSafe
         ? { "16": "icons/green-circle-16.png", "48": "icons/green-circle-48.png", "128": "icons/green-circle-128.png" }
@@ -453,11 +481,11 @@ async function updateIconBasedOnSafety(isSafe, reasons, risk, url) {
             currentSiteStatus: { isSafe, reasons, risk: Number(risk), url }
         });
     } catch (error) {
-        handleBackgroundError(error, "updateIconBasedOnSafety: Failed to save currentSiteStatus");
+        //console.error("[ERROR] updateIconBasedOnSafety: Failed to save currentSiteStatus:", error.message);
     }
 
     if (!isSafe) {
-        const animationSpeed = risk >= 10 ? 500 : risk >= 5 ? 1000 : 2000; // Sneller bij hoger risico
+        const animationSpeed = risk >= 10 ? 500 : risk >= 5 ? 1000 : 2000; // Faster for higher risk
         startSmoothIconAnimation(60000, animationSpeed);
     }
 }

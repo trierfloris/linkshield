@@ -1,6 +1,6 @@
 window.CONFIG = {
     // Verdachte Top-Level Domeinen (TLD’s)
-    SUSPICIOUS_TLDS: /\.(academy|accountant|accountants|agency|ap|app|art|asia|auto|bank|bar|beauty|bet|bid|bio|biz|blog|buzz|cam|capital|casa|casino|cfd|charity|cheap|church|city|claims|click|club|company|crispsalt|cyou|data|date|design|dev|digital|directory|download|email|energy|estate|events|exchange|expert|exposed|express|finance|fit|forsale|foundation|fun|games|gle|goog|gq|guide|guru|health|help|home|host|html|icu|ink|institute|investments|ip|jobs|life|limited|link|live|loan|lol|ltd|ly|mall|market|me|media|men|ml|mom|money|monster|mov|network|one|online|page|partners|party|php|pics|play|press|pro|promo|pw|quest|racing|rest|review|rocks|run|sbs|school|science|services|shop|shopping|site|software|solutions|space|store|stream|support|team|tech|tickets|to|today|tools|top|trade|trading|uno|ventures|vip|website|wiki|win|work|world|xin|xyz|zip|zone|co|cc|tv|name|team|live|stream|quest|sbs|lat|click|monster|bond|cyou|store|crypto|wallet|quantum)$/i,
+    SUSPICIOUS_TLDS: /\.(academy|accountant|accountants|agency|ap|app|art|asia|auto|bank|bar|beauty|bet|bid|bio|biz|blog|buzz|cam|capital|casa|casino|cfd|charity|cheap|church|city|claims|click|club|company|crispsalt|cyou|data|date|design|dev|digital|directory|download|email|energy|estate|events|exchange|expert|exposed|express|finance|fit|forsale|foundation|fun|games|gle|goog|gq|guide|guru|health|help|home|host|html|icu|ink|institute|investments|ip|jobs|life|limited|link|live|loan|lol|ltd|ly|mall|market|me|media|men|ml|mom|money|monster|mov|network|one|online|page|partners|party|php|pics|play|press|pro|promo|pw|quest|racing|rest|review|rocks|run|sbs|school|science|services|shop|shopping|site|software|solutions|space|store|stream|support|team|tech|tickets|to|today|tools|top|trade|trading|uno|ventures|vip|website|wiki|win|work|world|xin|xyz|zip|zone|co|cc|tv|name|team|live|stream|quest|sbs|lat|click|monster|bond|cyou|store|crypto|wallet|quantum|nft|web3|metaverse)$/i,
 
     // Debug Modus
     DEBUG_MODE: false, // Zet op true voor debugging, false voor productie
@@ -23,7 +23,7 @@ window.CONFIG = {
         "macro", "enable", "torrent", "seed", "payload", "exploit", "dropper",
         "loader", "package", "binary", "release", "beta", "mod", "hack",
         "crack", "keygen", "serial", "unlocker", "generator", "premium",
-        "ai", "quantum", "crypto", "wallet", "blockchain", "ledger"
+        "ai", "quantum", "crypto", "wallet", "blockchain", "ledger", "metaverse", "deepfake", "nft", "web3", "ar"
     ]),
 
     // Phishing Trefwoorden
@@ -34,7 +34,7 @@ window.CONFIG = {
         "confirm", "identity", "renew", "subscription", "billing", "refund", "delivery", "tracking", "survey",
         "reward", "promo", "deal", "offer", "urgent-action", "reset", "phishing", "scan", "qr", "qrcode",
         "urgent", "confirm", "alert", "suspended", "billing", "invoice", "2fa", "mfa", "otp", "verification",
-        "authenticator", "token", "code", "ai", "quantum", "crypto", "wallet", "blockchain", "ledger"
+        "authenticator", "token", "code", "ai", "quantum", "crypto", "wallet", "blockchain", "ledger", "metaverse", "deepfake", "nft", "web3", "ar"
     ]),
 
     // Verdachte Iframe Trefwoorden
@@ -80,7 +80,7 @@ window.CONFIG = {
 
     // Verdachte URL Patronen
     SUSPICIOUS_URL_PATTERNS: [
-        /\/(payment|invoice|billing|money|bank|secure|login|checkout|subscription|refund|delivery|2fa|mfa|ai|quantum|crypto|wallet|blockchain|ledger)\//i,
+        /\/(payment|invoice|billing|money|bank|secure|login|checkout|subscription|refund|delivery|2fa|mfa|ai|quantum|crypto|wallet|blockchain|ledger|metaverse|deepfake|nft|web3|ar)\//i,
         /(Base64|hexadecimal|b64|encode|urlencode|obfuscate|crypt)/i,
         /\/(signup|register|confirmation|securepayment|order|tracking|verify-account|reset-password|oauth)\//i,
         /(?:\bsecurepay\b|\baccountverify\b|\bresetpassword\b|\bverifyemail\b|\bupdateinfo\b)/i,
@@ -88,7 +88,7 @@ window.CONFIG = {
         /(fake|clone|spoof|impersonate|fraud|scam|phish)/i,
         /[^a-zA-Z0-9]{2,}/,
         /(http[s]?:\/\/[^\/]+){2,}/i,
-        /\/(chat|ai|machine-learning|quantum|crypto|wallet|blockchain|ledger)\//i // Versterkte detectie voor opkomende technologieën
+        /\/(chat|ai|machine-learning|quantum|crypto|wallet|blockchain|ledger|metaverse|deepfake|face-swap|nft|web3|ar)\//i // Nieuwe detectie voor metaverse-, deepfake-, en Web3-phishing
     ],
 
     // Verdachte Script Patronen
@@ -102,6 +102,7 @@ window.CONFIG = {
         /(navigator\.geolocation|navigator\.permissions|navigator\.mediaDevices|Clipboard|ServiceWorker|PushManager|WebAssembly|Worker)/i,
         /(Notification|requestPermission|push)/i,
         /(Clipboard\.write|Clipboard\.read)/i, // Detectie voor clipboard-manipulatie
+        /(canvas|imageData)/i, // Nieuwe detectie voor deepfake-gerelateerde scripts
         /\.(php|asp|cgi|exe|bin|dll|dat|py|sh|vb|vbs|cmd|bat|pl|ps1|psm1|jar|class|js|jsp|aspx|cfm|rb|ts|mjs|apk|swift|go|lua|wasm)$/i,
         /script|eval/i
     ],
@@ -164,7 +165,7 @@ window.CONFIG = {
 
     // Typosquatting Patronen
     TYPOSQUATTING_PATTERNS: [
-        /(g00gle|go0gle|goggle|gooogle|paypa1|paypall|faceb00k|facbook|tw1tter|twiiter|amaz0n|amzon|amazzon|micr0soft|micsoft)/i,
+        /(g00gle|go0gle|goggle|gooogle|paypa1|paypall|faceb00k|facbook|tw1tter|twiiter|amaz0n|amzon|amazzon|micr0soft|micsoft|metavers|nftsale|webthree)/i,
         /(.)\1{2,}/,
         /xn--/,
         /\d{1,2}[a-z]{2,}/i
@@ -174,7 +175,8 @@ window.CONFIG = {
     legitimateDomains: [
         'microsoft.com', 'apple.com', 'google.com', 'linkedin.com', 'alibaba.com',
         'whatsapp.com', 'amazon.com', 'x.com', 'facebook.com', 'adobe.com',
-        'paypal.com', 'netflix.com', 'instagram.com', 'outlook.com', 'dropbox.com'
+        'paypal.com', 'netflix.com', 'instagram.com', 'outlook.com', 'dropbox.com',
+        'opensea.io', 'decentraland.org' // Nieuwe toevoegingen voor NFT- en metaverse-platforms
     ],
 
     COMPOUND_TLDS: [
@@ -194,9 +196,11 @@ window.CONFIG = {
         'amazon.com': 3,      // Webshop- en bezorgscams
         'facebook.com': 3,    // Social media phishing
         'instagram.com': 3,   // Accountovername-pogingen
+        'opensea.io': 3,      // NFT-marktplaats, populair doelwit voor phishing
         'netflix.com': 2,     // Abonnementsphishing
         'whatsapp.com': 2,    // Berichtenscams
         'x.com': 2,           // Opkomend risico door populariteit
+        'decentraland.org': 2,// Metaverse-platform, potentieel risico
         'alibaba.com': 1,     // Minder frequent doelwit
         'adobe.com': 1,       // Lage frequentie
         'dropbox.com': 1      // Lage frequentie, maar potentieel risico

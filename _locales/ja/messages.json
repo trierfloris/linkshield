@@ -1,0 +1,209 @@
+{
+  "extName": {
+    "message": "LinkShield"
+  },
+  "extDescription": {
+    "message": "LinkShield は危険なウェブサイトを見分けるのに役立ちます。知らないウェブサイトに重要な情報を渡さないようにしましょう。"
+  },
+  "alertTitle": {
+    "message": "警告!"
+  },
+  "alertMessage": {
+    "message": "このウェブサイトには次のリンクが含まれています:"
+  },
+  "severityLabel": {
+    "message": "リスク"
+  },
+  "reasonLabel": {
+    "message": "理由"
+  },
+  "adviceMessage": {
+    "message": "どうすればいい？"
+  },
+  "severityMediumRisk": {
+    "message": "中リスク: このリンクは安全ではない可能性があります。注意してください。"
+  },
+  "adviceCheckUrl": {
+    "message": "リンクが安全だと確信できる場合のみ開いてください。アドレスをよく確認し、正しいかどうか分からない場合はログインしないでください。"
+  },
+  "noHttps": {
+    "message": "このリンクは HTTPS を使用していません（高リスク）。あなたの情報が盗まれやすくなります。"
+  },
+  "ipAsDomain": {
+    "message": "このウェブサイトはドメイン名の代わりに IP アドレスを使用しています（高リスク）。あなたを惑わすための手口の可能性があります。"
+  },
+  "tooManySubdomains": {
+    "message": "このウェブアドレスには多くのサブドメインが含まれています（高リスク）。偽サイトの可能性があります。"
+  },
+  "suspiciousKeywords": {
+    "message": "疑わしいキーワードが検出されました（中リスク）。これは詐欺によく使われる言葉の可能性があります。"
+  },
+  "suspiciousPattern": {
+    "message": "このウェブアドレスは不審な構造を持っています（高リスク）。詐欺の手口かもしれません。"
+  },
+  "shortenedUrl": {
+    "message": "このリンクは短縮 URL です（高リスク）。リンク先が本当はどこなのか分かりません。"
+  },
+  "downloadPage": {
+    "message": "このページには疑わしいダウンロードがあります（高リスク）。有害なソフトウェアが含まれている可能性があります。"
+  },
+  "freeHosting": {
+    "message": "このウェブサイトは無料ホスティングを使用しています（高リスク）。セキュリティ対策が十分でない場合があります。"
+  },
+  "encodedCharacters": {
+    "message": "このウェブアドレスには多くの奇妙な文字が含まれています（高リスク）。危険な内容を隠している可能性があります。"
+  },
+  "homoglyphAttack": {
+    "message": "このウェブアドレスには、よく似た文字が使われています（中リスク）。本物のサイトを装っている可能性があります。"
+  },
+  "metaRedirect": {
+    "message": "このウェブサイトは自動的にリダイレクトを行います（高リスク）。危険なサイトへ誘導される可能性があります。"
+  },
+  "cryptoPhishing": {
+    "message": "このウェブアドレスは暗号通貨詐欺の可能性があります（高リスク）。資金を失わないようご注意ください。"
+  },
+  "externalScripts": {
+    "message": "このウェブサイトは疑わしい外部コードを読み込んでいます（高リスク）。危険な場合があります。"
+  },
+  "suspiciousIframes": {
+    "message": "このウェブサイトには不審な埋め込みウィンドウがあります（高リスク）。利用者を欺く目的かもしれません。"
+  },
+  "suspiciousParams": {
+    "message": "このウェブアドレスには疑わしいパラメータが含まれています（中リスク）。セキュリティ回避に使われる可能性があります。"
+  },
+  "mixedContent": {
+    "message": "このページは安全な要素と安全でない要素を混在させています（中リスク）。セキュリティが弱まる可能性があります。"
+  },
+  "unusualPort": {
+    "message": "このウェブサイトは通常とは異なるポートを使用しています（高リスク）。セキュリティ対策を回避している可能性があります。"
+  },
+  "javascriptScheme": {
+    "message": "このウェブアドレスは JavaScript スキームを使用しています（高リスク）。有害なコードを実行する可能性があります。"
+  },
+  "urlFragmentTrick": {
+    "message": "このウェブアドレスには不審なフラグメントがあります（中リスク）。実際の場所を誤認させる恐れがあります。"
+  },
+  "suspiciousTLD": {
+    "message": "このウェブアドレスはリスクの高いドメインを使用しています（高リスク）。詐欺に多用されるドメインの場合があります。"
+  },
+  "base64OrHex": {
+    "message": "このウェブアドレスにはエンコードされた情報が含まれています（中リスク）。危険な内容を隠している可能性があります。"
+  },
+  "iframeHidden": {
+    "message": "このウェブサイトには隠しフレームがあります（中リスク）。何かを隠すために使用されている可能性があります。"
+  },
+  "similarToLegitimateDomain": {
+    "message": "このウェブアドレスは有名な安全サイトに非常によく似ています（高リスク）。利用者を惑わす手口かもしれません。"
+  },
+  "popupTitle": {
+    "message": "LinkShield: フィッシングから身を守る"
+  },
+  "popupSubtitle": {
+    "message": "警告と保護で安全を確保しましょう。"
+  },
+  "backgroundAnalysis": {
+    "message": "バックグラウンドチェック"
+  },
+  "backgroundAnalysisDescription": {
+    "message": "危険なウェブサイトを訪れる前にブロックします。"
+  },
+  "activationRequired": {
+    "message": "この機能を使用するには有効化が必要です。"
+  },
+  "integratedProtection": {
+    "message": "フィッシングとマルウェアに対する統合保護"
+  },
+  "integratedProtectionDescription": {
+    "message": "ウェブサイトとリンクを即座にチェックします。"
+  },
+  "premiumFeaturesActive": {
+    "message": "プレミアムバージョンをお使いいただけます！"
+  },
+  "upgradePrompt": {
+    "message": "追加機能を利用するにはプレミアムにアップグレードしてください。"
+  },
+  "saveSettings": {
+    "message": "設定を保存"
+  },
+  "settingsSaved": {
+    "message": "設定が保存されました！"
+  },
+  "licenseActivate": {
+    "message": "ライセンスを有効化"
+  },
+  "licenseInputPlaceholder": {
+    "message": "ライセンスキーを入力してください"
+  },
+  "licenseCheck": {
+    "message": "ライセンスを確認"
+  },
+  "licenseInvalid": {
+    "message": "ライセンスが無効です。"
+  },
+  "licenseValid": {
+    "message": "ライセンスが有効化されました！"
+  },
+  "lastRuleUpdate": {
+    "message": "最終フィッシングデータベース更新日: "
+  },
+  "licenseStatus": {
+    "message": "ライセンス:"
+  },
+  "licenseFreemium": {
+    "message": "無料版"
+  },
+  "bulkUrlCheck": {
+    "message": "複数リンクをチェック"
+  },
+  "bulkUrlCheckDescription": {
+    "message": ".txtファイルをアップロードして、複数のリンクを一度にチェックします。"
+  },
+  "fileChoose": {
+    "message": "ファイルを選択"
+  },
+  "fileCheck": {
+    "message": "ファイルをチェック"
+  },
+  "fileCheckNoUrls": {
+    "message": "ファイルにリンクが含まれていません。"
+  },
+  "fileCheckFailed": {
+    "message": "チェックに失敗しました。"
+  },
+  "safeDomain": {
+    "message": "このウェブサイトは安全です。"
+  },
+  "allowedProtocol": {
+    "message": "このリンクは安全なプロトコルを使用しています。"
+  },
+  "insecureLoginPage": {
+    "message": "このログインページは HTTPS を使用していません（高リスク）。情報が盗まれる可能性があります。"
+  },
+  "invalidUrl": {
+    "message": "このウェブアドレスは誤っているか、タイプミスの可能性があります。"
+  },
+  "loadingMessage": {
+    "message": "少々お待ちください。システムがチェックを実行しています..."
+  },
+  "cannotRetrieveSiteStatus": {
+    "message": "⚠️ サイトのステータスを取得できません。"
+  },
+  "unknownRisk": {
+    "message": "⚠️ リスク不明"
+  },
+  "highRisk": {
+    "message": "🔴 高リスク: 非常に危険です！"
+  },
+  "mediumRisk": {
+    "message": "🟠 中リスク: 注意が必要です。"
+  },
+  "lowRisk": {
+    "message": "🟢 低リスク: おそらく安全です。"
+  },
+  "noSuspiciousFeatures": {
+    "message": "✅ 疑わしい点はありません。"
+  },
+  "siteStatusNotAvailable": {
+    "message": "⚠️ サイトのステータスが利用できません。"
+  }
+}

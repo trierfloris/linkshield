@@ -1,0 +1,209 @@
+{
+  "extName": {
+    "message": "LinkShield"
+  },
+  "extDescription": {
+    "message": "O LinkShield ajuda você a reconhecer sites perigosos. Nunca compartilhe informações confidenciais com sites desconhecidos."
+  },
+  "alertTitle": {
+    "message": "Atenção!"
+  },
+  "alertMessage": {
+    "message": "Este site contém um link para:"
+  },
+  "severityLabel": {
+    "message": "Risco"
+  },
+  "reasonLabel": {
+    "message": "Por quê?"
+  },
+  "adviceMessage": {
+    "message": "O que você pode fazer?"
+  },
+  "severityMediumRisk": {
+    "message": "Risco médio: este link pode não ser seguro. Seja cauteloso."
+  },
+  "adviceCheckUrl": {
+    "message": "Abra este link apenas se tiver certeza de que é seguro. Verifique cuidadosamente o endereço. Nunca faça login se não tiver certeza de que o endereço está correto."
+  },
+  "noHttps": {
+    "message": "Este link não usa HTTPS (alto risco). Seus dados podem ser facilmente roubados."
+  },
+  "ipAsDomain": {
+    "message": "O site usa um endereço IP em vez de um nome (alto risco). Isso pode ser um truque para enganar você."
+  },
+  "tooManySubdomains": {
+    "message": "Este endereço da web contém muitas partes extras (alto risco). Isso pode indicar um site falso."
+  },
+  "suspiciousKeywords": {
+    "message": "Palavras suspeitas detectadas (risco médio). Podem ser termos comumente usados em golpes."
+  },
+  "suspiciousPattern": {
+    "message": "O endereço da web parece suspeito (alto risco). Pode ser uma forma de aplicar golpe."
+  },
+  "shortenedUrl": {
+    "message": "Este é um link encurtado (alto risco). Você não sabe para onde ele realmente leva."
+  },
+  "downloadPage": {
+    "message": "Esta página oferece um download suspeito (alto risco). Pode conter software prejudicial."
+  },
+  "freeHosting": {
+    "message": "Este site utiliza hospedagem gratuita (alto risco). Esses sites costumam ter menos segurança."
+  },
+  "encodedCharacters": {
+    "message": "Este endereço da web contém muitos caracteres estranhos (alto risco). Pode ser uma forma de ocultar algo perigoso."
+  },
+  "homoglyphAttack": {
+    "message": "Este endereço da web usa caracteres visualmente semelhantes (risco médio). Pode ser uma tentativa de imitar um site real."
+  },
+  "metaRedirect": {
+    "message": "Este site redireciona você automaticamente (alto risco). Pode levá-lo a um site perigoso."
+  },
+  "cryptoPhishing": {
+    "message": "Este endereço da web parece ser um golpe relacionado a criptomoedas (alto risco). Tenha cuidado para não perder dinheiro."
+  },
+  "externalScripts": {
+    "message": "Este site carrega código extra suspeito (alto risco). Isso pode ser perigoso."
+  },
+  "suspiciousIframes": {
+    "message": "Este site contém janelas incorporadas suspeitas (alto risco). Podem ser usadas para enganar você."
+  },
+  "suspiciousParams": {
+    "message": "Este endereço da web contém informações extras suspeitas (risco médio). Pode ser usado para burlar medidas de segurança."
+  },
+  "mixedContent": {
+    "message": "Esta página usa elementos seguros e inseguros (risco médio). Isso pode enfraquecer a segurança."
+  },
+  "unusualPort": {
+    "message": "Este site usa uma porta incomum (alto risco). Pode burlar medidas de segurança."
+  },
+  "javascriptScheme": {
+    "message": "Este endereço da web usa JavaScript (alto risco). Pode ser usado para executar código prejudicial."
+  },
+  "urlFragmentTrick": {
+    "message": "Este endereço da web contém um fragmento suspeito (risco médio). Pode confundir você sobre onde realmente está."
+  },
+  "suspiciousTLD": {
+    "message": "Este endereço da web usa um domínio arriscado (alto risco). Alguns domínios são mais usados para fraudes."
+  },
+  "base64OrHex": {
+    "message": "Este endereço da web contém informações codificadas (risco médio). Pode estar escondendo algo perigoso."
+  },
+  "iframeHidden": {
+    "message": "Este site usa um quadro (iframe) oculto (risco médio). Pode estar escondendo algo."
+  },
+  "similarToLegitimateDomain": {
+    "message": "Este endereço da web é muito parecido com um site seguro conhecido (alto risco). Pode ser um truque para enganar você."
+  },
+  "popupTitle": {
+    "message": "LinkShield: Proteja-se contra Phishing"
+  },
+  "popupSubtitle": {
+    "message": "Fique seguro com alertas e proteção."
+  },
+  "backgroundAnalysis": {
+    "message": "Verificação em segundo plano"
+  },
+  "backgroundAnalysisDescription": {
+    "message": "Bloqueie sites perigosos antes de visitá-los."
+  },
+  "activationRequired": {
+    "message": "Ative este recurso primeiro para utilizá-lo."
+  },
+  "integratedProtection": {
+    "message": "Proteção integrada contra phishing e malware"
+  },
+  "integratedProtectionDescription": {
+    "message": "Este recurso verifica sites e links instantaneamente."
+  },
+  "premiumFeaturesActive": {
+    "message": "Agora você está usando a versão premium!"
+  },
+  "upgradePrompt": {
+    "message": "Faça upgrade para a versão premium e obtenha recursos extras."
+  },
+  "saveSettings": {
+    "message": "Salvar configurações"
+  },
+  "settingsSaved": {
+    "message": "Configurações salvas!"
+  },
+  "licenseActivate": {
+    "message": "Ativar licença"
+  },
+  "licenseInputPlaceholder": {
+    "message": "Insira sua chave de licença"
+  },
+  "licenseCheck": {
+    "message": "Verificar licença"
+  },
+  "licenseInvalid": {
+    "message": "Licença inválida."
+  },
+  "licenseValid": {
+    "message": "Licença ativada!"
+  },
+  "lastRuleUpdate": {
+    "message": "Última atualização do banco de dados de phishing:"
+  },
+  "licenseStatus": {
+    "message": "Licença:"
+  },
+  "licenseFreemium": {
+    "message": "Versão gratuita"
+  },
+  "bulkUrlCheck": {
+    "message": "Verificar vários links"
+  },
+  "bulkUrlCheckDescription": {
+    "message": "Envie um arquivo .txt para verificar vários links de uma só vez."
+  },
+  "fileChoose": {
+    "message": "Escolher arquivo"
+  },
+  "fileCheck": {
+    "message": "Verificar arquivo"
+  },
+  "fileCheckNoUrls": {
+    "message": "O arquivo não contém links."
+  },
+  "fileCheckFailed": {
+    "message": "Falha na verificação."
+  },
+  "safeDomain": {
+    "message": "Este site é seguro."
+  },
+  "allowedProtocol": {
+    "message": "Este link usa um protocolo seguro."
+  },
+  "insecureLoginPage": {
+    "message": "Esta página de login não usa HTTPS (alto risco). Seus dados podem ser roubados."
+  },
+  "invalidUrl": {
+    "message": "Este endereço da web está incorreto ou digitado erroneamente."
+  },
+  "loadingMessage": {
+    "message": "Aguarde um momento, o sistema está realizando verificações..."
+  },
+  "cannotRetrieveSiteStatus": {
+    "message": "⚠️ Não foi possível obter o status do site."
+  },
+  "unknownRisk": {
+    "message": "⚠️ Risco desconhecido"
+  },
+  "highRisk": {
+    "message": "🔴 Alto risco: muito perigoso!"
+  },
+  "mediumRisk": {
+    "message": "🟠 Risco médio: seja cauteloso."
+  },
+  "lowRisk": {
+    "message": "🟢 Baixo risco: provavelmente seguro."
+  },
+  "noSuspiciousFeatures": {
+    "message": "✅ Nenhuma característica suspeita."
+  },
+  "siteStatusNotAvailable": {
+    "message": "⚠️ Status do site indisponível."
+  }
+}

@@ -205,5 +205,11 @@
   },
   "siteStatusNotAvailable": {
     "message": "⚠️ サイトのステータスが利用できません。"
+  },
+"loginPageNoMX": {
+    "message": "ログインページが見つかりましたが、そのドメインにはメールサーバーがありません。フィッシングの可能性があります。"
+  },
+"similarToLegitimateDomain": {
+    "message": "このウェブサイトは、有名な信頼できるサイトに非常によく似ています。偽物の可能性があります。"
   }
 }

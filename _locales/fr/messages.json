@@ -205,5 +205,11 @@
   },
   "siteStatusNotAvailable": {
     "message": "⚠️ État du site non disponible."
+  },
+  "loginPageNoMX": {
+  "message": "Une page de connexion a été trouvée, mais le domaine n’a pas de serveur e-mail. Cela     peut indiquer du phishing."
+  },
+"similarToLegitimateDomain": {
+    "message": "Ce site ressemble beaucoup à un site fiable bien connu. Il pourrait s’agir d’une imitation trompeuse."
   }
 }

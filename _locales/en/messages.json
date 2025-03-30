@@ -205,5 +205,11 @@
   },
   "siteStatusNotAvailable": {
     "message": "⚠️ Site status not available."
+  },
+  "loginPageNoMX": {
+    "message": "A login page was found, but the domain has no email server. This could be a sign of   phishing."
+  },
+"similarToLegitimateDomain": {
+    "message": "This website looks very similar to a well-known trusted site. It could be a fake trying to mislead you."
   }
 }

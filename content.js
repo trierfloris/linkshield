@@ -602,19 +602,21 @@ async function checkCurrentUrl() {
 async function getFinalUrl(url) {
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 seconden timeout
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
     const response = await fetch(url, { 
       method: 'HEAD', 
       redirect: 'follow', 
       signal: controller.signal 
     });
     clearTimeout(timeoutId);
-    return response.url;
+    return response.url || url; // Fallback naar originele URL
   } catch (error) {
-    logError(`Fout bij ophalen uiteindelijke URL voor ${url}:`, error);
-    return url;
+    logError(`Fout bij ophalen uiteindelijke URL voor ${url}: ${error.message}`);
+    return url; // Fallback naar originele URL bij fout
   }
 }
+
+
 
 function getMetaRefreshUrl() {
   const metaTag = document.querySelector('meta[http-equiv="refresh"]');
@@ -660,13 +662,6 @@ function performSingleCheck(condition, riskWeight, reason, severity = "medium") 
   return null;
 }
 
-function analyzeHighRisk(reasons) {
-  const highRiskCount = Array.from(reasons).filter(reason => reason.includes("(high)")).length;
-  if (highRiskCount >= 2) {
-    return "Multiple critical high risks detected.";
-  }
-  return null;
-}
 
 function applyChecks(checks, reasons, totalRiskRef) {
   logDebug("Starting applyChecks: Current risk:", totalRiskRef.value);
@@ -866,15 +861,15 @@ function classifyAndCheckLink(link) {
     return; // Sla volledig ongeldige links over
   }
 
-  // Controleer expliciet of het een SVG-element is en sla het over
-  if (link.ownerSVGElement) {
-    logDebug(`Skipping SVG link: ${link.href || 'undefined'}, Type: ${typeof link.href}`);
-    return; // Sla alle SVG-links over, ongeacht de href
-  }
+  // Haal de href op, rekening houdend met SVGAnimatedString
+  const href = link.href instanceof SVGAnimatedString ? link.href.baseVal : link.href;
+
+  // Log voor debugging, inclusief type en SVG-status
+  logDebug(`Classifying link: ${href || 'undefined'}, Type: ${typeof link.href}, Is SVG: ${link.ownerSVGElement ? 'yes' : 'no'}`);
 
   // Controleer of href een geldige URL is
-  if (!isValidURL(link.href)) {
-    logDebug(`Skipping classification: Invalid URL in link: ${link.href || 'undefined'}`);
+  if (!isValidURL(href)) {
+    logDebug(`Skipping classification: Invalid URL in link: ${href || 'undefined'}`);
     return;
   }
 
@@ -1154,6 +1149,19 @@ function isSearchResultPage() {
 }
 
 
+function detectLoginPage(url = window.location.href) {
+  try {
+    const loginPatterns = /(login|signin|wp-login|auth|authenticate)/i;
+    const urlIndicatesLogin = loginPatterns.test(url);
+    const hasPasswordField = !!document.querySelector('input[type="password"]');
+    logDebug(`Login detection: URL indication: ${urlIndicatesLogin}, Password field: ${hasPasswordField}`);
+    return urlIndicatesLogin || hasPasswordField;
+  } catch (error) {
+    handleError(error, `detectLoginPage: Fout bij detecteren van loginpagina voor URL ${url}`);
+    return false;
+  }
+}
+
 function isLoginPage(url = window.location.href) {
   try {
     // Controleer op wachtwoordveld
@@ -1313,6 +1321,169 @@ function isIpAddress(url) {
   } catch (error) {
     logError(`Fout bij controleren van IP-adres voor URL ${url}: ${error.message}`);
     return false; // Return false if the URL is invalid
+  }
+}
+
+const mxCache = {};
+const MX_TTL_MS = 3600 * 1000; // 1 uur
+const MAX_RETRIES = 2;
+const RETRY_DELAY_MS = 1000;
+const REQUEST_TIMEOUT_MS = 5000;
+
+// Functie om verlopen cache-entries te verwijderen
+function cleanMxCache() {
+  const now = Date.now();
+  for (const domain in mxCache) {
+    if (now - mxCache[domain].timestamp >= MX_TTL_MS) {
+      delete mxCache[domain];
+      logDebug(`Verwijderd verlopen cache-entry voor ${domain}`);
+    }
+  }
+}
+
+// Periodieke schoonmaak van de cache (elke 10 minuten)
+setInterval(cleanMxCache, 10 * 60 * 1000);
+
+// Fetch met timeout
+async function fetchWithTimeout(url, options = {}) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  try {
+    const response = await fetch(url, { ...options, signal: controller.signal });
+    clearTimeout(timeoutId);
+    return response;
+  } catch (error) {
+    if (error.name === 'AbortError') {
+      throw new Error('Request timeout');
+    }
+    throw error;
+  }
+}
+
+// Retry-logica voor netwerkverzoeken
+async function retryFetch(url, options = {}, retries = MAX_RETRIES) {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      return await fetchWithTimeout(url, options);
+    } catch (error) {
+      if (attempt < retries) {
+        logDebug(`Poging ${attempt} mislukt voor ${url}: ${error.message}. Probeer opnieuw...`);
+        await new Promise(resolve => setTimeout(resolve, RETRY_DELAY_MS));
+      } else {
+        throw error;
+      }
+    }
+  }
+}
+
+// Validatie van hostnamen
+function isValidHostname(hostname) {
+  return /^[a-zA-Z0-9.-]+$/.test(hostname) && hostname.includes('.');
+}
+
+const mxQueue = [];
+let isProcessing = false;
+
+async function processMxQueue() {
+  if (isProcessing || mxQueue.length === 0) return;
+  isProcessing = true;
+  const { domain, resolve } = mxQueue.shift();
+  try {
+    const mxRecords = await getMxRecords(domain);
+    resolve(mxRecords);
+  } catch (error) {
+    handleError(error, `MX-queue: Fout voor ${domain}`);
+    resolve([]);
+  }
+  isProcessing = false;
+  processMxQueue();
+}
+
+function queueMxCheck(domain) {
+  return new Promise(resolve => {
+    mxQueue.push({ domain, resolve });
+    processMxQueue();
+  });
+}
+
+
+async function getMxRecords(domain) {
+  const now = Date.now();
+  
+  if (mxCache[domain] && (now - mxCache[domain].timestamp < MX_TTL_MS)) {
+    logDebug(`MX-cache hit voor ${domain}:`, mxCache[domain].records);
+    return mxCache[domain].records;
+  }
+
+  // Controleer vertrouwde domeinen
+  const trustedDomains = window.trustedDomains || [];
+  const isTrusted = trustedDomains.some(pattern => {
+    const regex = new RegExp(pattern);
+    return regex.test(domain) || domain.endsWith(pattern.replace(/\\\.com$/, '.com'));
+  });
+
+  if (isTrusted) {
+    logDebug(`MX-check overgeslagen voor vertrouwd domein: ${domain}`);
+    mxCache[domain] = { records: [], timestamp: now };
+    return [];
+  }
+
+  let mxHosts = [];
+  mxHosts = await tryGetMxRecords(domain);
+  if (mxHosts.length === 0) {
+    const parts = domain.split('.');
+    if (parts.length > 2) {
+      const parentDomain = parts.slice(-2).join('.');
+      mxHosts = await tryGetMxRecords(parentDomain);
+      logDebug(`Geen MX voor ${domain}, fallback naar ${parentDomain}:`, mxHosts);
+    }
+  }
+
+  mxCache[domain] = { records: mxHosts, timestamp: now };
+  if (mxHosts.length === 0) {
+    logDebug(`Geen MX-records gevonden voor ${domain} via alle providers`);
+  }
+  return mxHosts;
+
+  async function tryGetMxRecords(targetDomain) {
+    const googleUrl = `https://dns.google/resolve?name=${targetDomain}&type=MX`;
+    try {
+      const response = await retryFetch(googleUrl);
+      const json = await response.json();
+      if (json.Status === 0 && json.Answer) {
+        const hosts = json.Answer
+          .map(r => r.data.split(' ')[1]?.replace(/\.$/, ''))
+          .filter(host => host && isValidHostname(host));
+        if (hosts.length > 0) {
+          logDebug(`MX-records (Google) voor ${targetDomain}:`, hosts);
+          return hosts;
+        }
+      }
+      logDebug(`Geen geldige MX-records via Google voor ${targetDomain}`);
+    } catch (error) {
+      handleError(error, `Google DoH faalde voor ${targetDomain} - ${error.message}`);
+    }
+
+    const cloudflareUrl = `https://cloudflare-dns.com/dns-query?name=${targetDomain}&type=MX`;
+    try {
+      const response = await retryFetch(cloudflareUrl, {
+        headers: { 'Accept': 'application/dns-json' }
+      });
+      const json = await response.json();
+      if (json.Status === 0 && json.Answer) {
+        const hosts = json.Answer
+          .map(r => r.data.split(' ')[1]?.replace(/\.$/, ''))
+          .filter(host => host && isValidHostname(host));
+        if (hosts.length > 0) {
+          logDebug(`MX-records (Cloudflare) voor ${targetDomain}:`, hosts);
+          return hosts;
+        }
+      }
+      logDebug(`Geen geldige MX-records via Cloudflare voor ${targetDomain}`);
+    } catch (error) {
+      handleError(error, `Cloudflare DoH faalde voor ${targetDomain} - ${error.message}`);
+    }
+    return [];
   }
 }
 
@@ -1848,15 +2019,28 @@ async function performSuspiciousChecks(url) {
     return result;
   }
 
+  const domain = normalizeDomain(url);
+
+  const trustedDomains = window.trustedDomains || [];
+  const isTrusted = trustedDomains.some(pattern => {
+  const regex = new RegExp(pattern, 'i');
+  return regex.test(urlObj.hostname) || urlObj.hostname.endsWith(pattern.replace(/^\\\./, '').replace(/\\\./g, '.'));
+});
+
+
+  if (isTrusted) {
+    logDebug(`Trusted domain detected: ${domain}. Skipping further checks.`);
+    const result = createAnalysisResult(true, ["safeDomain"], 0.1);
+    storeInCache(url, result);
+    return result;
+  }
+
   const isHttpProtocol = ['http:', 'https:'].includes(urlObj.protocol);
-  const domain = normalizeDomain(url); // Gebruik normalizeDomain voor consistente validatie
   const isSafeDomain = domain && safeDomains.some(pattern => new RegExp(pattern).test(domain));
 
-  // Definieer homoglyphMap en knownBrands
   const homoglyphMap = globalConfig.HOMOGLYPHS || DEFAULT_HOMOGLYPHS;
   const knownBrands = globalConfig.legitimateDomains || ['microsoft.com', 'apple.com', 'google.com'];
 
-  // Safe domain check
   if (isSafeDomain) {
     reasons.add("safeDomain");
     totalRiskRef.value = 0.1;
@@ -1884,7 +2068,6 @@ async function performSuspiciousChecks(url) {
     }
   }
 
-  // Fast-track voor safeDomain
   if (isSafeDomain && totalRiskRef.value < 10) {
     logDebug(`Safe domain fast-track applied for ${url}`);
     const result = createAnalysisResult(true, ["safeDomain"], 0.1);
@@ -1892,10 +2075,8 @@ async function performSuspiciousChecks(url) {
     return result;
   }
 
-  // Statische condities
   await checkStaticConditions(url, reasons, totalRiskRef);
 
-  // Extra statische checks
   if (domain && isIpAddress(urlObj.hostname)) {
     reasons.add("ipAsDomain");
     totalRiskRef.value += 5;
@@ -1910,7 +2091,6 @@ async function performSuspiciousChecks(url) {
     totalRiskRef.value += 10;
   }
 
-  // Dynamische condities
   const dynamicChecks = [
     { func: hasBase64OrHex, messageKey: "base64OrHex", risk: 2.0 },
     { func: isShortenedUrl, messageKey: "shortenedUrl", risk: 4.0 },
@@ -1936,7 +2116,7 @@ async function performSuspiciousChecks(url) {
         totalRiskRef.value += risk;
         logDebug(`Added ${messageKey} with risk ${risk} for ${url}`);
       } else if (Array.isArray(result) && result.length > 0 && domain) {
-        result.forEach(({ reason, risk: subRisk }) => reasons.add(reason));
+        result.forEach(({ reason }) => reasons.add(reason));
         totalRiskRef.value += risk;
         logDebug(`Added ${messageKey} with risk ${risk} for ${url}, reasons: ${result.map(r => r.reason).join(', ')}`);
       }
@@ -1945,7 +2125,22 @@ async function performSuspiciousChecks(url) {
     }
   }
 
-  // Laatste safeDomain override
+  // MX-record check voor loginpagina's zonder e-mailinfrastructuur
+  if (domain && detectLoginPage(url)) {
+    try {
+      const mxRecords = await queueMxCheck(domain);
+      if (mxRecords.length === 0) {
+        reasons.add("loginPageNoMX");
+        totalRiskRef.value += 12;
+        logDebug(`Loginpagina zonder MX-records gedetecteerd: ${domain}`);
+      } else {
+        logDebug(`MX-records gevonden voor loginpagina ${domain}:`, mxRecords);
+      }
+    } catch (error) {
+      handleError(error, `performSuspiciousChecks: MX-check faalde voor ${domain}`);
+    }
+  }
+
   if (isSafeDomain && totalRiskRef.value < 10) {
     logDebug(`Safe domain override applied for ${url}`);
     totalRiskRef.value = 0.1;
@@ -1958,6 +2153,7 @@ async function performSuspiciousChecks(url) {
   storeInCache(url, result);
   return result;
 }
+
 
 // Optionele periodieke cache-schoonmaak (voeg dit toe aan je script)
 setInterval(() => {
@@ -2131,11 +2327,6 @@ async function isLoginPageFromUrl(url) {
   }
 }
 
-function mapRiskToSeverity(priorRisk) {
-  if (priorRisk >= 0.7) return "high";
-  if (priorRisk >= 0.4) return "medium";
-  return "low";
-}
 
 function constructResult(isSafe, reasons, priorRisk) {
   try {

@@ -205,5 +205,12 @@
   },
   "siteStatusNotAvailable": {
     "message": "⚠️ Site-status niet beschikbaar."
+  },
+  "loginPageNoMX": {
+  "message": "Er is een loginpagina gevonden, maar het domein heeft geen e-mailserver. Dit kan wijzen op   phishing."
+},
+"similarToLegitimateDomain": {
+    "message": "Deze website lijkt sterk op een bekende betrouwbare site. Dit kan een misleidende imitatie zijn."
   }
+
 }

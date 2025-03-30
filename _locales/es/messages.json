@@ -205,5 +205,11 @@
   },
   "siteStatusNotAvailable": {
     "message": "⚠️ Estado del sitio no disponible."
+  },
+"loginPageNoMX": {
+    "message": "Se encontró una página de inicio de sesión, pero el dominio no tiene servidor de correo. Esto puede ser una señal de phishing."
+  },
+"similarToLegitimateDomain": {
+    "message": "Este sitio web se parece mucho a uno conocido y confiable. Podría ser una copia falsa para engañarte."
   }
 }

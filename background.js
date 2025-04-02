@@ -17,14 +17,14 @@ async function manageDNRules() {
             });
         }
     } catch (error) {
-        //console.error("Error managing DNR rules:", error);
+        console.error("Error managing DNR rules:", error);
     }
 }
 
 /** Fetches and loads dynamic rules from a remote source */
 async function fetchAndLoadRules() {
     if (isUpdatingRules) {
-        console.log("[DEBUG] Rule update already in progress. Skipping.");
+        //console.log("[DEBUG] Rule update already in progress. Skipping.");
         return;
     }
     isUpdatingRules = true;
@@ -35,14 +35,14 @@ async function fetchAndLoadRules() {
             return;
         }
 
-        console.log("[DEBUG] Starting rule fetch...");
+        //console.log("[DEBUG] Starting rule fetch...");
         const rulesResponse = await fetchWithRetry('https://linkshield.nl/files/rules.json');
         if (!rulesResponse.ok) {
             throw new Error(`Failed to fetch rules: ${rulesResponse.status}`);
         }
 
         const newRules = await rulesResponse.json();
-        console.log(`[DEBUG] Number of new rules received: ${newRules.length}`);
+        //console.log(`[DEBUG] Number of new rules received: ${newRules.length}`);
 
         if (!Array.isArray(newRules) || newRules.length === 0) {
             throw new Error("Invalid or empty rules");
@@ -51,13 +51,13 @@ async function fetchAndLoadRules() {
         // Step 1: Iteratively remove existing rules
         let remainingRules = await chrome.declarativeNetRequest.getDynamicRules();
         while (remainingRules.length > 0) {
-            const batch = remainingRules.slice(0, 500).map(rule => rule.id); // Max 500 per batch
+            const batch = remainingRules.slice(0, 500).map(rule => rule.id);
             await chrome.declarativeNetRequest.updateDynamicRules({ removeRuleIds: batch });
-            console.info(`[DEBUG] Batch of ${batch.length} rules removed.`);
-            await new Promise(resolve => setTimeout(resolve, 200)); // Short delay
+            //console.info(`[DEBUG] Batch of ${batch.length} rules removed.`);
+            await new Promise(resolve => setTimeout(resolve, 200));
             remainingRules = await chrome.declarativeNetRequest.getDynamicRules();
         }
-        console.info('[DEBUG] All dynamic rules successfully removed.');
+        //console.info('[DEBUG] All dynamic rules successfully removed.');
 
         // Step 2: Force Chrome reset with temporary rule
         await chrome.declarativeNetRequest.updateDynamicRules({
@@ -67,19 +67,19 @@ async function fetchAndLoadRules() {
 
         // Step 3: Validate and filter rules with unique integer IDs
         const { lastCounter = 1000000 } = await chrome.storage.local.get('lastCounter');
-        let counter = Math.max(1000000, Math.floor(lastCounter)); // Ensure minimum ID
+        let counter = Math.max(1000000, Math.floor(lastCounter));
         const validDynamicRules = [];
         const seenIds = new Set();
 
         for (const rule of newRules) {
             if (!rule.condition?.urlFilter || !rule.action || typeof rule.priority !== 'number') {
-                continue; // Skip invalid rules
+                continue;
             }
             const ruleId = Math.floor(counter++);
             if (!Number.isInteger(ruleId)) {
                 throw new Error(`[ERROR] Rule ID is not an integer: ${ruleId}`);
             }
-            if (seenIds.has(ruleId)) continue; // Prevent duplicates
+            if (seenIds.has(ruleId)) continue;
             seenIds.add(ruleId);
 
             validDynamicRules.push({
@@ -93,7 +93,7 @@ async function fetchAndLoadRules() {
             });
         }
 
-        console.log(`[DEBUG] Number of valid rules after filtering: ${validDynamicRules.length}`);
+        //console.log(`[DEBUG] Number of valid rules after filtering: ${validDynamicRules.length}`);
 
         if (validDynamicRules.length === 0) {
             throw new Error("No valid rules after filtering");
@@ -104,19 +104,18 @@ async function fetchAndLoadRules() {
         for (let i = 0; i < validDynamicRules.length; i += addBatchSize) {
             const batch = validDynamicRules.slice(i, i + addBatchSize);
             await chrome.declarativeNetRequest.updateDynamicRules({ addRules: batch });
-            console.info(`[DEBUG] Batch of ${batch.length} rules added.`);
-            await new Promise(resolve => setTimeout(resolve, 200)); // Prevent throttling
+            //console.info(`[DEBUG] Batch of ${batch.length} rules added.`);
+            await new Promise(resolve => setTimeout(resolve, 200));
         }
 
-        console.log(`[DEBUG] All dynamic rules successfully added.`);
+        ////console.log(`[DEBUG] All dynamic rules successfully added.`);
 
         await chrome.storage.local.set({ lastCounter: counter });
         await updateLastRuleUpdate();
     } catch (error) {
         console.error("[ERROR] fetchAndLoadRules:", error.message);
-        // Fallback: retain existing rules if fetch fails
     } finally {
-        isUpdatingRules = false; // Reset flag
+        isUpdatingRules = false;
     }
 }
 
@@ -137,7 +136,7 @@ async function updateLastRuleUpdate() {
     try {
         await chrome.storage.local.set({ lastRuleUpdate: now });
     } catch (error) {
-        //console.error('[ERROR] Error saving lastRuleUpdate:', error.message);
+        console.error('[ERROR] Error saving lastRuleUpdate:', error.message);
     }
 }
 
@@ -197,9 +196,89 @@ async function handleSuspiciousLink(url) {
             await chrome.storage.sync.set({ suspiciousUrls: Array.from(urls) });
         }
     } catch (error) {
-        //console.error("[ERROR] handleSuspiciousLink:", error.message);
+        console.error("[ERROR] handleSuspiciousLink:", error.message);
     }
 }
+
+// --- SSL Labs Check ---
+
+const sslCache = new Map();
+
+/** Checks SSL/TLS configuration using SSL Labs API */
+async function checkSslLabs(domain) {
+    ////console.log(`[checkSslLabs] Starting for ${domain}`);
+    try {
+        const cachedSsl = sslCache.get(domain);
+        if (cachedSsl && Date.now() - cachedSsl.timestamp < 24 * 60 * 60 * 1000) {
+            ////console.log(`[checkSslLabs] Cache hit voor ${domain}`);
+            return cachedSsl.result;
+        }
+
+        ////console.log(`[checkSslLabs] Fetching SSL data for ${domain}`);
+        const response = await fetchWithRetry(
+            `https://api.ssllabs.com/api/v3/analyze?host=${domain}&maxAge=86400`,
+            { mode: 'cors' }
+        );
+
+        ////console.log(`[checkSslLabs] Response status for ${domain}: ${response.status}`);
+        if (response.status === 429) {
+            ////console.log(`[checkSslLabs] Rate limit bereikt voor ${domain}`);
+            return { isValid: true, reason: "Rate limit, SSL-check overgeslagen" };
+        }
+
+        if (!response.ok) {
+            throw new Error(`HTTP-fout: ${response.status}`); // Dit triggert de catch-blok
+        }
+
+        const data = await response.json();
+        ////console.log(`[checkSslLabs] Full response data for ${domain}:`, JSON.stringify(data));
+
+        if (data.status === "READY" && data.endpoints && data.endpoints.length > 0) {
+            const allEndpointsFailed = data.endpoints.every(endpoint => 
+                endpoint.statusMessage === "Unable to connect to the server"
+            );
+            if (allEndpointsFailed) {
+                ////console.log(`[checkSslLabs] Alle endpoints onbereikbaar voor ${domain}`);
+                return { isValid: false, reason: "Server onbereikbaar voor SSL-analyse" };
+            }
+            const grade = data.endpoints[0].grade || "Unknown";
+            const isValid = ["A", "A+"].includes(grade);
+            const result = {
+                isValid,
+                reason: isValid ? "Geldig certificaat" : `Onveilige SSL (grade: ${grade})`
+            };
+            sslCache.set(domain, { result, timestamp: Date.now() });
+            ////console.log(`[checkSslLabs] Resultaat voor ${domain}: ${grade}`);
+            return result;
+        } else if (data.status === "ERROR") {
+            //console.log(`[checkSslLabs] SSL Labs fout voor ${domain}: ${data.statusMessage}`);
+            return { isValid: false, reason: `SSL Labs fout: ${data.statusMessage || "Onbekende fout"}` };
+        } else if (data.status === "IN_PROGRESS" || !data.endpoints || data.endpoints.length === 0) {
+            //console.log(`[checkSslLabs] SSL-scan niet voltooid of geen endpoints voor ${domain}`);
+            return { isValid: true, reason: "SSL-scan in uitvoering, nog geen resultaat" };
+        } else {
+            //console.log(`[checkSslLabs] Onverwachte respons voor ${domain}`);
+            return { isValid: false, reason: "Onverwachte SSL Labs respons" };
+        }
+    } catch (error) {
+        console.error(`[checkSslLabs] Fout bij SSL-check voor ${domain}:`, error);
+        if (error.message.includes("network") || error.message.includes("fetch") || error.message.includes("429")) {
+            //console.log(`[checkSslLabs] Netwerkfout of rate limit, fallback gebruikt voor ${domain}`);
+            return { isValid: true, reason: "Netwerkfout of rate limit, SSL-check overgeslagen" };
+        }
+        return { isValid: false, reason: `SSL-check mislukt: ${error.message}` };
+    }
+}
+// Cache-schoonmaak voor sslCache
+setInterval(() => {
+    const now = Date.now();
+    for (const [domain, { timestamp }] of sslCache) {
+        if (now - timestamp >= 24 * 60 * 60 * 1000) {
+            sslCache.delete(domain);
+            //console.log(`[DEBUG] Verwijderd verlopen SSL-cache voor ${domain}`);
+        }
+    }
+}, 24 * 60 * 60 * 1000); // Elke 24 uur
 
 // --- Installation and Alarms ---
 
@@ -230,71 +309,99 @@ chrome.runtime.onInstalled.addListener(async (details) => {
             periodInMinutes: 60
         });
     } catch (error) {
-        //console.error("Error during extension installation or update:", error);
+        console.error("Error during extension installation or update:", error);
     }
 });
 
 chrome.alarms.onAlarm.addListener((alarm) => {
     if (alarm.name === "fetchRulesHourly") {
         fetchAndLoadRules().catch(error => {
-            //console.error("[ERROR] Error fetching rules via alarm:", error.message);
+            console.error("[ERROR] Error fetching rules via alarm:", error.message);
         });
     }
 });
 
 // --- Message Listener ---
 
-chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
-    try {
-        switch (request.type || request.action) {
-            case 'validateLicense':
-                const result = await validateLicenseKey(request.licenseKey);
-                sendResponse({ success: result });
-                return true; // Needed for async response
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    //console.log("[Background] Received message:", request);
 
-            case 'checkUrl':
-                // Placeholder: implement checkUrlSafety if needed
-                sendResponse({ status: "not_implemented" });
-                return true;
-
-            case 'checkResult':
-                const settings = await chrome.storage.sync.get(['integratedProtection']);
-                if (!settings.integratedProtection) {
-                    sendResponse({ status: 'skipped' });
-                } else {
-                    const { isSafe, reasons, risk, url } = request;
-                    await updateIconBasedOnSafety(isSafe, reasons, risk, url);
-                    sendResponse({ status: 'received' });
-                }
-                return true;
-
-            case 'getStatus':
-                const { currentSiteStatus } = await chrome.storage.local.get("currentSiteStatus");
-                sendResponse(currentSiteStatus || { isSafe: null, reasons: ["No status found"], url: null });
-                return true;
-
-            case 'alert':
-                chrome.notifications.create({
-                    type: 'basic',
-                    iconUrl: 'icons/icon128.png',
-                    title: 'Warning',
-                    message: request.message || 'This page contains suspicious links!',
-                    priority: 2
+    switch (request.type || request.action) {
+        case 'validateLicense':
+            validateLicenseKey(request.licenseKey)
+                .then(result => sendResponse({ success: result }))
+                .catch(error => {
+                    console.error("[validateLicense] Error:", error);
+                    sendResponse({ success: false, error: "License validation failed" });
                 });
-                sendResponse({ status: 'alert_shown' });
-                return true;
+            return true;
 
-            default:
-                //console.warn("[onMessage] Unknown request type:", request.type || request.action);
-                sendResponse({ success: false, error: "Unknown message type" });
-        }
-    } catch (error) {
-        //console.error("[onMessage] General error:", error);
-        sendResponse({ success: false, error: "Internal error" });
+        case 'checkUrl':
+            sendResponse({ status: "not_implemented" });
+            return true;
+
+        case 'checkResult':
+            chrome.storage.sync.get(['integratedProtection'])
+                .then(settings => {
+                    if (!settings.integratedProtection) {
+                        sendResponse({ status: 'skipped' });
+                    } else {
+                        const { isSafe, reasons, risk, url } = request;
+                        updateIconBasedOnSafety(isSafe, reasons, risk, url)
+                            .then(() => sendResponse({ status: 'received' }))
+                            .catch(error => {
+                                console.error("[checkResult] Error:", error);
+                                sendResponse({ status: 'error', error: error.message });
+                            });
+                    }
+                })
+                .catch(error => {
+                    console.error("[checkResult] Storage error:", error);
+                    sendResponse({ status: 'error', error: "Storage error" });
+                });
+            return true;
+
+        case 'getStatus':
+            chrome.storage.local.get("currentSiteStatus")
+                .then(({ currentSiteStatus }) => {
+                    sendResponse(currentSiteStatus || { isSafe: null, reasons: ["No status found"], url: null });
+                })
+                .catch(error => {
+                    console.error("[getStatus] Error:", error);
+                    sendResponse({ isSafe: null, reasons: ["Storage error"], url: null });
+                });
+            return true;
+
+        case 'alert':
+            chrome.notifications.create({
+                type: 'basic',
+                iconUrl: 'icons/icon128.png',
+                title: 'Warning',
+                message: request.message || 'This page contains suspicious links!',
+                priority: 2
+            });
+            sendResponse({ status: 'alert_shown' });
+            return true;
+
+        case 'checkSslLabs':
+            //console.log("[Background] Starting SSL check for domain:", request.domain);
+            checkSslLabs(request.domain)
+                .then(sslResult => {
+                    //console.log("[Background] SSL check result:", sslResult);
+                    sendResponse(sslResult);
+                })
+                .catch(error => {
+                    console.error("[checkSslLabs] Error:", error);
+                    sendResponse({ isValid: false, reason: "SSL check failed: " + error.message });
+                });
+            return true;
+
+        default:
+            console.warn("[onMessage] Unknown request type:", request.type || request.action);
+            sendResponse({ success: false, error: "Unknown message type" });
+            return true;
     }
-    return true;
 });
-
 // --- Icon Animation and Tab Safety ---
 
 let iconState = true;
@@ -345,7 +452,7 @@ async function resetCurrentSiteStatus() {
     try {
         await chrome.storage.local.remove("currentSiteStatus");
     } catch (error) {
-        //console.error("[ERROR] Error resetting currentSiteStatus:", error);
+        console.error("[ERROR] Error resetting currentSiteStatus:", error);
     }
 }
 
@@ -453,7 +560,7 @@ chrome.action.onClicked.addListener(async () => {
 chrome.storage.onChanged.addListener((changes, area) => {
     if (area === "sync" && "backgroundSecurity" in changes) {
         const now = Date.now();
-        if (now - lastUpdate < 300000) { // 5 minutes
+        if (now - lastUpdate < 300000) {
             //console.log("[DEBUG] Too soon for another update. Skipping.");
             return;
         }
@@ -481,11 +588,11 @@ async function updateIconBasedOnSafety(isSafe, reasons, risk, url) {
             currentSiteStatus: { isSafe, reasons, risk: Number(risk), url }
         });
     } catch (error) {
-        //console.error("[ERROR] updateIconBasedOnSafety: Failed to save currentSiteStatus:", error.message);
+        console.error("[ERROR] updateIconBasedOnSafety: Failed to save currentSiteStatus:", error.message);
     }
 
     if (!isSafe) {
-        const animationSpeed = risk >= 10 ? 500 : risk >= 5 ? 1000 : 2000; // Faster for higher risk
+        const animationSpeed = risk >= 10 ? 500 : risk >= 5 ? 1000 : 2000;
         startSmoothIconAnimation(60000, animationSpeed);
     }
 }

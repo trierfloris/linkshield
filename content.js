@@ -1376,6 +1376,8 @@ async function retryFetch(url, options = {}, retries = MAX_RETRIES) {
   }
 }
 
+
+
 // Validatie van hostnamen
 function isValidHostname(hostname) {
   return /^[a-zA-Z0-9.-]+$/.test(hostname) && hostname.includes('.');
@@ -1994,7 +1996,7 @@ function storeInCache(url, result) {
 
 async function performSuspiciousChecks(url) {
   const cached = linkRiskCache.get(url);
-  if (cached && (Date.now() - cached.timestamp < CACHE_TTL_MS)) {
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
     logDebug(`Cache hit for suspicious checks: ${url}`);
     return cached.result;
   }
@@ -2020,13 +2022,13 @@ async function performSuspiciousChecks(url) {
   }
 
   const domain = normalizeDomain(url);
+  const currentPageDomain = normalizeDomain(window.location.href); // Exact domein van de adresbalk
 
   const trustedDomains = window.trustedDomains || [];
   const isTrusted = trustedDomains.some(pattern => {
-  const regex = new RegExp(pattern, 'i');
-  return regex.test(urlObj.hostname) || urlObj.hostname.endsWith(pattern.replace(/^\\\./, '').replace(/\\\./g, '.'));
-});
-
+    const regex = new RegExp(pattern, 'i');
+    return regex.test(urlObj.hostname) || urlObj.hostname.endsWith(pattern.replace(/^\\\./, '').replace(/\\\./g, '.'));
+  });
 
   if (isTrusted) {
     logDebug(`Trusted domain detected: ${domain}. Skipping further checks.`);
@@ -2141,6 +2143,35 @@ async function performSuspiciousChecks(url) {
     }
   }
 
+  // SSL-check alleen voor het exacte domein van de huidige pagina
+  if (isHttpProtocol && domain) {
+    const isCurrentPageDomain = domain === currentPageDomain; // Alleen exacte match met adresbalk
+    const shouldCheckSsl = isCurrentPageDomain && (detectLoginPage(window.location.href) || (totalRiskRef.value >= 5 && totalRiskRef.value <= 15));
+    logDebug(`SSL-check decision for ${domain}: isCurrentPageDomain=${isCurrentPageDomain}, isLogin=${detectLoginPage(window.location.href)}, risk=${totalRiskRef.value}, shouldCheckSsl=${shouldCheckSsl}`);
+    if (shouldCheckSsl) {
+        try {
+            const sslResult = await Promise.race([
+  new Promise((resolve, reject) => {
+    chrome.runtime.sendMessage({ action: "checkSslLabs", domain }, response => {
+      if (chrome.runtime.lastError) reject(new Error(chrome.runtime.lastError.message));
+      else resolve(response);
+    });
+  }),
+  new Promise((_, reject) => setTimeout(() => reject(new Error("SSL check timeout")), 10000))
+]);
+            if (!sslResult.isValid) {
+                reasons.add("sslValidationFailed");
+                totalRiskRef.value += 10;
+                logDebug(`SSL-check mislukt voor ${domain}: ${sslResult.reason}`);
+            } else {
+                logDebug(`SSL-check geslaagd voor ${domain}: ${sslResult.reason}`);
+            }
+        } catch (error) {
+            handleError(error, `performSuspiciousChecks: SSL-check faalde voor ${domain}`);
+        }
+    }
+  }
+
   if (isSafeDomain && totalRiskRef.value < 10) {
     logDebug(`Safe domain override applied for ${url}`);
     totalRiskRef.value = 0.1;
@@ -2153,7 +2184,6 @@ async function performSuspiciousChecks(url) {
   storeInCache(url, result);
   return result;
 }
-
 
 // Optionele periodieke cache-schoonmaak (voeg dit toe aan je script)
 setInterval(() => {

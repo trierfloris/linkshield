@@ -107,26 +107,14 @@ window.CONFIG = {
     ],
 
     // Verdachte Script Patronen
-    SUSPICIOUS_SCRIPT_PATTERNS: [
-        /(?:base64_decode|base64_encode|rot13|hex|md5|sha1|sha256|xor|hash|eval64|obfuscate)/i,
-        /(?:document\.write|eval|Function|setTimeout|setInterval|atob|btoa|escape|unescape|innerHTML|outerHTML|appendChild|insertBefore|replaceChild|removeChild|location\.href|window\.location|localStorage|sessionStorage|XMLHttpRequest|fetch|WebSocket|prototype\.call|Object\.defineProperty|new Function)/i,
-        /(?:download|execute|payload|install|load|unpack|update|patch|plugin|setup|plugin\.js|install\.js|update\.js|loader\.js|miner\.js|coinimp|cryptonight|wasm)/i,
-        /(?:iframe|srcdoc|data:text\/html|javascript:|onload|onerror|onclick|onsubmit|onmouseover|onfocus|onblur|onchange|onscroll|onkeydown|onkeyup|onkeypress)/i,
-        /(?:malicious|unsafe|tracker|adserver|spy|hack|exploit|virus|malware|phish|redirect|inject|clickjacking|xss|keylogger|trojan|worm|ransomware|payload|obfuscated|obfuscate|backdoor|rootkit|sqlinjection|sqli|bufferoverflow|overflow|csrf|cryptojacking|mining)/i,
-        /(RTCPeerConnection|RTCDataChannel|mozRTCPeerConnection|webkitRTCPeerConnection|iceCandidate|peerconnection|stun:|turn:)/i,
-        /(RTCSessionDescription|RTCIceCandidate)/i, // Detectie voor WebRTC-phishing
-        /(navigator\.geolocation|navigator\.permissions|navigator\.mediaDevices|Clipboard|ServiceWorker|PushManager|WebAssembly|Worker)/i,
-        /(Notification|requestPermission|push)/i,
-        /(Clipboard\.write|Clipboard\.read)/i, // Detectie voor clipboard-manipulatie
-        /(canvas|imageData)/i, // Detectie voor deepfake-gerelateerde scripts
-        /(speechSynthesis|AudioContext)/i, // Detectie voor spraakgerelateerde phishing
-        /(MediaRecorder|Blob)/i, // Detectie voor AI-gegenereerde media-opnames
-        /(WebTransport)/i, // Detectie voor WebTransport-phishing
-        /(fetch\(.+\.wasm\)|import\(.+\.wasm\))/i, // Detectie voor dynamische WebAssembly-payloads
-        /(quic-transport|http3)/i, // Nieuwe detectie voor QUIC/HTTP/3-phishing
-        /\.(php|asp|cgi|exe|bin|dll|dat|py|sh|vb|vbs|cmd|bat|pl|ps1|psm1|jar|class|js|jsp|aspx|cfm|rb|ts|mjs|apk|swift|go|lua|wasm)$/i,
-        /script|eval/i
-    ],
+   SUSPICIOUS_SCRIPT_PATTERNS: [
+  /(?:\beval\s*\(\s*['"][^'"]*['"]\s*\)|new\s+Function\s*\(\s*['"][^'"]*['"]\s*\)|base64_decode\s*\()/i,
+  /(?:coinimp|cryptonight|webminer|miner\.js|crypto-jacking|keylogger|trojan|worm|ransomware|xss\s*\()/i,
+  /(?:document\.write\s*\(\s*['"][^'"]*javascript:|innerHTML\s*=\s*['"][^'"]*eval)/i,
+  /(?:fetch\(.+\.wasm[^)]*eval|import\(.+\.wasm[^)]*javascript:)/i,
+  /(?:malicious|phish|exploit|redirect|inject|clickjacking|backdoor|rootkit)/i,
+  /(?:RTCPeerConnection\s*\(\s*{[^}]*stun:|RTCDataChannel\s*.\s*send\s*\(\s*['"][^'"]*eval)/i,
+],
 
     // Toegestane Paden en Query Parameters
     ALLOWED_PATHS: [/\/products\/|\/account\/billing\/|\/plans\/|\/support\/|\/docs\//i],

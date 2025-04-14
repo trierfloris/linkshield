@@ -211,5 +211,56 @@
   },
   "sslValidationFailed": {
     "message": "This website's security is not valid. The certificate is missing or unsafe."
+  },
+  "malwareExtension": {
+    "message": "This file has a suspicious extension (high risk). It might contain harmful software."
+  },
+  "shortenedUrlError": {
+    "message": "Something went wrong when checking this short link (low risk). We don’t know where it goes."
+  },
+  "redirectedShortenedUrl": {
+    "message": "This short link goes to a different website (medium risk)."
+  },
+  "cryptoPhishingAd": {
+    "message": "This ad looks like a crypto scam (high risk). Be extra careful."
+  },
+  "suspiciousAdStructure": {
+    "message": "The link in this ad looks strange (medium risk). It might not be safe."
+  },
+  "suspiciousAdTLD": {
+    "message": "The ad uses a domain that is often misused (high risk)."
+  },
+  "homoglyphAdAttack": {
+    "message": "The ad uses characters that look like a known website (medium risk)."
+  },
+  "brandMisuse": {
+    "message": "The ad wrongly uses a well-known brand name (high risk). It might be fake."
+  },
+  "unknownWarning": {
+    "message": "Unknown warning (medium risk). Be careful."
+  },
+  "typosquattingAttack": {
+    "message": "This web address looks like a real one, but it is slightly different (high risk). It could be fake."
+  },
+  "downloadKeyword": {
+    "message": "We found a suspicious word related to downloads in the link (medium risk). It might be unsafe."
+  },
+  "suspiciousScriptContent": {
+    "message": "This script contains suspicious code, like 'eval()' or 'document.write()'. It could be unsafe."
+  },
+  "invalidScriptSrc": {
+    "message": "The link to the script is not correct or cannot be read properly."
+  },
+  "suspiciousIframeKeyword": {
+    "message": "A suspicious word was found in the link of an embedded window (iframe)"
+  },
+  "allowedQueryParam": {
+    "message": "The link contains a safe search word that is allowed"
+  },
+  "suspiciousPageText": {
+    "message": "This page contains suspicious text (high risk). It may try to trick you into taking action."
+  },
+  "urgencyTactic": {
+    "message": "This page uses urgent language to pressure you (high risk). Be cautious of scams."
   }
 }

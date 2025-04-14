@@ -1,126 +1,126 @@
 {
   "extName": {
-    "message": "LinkShield"
+    "message": "链接盾"
   },
   "extDescription": {
-    "message": "LinkShield 帮助您识别危险网站。切勿将敏感信息提供给未知网站。"
+    "message": "链接盾帮助您识别危险网站。切勿与未知网站分享敏感信息。"
   },
   "alertTitle": {
     "message": "警告！"
   },
   "alertMessage": {
-    "message": "此网站包含指向以下链接："
+    "message": "此网站包含指向以下内容的链接："
   },
   "severityLabel": {
     "message": "风险"
   },
   "reasonLabel": {
-    "message": "原因？"
+    "message": "为什么？"
   },
   "adviceMessage": {
-    "message": "您可以怎么做？"
+    "message": "您可以做什么？"
   },
   "severityMediumRisk": {
-    "message": "中等风险：此链接可能不安全，请小心。"
+    "message": "中等风险：此链接可能不安全。请小心。"
   },
   "adviceCheckUrl": {
-    "message": "只有在确认安全的情况下才打开此链接。请仔细检查网址，如果不确定其正确性，请不要登录。"
+    "message": "仅在确保链接安全的情况下打开。仔细检查网页地址。如果对URL有疑问，切勿登录。"
   },
   "noHttps": {
-    "message": "此链接未使用 HTTPS（高风险）。您的数据可能会被轻易窃取。"
+    "message": "此链接未使用HTTPS（高风险）。您的数据更容易被窃取。"
   },
   "ipAsDomain": {
-    "message": "该网站使用 IP 地址而非域名（高风险）。这可能是为了误导您。"
+    "message": "此网站使用IP地址而非名称（高风险）。这可能是误导您的伎俩。"
   },
   "tooManySubdomains": {
-    "message": "该网址包含许多额外部分（高风险）。这可能表明该网站是伪造的。"
+    "message": "此网页地址包含多个部分（高风险）。该网站可能是伪造的。"
   },
   "suspiciousKeywords": {
-    "message": "检测到可疑词汇（中等风险）。这些词可能是诈骗中常用的术语。"
+    "message": "发现可疑词语（中等风险）。这些词常用于诈骗。"
   },
   "suspiciousPattern": {
-    "message": "该网址看起来可疑（高风险）。这可能是诈骗的手段。"
+    "message": "网页地址看起来可疑（高风险）。这可能用于欺骗您。"
   },
   "shortenedUrl": {
-    "message": "这是一个短链接（高风险）。您无法看出该链接的真实目的地。"
+    "message": "这是一个短链接（高风险）。您无法看到其真实指向。"
   },
   "downloadPage": {
-    "message": "此页面提供可疑的下载（高风险），可能包含有害软件。"
+    "message": "此页面提供可疑下载（高风险）。可能包含恶意软件。"
   },
   "freeHosting": {
-    "message": "该网站使用免费托管（高风险）。此类网站通常安全性较低。"
+    "message": "此网站使用免费托管（高风险）。此类网站通常保护较少。"
   },
   "encodedCharacters": {
-    "message": "该网址包含许多奇怪的字符（高风险）。这可能用于隐藏危险内容。"
+    "message": "此网页地址包含奇怪字符（高风险）。可能用于隐藏危险内容。"
   },
   "homoglyphAttack": {
-    "message": "该网址使用形似字符（中等风险），可能是模仿真实网站。"
+    "message": "此地址使用相似的字符（中等风险）。可能试图冒充真实网站。"
   },
   "metaRedirect": {
-    "message": "该网站会自动重定向您（高风险），可能会将您引导到危险网站。"
+    "message": "此网站会自动重定向您（高风险）。您可能被送往危险网站。"
   },
   "cryptoPhishing": {
-    "message": "该网址看似涉及加密货币诈骗（高风险），请小心以免财产损失。"
+    "message": "此地址看起来像加密货币诈骗（高风险）。注意不要损失金钱。"
   },
   "externalScripts": {
-    "message": "该网站加载了可疑的额外代码（高风险），这可能非常危险。"
+    "message": "此网站加载可疑外部代码（高风险）。可能有危险。"
   },
   "suspiciousIframes": {
-    "message": "该网站包含可疑的嵌入窗口（高风险），可能用于误导您。"
+    "message": "此网站包含可疑的嵌入窗口（高风险）。这些可能用于欺骗您。"
   },
   "suspiciousParams": {
-    "message": "该网址包含可疑的附加信息（中等风险），可能用于绕过安全措施。"
+    "message": "此地址包含可疑的额外信息（中等风险）。可能用于绕过安全措施。"
   },
   "mixedContent": {
-    "message": "此页面同时使用安全与不安全元素（中等风险），可能会削弱安全性。"
+    "message": "此页面同时使用安全和不安全内容（中等风险）。可能削弱页面安全性。"
   },
   "unusualPort": {
-    "message": "该网站使用不常见的端口（高风险），可能用于绕过安全防护。"
+    "message": "此网站使用不寻常的端口（高风险）。可能试图绕过安全措施。"
   },
   "javascriptScheme": {
-    "message": "该网址使用 JavaScript（高风险），可能用于执行有害代码。"
+    "message": "此地址使用JavaScript（高风险）。可能运行恶意代码。"
   },
   "urlFragmentTrick": {
-    "message": "该网址包含可疑的片段（中等风险），可能误导您实际所在位置。"
+    "message": "此地址包含可疑片段（中等风险）。可能误导您对真实位置的判断。"
   },
   "suspiciousTLD": {
-    "message": "该网址使用风险较高的顶级域（高风险），某些域名常被用于诈骗。"
+    "message": "此域名使用风险扩展名（高风险）。某些扩展名常用于诈骗。"
   },
   "base64OrHex": {
-    "message": "该网址包含编码信息（中等风险），可能隐藏危险内容。"
+    "message": "此地址包含编码信息（中等风险）。可能隐藏危险内容。"
   },
   "iframeHidden": {
-    "message": "该网站使用隐藏的框架（中等风险），可能用于隐藏某些内容。"
+    "message": "此网站使用隐藏窗口（中等风险）。可能对您隐藏某些内容。"
   },
   "similarToLegitimateDomain": {
-    "message": "该网址与知名安全网站非常相似（高风险），可能用于误导您。"
+    "message": "此网站与知名可信网站非常相似。可能是伪造的副本。"
   },
   "popupTitle": {
-    "message": "LinkShield：保护您免受网络钓鱼攻击"
+    "message": "链接盾：保护自己免受钓鱼攻击"
   },
   "popupSubtitle": {
-    "message": "通过警告和保护，保持上网安全。"
+    "message": "通过警告和保护保持安全。"
   },
   "backgroundAnalysis": {
     "message": "后台检查"
   },
   "backgroundAnalysisDescription": {
-    "message": "在您访问之前，阻止危险网站。"
+    "message": "在您访问之前阻止危险网站。"
   },
   "activationRequired": {
-    "message": "请先启用此功能以使用它。"
+    "message": "请在使用前启用此功能。"
   },
   "integratedProtection": {
-    "message": "内置防钓鱼和防恶意软件保护"
+    "message": "内置的钓鱼和恶意软件防护"
   },
   "integratedProtectionDescription": {
     "message": "此功能可即时检查网站和链接。"
   },
   "premiumFeaturesActive": {
-    "message": "您现在正在使用高级版！"
+    "message": "您现在正在使用高级版本！"
   },
   "upgradePrompt": {
-    "message": "升级到高级版以获取额外功能。"
+    "message": "升级到高级版以解锁额外功能。"
   },
   "saveSettings": {
     "message": "保存设置"
@@ -129,34 +129,34 @@
     "message": "设置已保存！"
   },
   "licenseActivate": {
-    "message": "激活许可"
+    "message": "激活许可证"
   },
   "licenseInputPlaceholder": {
-    "message": "请输入您的许可密钥"
+    "message": "请输入您的许可证密钥"
   },
   "licenseCheck": {
-    "message": "检查许可"
+    "message": "检查许可证"
   },
   "licenseInvalid": {
-    "message": "许可无效。"
+    "message": "无效许可证。"
   },
   "licenseValid": {
-    "message": "许可已激活！"
+    "message": "许可证已激活！"
   },
   "lastRuleUpdate": {
     "message": "最后一次钓鱼数据库更新："
   },
   "licenseStatus": {
-    "message": "许可："
+    "message": "许可证："
   },
   "licenseFreemium": {
-    "message": "免费版"
+    "message": "免费版本"
   },
   "bulkUrlCheck": {
     "message": "检查多个链接"
   },
   "bulkUrlCheckDescription": {
-    "message": "上传 .txt 文件以一次检查多个链接。"
+    "message": "上传一个.txt文件以同时检查多个链接。"
   },
   "fileChoose": {
     "message": "选择文件"
@@ -165,37 +165,37 @@
     "message": "检查文件"
   },
   "fileCheckNoUrls": {
-    "message": "该文件不包含任何链接。"
+    "message": "文件中不包含任何链接。"
   },
   "fileCheckFailed": {
     "message": "检查失败。"
   },
   "safeDomain": {
-    "message": "该网站是安全的。"
+    "message": "此网站是安全的。"
   },
   "allowedProtocol": {
-    "message": "该链接使用安全协议。"
+    "message": "此链接使用安全协议。"
   },
   "insecureLoginPage": {
-    "message": "该登录页面未使用 HTTPS（高风险），您的数据可能会被窃取。"
+    "message": "此登录页面未使用HTTPS（高风险）。您的数据可能被窃取。"
   },
   "invalidUrl": {
-    "message": "该网址不正确或输入错误。"
+    "message": "此网页地址无效或输入错误。"
   },
   "loadingMessage": {
-    "message": "请稍候，系统正在进行检查..."
+    "message": "请稍等，系统正在检查..."
   },
   "cannotRetrieveSiteStatus": {
     "message": "⚠️ 无法获取网站状态。"
   },
   "unknownRisk": {
-    "message": "⚠️ 风险未知"
+    "message": "⚠️ 未知风险"
   },
   "highRisk": {
     "message": "🔴 高风险：非常危险！"
   },
   "mediumRisk": {
-    "message": "🟠 中风险：请谨慎。"
+    "message": "🟠 中等风险：请小心。"
   },
   "lowRisk": {
     "message": "🟢 低风险：可能安全。"
@@ -204,12 +204,63 @@
     "message": "✅ 无可疑特征。"
   },
   "siteStatusNotAvailable": {
-    "message": "⚠️ 无法获取网站状态。"
+    "message": "⚠️ 网站状态不可用。"
   },
-"loginPageNoMX": {
-    "message": "发现了一个登录页面，但该域名没有电子邮件服务器。这可能是网络钓鱼的迹象。"
+  "loginPageNoMX": {
+    "message": "发现了一个登录页面，但该域名没有电子邮件服务器。这可能是钓鱼尝试。"
   },
-"similarToLegitimateDomain": {
-    "message": "该网站与一个知名的可信网站非常相似。它可能是用来误导你的仿冒网站。"
+  "sslValidationFailed": {
+    "message": "此网站的セキュリティ验证失败。证书缺失或不安全。"
+  },
+  "malwareExtension": {
+    "message": "此文件具有可疑扩展名（高风险）。可能包含恶意软件。"
+  },
+  "shortenedUrlError": {
+    "message": "检查此短链接时出现问题（低风险）。我们不知道它指向哪里。"
+  },
+  "redirectedShortenedUrl": {
+    "message": "此短链接指向另一个网站（中等风险）。"
+  },
+  "cryptoPhishingAd": {
+    "message": "此广告看起来像加密货币诈骗（高风险）。请格外小心。"
+  },
+  "suspiciousAdStructure": {
+    "message": "此广告中的链接看起来很奇怪（中等风险）。可能不安全。"
+  },
+  "suspiciousAdTLD": {
+    "message": "广告使用了经常被滥用的域名（高风险）。"
+  },
+  "homoglyphAttack": {
+    "message": "广告使用了与知名网站相似的字符（中等风险）。"
+  },
+  "brandMisuse": {
+    "message": "广告不当使用了知名品牌名称（高风险）。可能是假的。"
+  },
+  "unknownWarning": {
+    "message": "未知警告（中等风险）。请小心。"
+  },
+  "typosquattingAttack": {
+    "message": "此网页地址看起来像真的，但略有不同（高风险）。可能是假的。"
+  },
+  "downloadKeyword": {
+    "message": "我们在链接中发现了一个与下载相关的可疑词（中等风险）。可能不安全。"
+  },
+  "suspiciousScriptContent": {
+    "message": "此脚本包含可疑代码，如'eval()'或'document.write()'。可能不安全。"
+  },
+  "invalidScriptSrc": {
+    "message": "脚本链接不正确或无法正确读取。"
+  },
+  "suspiciousIframeKeyword": {
+    "message": "在嵌入窗口（iframe）的链接中发现了一个可疑词。"
+  },
+  "allowedQueryParam": {
+    "message": "链接包含一个允许的安全搜索词。"
+  },
+  "suspiciousPageText": {
+    "message": "此页面包含可疑文本（高风险）。可能试图诱导您采取行动。"
+  },
+  "urgencyTactic": {
+    "message": "此页面使用紧急语言来压迫您（高风险）。小心诈骗。"
   }
 }

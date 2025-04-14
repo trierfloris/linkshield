@@ -61,56 +61,10 @@ function validateConfig(config) {
   // Helperfunctie voor een veilige regex fallback
   const safeRegex = () => new RegExp('$^'); // Matcht niets, veiliger dan /.*/
 
-  // **Basic type checks en defaults**
+  // **Algemene instellingen**
   if (typeof validated.DEBUG_MODE !== 'boolean') {
     validated.DEBUG_MODE = false;
   }
-  if (!Array.isArray(validated.ALLOWED_PROTOCOLS)) {
-    validated.ALLOWED_PROTOCOLS = ['https:', 'http:', 'mailto:', 'tel:', 'ftp:'];
-  }
-
-  // **SUSPICIOUS_TLDS**
-  if (!(validated.SUSPICIOUS_TLDS instanceof RegExp)) {
-    try {
-      validated.SUSPICIOUS_TLDS = new RegExp(
-        '\\.(academy|accountant|accountants|agency|ap|app|art|asia|auto|bank|bar|beauty|bet|bid|bio|biz|blog|buzz|cam|capital|casa|casino|cfd|charity|cheap|church|city|claims|click|club|company|crispsalt|cyou|data|date|design|dev|digital|directory|download|email|energy|estate|events|exchange|expert|exposed|express|finance|fit|forsale|foundation|fun|games|gle|goog|gq|guide|guru|health|help|home|host|html|icu|ink|institute|investments|ip|jobs|life|limited|link|live|loan|lol|ltd|ly|mall|market|me|media|men|ml|mom|money|monster|mov|network|one|online|page|partners|party|php|pics|play|press|pro|promo|pw|quest|racing|rest|review|rocks|run|sbs|school|science|services|shop|shopping|site|software|solutions|space|store|stream|support|team|tech|tickets|to|today|tools|top|trade|trading|uno|ventures|vip|website|wiki|win|work|world|xin|xyz|zip|zone|co|cc|tv|name|team|live|stream|quest|sbs)$',
-        'i'
-      );
-    } catch (error) {
-      logError(`Ongeldig RegExp-patroon voor SUSPICIOUS_TLDS: ${error.message}`);
-      validated.SUSPICIOUS_TLDS = safeRegex(); // Veilige fallback
-    }
-  }
-
-  // **MALWARE_EXTENSIONS**
-  if (!(validated.MALWARE_EXTENSIONS instanceof RegExp)) {
-    try {
-      validated.MALWARE_EXTENSIONS = new RegExp(
-        '\\.(exe|zip|bak|tar|gz|msi|dmg|jar|rar|7z|iso|bin|scr|bat|cmd|sh|vbs|lnk|chm|ps2|apk|ps1|py|js|vbscript|dll|docm|xlsm|pptm|doc|xls|ppt|rtf|torrent|wsf|hta|jse|reg|swf|svg|lnk|chm)$',
-        'i'
-      );
-    } catch (error) {
-      logError(`Ongeldig RegExp-patroon voor MALWARE_EXTENSIONS: ${error.message}`);
-      validated.MALWARE_EXTENSIONS = safeRegex(); // Veilige fallback
-    }
-  }
-
-  // **SHORTENED_URL_DOMAINS**
-  if (!validated.SHORTENED_URL_DOMAINS || !(validated.SHORTENED_URL_DOMAINS instanceof Set)) {
-    validated.SHORTENED_URL_DOMAINS = new Set(validated.SHORTENED_URL_DOMAINS || ['bit.ly', 'tinyurl.com', 'goo.gl', 't.co']);
-  }
-
-  // **PHISHING_KEYWORDS**
-  if (!(validated.PHISHING_KEYWORDS instanceof Set)) {
-    validated.PHISHING_KEYWORDS = new Set(validated.PHISHING_KEYWORDS || ['login', 'password', 'verify', 'access', 'account', 'auth', 'blocked', 'bonus', 'captcha', 'claim', 'click', 'credentials', 'free', 'gift', 'notification', 'pay', 'pending', 'prize', 'recover', 'secure', 'signin', 'unlock', 'unusual', 'update', 'urgent', 'validate', 'win']);
-  }
-
-  // **DOWNLOAD_KEYWORDS**
-  if (!(validated.DOWNLOAD_KEYWORDS instanceof Set)) {
-    validated.DOWNLOAD_KEYWORDS = new Set(validated.DOWNLOAD_KEYWORDS || ['download', 'install', 'setup', 'file', 'update', 'patch', 'plugin', 'installer', 'software', 'driver', 'execute', 'run', 'launch', 'tool', 'patcher', 'application', 'program', 'app', 'fix', 'crack', 'keygen', 'serial', 'activation', 'license', 'trial', 'demo', 'zip', 'archive', 'compressed', 'installer_package', 'upgrade', 'update_tool', 'free', 'fixer', 'repair', 'optimizer', 'restore', 'reset', 'unlock', 'backup', 'configuration', 'config', 'module', 'library', 'framework', 'macro', 'enable', 'torrent', 'seed', 'payload', 'exploit', 'dropper', 'loader', 'package', 'binary', 'release', 'beta', 'mod', 'hack']);
-  }
-
-  // **Numerieke instellingen**
   if (typeof validated.RISK_THRESHOLD !== 'number' || validated.RISK_THRESHOLD < 0) {
     validated.RISK_THRESHOLD = 5;
   }
@@ -124,48 +78,85 @@ function validateConfig(config) {
     validated.SUSPICION_THRESHOLD = 0.1;
   }
 
-  // **TRUSTED_IFRAME_DOMAINS**
+  // **Lijsten van toegestane waarden**
+  if (!Array.isArray(validated.ALLOWED_PROTOCOLS)) {
+    validated.ALLOWED_PROTOCOLS = ['https:', 'http:', 'mailto:', 'tel:', 'ftp:'];
+  }
+  if (!Array.isArray(validated.ALLOWED_PATHS) || validated.ALLOWED_PATHS.some(p => !(p instanceof RegExp))) {
+    validated.ALLOWED_PATHS = [
+      /^\/home/i,
+      /^\/products/i,
+      /^\/about/i,
+      /^\/contact/i,
+      /^\/blog/i
+    ];
+  }
+  if (!Array.isArray(validated.ALLOWED_QUERY_PARAMS) || validated.ALLOWED_QUERY_PARAMS.some(p => !(p instanceof RegExp))) {
+    validated.ALLOWED_QUERY_PARAMS = [
+      /^utm_/i,
+      /^ref$/i,
+      /^source$/i,
+      /^lang$/i,
+      /^session$/i
+    ];
+  }
+
+  // **Vertrouwde domeinen**
+  if (!Array.isArray(validated.CRYPTO_DOMAINS) || validated.CRYPTO_DOMAINS.some(domain => typeof domain !== 'string')) {
+    validated.CRYPTO_DOMAINS = [
+      'binance.com', 'kraken.com', 'metamask.io', 'wallet-connect.org', 'coinbase.com',
+      'bybit.com', 'okx.com', 'kucoin.com', 'hashkey.com', 'binance.us', 'raydium.io'
+    ];
+  }
+  if (!Array.isArray(validated.FREE_HOSTING_DOMAINS) || validated.FREE_HOSTING_DOMAINS.some(domain => typeof domain !== 'string')) {
+    validated.FREE_HOSTING_DOMAINS = [
+      'sites.net', 'angelfire.com', 'geocities.ws', '000a.biz', '000webhostapp.com', 'weebly.com', 'wixsite.com',
+      'freehosting.com', 'glitch.me', 'firebaseapp.com', 'herokuapp.com', 'freehostia.com', 'netlify.app', 'webs.com',
+      'yolasite.com', 'github.io', 'bravenet.com', 'zyro.com', 'altervista.org', 'tripod.com', 'jimdo.com', 'ucoz.com',
+      'blogspot.com', 'square.site', 'pages.dev', 'r2.dev', 'mybluehost.me', '000space.com', 'awardspace.com',
+      'byethost.com', 'biz.nf', 'hyperphp.com', 'infinityfree.net', '50webs.com', 'tripod.lycos.com', 'site123.me',
+      'webflow.io', 'strikingly.com', 'x10hosting.com', 'freehostingnoads.net', '000freewebhost.com', 'mystrikingly.com',
+      'sites.google.com', 'appspot.com', 'vercel.app', 'weeblysite.com', 's3.amazonaws.com', 'bubbleapps.io',
+      'typedream.app', 'codeanyapp.com', 'carrd.co', 'surge.sh', 'replit.dev', 'fly.dev', 'render.com', 'onrender.com'
+    ];
+  }
   if (!Array.isArray(validated.TRUSTED_IFRAME_DOMAINS) || validated.TRUSTED_IFRAME_DOMAINS.some(domain => typeof domain !== 'string')) {
     validated.TRUSTED_IFRAME_DOMAINS = ['youtube.com', 'vimeo.com', 'google.com'];
   }
-
-  // **LOGIN_PATTERNS**
-  if (!(validated.LOGIN_PATTERNS instanceof RegExp)) {
-    try {
-      validated.LOGIN_PATTERNS = new RegExp(
-        '(login|account|auth|authenticate|signin|wp-login|sign-in|log-in|dashboard|portal|session|user|profile|dashboard|portal|session|user|profile)',
-        'i'
-      );
-    } catch (error) {
-      logError(`Ongeldig RegExp-patroon voor LOGIN_PATTERNS: ${error.message}`);
-      validated.LOGIN_PATTERNS = safeRegex(); // Veilige fallback
-    }
-  }
-
-  // **FREE_HOSTING_DOMAINS**
-  if (!Array.isArray(validated.FREE_HOSTING_DOMAINS) || validated.FREE_HOSTING_DOMAINS.some(domain => typeof domain !== 'string')) {
-    validated.FREE_HOSTING_DOMAINS = [
-      'sites.net', 'angelfire.com', 'geocities.ws', '000a.biz', '000webhostapp.com', 'weebly.com', 'wixsite.com', 
-      'freehosting.com', 'glitch.me', 'firebaseapp.com', 'herokuapp.com', 'freehostia.com', 'netlify.app', 'webs.com', 
-      'yolasite.com', 'github.io', 'bravenet.com', 'zyro.com', 'altervista.org', 'tripod.com', 'jimdo.com', 'ucoz.com', 
-      'blogspot.com', 'square.site', 'pages.dev', 'r2.dev', 'mybluehost.me', '000space.com', 'awardspace.com', 
-      'byethost.com', 'biz.nf', 'hyperphp.com', 'infinityfree.net', '50webs.com', 'tripod.lycos.com', 'site123.me', 
-      'webflow.io', 'strikingly.com', 'x10hosting.com', 'freehostingnoads.net', '000freewebhost.com', 'mystrikingly.com', 
-      'sites.google.com', 'appspot.com', 'vercel.app', 'weeblysite.com', 's3.amazonaws.com', 'bubbleapps.io', 
-      'typedream.app', 'codeanyapp.com', 'carrd.co', 'surge.sh', 'replit.dev', 'fly.dev', 'render.com', 'onrender.com',
-      'netlify.app', 'vercel.app'
+  if (!Array.isArray(validated.legitimateDomains) || validated.legitimateDomains.some(domain => typeof domain !== 'string')) {
+    validated.legitimateDomains = [
+      'microsoft.com', 'apple.com', 'google.com', 'linkedin.com', 'alibaba.com',
+      'whatsapp.com', 'amazon.com', 'x.com', 'facebook.com', 'adobe.com'
     ];
   }
 
-  // **CRYPTO_DOMAINS**
-  if (!Array.isArray(validated.CRYPTO_DOMAINS) || validated.CRYPTO_DOMAINS.some(domain => typeof domain !== 'string')) {
-    validated.CRYPTO_DOMAINS = [
-      "binance.com", "kraken.com", "metamask.io", "wallet-connect.org", "coinbase.com", "bybit.com", "okx.com", 
-      "kucoin.com", "hashkey.com", "binance.us", "raydium.io"
-    ];
+  // **Risicogewichten**
+  if (typeof validated.domainRiskWeights !== 'object' || validated.domainRiskWeights === null) {
+    validated.domainRiskWeights = {
+      'microsoft.com': 10, 'apple.com': 4, 'google.com': 4, 'linkedin.com': 3, 'alibaba.com': 1,
+      'whatsapp.com': 1, 'amazon.com': 1, 'x.com': 1, 'facebook.com': 1, 'adobe.com': 1
+    };
   }
 
-  // **HOMOGLYPHS**
+  // **Regex-gebaseerde patronen**
+  if (!Array.isArray(validated.COMPOUND_TLDS)) {
+    validated.COMPOUND_TLDS = [
+      'co.uk', 'org.uk', 'gov.uk', 'ac.uk',
+      'com.au', 'org.au',
+      'co.nz'
+    ];
+  }
+  if (!(validated.DOWNLOAD_KEYWORDS instanceof Set)) {
+    validated.DOWNLOAD_KEYWORDS = new Set([
+      'download', 'install', 'setup', 'file', 'update', 'patch', 'plugin', 'installer', 'software', 'driver',
+      'execute', 'run', 'launch', 'tool', 'patcher', 'application', 'program', 'app', 'fix', 'crack',
+      'keygen', 'serial', 'activation', 'license', 'trial', 'demo', 'zip', 'archive', 'compressed',
+      'installer_package', 'upgrade', 'update_tool', 'free', 'fixer', 'repair', 'optimizer', 'restore',
+      'reset', 'unlock', 'backup', 'configuration', 'config', 'module', 'library', 'framework', 'macro',
+      'enable', 'torrent', 'seed', 'payload', 'exploit', 'dropper', 'loader', 'package', 'binary',
+      'release', 'beta', 'mod', 'hack'
+    ]);
+  }
   if (typeof validated.HOMOGLYPHS !== 'object' || validated.HOMOGLYPHS === null || !Object.values(validated.HOMOGLYPHS).every(arr => Array.isArray(arr) && arr.every(item => typeof item === 'string'))) {
     validated.HOMOGLYPHS = {
       'a': ['а', 'ä', 'α', 'ạ', 'å'],
@@ -185,8 +176,73 @@ function validateConfig(config) {
       'z': ['ž', 'ƶ', 'ź', 'ż', 'ẑ', 'ẓ', 'ẕ', 'ƹ', 'ɀ']
     };
   }
-
-  // **SUSPICIOUS_URL_PATTERNS**
+  if (!(validated.LOGIN_PATTERNS instanceof RegExp)) {
+    try {
+      validated.LOGIN_PATTERNS = new RegExp(
+        '(login|account|auth|authenticate|signin|wp-login|sign-in|log-in|dashboard|portal|session|user|profile)',
+        'i'
+      );
+    } catch (error) {
+      logError(`Ongeldig RegExp-patroon voor LOGIN_PATTERNS: ${error.message}`);
+      validated.LOGIN_PATTERNS = safeRegex();
+    }
+  }
+  if (!(validated.MALWARE_EXTENSIONS instanceof RegExp)) {
+    try {
+      validated.MALWARE_EXTENSIONS = new RegExp(
+        '\\.(exe|zip|bak|tar|gz|msi|dmg|jar|rar|7z|iso|bin|scr|bat|cmd|sh|vbs|lnk|chm|ps2|apk|ps1|py|js|vbscript|dll|docm|xlsm|pptm|doc|xls|ppt|rtf|torrent|wsf|hta|jse|reg|swf|svg|lnk|chm)$',
+        'i'
+      );
+    } catch (error) {
+      logError(`Ongeldig RegExp-patroon voor MALWARE_EXTENSIONS: ${error.message}`);
+      validated.MALWARE_EXTENSIONS = safeRegex();
+    }
+  }
+  if (!(validated.PHISHING_KEYWORDS instanceof Set)) {
+    validated.PHISHING_KEYWORDS = new Set([
+      'login', 'password', 'verify', 'access', 'account', 'auth', 'blocked', 'bonus', 'captcha', 'claim',
+      'click', 'credentials', 'free', 'gift', 'notification', 'pay', 'pending', 'prize', 'recover',
+      'secure', 'signin', 'unlock', 'unusual', 'update', 'urgent', 'validate', 'win'
+    ]);
+  }
+  if (!(validated.SHORTENED_URL_DOMAINS instanceof Set)) {
+    validated.SHORTENED_URL_DOMAINS = new Set(['bit.ly', 'tinyurl.com', 'goo.gl', 't.co']);
+  }
+  if (!Array.isArray(validated.SUSPICIOUS_EMAIL_PATTERNS) || validated.SUSPICIOUS_EMAIL_PATTERNS.some(p => !(p instanceof RegExp))) {
+    validated.SUSPICIOUS_EMAIL_PATTERNS = [
+      /admin@.*\.xyz/i,
+      /support@.*\.top/i,
+      /noreply@.*\.info/i,
+      /verify@.*\.site/i,
+      /account@.*\.online/i
+    ];
+  }
+  if (!Array.isArray(validated.SUSPICIOUS_SCRIPT_PATTERNS) || validated.SUSPICIOUS_SCRIPT_PATTERNS.some(p => !(p instanceof RegExp))) {
+    const scriptPatterns = [
+      { pattern: '(?:\\beval\\s*\\(\\s*[\'"].*[\'"][^)]*\\)|new\\s+Function\\s*\\(\\s*[\'"].*[\'"][^)]*\\)|base64_decode\\s*\\()', weight: 8, description: 'Dangerous eval or Function with strings' },
+      { pattern: '(?:coinimp|cryptonight|webminer|miner\\.js|crypto-jacking|keylogger|trojan|worm|ransomware|xss\\s*\\()', weight: 10, description: 'Explicit malware terms' },
+      { pattern: '(?:document\\.write\\s*\\(\\s*[\'"][^\'"]*javascript:|innerHTML\\s*=\\s*[\'"][^\'"]*eval)', weight: 7, description: 'Suspicious DOM manipulation' },
+      { pattern: '(?:fetch\\(.+\\.wasm[^)]*eval|import\\(.+\\.wasm[^)]*javascript:)', weight: 6, description: 'WebAssembly misuse' },
+      { pattern: '(?:malicious|phish|exploit|redirect|inject|clickjacking|backdoor|rootkit)', weight: 9, description: 'Malware keywords' },
+      { pattern: '(?:RTCPeerConnection\\s*\\(\\s*{[^}]*stun:|RTCDataChannel\\s*.\\s*send\\s*\\(\\s*[\'"][^\'"]*eval)', weight: 6, description: 'WebRTC attacks' },
+    ];
+    validated.SUSPICIOUS_SCRIPT_PATTERNS = scriptPatterns.map(({ pattern, weight, description }) => ({
+      regex: new RegExp(pattern, 'i'),
+      weight,
+      description,
+    }));
+  }
+  if (!(validated.SUSPICIOUS_TLDS instanceof RegExp)) {
+    try {
+      validated.SUSPICIOUS_TLDS = new RegExp(
+        '\\.(academy|accountant|accountants|agency|ap|app|art|asia|auto|bank|bar|beauty|bet|bid|bio|biz|blog|buzz|cam|capital|casa|casino|cfd|charity|cheap|church|city|claims|click|club|company|crispsalt|cyou|data|date|design|dev|digital|directory|download|email|energy|estate|events|exchange|expert|exposed|express|finance|fit|forsale|foundation|fun|games|gle|goog|gq|guide|guru|health|help|home|host|html|icu|ink|institute|investments|ip|jobs|life|limited|link|live|loan|lol|ltd|ly|mall|market|me|media|men|ml|mom|money|monster|mov|network|one|online|page|partners|party|php|pics|play|press|pro|promo|pw|quest|racing|rest|review|rocks|run|sbs|school|science|services|shop|shopping|site|software|solutions|space|store|stream|support|team|tech|tickets|to|today|tools|top|trade|trading|uno|ventures|vip|website|wiki|win|work|world|xin|xyz|zip|zone|co|cc|tv|name|team|live|stream|quest|sbs)$',
+        'i'
+      );
+    } catch (error) {
+      logError(`Ongeldig RegExp-patroon voor SUSPICIOUS_TLDS: ${error.message}`);
+      validated.SUSPICIOUS_TLDS = safeRegex();
+    }
+  }
   if (!Array.isArray(validated.SUSPICIOUS_URL_PATTERNS) || validated.SUSPICIOUS_URL_PATTERNS.some(p => !(p instanceof RegExp))) {
     const patterns = [
       '\\/(payment|invoice|billing|money|bank|secure|login|checkout|subscription|refund|delivery)\\/',
@@ -204,64 +260,23 @@ function validateConfig(config) {
         return new RegExp(pattern, 'i');
       } catch (error) {
         logError(`Ongeldig RegExp-patroon voor SUSPICIOUS_URL_PATTERNS: ${pattern}. Fout: ${error.message}`);
-        return safeRegex(); // Veilige fallback
+        return safeRegex();
       }
     }).filter(regex => regex !== null);
     if (validated.SUSPICIOUS_URL_PATTERNS.length === 0) {
       validated.SUSPICIOUS_URL_PATTERNS = [safeRegex()];
     }
   }
-
-  // **legitimateDomains**
-  if (!Array.isArray(validated.legitimateDomains) || validated.legitimateDomains.some(domain => typeof domain !== 'string')) {
-    validated.legitimateDomains = [
-      'microsoft.com', 'apple.com', 'google.com', 'linkedin.com', 'alibaba.com',
-      'whatsapp.com', 'amazon.com', 'x.com', 'facebook.com', 'adobe.com'
+  if (!Array.isArray(validated.TYPOSQUATTING_PATTERNS) || validated.TYPOSQUATTING_PATTERNS.some(p => !(p instanceof RegExp))) {
+    validated.TYPOSQUATTING_PATTERNS = [
+      /g00gle/i,
+      /paypa1/i,
+      /micr0soft/i,
+      /[0o][0o]/i,
+      /1n/i,
+      /vv/i,
+      /rn$/i
     ];
-  }
-
-  // **COMPOUND_TLDS**
-  if (!Array.isArray(validated.COMPOUND_TLDS)) {
-    validated.COMPOUND_TLDS = [
-      'co.uk', 'org.uk', 'gov.uk', 'ac.uk',
-      'com.au', 'org.au',
-      'co.nz'
-    ];
-  }
-
-  // **domainRiskWeights**
-  if (typeof validated.domainRiskWeights !== 'object' || validated.domainRiskWeights === null) {
-    validated.domainRiskWeights = {
-      'microsoft.com': 10, 'apple.com': 4, 'google.com': 4, 'linkedin.com': 3, 'alibaba.com': 1,
-      'whatsapp.com': 1, 'amazon.com': 1, 'x.com': 1, 'facebook.com': 1, 'adobe.com': 1
-    };
-  }
-
-  // **SUSPICIOUS_SCRIPT_PATTERNS**
-  if (!Array.isArray(validated.SUSPICIOUS_SCRIPT_PATTERNS) || validated.SUSPICIOUS_SCRIPT_PATTERNS.some(p => !(p instanceof RegExp))) {
-    const scriptPatterns = [
-      '(?:base64_decode|base64_encode|rot13|hex|md5|sha1|sha256|xor|hash|eval64|obfuscate)',
-      '(?:document\\.write|eval|Function|setTimeout|setInterval|atob|btoa|escape|unescape|innerHTML|outerHTML|appendChild|insertBefore|replaceChild|removeChild|location\\.href|window\\.location|localStorage|sessionStorage|XMLHttpRequest|fetch|WebSocket|prototype\\.call|Object\\.defineProperty|new Function)',
-      '(?:download|execute|payload|install|load|unpack|update|patch|plugin|setup|plugin\\.js|install\\.js|update\\.js|loader\\.js|miner\\.js|coinimp|cryptonight|wasm)',
-      '(?:iframe|srcdoc|data:text\\/html|javascript:|onload|onerror|onclick|onsubmit|onmouseover|onfocus|onblur|onchange|onscroll|onkeydown|onkeyup|onkeypress)',
-      '(?:malicious|unsafe|tracker|adserver|spy|hack|exploit|virus|malware|phish|redirect|inject|clickjacking|xss|keylogger|trojan|worm|ransomware|payload|obfuscated|obfuscate|backdoor|rootkit|sqlinjection|sqli|bufferoverflow|overflow|csrf|cryptojacking|mining)',
-      '(RTCPeerConnection|RTCDataChannel|mozRTCPeerConnection|webkitRTCPeerConnection|iceCandidate|peerconnection|stun:|turn:)',
-      '(navigator\\.geolocation|navigator\\.permissions|navigator\\.mediaDevices|Clipboard|ServiceWorker|PushManager|WebAssembly)',
-      '\\.(php|asp|cgi|exe|bin|dll|dat|py|sh|vb|vbs|cmd|bat|pl|ps1|psm1|jar|class|js|jsp|aspx|cfm|rb|ts|mjs|apk|swift|go|lua|wasm)$',
-      'script|eval',
-      '(RTCPeerConnection|RTCDataChannel|mozRTCPeerConnection|webkitRTCPeerConnection|iceCandidate)'
-    ];
-    validated.SUSPICIOUS_SCRIPT_PATTERNS = scriptPatterns.map(pattern => {
-      try {
-        return new RegExp(pattern, 'i');
-      } catch (error) {
-        logError(`Ongeldig RegExp-patroon voor SUSPICIOUS_SCRIPT_PATTERNS: ${pattern}. Fout: ${error.message}`);
-        return safeRegex(); // Veilige fallback
-      }
-    }).filter(regex => regex !== null);
-    if (validated.SUSPICIOUS_SCRIPT_PATTERNS.length === 0) {
-      validated.SUSPICIOUS_SCRIPT_PATTERNS = [safeRegex()];
-    }
   }
 
   return validated;
@@ -270,35 +285,83 @@ function validateConfig(config) {
 /**
  * Laadt de configuratie uit window.CONFIG en valideert deze.
  */
+
 const defaultConfig = {
+  // **Algemene instellingen**
+  CACHE_DURATION_MS: 24 * 60 * 60 * 1000, // 24 uur
   DEBUG_MODE: false,
-  ALLOWED_PROTOCOLS: ['https:', 'http:', 'mailto:', 'tel:', 'ftp:'], // Match window.CONFIG
-  SUSPICIOUS_TLDS: /\.(academy|accountant|accountants|agency|ap|app|art|asia|auto|bank|bar|beauty|bet|bid|bio|biz|blog|buzz|cam|capital|casa|casino|cfd|charity|cheap|church|city|claims|click|club|company|crispsalt|cyou|data|date|design|dev|digital|directory|download|email|energy|estate|events|exchange|expert|exposed|express|finance|fit|forsale|foundation|fun|games|gle|goog|gq|guide|guru|health|help|home|host|html|icu|ink|institute|investments|ip|jobs|life|limited|link|live|loan|lol|ltd|ly|mall|market|me|media|men|ml|mom|money|monster|mov|network|one|online|page|partners|party|php|pics|play|press|pro|promo|pw|quest|racing|rest|review|rocks|run|sbs|school|science|services|shop|shopping|site|software|solutions|space|store|stream|support|team|tech|tickets|to|today|tools|top|trade|trading|uno|ventures|vip|website|wiki|win|work|world|xin|xyz|zip|zone|co|cc|tv|name|team|live|stream|quest|sbs)$/i,
-  MALWARE_EXTENSIONS: /\.(exe|zip|bak|tar|gz|msi|dmg|jar|rar|7z|iso|bin|scr|bat|cmd|sh|vbs|lnk|chm|ps2|apk|ps1|py|js|vbscript|dll|docm|xlsm|pptm|doc|xls|ppt|rtf|torrent|wsf|hta|jse|reg|swf|svg|lnk|chm)$/i,
-  SHORTENED_URL_DOMAINS: new Set(['bit.ly', 'tinyurl.com', 'goo.gl', 't.co']),
-  PHISHING_KEYWORDS: new Set(['login', 'password', 'verify', 'access', 'account', 'auth', 'blocked', 'bonus', 'captcha', 'claim', 'click', 'credentials', 'free', 'gift', 'notification', 'pay', 'pending', 'prize', 'recover', 'secure', 'signin', 'unlock', 'unusual', 'update', 'urgent', 'validate', 'win']),
-  DOWNLOAD_KEYWORDS: new Set(['download', 'install', 'setup', 'file', 'update', 'patch', 'plugin', 'installer', 'software', 'driver', 'execute', 'run', 'launch', 'tool', 'patcher', 'application', 'program', 'app', 'fix', 'crack', 'keygen', 'serial', 'activation', 'license', 'trial', 'demo', 'zip', 'archive', 'compressed', 'installer_package', 'upgrade', 'update_tool', 'free', 'fixer', 'repair', 'optimizer', 'restore', 'reset', 'unlock', 'backup', 'configuration', 'config', 'module', 'library', 'framework', 'macro', 'enable', 'torrent', 'seed', 'payload', 'exploit', 'dropper', 'loader', 'package', 'binary', 'release', 'beta', 'mod', 'hack']),
-  RISK_THRESHOLD: 5,
   MAX_SUBDOMAINS: 3,
-  CACHE_DURATION_MS: 24 * 60 * 60 * 1000, // 24 hours
+  RISK_THRESHOLD: 5,
   SUSPICION_THRESHOLD: 0.1,
-  TRUSTED_IFRAME_DOMAINS: ['youtube.com', 'vimeo.com', 'google.com'],
-  LOGIN_PATTERNS: /(login|account|auth|authenticate|signin|wp-login|sign-in|log-in|dashboard|portal|session|user|profile|dashboard|portal|session|user|profile)/i,
-  FREE_HOSTING_DOMAINS: [
-    'sites.net', 'angelfire.com', 'geocities.ws', '000a.biz', '000webhostapp.com', 'weebly.com', 'wixsite.com', 
-    'freehosting.com', 'glitch.me', 'firebaseapp.com', 'herokuapp.com', 'freehostia.com', 'netlify.app', 'webs.com', 
-    'yolasite.com', 'github.io', 'bravenet.com', 'zyro.com', 'altervista.org', 'tripod.com', 'jimdo.com', 'ucoz.com', 
-    'blogspot.com', 'square.site', 'pages.dev', 'r2.dev', 'mybluehost.me', '000space.com', 'awardspace.com', 
-    'byethost.com', 'biz.nf', 'hyperphp.com', 'infinityfree.net', '50webs.com', 'tripod.lycos.com', 'site123.me', 
-    'webflow.io', 'strikingly.com', 'x10hosting.com', 'freehostingnoads.net', '000freewebhost.com', 'mystrikingly.com', 
-    'sites.google.com', 'appspot.com', 'vercel.app', 'weeblysite.com', 's3.amazonaws.com', 'bubbleapps.io', 
-    'typedream.app', 'codeanyapp.com', 'carrd.co', 'surge.sh', 'replit.dev', 'fly.dev', 'render.com', 'onrender.com',
-    'netlify.app', 'vercel.app'
+
+  // **Lijsten van toegestane waarden**
+  ALLOWED_PROTOCOLS: ['https:', 'http:', 'mailto:', 'tel:', 'ftp:'],
+  ALLOWED_PATHS: [
+    /^\/home/i,
+    /^\/products/i,
+    /^\/about/i,
+    /^\/contact/i,
+    /^\/blog/i
   ],
+  ALLOWED_QUERY_PARAMS: [
+    /^utm_/i,
+    /^ref$/i,
+    /^source$/i,
+    /^lang$/i,
+    /^session$/i
+  ],
+
+  // **Vertrouwde domeinen**
   CRYPTO_DOMAINS: [
-    "binance.com", "kraken.com", "metamask.io", "wallet-connect.org", "coinbase.com", "bybit.com", "okx.com", 
-      "kucoin.com", "hashkey.com", "binance.us", "raydium.io"
+    'binance.com',
+    'kraken.com',
+    'metamask.io',
+    'wallet-connect.org',
+    'coinbase.com',
+    'bybit.com',
+    'okx.com',
+    'kucoin.com',
+    'hashkey.com',
+    'binance.us',
+    'raydium.io'
   ],
+  FREE_HOSTING_DOMAINS: [
+    'sites.net', 'angelfire.com', 'geocities.ws', '000a.biz', '000webhostapp.com', 'weebly.com', 'wixsite.com',
+    'freehosting.com', 'glitch.me', 'firebaseapp.com', 'herokuapp.com', 'freehostia.com', 'netlify.app', 'webs.com',
+    'yolasite.com', 'github.io', 'bravenet.com', 'zyro.com', 'altervista.org', 'tripod.com', 'jimdo.com', 'ucoz.com',
+    'blogspot.com', 'square.site', 'pages.dev', 'r2.dev', 'mybluehost.me', '000space.com', 'awardspace.com',
+    'byethost.com', 'biz.nf', 'hyperphp.com', 'infinityfree.net', '50webs.com', 'tripod.lycos.com', 'site123.me',
+    'webflow.io', 'strikingly.com', 'x10hosting.com', 'freehostingnoads.net', '000freewebhost.com', 'mystrikingly.com',
+    'sites.google.com', 'appspot.com', 'vercel.app', 'weeblysite.com', 's3.amazonaws.com', 'bubbleapps.io',
+    'typedream.app', 'codeanyapp.com', 'carrd.co', 'surge.sh', 'replit.dev', 'fly.dev', 'render.com', 'onrender.com'
+  ],
+  TRUSTED_IFRAME_DOMAINS: ['youtube.com', 'vimeo.com', 'google.com'],
+  legitimateDomains: [
+    'microsoft.com', 'apple.com', 'google.com', 'linkedin.com', 'alibaba.com',
+    'whatsapp.com', 'amazon.com', 'x.com', 'facebook.com', 'adobe.com'
+  ],
+
+  // **Risicogewichten**
+  domainRiskWeights: {
+    'microsoft.com': 10, 'apple.com': 4, 'google.com': 4, 'linkedin.com': 3, 'alibaba.com': 1,
+    'whatsapp.com': 1, 'amazon.com': 1, 'x.com': 1, 'facebook.com': 1, 'adobe.com': 1
+  },
+
+  // **Regex-gebaseerde patronen**
+  COMPOUND_TLDS: [
+    'co.uk', 'org.uk', 'gov.uk', 'ac.uk',
+    'com.au', 'org.au',
+    'co.nz'
+  ],
+  DOWNLOAD_KEYWORDS: new Set([
+    'download', 'install', 'setup', 'file', 'update', 'patch', 'plugin', 'installer', 'software', 'driver',
+    'execute', 'run', 'launch', 'tool', 'patcher', 'application', 'program', 'app', 'fix', 'crack',
+    'keygen', 'serial', 'activation', 'license', 'trial', 'demo', 'zip', 'archive', 'compressed',
+    'installer_package', 'upgrade', 'update_tool', 'free', 'fixer', 'repair', 'optimizer', 'restore',
+    'reset', 'unlock', 'backup', 'configuration', 'config', 'module', 'library', 'framework', 'macro',
+    'enable', 'torrent', 'seed', 'payload', 'exploit', 'dropper', 'loader', 'package', 'binary',
+    'release', 'beta', 'mod', 'hack'
+  ]),
   HOMOGLYPHS: {
     'a': ['а', 'ä', 'α', 'ạ', 'å'],
     'b': ['Ь', 'β', 'ḅ'],
@@ -316,6 +379,30 @@ const defaultConfig = {
     'y': ['у', 'ÿ', 'γ'],
     'z': ['ž', 'ƶ', 'ź', 'ż', 'ẑ', 'ẓ', 'ẕ', 'ƹ', 'ɀ']
   },
+  LOGIN_PATTERNS: /(login|account|auth|authenticate|signin|wp-login|sign-in|log-in|dashboard|portal|session|user|profile)/i,
+  MALWARE_EXTENSIONS: /\.(exe|zip|bak|tar|gz|msi|dmg|jar|rar|7z|iso|bin|scr|bat|cmd|sh|vbs|lnk|chm|ps2|apk|ps1|py|js|vbscript|dll|docm|xlsm|pptm|doc|xls|ppt|rtf|torrent|wsf|hta|jse|reg|swf|svg|lnk|chm)$/i,
+  PHISHING_KEYWORDS: new Set([
+    'login', 'password', 'verify', 'access', 'account', 'auth', 'blocked', 'bonus', 'captcha', 'claim',
+    'click', 'credentials', 'free', 'gift', 'notification', 'pay', 'pending', 'prize', 'recover',
+    'secure', 'signin', 'unlock', 'unusual', 'update', 'urgent', 'validate', 'win'
+  ]),
+  SHORTENED_URL_DOMAINS: new Set(['bit.ly', 'tinyurl.com', 'goo.gl', 't.co']),
+  SUSPICIOUS_EMAIL_PATTERNS: [
+    /admin@.*\.xyz/i,
+    /support@.*\.top/i,
+    /noreply@.*\.info/i,
+    /verify@.*\.site/i,
+    /account@.*\.online/i
+  ],
+  SUSPICIOUS_SCRIPT_PATTERNS: [
+    { regex: new RegExp('(?:\\beval\\s*\\(\\s*[\'"].*[\'"][^)]*\\)|new\\s+Function\\s*\\(\\s*[\'"].*[\'"][^)]*\\)|base64_decode\\s*\\()', 'i'), weight: 8, description: 'Dangerous eval or Function with strings' },
+    { regex: new RegExp('(?:coinimp|cryptonight|webminer|miner\\.js|crypto-jacking|keylogger|trojan|worm|ransomware|xss\\s*\\()', 'i'), weight: 10, description: 'Explicit malware terms' },
+    { regex: new RegExp('(?:document\\.write\\s*\\(\\s*[\'"][^\'"]*javascript:|innerHTML\\s*=\\s*[\'"][^\'"]*eval)', 'i'), weight: 7, description: 'Suspicious DOM manipulation' },
+    { regex: new RegExp('(?:fetch\\(.+\\.wasm[^)]*eval|import\\(.+\\.wasm[^)]*javascript:)', 'i'), weight: 6, description: 'WebAssembly misuse' },
+    { regex: new RegExp('(?:malicious|phish|exploit|redirect|inject|clickjacking|backdoor|rootkit)', 'i'), weight: 9, description: 'Malware keywords' },
+    { regex: new RegExp('(?:RTCPeerConnection\\s*\\(\\s*{[^}]*stun:|RTCDataChannel\\s*.\\s*send\\s*\\(\\s*[\'"][^\'"]*eval)', 'i'), weight: 6, description: 'WebRTC attacks' },
+  ],
+  SUSPICIOUS_TLDS: /\.(academy|accountant|accountants|agency|ap|app|art|asia|auto|bank|bar|beauty|bet|bid|bio|biz|blog|buzz|cam|capital|casa|casino|cfd|charity|cheap|church|city|claims|click|club|company|crispsalt|cyou|data|date|design|dev|digital|directory|download|email|energy|estate|events|exchange|expert|exposed|express|finance|fit|forsale|foundation|fun|games|gle|goog|gq|guide|guru|health|help|home|host|html|icu|ink|institute|investments|ip|jobs|life|limited|link|live|loan|lol|ltd|ly|mall|market|me|media|men|ml|mom|money|monster|mov|network|one|online|page|partners|party|php|pics|play|press|pro|promo|pw|quest|racing|rest|review|rocks|run|sbs|school|science|services|shop|shopping|site|software|solutions|space|store|stream|support|team|tech|tickets|to|today|tools|top|trade|trading|uno|ventures|vip|website|wiki|win|work|world|xin|xyz|zip|zone|co|cc|tv|name|team|live|stream|quest|sbs)$/i,
   SUSPICIOUS_URL_PATTERNS: [
     /\/(payment|invoice|billing|money|bank|secure|login|checkout|subscription|refund|delivery)\//i,
     /(Base64|hexadecimal|b64|encode|urlencode|obfuscate|crypt)/i,
@@ -327,42 +414,15 @@ const defaultConfig = {
     /(http[s]?:\/\/[^\/]+){2,}/i,
     /(qr-code|qrcode|qr\.|generate-qr|scan)/i
   ],
-  SUSPICIOUS_SCRIPT_PATTERNS: [
-    /(?:base64_decode|base64_encode|rot13|hex|md5|sha1|sha256|xor|hash|eval64|obfuscate)/i,
-    /(?:document\.write|eval|Function|setTimeout|setInterval|atob|btoa|escape|unescape|innerHTML|outerHTML|appendChild|insertBefore|replaceChild|removeChild|location\.href|window\.location|localStorage|sessionStorage|XMLHttpRequest|fetch|WebSocket|prototype\.call|Object\.defineProperty|new Function)/i,
-    /(?:download|execute|payload|install|load|unpack|update|patch|plugin|setup|plugin\.js|install\.js|update\.js|loader\.js|miner\.js|coinimp|cryptonight|wasm)/i,
-    /(?:iframe|srcdoc|data:text\/html|javascript:|onload|onerror|onclick|onsubmit|onmouseover|onfocus|onblur|onchange|onscroll|onkeydown|onkeyup|onkeypress)/i,
-    /(?:malicious|unsafe|tracker|adserver|spy|hack|exploit|virus|malware|phish|redirect|inject|clickjacking|xss|keylogger|trojan|worm|ransomware|payload|obfuscated|obfuscate|backdoor|rootkit|sqlinjection|sqli|bufferoverflow|overflow|csrf|cryptojacking|mining)/i,
-    /(RTCPeerConnection|RTCDataChannel|mozRTCPeerConnection|webkitRTCPeerConnection|iceCandidate|peerconnection|stun:|turn:)/i,
-    /(navigator\.geolocation|navigator\.permissions|navigator\.mediaDevices|Clipboard|ServiceWorker|PushManager|WebAssembly)/i,
-    /\.(php|asp|cgi|exe|bin|dll|dat|py|sh|vb|vbs|cmd|bat|pl|ps1|psm1|jar|class|js|jsp|aspx|cfm|rb|ts|mjs|apk|swift|go|lua|wasm)$/i,
-    /script|eval/i,
-    /(RTCPeerConnection|RTCDataChannel|mozRTCPeerConnection|webkitRTCPeerConnection|iceCandidate)/i
-  ],
-legitimateDomains: [
-    'microsoft.com',
-    'apple.com',
-    'google.com',
-    'linkedin.com',
-    'alibaba.com',
-    'whatsapp.com',
-    'amazon.com',
-    'x.com',
-    'facebook.com',
-    'adobe.com'
-  ],
-  domainRiskWeights: {
-    'microsoft.com': 10,
-    'apple.com': 4,
-    'google.com': 4,
-    'linkedin.com': 3,
-    'alibaba.com': 1,
-    'whatsapp.com': 1,
-    'amazon.com': 1,
-    'x.com': 1,
-    'facebook.com': 1,
-    'adobe.com': 1
-  },
+  TYPOSQUATTING_PATTERNS: [
+    /g00gle/i,
+    /paypa1/i,
+    /micr0soft/i,
+    /[0o][0o]/i,
+    /1n/i,
+    /vv/i,
+    /rn$/i
+  ]
 };
 
 // Voeg een vlag toe om te controleren of de configuratie al is geladen
@@ -1044,102 +1104,107 @@ function getAbsoluteUrl(relativeUrl) {
 }
 
 async function calculateRiskScore(url) {
-    let score = 0;
-    let reasons = [];
+  let score = 0;
+  let reasons = [];
 
-    const addRisk = (points, reasonKey, severity = "low") => {
-        if (!reasons.includes(reasonKey)) {
-            score += points;
-            reasons.push(reasonKey); // Gebruik alleen de key, geen formatted string
-        }
-    };
+  const addRisk = (points, reasonKey, severity = "low") => {
+      if (!reasons.includes(reasonKey)) {
+          score += points;
+          reasons.push(reasonKey); // Gebruik alleen de key, geen formatted string
+      }
+  };
 
-    try {
-        const urlObj = new URL(url);
-        const domain = normalizeDomain(url);
-        if (!domain) return { score: -1, reasons: ["invalidUrl"] };
+  try {
+      const urlObj = new URL(url);
+      const domain = normalizeDomain(url);
+      if (!domain) return { score: -1, reasons: ["invalidUrl"] };
 
-        const path = urlObj.pathname.toLowerCase();
-        const urlParts = sanitizeInput(url.toLowerCase()).split(/[\/?#]/);
-        const ext = urlObj.pathname.toLowerCase().match(/\.[0-9a-z]+$/i);
-        const maxLength = globalConfig.MAX_URL_LENGTH || 2000;
+      const path = urlObj.pathname.toLowerCase();
+      const urlParts = sanitizeInput(url.toLowerCase()).split(/[\/?#]/);
+      const ext = urlObj.pathname.toLowerCase().match(/\.[0-9a-z]+$/i);
+      const maxLength = globalConfig.MAX_URL_LENGTH || 2000;
 
-        // 1. HTTPS-controle
-        if (urlObj.protocol !== 'https:') {
-            addRisk(15, "noHttps", "high");
-            if (document.readyState !== 'complete') {
-                await new Promise(resolve => document.addEventListener('DOMContentLoaded', resolve, { once: true }));
-            }
-            if (isLoginPage(url)) {
-                addRisk(20, "insecureLoginPage", "high");
-            }
-        }
+      // 1. HTTPS-controle
+      if (urlObj.protocol !== 'https:') {
+          addRisk(15, "noHttps", "high");
+          if (document.readyState !== 'complete') {
+              await new Promise(resolve => document.addEventListener('DOMContentLoaded', resolve, { once: true }));
+          }
+          if (isLoginPage(url)) {
+              addRisk(20, "insecureLoginPage", "high");
+          }
+      }
 
-        // 2. Phishing keywords
-        if (urlParts.some(word => globalConfig.PHISHING_KEYWORDS.has(word))) {
-            addRisk(10, "suspiciousKeywords", "high");
-        }
+      // 2. Phishing-trefwoorden
+      if (urlParts.some(word => globalConfig.PHISHING_KEYWORDS.has(word))) {
+          addRisk(10, "suspiciousKeywords", "high");
+      }
 
-        // 3. Verdachte bestandsextensies
-        if (ext && globalConfig.MALWARE_EXTENSIONS.test(ext[0])) {
-            addRisk(12, "downloadPage", "high"); // "downloadPage" lijkt passend
-        }
+      // 3. Download-trefwoorden (NIEUW)
+      if (urlParts.some(word => globalConfig.DOWNLOAD_KEYWORDS.has(word))) {
+          addRisk(8, "downloadKeyword", "medium");
+      }
 
-        // 4. IP-adres als domeinnaam + ongebruikelijke poort
-        if (/^(?:https?:\/\/)?(\d{1,3}\.){3}\d{1,3}(?::\d+)?(?:\/|$)/.test(url)) {
-            addRisk(12, "ipAsDomain", "high");
-            if (urlObj.port && !["80", "443"].includes(urlObj.port)) {
-                addRisk(6, "unusualPort", "high");
-            }
-        }
+      // 4. Verdachte bestandsextensies
+      if (ext && globalConfig.MALWARE_EXTENSIONS.test(ext[0])) {
+          addRisk(12, "malwareExtension", "high");
+      }
 
-        // 5. Verkorte URL-detectie
-        if (globalConfig.SHORTENED_URL_DOMAINS.has(domain)) {
-            addRisk(6, "shortenedUrl", "medium");
-            try {
-                const response = await fetch(url, { method: 'HEAD', redirect: 'follow' });
-                const finalUrl = response.url;
-                if (finalUrl && finalUrl !== url) {
-                    addRisk(10, "shortenedUrl", "medium"); // Hergebruik key, geen dynamische tekst
-                }
-            } catch (error) {
-                addRisk(5, "shortenedUrl", "low"); // Fallback bij fout
-                handleError(error, `calculateRiskScore: Kon verkorte URL ${url} niet oplossen`);
-            }
-        }
+      // 5. IP-adres als domeinnaam + ongebruikelijke poort
+      if (/^(?:https?:\/\/)?(\d{1,3}\.){3}\d{1,3}(?::\d+)?(?:\/|$)/.test(url)) {
+          addRisk(12, "ipAsDomain", "high");
+          if (urlObj.port && !["80", "443"].includes(urlObj.port)) {
+              addRisk(6, "unusualPort", "high");
+          }
+      }
 
-        // 6. Verdachte TLD's
-        if (globalConfig.SUSPICIOUS_TLDS.test(domain)) {
-            addRisk(15, "suspiciousTLD", "high");
-        }
+      // 6. Verkorte URL-detectie
+      if (globalConfig.SHORTENED_URL_DOMAINS.has(domain)) {
+          addRisk(6, "shortenedUrl", "medium");
+          try {
+              const response = await fetch(url, { method: 'HEAD', redirect: 'follow' });
+              const finalUrl = response.url;
+              if (finalUrl && finalUrl !== url) {
+                  addRisk(10, "redirectedShortenedUrl", "medium"); // Aparte key voor duidelijkheid
+              }
+          } catch (error) {
+              addRisk(5, "shortenedUrlError", "low"); // Aparte key voor fouten
+              handleError(error, `calculateRiskScore: Kon verkorte URL ${url} niet oplossen`);
+          }
+      }
 
-        // 7. Ongewoon lange URL's
-        if (url.length > maxLength) {
-            addRisk(8, "urlFragmentTrick", "medium"); // Geen exacte match, maar dichtbij
-        }
+      // 7. Verdachte TLD's
+      if (globalConfig.SUSPICIOUS_TLDS.test(domain)) {
+          addRisk(15, "suspiciousTLD", "high");
+      }
 
-        // 8. Gecodeerde tekens
-        if (/%[0-9A-Fa-f]{2}/.test(url)) {
-            addRisk(6, "encodedCharacters", "medium");
-        }
+      // 8. Ongewoon lange URL's
+      if (url.length > maxLength) {
+          addRisk(8, "urlFragmentTrick", "medium");
+      }
 
-        // 9. Overmatig gebruik van subdomeinen
-        if (domain.split(".").length > 3) {
-            addRisk(5, "tooManySubdomains", "medium");
-        }
+      // 9. Gecodeerde tekens
+      if (/%[0-9A-Fa-f]{2}/.test(url)) {
+          addRisk(6, "encodedCharacters", "medium");
+      }
 
-        // 10. Base64 of hexadecimale encoding
-        if (/^(javascript|data):/.test(url) || /[a-f0-9]{32,}/.test(url)) {
-            addRisk(12, "base64OrHex", "high");
-        }
+      // 10. Overmatig gebruik van subdomeinen
+      if (domain.split(".").length > 3) {
+          addRisk(5, "tooManySubdomains", "medium");
+      }
 
-        logDebug(`Risk score for ${url}: ${score}. Reasons: ${reasons.join(', ')}`);
-        return { score, reasons };
+      // 11. Base64 of hexadecimale encoding
+      if (/^(javascript|data):/.test(url) || /[a-f0-9]{32,}/.test(url)) {
+          addRisk(12, "base64OrHex", "high");
+      }
 
-    } catch (error) {
-        handleError(error, `calculateRiskScore: Fout bij risicoberekening voor URL ${url}`);
-        return { score: -1, reasons: ["Error calculating risk score."] };
-    }
+      logDebug(`Risk score for ${url}: ${score}. Reasons: ${reasons.join(', ')}`);
+      return { score, reasons };
+
+  } catch (error) {
+      handleError(error, `calculateRiskScore: Fout bij risicoberekening voor URL ${url}`);
+      return { score: -1, reasons: ["errorCalculatingRisk"] };
+  }
 }
 
 
@@ -1308,21 +1373,52 @@ function isHttps(url) {
   }
 }
 
-function isIpAddress(url) {
+function isIpAddress(input) {
+  if (!input || typeof input !== 'string') {
+    logDebug(`Skipping IP check for invalid input: ${input || 'undefined'}`);
+    return false;
+  }
+
+  const trimmed = input.trim().toLowerCase();
+
+  // ❗ Voorkom crash bij incomplete of ongeldige schema's
+  if (
+    trimmed === '' ||
+    trimmed === 'https://' ||
+    trimmed === 'http://' ||
+    trimmed.startsWith('mailto:') ||
+    trimmed.startsWith('javascript:')
+  ) {
+    logDebug(`Skipping IP check for unsupported input: ${input}`);
+    return false;
+  }
+
+  let hostname = input;
   try {
-    // Add a default protocol if none exists
-    if (!/^[a-z]+:\/\//i.test(url)) {
-      url = `https://${url}`;
+    if (input.includes('://')) {
+      hostname = new URL(input).hostname;
     }
-    const hostname = new URL(url).hostname;
-    const ipv4Pattern = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/;
-    const ipv6Pattern = /^(?:[A-F0-9]{1,4}:){7}[A-F0-9]{1,4}$/i;
-    return ipv4Pattern.test(hostname) || ipv6Pattern.test(hostname);
+
+    const ipv4Pattern = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+    if (ipv4Pattern.test(hostname)) {
+      logDebug(`IPv4 address detected: ${hostname}`);
+      return true;
+    }
+
+    const ipv6Pattern = /^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|... )$/; // jouw bestaande IPv6-regex
+    if (ipv6Pattern.test(hostname)) {
+      logDebug(`IPv6 address detected: ${hostname}`);
+      return true;
+    }
+
+    logDebug(`No IP address detected for hostname: ${hostname}`);
+    return false;
   } catch (error) {
-    logError(`Fout bij controleren van IP-adres voor URL ${url}: ${error.message}`);
-    return false; // Return false if the URL is invalid
+    logDebug(`Fout bij controleren van IP-adres voor input ${input}: ${error.message}`);
+    return false;
   }
 }
+
 
 const mxCache = {};
 const MX_TTL_MS = 3600 * 1000; // 1 uur
@@ -1655,155 +1751,358 @@ function hasSuspiciousIframes() {
   const trustedDomains = globalConfig?.TRUSTED_IFRAME_DOMAINS || ['youtube.com', 'vimeo.com', 'google.com'];
 
   for (const iframe of iframes) {
-    const src = iframe.src;
-    if (!src) continue;
+      const src = iframe.src;
+      if (!src) continue;
 
-    try {
-      const urlObj = new URL(src);
-      const hostname = urlObj.hostname.toLowerCase();
-      const protocol = urlObj.protocol;
+      try {
+          const urlObj = new URL(src);
+          const hostname = urlObj.hostname.toLowerCase();
+          const protocol = urlObj.protocol;
 
-      // Skip vertrouwde domeinen
-      if (trustedDomains.some(domain => hostname === domain || hostname.endsWith(`.${domain}`))) {
-        logDebug(`Safe iframe detected: ${src}`);
-        continue;
+          // Skip vertrouwde domeinen
+          if (trustedDomains.some(domain => hostname === domain || hostname.endsWith(`.${domain}`))) {
+              logDebug(`Safe iframe detected: ${src}`);
+              continue;
+          }
+
+          // 1. Controle op verdachte trefwoorden (NIEUW)
+          if (globalConfig.SUSPICIOUS_IFRAME_KEYWORDS.test(src)) {
+              suspiciousReasons.push({ reason: 'suspiciousIframeKeyword', risk: 5, src });
+              logDebug(`Suspicious iframe (suspicious keyword): ${src}`);
+          }
+
+          // 2. Mixed content detectie
+          if (protocol === 'http:' && window.location.protocol === 'https:') {
+              suspiciousReasons.push({ reason: 'mixedContent', risk: 10, src });
+              logDebug(`Suspicious iframe (mixed content): ${src}`);
+          }
+
+          // 3. Verdachte TLD's
+          if (globalConfig.SUSPICIOUS_TLDS.test(hostname)) {
+              suspiciousReasons.push({ reason: 'suspiciousTLD', risk: 6, src });
+              logDebug(`Suspicious iframe (suspicious TLD): ${src}`);
+          }
+
+          // 4. Verborgen iframes
+          const style = window.getComputedStyle(iframe);
+          const isHidden = style.display === 'none' || style.visibility === 'hidden' ||
+                           (parseInt(style.width) === 0 && parseInt(style.height) === 0);
+          const hasSuspiciousAttributes = iframe.hasAttribute('onload') || 
+                                         iframe.hasAttribute('onerror') || 
+                                         iframe.src.startsWith('javascript:');
+          if (isHidden && hasSuspiciousAttributes) {
+              suspiciousReasons.push({ reason: 'iframeHidden', risk: 3, src });
+              logDebug(`Suspicious iframe (hidden with suspicious attributes): ${src}`);
+          }
+
+      } catch (error) {
+          suspiciousReasons.push({ reason: 'invalidIframeSrc', risk: 2, src });
+          logDebug(`Suspicious iframe (invalid src): ${src}`);
+          handleError(error, `hasSuspiciousIframes: Error analyzing iframe ${src}`);
       }
-
-      // Mixed content detectie (ongewijzigd)
-      if (protocol === 'http:' && window.location.protocol === 'https:') {
-        suspiciousReasons.push({ reason: 'mixedContent', risk: 10, src });
-        logDebug(`Suspicious iframe (mixed content): ${src}`);
-      }
-
-      // Verdachte TLDs (ongewijzigd)
-      if (globalConfig.SUSPICIOUS_TLDS.test(hostname)) {
-        suspiciousReasons.push({ reason: 'suspiciousTLD', risk: 6, src });
-        logDebug(`Suspicious iframe (suspicious TLD): ${src}`);
-      }
-
-      // Verborgen iframes: specifieker maken
-      const style = window.getComputedStyle(iframe);
-      const isHidden = style.display === 'none' || style.visibility === 'hidden' || 
-                       (parseInt(style.width) === 0 && parseInt(style.height) === 0);
-      const hasSuspiciousAttributes = iframe.hasAttribute('onload') || iframe.hasAttribute('onerror') || 
-                                      iframe.src.startsWith('javascript:');
-      if (isHidden && hasSuspiciousAttributes) { // Alleen verdacht met kwaadaardige kenmerken
-        suspiciousReasons.push({ reason: 'iframeHidden', risk: 3, src });
-        logDebug(`Suspicious iframe (hidden with suspicious attributes): ${src}`);
-      }
-
-      // Base64/Hex check later apart behandeld
-    } catch (error) {
-      handleError(error, `hasSuspiciousIframes: Error analyzing iframe ${src}`);
-    }
   }
 
   if (suspiciousReasons.length > 0) {
-    logDebug(`Suspicious iframes detected: ${JSON.stringify(suspiciousReasons)}`);
-    return suspiciousReasons;
+      logDebug(`Suspicious iframes detected: ${JSON.stringify(suspiciousReasons)}`);
+  } else {
+      logDebug('No suspicious iframes found');
   }
 
-  logDebug('No suspicious iframes found');
-  return [];
+  return suspiciousReasons;
 }
 
 
-function checkForSuspiciousExternalScripts() {
-  const scripts = Array.from(document.getElementsByTagName('script')).filter(script => script.src);
+async function checkForSuspiciousExternalScripts() {
+  const MAX_SCRIPTS_TO_CHECK = 20; // Beperk tot 20 scripts om prestaties te verbeteren
+  const scripts = Array.from(document.getElementsByTagName('script'))
+    .filter(script => script.src)
+    .slice(0, MAX_SCRIPTS_TO_CHECK);
   const suspiciousReasons = [];
-  const trustedScripts = globalConfig?.TRUSTED_SCRIPTS || new Set(['googleapis.com', 'cloudflare.com', 'cdnjs.cloudflare.com']);
-  const freeHostingDomains = Array.isArray(globalConfig?.FREE_HOSTING_DOMAINS) 
-    ? new Set(globalConfig.FREE_HOSTING_DOMAINS) 
-    : new Set();
+
+  // Laad vertrouwde domeinen uit trustedScripts.json en combineer met config
+  let trustedDomains = [];
+  try {
+    trustedDomains = await fetchCachedJson('trustedScripts.json');
+    if (!Array.isArray(trustedDomains)) {
+      logDebug('trustedScripts.json is geen array, gebruik lege lijst');
+      trustedDomains = [];
+    } else {
+      trustedDomains = [...new Set(trustedDomains.filter(domain => 
+        typeof domain === 'string' && /^[a-zA-Z0-9.-]+$/.test(domain) && domain.includes('.')
+      ))];
+    }
+  } catch (error) {
+    handleError(error, 'checkForSuspiciousExternalScripts: Fout bij laden trustedScripts.json');
+    trustedDomains = [];
+  }
+
+  // Combineer JSON-domeinen met uitgebreide TRUSTED_SCRIPTS
+  const trustedScripts = new Set([
+    ...(globalConfig?.TRUSTED_SCRIPTS || [
+      'googleapis.com',
+      'cloudflare.com',
+      'cdnjs.cloudflare.com',
+      'jsdelivr.net',
+      'unpkg.com',
+      'code.jquery.com',
+      'bootstrapcdn.com',
+      'ajax.googleapis.com',
+      'static.cloudflareinsights.com',
+      'polyfill.io',
+      'googletagmanager.com',
+      'analytics.google.com',
+    ]),
+    ...trustedDomains,
+  ]);
+
+  const freeHostingDomains = new Set(
+    (globalConfig?.FREE_HOSTING_DOMAINS || []).filter(domain => !trustedScripts.has(domain))
+  );
+  const modernTlds = ['app', 'dev', 'tech', 'io', 'cloud'];
 
   for (const script of scripts) {
     const src = script.src;
     if (!src) continue;
 
+    let riskScore = 0;
+    const scriptReasons = [];
+
     try {
       const urlObj = new URL(src);
       const hostname = urlObj.hostname.toLowerCase();
       const protocol = urlObj.protocol;
 
-      // Skip vertrouwde scripts en populaire CDN’s
-      if (trustedScripts.has(hostname) || hostname.endsWith('.edu') || hostname.endsWith('.org')) {
-        logDebug(`Safe script detected: ${src}`);
+      // Sla vertrouwde scripts, educatieve, non-profit en overheidsdomeinen over
+      if (
+        trustedScripts.has(hostname) ||
+        Array.from(trustedScripts).some((domain) => hostname === domain || hostname.endsWith(`.${domain}`)) ||
+        hostname.endsWith('.edu') ||
+        hostname.endsWith('.org') ||
+        hostname.endsWith('.gov')
+      ) {
+        logDebug(`Veilig script gedetecteerd: ${src} (vertrouwd domein)`);
         continue;
+      }
+
+      // Controleer scriptattributen
+      const isDeferred = script.hasAttribute('defer') || script.hasAttribute('async');
+      const isTypeModule = script.getAttribute('type') === 'module';
+      if (isDeferred || isTypeModule) {
+        logDebug(`Veilig script gedetecteerd: ${src} (defer/async/module)`);
+        continue;
+      }
+
+      // Controleer scriptgrootte
+      let isSmallScript = false;
+      try {
+        const headResponse = await fetch(src, { method: 'HEAD' });
+        const contentLength = headResponse.headers.get('content-length');
+        if (contentLength && parseInt(contentLength, 10) < 2048) {
+          logDebug(`Klein script gedetecteerd (<2KB): ${src}`);
+          isSmallScript = true;
+        }
+      } catch (headError) {
+        logDebug(`Kon scriptgrootte niet ophalen voor ${src}: ${headError.message}`);
+      }
+
+      if (isSmallScript) {
+        logDebug(`Analyse overgeslagen voor klein script: ${src}`);
+        continue;
+      }
+
+      // Prioriteer niet-CDN paden
+      if (/cdn|static|assets|lib|vendor/i.test(src)) {
+        logDebug(`Script lijkt CDN-inhoud: ${src}, lagere prioriteit`);
+        riskScore -= 2; // Verlaag risicoscore voor waarschijnlijke CDN’s
       }
 
       // Mixed content detectie
       if (protocol === 'http:' && window.location.protocol === 'https:') {
-        suspiciousReasons.push({ reason: 'mixedContent', risk: 10, src });
-        logDebug(`Suspicious script (mixed content): ${src}`);
+        scriptReasons.push({ reason: 'mixedContent', risk: 6, src });
+        riskScore += 6;
+        logDebug(`Verdacht script (mixed content): ${src}`);
       }
 
-      // Verdachte TLDs alleen als niet vertrouwd
-      if (globalConfig?.SUSPICIOUS_TLDS?.test(hostname) && !trustedScripts.has(hostname)) {
-        suspiciousReasons.push({ reason: 'suspiciousTLD', risk: 6, src });
-        logDebug(`Suspicious script (suspicious TLD): ${src}`);
+      // Verdachte TLD’s
+      const tld = hostname.split('.').pop();
+      if (
+        globalConfig?.SUSPICIOUS_TLDS?.test(hostname) &&
+        !trustedScripts.has(hostname) &&
+        !modernTlds.includes(tld)
+      ) {
+        scriptReasons.push({ reason: 'suspiciousTLD', risk: 2, src });
+        riskScore += 2;
+        logDebug(`Verdacht script (verdachte TLD): ${src}`);
       }
 
       // IP-adressen
       if (/^\d+\.\d+\.\d+\.\d+$/.test(hostname)) {
-        suspiciousReasons.push({ reason: 'ipAsDomain', risk: 5, src });
-        logDebug(`Suspicious script (IP as domain): ${src}`);
+        scriptReasons.push({ reason: 'ipAsDomain', risk: 3, src });
+        riskScore += 3;
+        logDebug(`Verdacht script (IP als domein): ${src}`);
       }
 
-      // Gratis hosting: specifieker maken
+      // Gratis hosting
       if (freeHostingDomains.has(hostname) && !/cdn|static|assets/i.test(src)) {
-        suspiciousReasons.push({ reason: 'freeHosting', risk: 5, src });
-        logDebug(`Suspicious script (free hosting): ${src}`);
+        scriptReasons.push({ reason: 'freeHosting', risk: 2, src });
+        riskScore += 2;
+        logDebug(`Verdacht script (gratis hosting): ${src}`);
       }
 
-      // Base64/Hex: apart behandeld
+      // Controleer scriptinhoud
+      const contentResult = await analyzeScriptContent(urlObj);
+      if (contentResult.isSuspicious) {
+        scriptReasons.push({
+          reason: 'suspiciousScriptContent',
+          risk: contentResult.totalWeight / 2, // Schaal gewicht naar risicoscore
+          src,
+          details: `Gematchte patronen: ${contentResult.matchedPatterns.join(', ')}`,
+        });
+        riskScore += contentResult.totalWeight / 2;
+        logDebug(`Verdacht script (inhoudsanalyse): ${src}, Gewicht: ${contentResult.totalWeight}, Patronen: ${contentResult.matchedPatterns.join(', ')}`);
+      }
+
+      // Alleen verdacht als risicoscore drempel overschrijdt
+      if (riskScore >= 8) {
+        suspiciousReasons.push(...scriptReasons);
+        logDebug(`Verdacht script gedetecteerd: ${src}, Score: ${riskScore}`);
+        // Rapporteer verdacht script
+        chrome.runtime.sendMessage({
+          type: 'reportSuspiciousScript',
+          url: src,
+          reasons: scriptReasons,
+          riskScore,
+        });
+      } else {
+        logDebug(`Script ${src} onder verdenkingsdrempel: ${riskScore}`);
+      }
+
     } catch (error) {
-      handleError(error, `checkForSuspiciousExternalScripts: Error analyzing script ${src}`);
+      logDebug(`Ongeldige scriptbron: ${src}`);
+      handleError(error, `checkForSuspiciousExternalScripts: Fout bij analyseren script ${src}`);
     }
   }
 
   if (suspiciousReasons.length > 0) {
-    logDebug(`Suspicious external scripts detected: ${JSON.stringify(suspiciousReasons)}`);
-    return suspiciousReasons;
+    logDebug(`Verdachte externe scripts gedetecteerd: ${JSON.stringify(suspiciousReasons)}`);
+  } else {
+    logDebug('Geen verdachte externe scripts gevonden');
   }
 
-  logDebug('No suspicious external scripts found');
-  return [];
+  return suspiciousReasons;
 }
+
+
+// Definieer de cache buiten de functie voor persistentie
+const scriptFetchCache = new Map();
+const SCRIPT_CACHE_TTL_MS = 3600000; // 1 uur TTL
 
 async function analyzeScriptContent(scriptUrl) {
   try {
-    const response = await fetch(scriptUrl.href);
+    const urlString = scriptUrl.href;
+    const cached = scriptFetchCache.get(urlString);
+    const now = Date.now();
+    if (cached && now - cached.timestamp < SCRIPT_CACHE_TTL_MS) {
+      logDebug(`Cache hit voor script fetch: ${urlString}`);
+      return cached.result;
+    }
+
+    const response = await fetch(urlString);
     if (!response.ok) {
-      logDebug(`Unable to fetch script: ${scriptUrl.href} (Status: ${response.status})`);
-      return false;
+      logDebug(`Kan script niet ophalen: ${urlString} (Status: ${response.status})`);
+      const result = { isSuspicious: false, matchedPatterns: [], totalWeight: 0 };
+      scriptFetchCache.set(urlString, { result, timestamp: now });
+      return result;
     }
+
     const scriptText = await response.text();
-    const maliciousPatterns = [
-      /eval\(.*\)/i,
-      /document\.write\(.*\)/i,
-      /atob\(.*\)/i,
-      /location\.href\s*=\s*['"`]javascript:/i,
-      /createElement\(["'`]script["'`]\)/i
+
+    // Overslaan kleine scripts
+    if (scriptText.length < 2048) {
+      logDebug(`Script te klein om verdacht te zijn: ${urlString} (${scriptText.length} bytes)`);
+      const result = { isSuspicious: false, matchedPatterns: [], totalWeight: 0 };
+      scriptFetchCache.set(urlString, { result, timestamp: now });
+      return result;
+    }
+
+    // Controleer op bekende bibliotheken
+    const knownLibraries = [
+      /jQuery\s+v?[\d.]+/,
+      /React(?:DOM)?\s+v?[\d.]+/,
+      /angular[\d.]+/,
+      /vue[\d.]+/,
+      /bootstrap[\d.]+/,
+      /lodash[\d.]+/,
+      /moment\.js/,
+      /axios[\d.]+/,
+      /d3\s+v?[\d.]+/,
+      /chart\.js/,
+      /backbone[\d.]+/,
+      /underscore[\d.]+/,
+      /polyfill[\d.]+/,
+      /sw[\d.]+/,
+      /gtag/,
+      /sentry\.io/,
     ];
-    const hasMaliciousPatterns = maliciousPatterns.some(pattern => pattern.test(scriptText));
-    if (hasMaliciousPatterns) {
-      return true;
+    if (knownLibraries.some((pattern) => pattern.test(scriptText))) {
+      logDebug(`Bekende bibliotheek gedetecteerd: ${urlString}`);
+      const result = { isSuspicious: false, matchedPatterns: [], totalWeight: 0 };
+      scriptFetchCache.set(urlString, { result, timestamp: now });
+      return result;
     }
-    const isMinified = scriptText.replace(/\s/g, "").length > scriptText.length * 0.8;
+
+    // Controleer op verdachte patronen
+    let totalWeight = 0;
+    const matchedPatterns = [];
+
+    const suspiciousPatterns = globalConfig?.SUSPICIOUS_SCRIPT_PATTERNS;
+    if (Array.isArray(suspiciousPatterns)) {
+      suspiciousPatterns.forEach(({ regex, weight, description }) => {
+        if (regex && typeof regex.test === 'function' && regex.test(scriptText)) {
+          totalWeight += weight;
+          matchedPatterns.push(description);
+        }
+      });
+    } else {
+      logDebug("Waarschuwing: SUSPICIOUS_SCRIPT_PATTERNS is niet beschikbaar of geen array.");
+    }
+
+    // Drempels voor verdacht script
+    const isMinified = scriptText.replace(/\s/g, '').length > scriptText.length * 0.8;
     const hasNoSourceMap = !/\/\/\s*sourceMappingURL=/i.test(scriptText);
-    if (isMinified && hasNoSourceMap) {
-      return true;
+    const hasExplicitMalware = totalWeight > 0;
+
+    const isSuspicious = isMinified && hasNoSourceMap && hasExplicitMalware && totalWeight >= 12;
+    const result = { isSuspicious, matchedPatterns, totalWeight };
+
+    if (isSuspicious) {
+      logDebug(`Verdacht script gedetecteerd: ${urlString}, Gewicht: ${totalWeight}, Patronen: ${matchedPatterns.join(', ')}`);
+    } else {
+      logDebug(`Script is veilig: ${urlString}, Gewicht: ${totalWeight}, Patronen: ${matchedPatterns.join(', ')}`);
     }
-    logDebug(`Script is safe: ${scriptUrl.href}`);
-    return false;
+
+    scriptFetchCache.set(urlString, { result, timestamp: now });
+    return result;
+
   } catch (error) {
     handleError(error, `analyzeScriptContent: Fout bij analyseren van script ${scriptUrl.href}`);
-    if (error.message.includes("Failed to fetch")) {
-      return false;
-    }
-    return true;
+    const result = { isSuspicious: false, matchedPatterns: [], totalWeight: 0 };
+    scriptFetchCache.set(scriptUrl.href, { result, timestamp: Date.now() });
+    return result;
   }
 }
+
+
+// Optioneel: Periodieke cache-schoonmaak
+setInterval(() => {
+  const now = Date.now();
+  for (const [url, { timestamp }] of scriptFetchCache) {
+    if (now - timestamp >= SCRIPT_CACHE_TTL_MS) {
+      scriptFetchCache.delete(url);
+      logDebug(`Removed expired script cache entry for ${url}`);
+    }
+  }
+}, SCRIPT_CACHE_TTL_MS);
 
 async function checkScriptMinification(scriptUrl) {
   try {
@@ -1923,35 +2222,42 @@ function extractMainDomain(domain) {
  */
 function isHomoglyphAttack(domain, homoglyphMap, knownBrands) {
   if (!domain || typeof domain !== 'string' || domain.trim() === '') {
-    logError('Ongeldige domeininvoer:', domain);
-    return false;
+      logError('Ongeldige domeininvoer:', domain);
+      return false;
   }
 
   try {
-    // Normaliseer naar NFC en pas homoglyph-mapping toe
-    const normalizedDomain = normalizeWithHomoglyphs(
-      domain.toLowerCase().normalize('NFC'),
-      homoglyphMap
-    );
-
-    // Extraheer het hoofddomein
-    const mainDomain = extractMainDomain(normalizedDomain);
-
-    // Vergelijk met de hoofddomeinen van bekende merken
-    for (const brand of knownBrands) {
-      const brandMainDomain = extractMainDomain(
-        brand.toLowerCase().normalize('NFC')
+      // Normaliseer naar NFC en pas homoglyph-mapping toe
+      const normalizedDomain = normalizeWithHomoglyphs(
+          domain.toLowerCase().normalize('NFC'),
+          homoglyphMap
       );
-      const distance = levenshteinDistance(mainDomain, brandMainDomain);
-      if (distance > 0 && distance <= 2) {
-        logError(`Homoglyph-aanval gedetecteerd: ${mainDomain} lijkt op ${brandMainDomain}`);
-        return true;
+
+      // 1. Controle op typosquatting-patronen (NIEUW)
+      if (globalConfig.TYPOSQUATTING_PATTERNS.some(pattern => pattern.test(normalizedDomain))) {
+          logDebug(`Typosquatting gedetecteerd: ${normalizedDomain}`);
+          return true;
       }
-    }
-    return false;
+
+      // 2. Controle op homoglyph-aanval
+      const mainDomain = extractMainDomain(normalizedDomain);
+
+      // Vergelijk met de hoofddomeinen van bekende merken
+      for (const brand of knownBrands) {
+          const brandMainDomain = extractMainDomain(
+              brand.toLowerCase().normalize('NFC')
+          );
+          const distance = levenshteinDistance(mainDomain, brandMainDomain);
+          if (distance > 0 && distance <= 2) {
+              logError(`Homoglyph-aanval gedetecteerd: ${mainDomain} lijkt op ${brandMainDomain}`);
+              return true;
+          }
+      }
+
+      return false;
   } catch (error) {
-    logError(`Fout bij controleren van homoglyph-aanval op domein ${domain}: ${error.message}`);
-    return false;
+      logError(`Fout bij controleren van homoglyph-aanval op domein ${domain}: ${error.message}`);
+      return false;
   }
 }
 
@@ -2012,8 +2318,16 @@ async function performSuspiciousChecks(url) {
   const totalRiskRef = { value: 0 };
   let urlObj;
 
+  // Vroege validatie: controleer of url geldig is
+  if (!url || typeof url !== 'string' || url.trim() === '') {
+    logDebug(`Skipping suspicious checks for invalid URL: ${url || 'undefined'}`);
+    const result = { isSafe: true, reasons: ['invalidUrl'], risk: 0 };
+    storeInCache(url, result);
+    return result;
+  }
+
   try {
-    urlObj = new URL(url);
+    urlObj = new URL(url, window.location.href);
   } catch (error) {
     logError(`Invalid URL: ${url}`, error);
     const result = { isSafe: true, reasons: ['invalidUrl'], risk: 0 };
@@ -2021,8 +2335,40 @@ async function performSuspiciousChecks(url) {
     return result;
   }
 
+  // Controleer protocol en sla non-HTTP protocollen vroeg over
+  const nonHttpProtocols = ['mailto:', 'tel:', 'ftp:', 'javascript:'];
+  if (nonHttpProtocols.includes(urlObj.protocol)) {
+    logDebug(`Non-HTTP protocol detected: ${urlObj.protocol}`);
+    if (['mailto:', 'tel:', 'ftp:'].includes(urlObj.protocol)) {
+      reasons.add('allowedProtocol');
+      totalRiskRef.value = 0.1;
+    } else if (urlObj.protocol === 'javascript:') {
+      reasons.add('javascriptScheme');
+      totalRiskRef.value += 5;
+    }
+    const result = createAnalysisResult(totalRiskRef.value < (globalConfig.RISK_THRESHOLD || 5), Array.from(reasons), totalRiskRef.value);
+    storeInCache(url, result);
+    return result;
+  }
+
+  // Controleer of hostname geldig is
+  if (!urlObj.hostname || urlObj.href === urlObj.protocol + '//') {
+    logDebug(`Skipping suspicious checks for URL with invalid hostname: ${url}`);
+    const result = { isSafe: true, reasons: ['invalidHostname'], risk: 0 };
+    storeInCache(url, result);
+    return result;
+  }
+
   const domain = normalizeDomain(url);
-  const currentPageDomain = normalizeDomain(window.location.href); // Exact domein van de adresbalk
+  const currentPageDomain = normalizeDomain(window.location.href);
+
+  // Controleer of domein geldig is
+  if (!domain) {
+    logDebug(`Skipping suspicious checks for URL with invalid domain: ${url}`);
+    const result = { isSafe: true, reasons: ['invalidDomain'], risk: 0 };
+    storeInCache(url, result);
+    return result;
+  }
 
   const trustedDomains = window.trustedDomains || [];
   const isTrusted = trustedDomains.some(pattern => {
@@ -2032,92 +2378,109 @@ async function performSuspiciousChecks(url) {
 
   if (isTrusted) {
     logDebug(`Trusted domain detected: ${domain}. Skipping further checks.`);
-    const result = createAnalysisResult(true, ["safeDomain"], 0.1);
+    const result = createAnalysisResult(true, ['safeDomain'], 0.1);
     storeInCache(url, result);
     return result;
   }
 
   const isHttpProtocol = ['http:', 'https:'].includes(urlObj.protocol);
-  const isSafeDomain = domain && safeDomains.some(pattern => new RegExp(pattern).test(domain));
+  const isSafeDomain = safeDomains.some(pattern => new RegExp(pattern).test(domain));
 
   const homoglyphMap = globalConfig.HOMOGLYPHS || DEFAULT_HOMOGLYPHS;
   const knownBrands = globalConfig.legitimateDomains || ['microsoft.com', 'apple.com', 'google.com'];
 
   if (isSafeDomain) {
-    reasons.add("safeDomain");
+    reasons.add('safeDomain');
     totalRiskRef.value = 0.1;
     logDebug(`Safe domain detected: ${domain}`);
   }
 
-  if (!isHttpProtocol) {
-    logDebug(`Skipping HTTP-specific checks for non-HTTP protocol: ${urlObj.protocol}`);
-    if (['mailto:', 'tel:', 'ftp:'].includes(urlObj.protocol)) {
-      reasons.add("allowedProtocol");
-      totalRiskRef.value += 0.1;
-    } else if (urlObj.protocol === 'javascript:') {
-      reasons.add("javascriptScheme");
-      totalRiskRef.value += 5;
-    } else {
-      reasons.add("unusualProtocol");
-      totalRiskRef.value += 2;
-    }
-  } else if (urlObj.protocol !== 'https:' && domain) {
-    reasons.add("noHttps");
+  // Controle op toegestane paden
+  if (globalConfig.ALLOWED_PATHS.some(pattern => pattern.test(urlObj.pathname))) {
+    reasons.add('allowedPath');
+    totalRiskRef.value = Math.max(0, totalRiskRef.value - 2);
+    logDebug(`Allowed path detected: ${urlObj.pathname}`);
+  }
+
+  // Controle op toegestane queryparameters
+  const queryParams = Array.from(urlObj.searchParams.keys());
+  if (queryParams.some(key => globalConfig.ALLOWED_QUERY_PARAMS.some(pattern => pattern.test(key)))) {
+    reasons.add('allowedQueryParam');
+    totalRiskRef.value = Math.max(0, totalRiskRef.value - 1);
+    logDebug(`Allowed query parameter detected: ${queryParams.join(', ')}`);
+  }
+
+  // HTTPS-controle
+  if (isHttpProtocol && urlObj.protocol !== 'https:') {
+    reasons.add('noHttps');
     totalRiskRef.value += 15;
-    if (isLoginPage(url)) {
-      reasons.add("insecureLoginPage");
+    if (detectLoginPage(url)) {
+      reasons.add('insecureLoginPage');
       totalRiskRef.value += 20;
     }
   }
 
+  // Snelle exit voor veilige domeinen
   if (isSafeDomain && totalRiskRef.value < 10) {
     logDebug(`Safe domain fast-track applied for ${url}`);
-    const result = createAnalysisResult(true, ["safeDomain"], 0.1);
+    const result = createAnalysisResult(true, ['safeDomain'], 0.1);
     storeInCache(url, result);
     return result;
   }
 
+  // Statische condities
   await checkStaticConditions(url, reasons, totalRiskRef);
 
-  if (domain && isIpAddress(urlObj.hostname)) {
-    reasons.add("ipAsDomain");
+  // IP-adres controle (alleen voor HTTP/HTTPS)
+  if (isHttpProtocol && isIpAddress(urlObj.hostname)) {
+    reasons.add('ipAsDomain');
     totalRiskRef.value += 5;
-  }
-  const subdomains = domain ? domain.split('.').length - 2 : 0;
-  if (subdomains > globalConfig.MAX_SUBDOMAINS && !isSafeDomain && domain) {
-    reasons.add("tooManySubdomains");
-    totalRiskRef.value += 5;
-  }
-  if (domain && isHomoglyphAttack(domain, homoglyphMap, knownBrands) && !isSafeDomain) {
-    reasons.add("homoglyphAttack");
-    totalRiskRef.value += 10;
+    logDebug(`IP address detected for hostname: ${urlObj.hostname}`);
   }
 
+  // Subdomein controle
+  const subdomains = domain.split('.').length - 2;
+  if (subdomains > globalConfig.MAX_SUBDOMAINS && !isSafeDomain) {
+    reasons.add('tooManySubdomains');
+    totalRiskRef.value += 5;
+  }
+
+  // Homoglyph/typosquatting controle
+  if (isHttpProtocol && isHomoglyphAttack(domain, homoglyphMap, knownBrands) && !isSafeDomain) {
+    const isTyposquatting = globalConfig.TYPOSQUATTING_PATTERNS.some(pattern => pattern.test(domain));
+    reasons.add(isTyposquatting ? 'typosquattingAttack' : 'homoglyphAttack');
+    totalRiskRef.value += isTyposquatting ? 8 : 10;
+    logDebug(`${isTyposquatting ? 'Typosquatting' : 'Homoglyph'}-aanval gedetecteerd: ${domain}`);
+  }
+
+  // Dynamische controles
   const dynamicChecks = [
-    { func: hasBase64OrHex, messageKey: "base64OrHex", risk: 2.0 },
-    { func: isShortenedUrl, messageKey: "shortenedUrl", risk: 4.0 },
-    { func: hasEncodedCharacters, messageKey: "encodedCharacters", risk: 3.0 },
-    { func: hasUnusualPort, messageKey: "unusualPort", risk: 5 },
-    { func: hasSuspiciousKeywords, messageKey: "suspiciousKeywords", risk: 3.0 },
-    { func: hasSuspiciousPattern, messageKey: "suspiciousPattern", risk: 4.0 },
-    { func: isDownloadPage, messageKey: "downloadPage", risk: 5.0 },
-    { func: usesUrlFragmentTrick, messageKey: "urlFragmentTrick", risk: 3.0 },
-    { func: isCryptoPhishingUrl, messageKey: "cryptoPhishing", risk: 10.0 },
-    { func: isFreeHostingDomain, messageKey: "freeHosting", risk: 5 },
-    ...(isHttpProtocol ? [
-      { func: checkForSuspiciousExternalScripts, messageKey: "externalScripts", risk: 4.0 },
-      { func: hasSuspiciousIframes, messageKey: "suspiciousIframes", risk: 3.5 },
-    ] : []),
+    { func: hasBase64OrHex, messageKey: 'base64OrHex', risk: 2.0 },
+    { func: isShortenedUrl, messageKey: 'shortenedUrl', risk: 4.0 },
+    { func: hasEncodedCharacters, messageKey: 'encodedCharacters', risk: 3.0 },
+    { func: hasUnusualPort, messageKey: 'unusualPort', risk: 5 },
+    { func: hasSuspiciousKeywords, messageKey: 'suspiciousKeywords', risk: 3.0 },
+    { func: hasSuspiciousPattern, messageKey: 'suspiciousPattern', risk: 4.0 },
+    { func: isDownloadPage, messageKey: 'downloadPage', risk: 5.0 },
+    { func: usesUrlFragmentTrick, messageKey: 'urlFragmentTrick', risk: 3.0 },
+    { func: isCryptoPhishingUrl, messageKey: 'cryptoPhishing', risk: 10.0 },
+    { func: isFreeHostingDomain, messageKey: 'freeHosting', risk: 5 },
+    ...(isHttpProtocol
+      ? [
+          { func: checkForSuspiciousExternalScripts, messageKey: 'externalScripts', risk: 4.0 },
+          { func: hasSuspiciousIframes, messageKey: 'suspiciousIframes', risk: 3.5 },
+        ]
+      : []),
   ];
 
   for (const { func, messageKey, risk } of dynamicChecks) {
     try {
       const result = await func(url);
-      if (typeof result === 'boolean' && result && domain) {
+      if (typeof result === 'boolean' && result) {
         reasons.add(messageKey);
         totalRiskRef.value += risk;
         logDebug(`Added ${messageKey} with risk ${risk} for ${url}`);
-      } else if (Array.isArray(result) && result.length > 0 && domain) {
+      } else if (Array.isArray(result) && result.length > 0) {
         result.forEach(({ reason }) => reasons.add(reason));
         totalRiskRef.value += risk;
         logDebug(`Added ${messageKey} with risk ${risk} for ${url}, reasons: ${result.map(r => r.reason).join(', ')}`);
@@ -2127,12 +2490,12 @@ async function performSuspiciousChecks(url) {
     }
   }
 
-  // MX-record check voor loginpagina's zonder e-mailinfrastructuur
-  if (domain && detectLoginPage(url)) {
+  // MX-record check voor loginpagina's
+  if (isHttpProtocol && detectLoginPage(url)) {
     try {
       const mxRecords = await queueMxCheck(domain);
       if (mxRecords.length === 0) {
-        reasons.add("loginPageNoMX");
+        reasons.add('loginPageNoMX');
         totalRiskRef.value += 12;
         logDebug(`Loginpagina zonder MX-records gedetecteerd: ${domain}`);
       } else {
@@ -2143,40 +2506,47 @@ async function performSuspiciousChecks(url) {
     }
   }
 
-  // SSL-check alleen voor het exacte domein van de huidige pagina
-  if (isHttpProtocol && domain) {
-    const isCurrentPageDomain = domain === currentPageDomain; // Alleen exacte match met adresbalk
-    const shouldCheckSsl = isCurrentPageDomain && (detectLoginPage(window.location.href) || (totalRiskRef.value >= 5 && totalRiskRef.value <= 15));
-    logDebug(`SSL-check decision for ${domain}: isCurrentPageDomain=${isCurrentPageDomain}, isLogin=${detectLoginPage(window.location.href)}, risk=${totalRiskRef.value}, shouldCheckSsl=${shouldCheckSsl}`);
+  // SSL-check
+  if (isHttpProtocol) {
+    const isCurrentPageDomain = domain === currentPageDomain;
+    const shouldCheckSsl =
+      isCurrentPageDomain &&
+      (detectLoginPage(window.location.href) || (totalRiskRef.value >= 5 && totalRiskRef.value <= 15));
+    logDebug(
+      `SSL-check decision for ${domain}: isCurrentPageDomain=${isCurrentPageDomain}, isLogin=${detectLoginPage(
+        window.location.href
+      )}, risk=${totalRiskRef.value}, shouldCheckSsl=${shouldCheckSsl}`
+    );
     if (shouldCheckSsl) {
-        try {
-            const sslResult = await Promise.race([
-  new Promise((resolve, reject) => {
-    chrome.runtime.sendMessage({ action: "checkSslLabs", domain }, response => {
-      if (chrome.runtime.lastError) reject(new Error(chrome.runtime.lastError.message));
-      else resolve(response);
-    });
-  }),
-  new Promise((_, reject) => setTimeout(() => reject(new Error("SSL check timeout")), 10000))
-]);
-            if (!sslResult.isValid) {
-                reasons.add("sslValidationFailed");
-                totalRiskRef.value += 10;
-                logDebug(`SSL-check mislukt voor ${domain}: ${sslResult.reason}`);
-            } else {
-                logDebug(`SSL-check geslaagd voor ${domain}: ${sslResult.reason}`);
-            }
-        } catch (error) {
-            handleError(error, `performSuspiciousChecks: SSL-check faalde voor ${domain}`);
+      try {
+        const sslResult = await Promise.race([
+          new Promise((resolve, reject) => {
+            chrome.runtime.sendMessage({ action: 'checkSslLabs', domain }, response => {
+              if (chrome.runtime.lastError) reject(new Error(chrome.runtime.lastError.message));
+              else resolve(response);
+            });
+          }),
+          new Promise((_, reject) => setTimeout(() => reject(new Error('SSL check timeout')), 10000)),
+        ]);
+        if (!sslResult.isValid) {
+          reasons.add('sslValidationFailed');
+          totalRiskRef.value += 10;
+          logDebug(`SSL-check mislukt voor ${domain}: ${sslResult.reason}`);
+        } else {
+          logDebug(`SSL-check geslaagd voor ${domain}: ${sslResult.reason}`);
         }
+      } catch (error) {
+        handleError(error, `performSuspiciousChecks: SSL-check faalde voor ${domain}`);
+      }
     }
   }
 
+  // Veilige domein override
   if (isSafeDomain && totalRiskRef.value < 10) {
     logDebug(`Safe domain override applied for ${url}`);
     totalRiskRef.value = 0.1;
     reasons.clear();
-    reasons.add("safeDomain");
+    reasons.add('safeDomain');
   }
 
   const isSafe = totalRiskRef.value < (globalConfig.RISK_THRESHOLD || 5);
@@ -2664,18 +3034,45 @@ function hasBase64OrHex(url) {
   }
 }
 
+// Definieer de cache buiten de functie voor persistentie
+const loginPageCache = new Map();
+const LOGIN_CACHE_TTL_MS = 3600000; // 1 uur TTL
+
 function detectLoginPage(url) {
   try {
+    const cached = loginPageCache.get(url);
+    const now = Date.now();
+    if (cached && (now - cached.timestamp < LOGIN_CACHE_TTL_MS)) {
+      logDebug(`Cache hit for login detection: ${url}`);
+      return cached.result;
+    }
+
     const loginPatterns = /(login|signin|wp-login|authenticate|account)/i;
     const urlIndicatesLogin = loginPatterns.test(url);
     const hasPasswordField = !!document.querySelector('input[type="password"]');
-    logDebug(`Login detection: URL indication: ${urlIndicatesLogin}, Password field: ${hasPasswordField}`);
-    return urlIndicatesLogin || hasPasswordField;
+    logDebug(`Login detection for ${url}: URL indication: ${urlIndicatesLogin}, Password field: ${hasPasswordField}`);
+    const result = urlIndicatesLogin || hasPasswordField;
+
+    loginPageCache.set(url, { result, timestamp: now });
+    logDebug(`Cached login detection result for ${url}: ${result}`);
+
+    return result;
   } catch (error) {
     handleError(error, `detectLoginPage: Fout bij detecteren van loginpagina voor URL ${url}`);
     return false;
   }
 }
+
+// Optioneel: Periodieke cache-schoonmaak
+setInterval(() => {
+  const now = Date.now();
+  for (const [url, { timestamp }] of loginPageCache) {
+    if (now - timestamp >= LOGIN_CACHE_TTL_MS) {
+      loginPageCache.delete(url);
+      logDebug(`Removed expired login cache entry for ${url}`);
+    }
+  }
+}, LOGIN_CACHE_TTL_MS);
 
 function isFreeHostingDomain(url) {
   try {
@@ -2960,32 +3357,43 @@ function injectWarningStyles() {
 
 const observer = new MutationObserver(debounce(async (mutations) => {
   if (!(await isProtectionEnabled())) return;
+  let scriptsChanged = false;
+  let iframesChanged = false;
+  let linksChanged = false;
+
   mutations.forEach(mutation => {
     mutation.addedNodes.forEach(node => {
       if (node.nodeType !== Node.ELEMENT_NODE) return;
       if (node.tagName === "SCRIPT") {
-        checkForSuspiciousExternalScripts();
+        scriptsChanged = true;
       } else if (node.tagName === "IFRAME") {
-        hasSuspiciousIframes();
+        iframesChanged = true;
       } else if (node.tagName === "A" && isValidURL(node.href)) {
+        linksChanged = true;
         classifyAndCheckLink(node);
       } else {
         node.querySelectorAll('a').forEach(link => {
-          if (isValidURL(link.href)) classifyAndCheckLink(link);
+          if (isValidURL(link.href)) {
+            linksChanged = true;
+            classifyAndCheckLink(link);
+          }
         });
       }
     });
   });
+
+  if (scriptsChanged) {
+    await checkForSuspiciousExternalScripts();
+  }
+  if (iframesChanged) {
+    await hasSuspiciousIframes();
+  }
+  if (linksChanged && isSearchResultPage()) {
+    debounceCheckGoogleSearchResults();
+  }
 }, 500));
 
-setInterval(async () => {
-  if (!(await isProtectionEnabled())) return;
-  await checkForSuspiciousExternalScripts();
-  await hasSuspiciousIframes();
-}, 5000);
-
-
-observer.observe(document.body, { childList: true, subtree: true });
+observer.observe(document.documentElement, { childList: true, subtree: true });
 
 document.addEventListener('mouseover', debounce((event) => {
   if (event.target.tagName === 'A') {
@@ -3004,13 +3412,11 @@ const processedLinks = new Set();
 async function unifiedCheckLinkSafety(link, eventType, event) {
   if (!(await isProtectionEnabled())) return;
 
-  // Controleer of link en href bestaan en geldig zijn
   if (!link || !link.href || !isValidURL(link.href)) {
-    logDebug(`Skipping unifiedCheckLinkSafety: Invalid or missing URL in link: ${link.href || 'undefined'}`);
+    logDebug(`Skipping unifiedCheckLinkSafety: Invalid or missing URL in link: ${link?.href || 'undefined'}`);
     return;
   }
 
-  // Extra controle voor SVG-links
   if (link.ownerSVGElement || link.href instanceof SVGAnimatedString) {
     const hrefValue = link.href instanceof SVGAnimatedString ? link.href.baseVal : link.href;
     logDebug(`Skipping SVG link: ${hrefValue || 'undefined'} (ownerSVGElement: ${!!link.ownerSVGElement}, SVGAnimatedString: ${link.href instanceof SVGAnimatedString})`);
@@ -3018,9 +3424,11 @@ async function unifiedCheckLinkSafety(link, eventType, event) {
   }
 
   const href = link.href;
-  if (processedLinks.has(href)) return; // Sla eerder verwerkte links over
+  logDebug(`Checking URL in unifiedCheckLinkSafety: ${href}`);
+
+  if (processedLinks.has(href)) return;
   processedLinks.add(href);
-  setTimeout(() => processedLinks.delete(href), 2000); // Verwijder na 2 seconden
+  setTimeout(() => processedLinks.delete(href), 2000);
 
   try {
     const { isSafe, reasons, risk } = await performSuspiciousChecks(href);
@@ -3034,21 +3442,30 @@ async function unifiedCheckLinkSafety(link, eventType, event) {
     logDebug(`Checked link ${href} on ${eventType}: isSafe: ${isSafe}, risk: ${risk}, reasons:`, reasons);
 
     if (eventType === 'click') {
-      const linkDomain = new URL(href).hostname;
-      const currentDomain = new URL(window.location.href).hostname;
-      if (!linkDomain.endsWith(currentDomain)) {
-        if (!isSafe) {
-          event.preventDefault(); // Blokkeer klik als de link niet veilig is
-        } else {
-          event.preventDefault();
-          window.location.href = href; // Ga door als veilig
+      // Alleen HTTP(S) links vergelijken qua domein
+      if (href.startsWith('http://') || href.startsWith('https://')) {
+        try {
+          const linkDomain = new URL(href).hostname;
+          const currentDomain = new URL(window.location.href).hostname;
+          if (!linkDomain.endsWith(currentDomain)) {
+            event.preventDefault();
+            if (isSafe) {
+              window.location.href = href;
+            }
+            // Indien niet safe, wordt doorgaan voorkomen (geen redirect)
+          }
+        } catch (e) {
+          logError(`Fout bij domeinvergelijking voor href: ${href}`, e);
         }
+      } else {
+        logDebug(`Link met niet-http protocol overgeslagen bij click-verwerking: ${href}`);
       }
     }
   } catch (error) {
     handleError(error, `unifiedCheckLinkSafety: Fout bij controleren van link ${href} op event ${eventType}`);
   }
 }
+
 
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {

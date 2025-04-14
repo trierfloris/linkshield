@@ -3,10 +3,10 @@
     "message": "LinkShield"
   },
   "extDescription": {
-    "message": "LinkShield helpt je om gevaarlijke websites te herkennen. Geef nooit zomaar gevoelige informatie aan onbekende websites."
+    "message": "LinkShield helpt je gevaarlijke websites te herkennen. Deel nooit gevoelige informatie met onbekende sites."
   },
   "alertTitle": {
-    "message": "Let op!"
+    "message": "Waarschuwing!"
   },
   "alertMessage": {
     "message": "Deze website bevat een link naar:"
@@ -24,76 +24,76 @@
     "message": "Gemiddeld risico: deze link kan onveilig zijn. Wees voorzichtig."
   },
   "adviceCheckUrl": {
-    "message": "Open deze link alleen als je zeker weet dat het veilig is. Controleer het webadres goed. Log nooit in als je twijfelt of het adres klopt."
+    "message": "Open deze link alleen als je zeker weet dat deze veilig is. Controleer het webadres zorgvuldig. Log nooit in als je twijfelt aan de URL."
   },
   "noHttps": {
-    "message": "Deze link gebruikt geen HTTPS (hoog risico). Je gegevens kunnen makkelijker worden gestolen."
+    "message": "Deze link gebruikt geen HTTPS (hoog risico). Je gegevens kunnen gemakkelijker worden gestolen."
   },
   "ipAsDomain": {
-    "message": "De website gebruikt een IP-adres in plaats van een naam (hoog risico). Dit kan een truc zijn om je te misleiden."
+    "message": "Deze website gebruikt een IP-adres in plaats van een naam (hoog risico). Dit kan een truc zijn om je te misleiden."
   },
   "tooManySubdomains": {
-    "message": "Er zijn veel extra onderdelen in dit webadres (hoog risico). Dit kan betekenen dat de site nep is."
+    "message": "Dit webadres bevat veel onderdelen (hoog risico). De site kan nep zijn."
   },
   "suspiciousKeywords": {
-    "message": "Verdachte woorden gevonden (gemiddeld risico). Dit kunnen woorden zijn die vaak bij oplichting worden gebruikt."
+    "message": "Verdachte woorden gevonden (gemiddeld risico). Deze worden vaak gebruikt in oplichting."
   },
   "suspiciousPattern": {
-    "message": "Het webadres lijkt verdacht (hoog risico). Dit kan een manier zijn om je op te lichten."
+    "message": "Het webadres ziet er verdacht uit (hoog risico). Dit kan worden gebruikt om je op te lichten."
   },
   "shortenedUrl": {
-    "message": "Dit is een verkorte link (hoog risico). Je kunt niet zien waar de link echt naartoe gaat."
+    "message": "Dit is een verkorte link (hoog risico). Je kunt niet zien waar deze echt naartoe leidt."
   },
   "downloadPage": {
-    "message": "Deze pagina biedt een verdachte download aan (hoog risico). Dit kan schadelijke software zijn."
+    "message": "Deze pagina biedt een verdachte download aan (hoog risico). Het kan schadelijke software bevatten."
   },
   "freeHosting": {
-    "message": "Deze website gebruikt gratis hosting (hoog risico). Zulke sites hebben vaak minder beveiliging."
+    "message": "Deze website gebruikt gratis hosting (hoog risico). Deze sites hebben vaak minder beveiliging."
   },
   "encodedCharacters": {
-    "message": "Dit webadres bevat veel vreemde tekens (hoog risico). Dit kan een manier zijn om iets gevaarlijks te verbergen."
+    "message": "Dit webadres bevat vreemde tekens (hoog risico). Dit kan worden gebruikt om iets gevaarlijks te verbergen."
   },
   "homoglyphAttack": {
-    "message": "Dit webadres gebruikt tekens die op elkaar lijken (gemiddeld risico). Dit kan bedoeld zijn om een echte website na te maken."
+    "message": "Dit adres gebruikt gelijk uitziende tekens (gemiddeld risico). Het kan proberen op een echte website te lijken."
   },
   "metaRedirect": {
-    "message": "Deze website stuurt je automatisch door (hoog risico). Dit kan je naar een gevaarlijke site leiden."
+    "message": "Deze website stuurt je automatisch door (hoog risico). Je kunt naar een gevaarlijke site worden gestuurd."
   },
   "cryptoPhishing": {
-    "message": "Dit webadres lijkt op een crypto-oplichting (hoog risico). Pas op dat je geen geld kwijtraakt."
+    "message": "Dit adres lijkt op een crypto-oplichting (hoog risico). Pas op dat je geen geld verliest."
   },
   "externalScripts": {
-    "message": "Deze website laadt verdachte extra code (hoog risico). Dit kan gevaarlijk zijn."
+    "message": "Deze site laadt verdachte externe code (hoog risico). Het kan gevaarlijk zijn."
   },
   "suspiciousIframes": {
-    "message": "Deze website bevat verdachte ingesloten vensters (hoog risico). Dit kan worden gebruikt om je te misleiden."
+    "message": "Deze site bevat verdachte ingebedde vensters (hoog risico). Deze kunnen worden gebruikt om je te misleiden."
   },
   "suspiciousParams": {
-    "message": "Dit webadres bevat verdachte extra informatie (gemiddeld risico). Dit kan gebruikt worden om beveiliging te omzeilen."
+    "message": "Dit adres bevat verdachte extra informatie (gemiddeld risico). Het kan worden gebruikt om beveiliging te omzeilen."
   },
   "mixedContent": {
-    "message": "Deze pagina gebruikt zowel veilige als onveilige onderdelen (gemiddeld risico). Dit kan de beveiliging verzwakken."
+    "message": "Deze pagina gebruikt zowel beveiligde als onbeveiligde onderdelen (gemiddeld risico). Dit kan de beveiliging van de pagina verzwakken."
   },
   "unusualPort": {
-    "message": "Deze website gebruikt een ongebruikelijke poort (hoog risico). Dit kan beveiligingsmaatregelen omzeilen."
+    "message": "Deze site gebruikt een ongebruikelijke poort (hoog risico). Het kan proberen beveiligingsmaatregelen te omzeilen."
   },
   "javascriptScheme": {
-    "message": "Dit webadres gebruikt JavaScript (hoog risico). Dit kan worden gebruikt om schadelijke code uit te voeren."
+    "message": "Dit adres gebruikt JavaScript (hoog risico). Het kan schadelijke code uitvoeren."
   },
   "urlFragmentTrick": {
-    "message": "Dit webadres bevat een verdacht deel (gemiddeld risico). Dit kan je misleiden over waar je echt bent."
+    "message": "Dit adres bevat een verdacht fragment (gemiddeld risico). Het kan je misleiden over je echte locatie."
   },
   "suspiciousTLD": {
-    "message": "Dit webadres gebruikt een risicovol domein (hoog risico). Sommige domeinen worden vaker voor fraude gebruikt."
+    "message": "Dit domein gebruikt een riskante extensie (hoog risico). Sommige extensies worden vaak gebruikt voor fraude."
   },
   "base64OrHex": {
-    "message": "Dit webadres bevat gecodeerde informatie (gemiddeld risico). Dit kan iets gevaarlijks verbergen."
+    "message": "Dit adres bevat gecodeerde informatie (gemiddeld risico). Het kan iets gevaarlijks verbergen."
   },
   "iframeHidden": {
-    "message": "Deze website gebruikt een verborgen venster (gemiddeld risico). Dit kan een manier zijn om iets te verbergen."
+    "message": "Deze site gebruikt een verborgen venster (gemiddeld risico). Dit kan iets voor je verbergen."
   },
   "similarToLegitimateDomain": {
-    "message": "Deze website lijkt sterk op een bekende betrouwbare site. Dit kan een misleidende imitatie zijn."
+    "message": "Deze site lijkt sterk op een bekende betrouwbare site. Het kan een nep-kopie zijn."
   },
   "popupTitle": {
     "message": "LinkShield: Bescherm jezelf tegen phishing"
@@ -108,19 +108,19 @@
     "message": "Blokkeer gevaarlijke websites voordat je ze bezoekt."
   },
   "activationRequired": {
-    "message": "Zet deze functie eerst aan om hem te gebruiken."
+    "message": "Schakel deze functie in voordat je deze gebruikt."
   },
   "integratedProtection": {
-    "message": "Ingebouwde beveiliging tegen phishing en malware"
+    "message": "Ingebouwde bescherming tegen phishing en malware"
   },
   "integratedProtectionDescription": {
     "message": "Deze functie controleert websites en links direct."
   },
   "premiumFeaturesActive": {
-    "message": "Je gebruikt nu de premiumversie!"
+    "message": "Je gebruikt nu de premium versie!"
   },
   "upgradePrompt": {
-    "message": "Upgrade naar premium om extra functies te krijgen."
+    "message": "Upgrade naar premium om extra functies te ontgrendelen."
   },
   "saveSettings": {
     "message": "Instellingen opslaan"
@@ -144,7 +144,7 @@
     "message": "Licentie geactiveerd!"
   },
   "lastRuleUpdate": {
-    "message": "Laatste update van de phishingdatabase: "
+    "message": "Laatste update phishing-database: "
   },
   "licenseStatus": {
     "message": "Licentie:"
@@ -156,7 +156,7 @@
     "message": "Meerdere links controleren"
   },
   "bulkUrlCheckDescription": {
-    "message": "Upload een .txt-bestand om meerdere links tegelijk te controleren."
+    "message": "Upload een .txt-bestand om veel links tegelijk te controleren."
   },
   "fileChoose": {
     "message": "Kies een bestand"
@@ -180,13 +180,13 @@
     "message": "Deze inlogpagina gebruikt geen HTTPS (hoog risico). Je gegevens kunnen worden gestolen."
   },
   "invalidUrl": {
-    "message": "Dit webadres klopt niet of is verkeerd getypt."
+    "message": "Dit webadres is ongeldig of verkeerd getypt."
   },
   "loadingMessage": {
-    "message": "Een moment, het systeem voert controles uit..."
+    "message": "Een moment, het systeem controleert..."
   },
   "cannotRetrieveSiteStatus": {
-    "message": "⚠️ Kan site-status niet ophalen."
+    "message": "⚠️ Kan de status van de site niet ophalen."
   },
   "unknownRisk": {
     "message": "⚠️ Onbekend risico"
@@ -195,7 +195,7 @@
     "message": "🔴 Hoog risico: zeer gevaarlijk!"
   },
   "mediumRisk": {
-    "message": "🟠 Medium risico: wees voorzichtig."
+    "message": "🟠 Gemiddeld risico: wees voorzichtig."
   },
   "lowRisk": {
     "message": "🟢 Laag risico: waarschijnlijk veilig."
@@ -204,12 +204,63 @@
     "message": "✅ Geen verdachte kenmerken."
   },
   "siteStatusNotAvailable": {
-    "message": "⚠️ Site-status niet beschikbaar."
+    "message": "⚠️ Status van de site niet beschikbaar."
   },
   "loginPageNoMX": {
-    "message": "Er is een loginpagina gevonden, maar het domein heeft geen e-mailserver. Dit kan wijzen op phishing."
+    "message": "Er is een inlogpagina gevonden, maar het domein heeft geen e-mailserver. Dit kan een phishingpoging zijn."
   },
   "sslValidationFailed": {
-    "message": "De beveiliging van de website is niet in orde. Het certificaat is niet geldig of niet veilig."
+    "message": "De beveiliging van deze website is niet geldig. Het certificaat ontbreekt of is onveilig."
+  },
+  "malwareExtension": {
+    "message": "Dit bestand heeft een verdachte extensie (hoog risico). Het kan schadelijke software bevatten."
+  },
+  "shortenedUrlError": {
+    "message": "Er ging iets mis bij het controleren van deze korte link (laag risico). We weten niet waar deze naartoe gaat."
+  },
+  "redirectedShortenedUrl": {
+    "message": "Deze korte link leidt naar een andere website (gemiddeld risico)."
+  },
+  "cryptoPhishingAd": {
+    "message": "Deze advertentie lijkt op een crypto-oplichting (hoog risico). Wees extra voorzichtig."
+  },
+  "suspiciousAdStructure": {
+    "message": "De link in deze advertentie ziet er vreemd uit (gemiddeld risico). Het kan onveilig zijn."
+  },
+  "suspiciousAdTLD": {
+    "message": "De advertentie gebruikt een domein dat vaak wordt misbruikt (hoog risico)."
+  },
+  "homoglyphAdAttack": {
+    "message": "De advertentie gebruikt tekens die lijken op een bekende website (gemiddeld risico)."
+  },
+  "brandMisuse": {
+    "message": "De advertentie gebruikt ten onrechte een bekende merknaam (hoog risico). Het kan nep zijn."
+  },
+  "unknownWarning": {
+    "message": "Onbekende waarschuwing (gemiddeld risico). Wees voorzichtig."
+  },
+  "typosquattingAttack": {
+    "message": "Dit webadres lijkt op een echt adres, maar is net iets anders (hoog risico). Het kan nep zijn."
+  },
+  "downloadKeyword": {
+    "message": "We vonden een verdacht woord gerelateerd aan downloads in de link (gemiddeld risico). Het kan onveilig zijn."
+  },
+  "suspiciousScriptContent": {
+    "message": "Dit script bevat verdachte code, zoals 'eval()' of 'document.write()'. Het kan onveilig zijn."
+  },
+  "invalidScriptSrc": {
+    "message": "De link naar het script is niet correct of kan niet goed worden gelezen."
+  },
+  "suspiciousIframeKeyword": {
+    "message": "Er is een verdacht woord gevonden in de link van een ingebed venster (iframe)."
+  },
+  "allowedQueryParam": {
+    "message": "De link bevat een veilige zoekterm die is toegestaan."
+  },
+  "suspiciousPageText": {
+    "message": "Deze pagina bevat verdachte tekst (hoog risico). Het kan proberen je te misleiden om actie te ondernemen."
+  },
+  "urgencyTactic": {
+    "message": "Deze pagina gebruikt dringende taal om je onder druk te zetten (hoog risico). Wees voorzichtig met oplichting."
   }
 }

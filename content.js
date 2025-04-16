@@ -9,6 +9,43 @@ function logDebug(message, ...optionalParams) {
   }
 }
 
+
+/**
+ * Zorgt ervoor dat de globale configuratie (`globalConfig`) beschikbaar en geldig is.
+ * 
+ * Deze functie wordt gebruikt als safeguard in functies die afhankelijk zijn van 
+ * globale configuratie-instellingen zoals risico-drempels, toegestane protocollen, 
+ * verdachte extensies, enz. 
+ * 
+ * Werking:
+ * - Controleert of `globalConfig` beschikbaar is en gevuld.
+ * - Zo niet, roept `loadConfig()` aan om de configuratie opnieuw te laden (asynchroon).
+ * - Indien `globalConfig` daarna nog steeds niet beschikbaar is (bijv. door fetch-fout),
+ *   wordt een fallbackconfiguratie gebruikt via `validateConfig(defaultConfig)`.
+ * 
+ * Belangrijk:
+ * Deze functie voorkomt runtime-fouten bij vroege of onverwachte aanroepen van 
+ * analysefuncties die `globalConfig` nodig hebben. Te gebruiken bovenin:
+ *  - `warnLink()`
+ *  - `performSuspiciousChecks()`
+ *  - `analyzeDomainAndUrl()`
+ *  - `checkCurrentUrl()`
+ */
+async function ensureConfigReady() {
+  // Controleer of de globale configuratie beschikbaar en niet leeg is
+  if (!globalConfig || Object.keys(globalConfig).length === 0) {
+    logDebug("[Config] Config niet beschikbaar, opnieuw laden...");
+    await loadConfig();
+
+    // Als na het laden globalConfig nog steeds leeg is: fallback naar standaard
+    if (!globalConfig || Object.keys(globalConfig).length === 0) {
+      logError("[Config] Config nog steeds niet beschikbaar. Gebruik default fallback.");
+      globalConfig = validateConfig(defaultConfig);
+    }
+  }
+}
+
+
 /**
  * Haalt een vertaling op voor een gegeven message key.
  * @param {string} messageKey
@@ -621,7 +658,8 @@ async function getStoredSettings() {
 let lastCheckedUrl = null;
 
 async function checkCurrentUrl() {
-  try {
+  await ensureConfigReady()
+   try {
     const currentUrl = window.location.href;
     if (currentUrl !== lastCheckedUrl) {
       lastCheckedUrl = currentUrl;
@@ -940,13 +978,26 @@ function classifyAndCheckLink(link) {
   }
 }
 
+// Set om bij te houden welke domeinen al een waarschuwing hebben gekregen op deze pagina
+const warnedDomainsInline = new Set();
+
 async function warnLink(link, reasons) {
+  await ensureConfigReady();
   if (!link || !link.href || !isValidURL(link.href)) {
     logDebug("Invalid link provided to warnLink:", link);
     return;
   }
 
   const url = link.href;
+  const hostname = new URL(url).hostname;
+
+  // ⛔ Toon maar één waarschuwing per domein per pagina
+  if (warnedDomainsInline.has(hostname)) {
+    logDebug(`⚠️ Waarschuwing voor ${hostname} is al getoond op deze pagina. Overslaan.`);
+    return;
+  }
+  warnedDomainsInline.add(hostname);
+
   const riskResult = await performSuspiciousChecks(url); // Gebruikt cache
   const isHighRisk = riskResult.risk >= (globalConfig.RISK_THRESHOLD || 5);
 
@@ -990,6 +1041,7 @@ async function warnLink(link, reasons) {
   link.insertAdjacentElement('afterend', warningIcon);
   injectWarningIconStyles();
 }
+
 
 
 function injectWarningIconStyles() {
@@ -1041,6 +1093,7 @@ function sanitizeInput(input) {
 
 
 async function analyzeDomainAndUrl(link) {
+  await ensureConfigReady();
   // Log de input voor debugging
   logDebug(`Analyzing link with href: ${link.href}, Type: ${typeof link.href}, Instance: ${link.href instanceof SVGAnimatedString ? 'SVGAnimatedString' : 'Other'}`);
   
@@ -2301,6 +2354,7 @@ function storeInCache(url, result) {
 }
 
 async function performSuspiciousChecks(url) {
+  await ensureConfigReady();
   const cached = linkRiskCache.get(url);
   if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
     logDebug(`Cache hit for suspicious checks: ${url}`);

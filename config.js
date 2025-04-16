@@ -1,6 +1,6 @@
 window.CONFIG = {
     // Verdachte Top-Level Domeinen (TLD’s)
-    SUSPICIOUS_TLDS: /\.(academy|accountant|accountants|agency|ap|app|art|asia|auto|bank|bar|beauty|bet|bid|bio|biz|blog|buzz|cam|capital|casa|casino|cfd|charity|cheap|church|city|claims|click|club|company|crispsalt|cyou|data|date|design|dev|digital|directory|download|email|energy|estate|events|exchange|expert|exposed|express|finance|fit|forsale|foundation|fun|games|gle|goog|gq|guide|guru|health|help|home|host|html|icu|ink|institute|investments|ip|jobs|life|limited|link|live|loan|lol|ltd|ly|mall|market|me|media|men|ml|mom|money|monster|mov|network|one|online|page|partners|party|php|pics|play|press|pro|promo|pw|quest|racing|rest|review|rocks|run|sbs|school|science|services|shop|shopping|site|software|solutions|space|store|stream|support|team|tech|tickets|to|today|tools|top|trade|trading|uno|ventures|vip|website|wiki|win|work|world|xin|xyz|zip|zone|co|cc|tv|name|team|live|stream|quest|sbs|lat|click|monster|bond|cyou|store|crypto|wallet|quantum|nft|web3|metaverse|ai|vr|dao|health|green|privacy|smart)$/i,
+    SUSPICIOUS_TLDS: /\.(academy|accountant|accountants|agency|ap|app|art|asia|auto|bank|bar|beauty|bet|bid|bio|biz|blog|buzz|cam|capital|casa|casino|cfd|charity|cheap|church|city|claims|click|club|company|crispsalt|cyou|data|date|design|dev|digital|directory|download|email|energy|estate|events|exchange|expert|exposed|express|finance|fit|forsale|foundation|fun|games|gle|goog|gq|guide|guru|health|help|home|host|html|icu|ink|institute|investments|ip|jobs|life|limited|link|live|loan|lol|ltd|ly|mall|market|me|media|men|ml|mom|money|monster|mov|network|one|online|page|partners|party|php|pics|play|press|pro|promo|pw|quest|racing|rest|review|rocks|run|sbs|school|science|services|shop|shopping|site|software|solutions|space|store|stream|support|team|tech|tickets|to|today|tools|top|trade|trading|uno|ventures|vip|website|wiki|win|work|world|xin|xyz|zip|zone|co|cc|tv|name|team|live|stream|quest|sbs|lat|click|monster|bond|cyou|store|crypto|wallet|quantum|nft|web3|metaverse|ai|vr|dao|health|green|privacy|smart|edge|cloud)$/i,
 
     // Debug Modus
     DEBUG_MODE: false, // Zet op true voor debugging, false voor productie
@@ -30,7 +30,9 @@ window.CONFIG = {
         "model", "train", "inference", "simulate", "dynamic", "privacy", "secure-chat", 
         "federated", "anonymous", "green", "eco", "sustainable", "carbon",
         "adaptive", "personalize", "targeted", "behavior", "profile", "social", "data", 
-        "custom", "smart", "city", "iot", "urban" // Nieuwe trefwoorden
+        "custom", "smart", "city", "iot", "urban",
+        "mutate", "evolve", "variant", "polymorphic", "interactive", "live", "stream", 
+        "avatar", "edge", "distributed", "cdn", "fog" // Nieuwe trefwoorden
     ]),
 
     // Phishing Trefwoorden
@@ -48,7 +50,9 @@ window.CONFIG = {
         "model", "train", "inference", "simulate", "dynamic", "privacy", "secure-chat", 
         "federated", "anonymous", "green", "eco", "sustainable", "carbon",
         "adaptive", "personalize", "targeted", "behavior", "profile", "social", "data", 
-        "custom", "smart", "city", "iot", "urban" // Nieuwe trefwoorden
+        "custom", "smart", "city", "iot", "urban",
+        "mutate", "evolve", "variant", "polymorphic", "interactive", "live", "stream", 
+        "avatar", "edge", "distributed", "cdn", "fog" // Nieuwe trefwoorden
     ]),
 
     // Verdachte Iframe Trefwoorden
@@ -59,7 +63,7 @@ window.CONFIG = {
 
     // Standaard Drempelwaarden
     SUSPICION_THRESHOLD: 0.1, // 10% van de links moet verdacht zijn
-
+    
     // Vertrouwde Iframe Domeinen
     TRUSTED_IFRAME_DOMAINS: ['youtube.com', 'vimeo.com', 'google.com'],
 
@@ -90,12 +94,12 @@ window.CONFIG = {
         "fw.to", "lnk2.me", "shurl.net", "mrk.to", "clk.im", "u.to", "ezurl.cc", "fur.ly", "v.gd", "2ty.cc", "sh.ky",
         "s.coop", "cutt.us", "bitly.com", "q.gs", "i.cut", "s.id", "linklyhq.com", "slkt.io", "pp.gg", "short.url",
         "zpr.io", "me.qr", "short.io", "dub.co", "cl.ly", "bl.ink", "go.ly", "soo.gd", "jmp.sh", "u.nu", "t2m.io", "short.link",
-        "tiny.one", "short.link", "shr.link", "linkly.me" // Nieuwe shortener toegevoegd
+        "tiny.one", "short.link", "shr.link", "linkly.me", "cut.link" // Nieuwe shortener toegevoegd
     ],
 
     // Verdachte URL Patronen
     SUSPICIOUS_URL_PATTERNS: [
-        /\/(payment|invoice|billing|money|bank|secure|login|checkout|subscription|refund|delivery|2fa|mfa|ai|quantum|crypto|wallet|blockchain|ledger|metaverse|deepfake|nft|web3|ar|chatbot|voice|biometric|zero-trust|telehealth|healthcare|prescription|patient|meeting|call|model|privacy|secure-chat|green|eco|sustainable|adaptive|personalize|targeted|social|smart|city|iot)\//i,
+        /\/(payment|invoice|billing|money|bank|secure|login|checkout|subscription|refund|delivery|2fa|mfa|ai|quantum|crypto|wallet|blockchain|ledger|metaverse|deepfake|nft|web3|ar|chatbot|voice|biometric|zero-trust|telehealth|healthcare|prescription|patient|meeting|call|model|privacy|secure-chat|green|eco|sustainable|adaptive|personalize|targeted|social|smart|city|iot|mutate|interactive|live|avatar|edge|distributed|cdn)\//i,
         /(Base64|hexadecimal|b64|encode|urlencode|obfuscate|crypt)/i,
         /\/(signup|register|confirmation|securepayment|order|tracking|verify-account|reset-password|oauth)\//i,
         /(?:\bsecurepay\b|\baccountverify\b|\bresetpassword\b|\bverifyemail\b|\bupdateinfo\b)/i,
@@ -103,18 +107,23 @@ window.CONFIG = {
         /(fake|clone|spoof|impersonate|fraud|scam|phish)/i,
         /[^a-zA-Z0-9]{2,}/,
         /(http[s]?:\/\/[^\/]+){2,}/i,
-        /\/(chat|ai|machine-learning|quantum|crypto|wallet|blockchain|ledger|metaverse|deepfake|face-swap|nft|web3|ar|chatbot|voice|biometric|zero-trust|telehealth|healthcare|prescription|patient|meeting|call|model|privacy|secure-chat|green|eco|sustainable|adaptive|personalize|targeted|social|smart|city|iot)\//i // Nieuwe detectie voor AI, microtargeting, en smart cities
+        /\/(chat|ai|machine-learning|quantum|crypto|wallet|blockchain|ledger|metaverse|deepfake|face-swap|nft|web3|ar|chatbot|voice|biometric|zero-trust|telehealth|healthcare|prescription|patient|meeting|call|model|privacy|secure-chat|green|eco|sustainable|adaptive|personalize|targeted|social|smart|city|iot|mutate|interactive|live|avatar|edge|distributed|cdn)\//i // Nieuwe detectie voor polymorfe phishing, deepfakes, en edge computing
     ],
 
     // Verdachte Script Patronen
-   SUSPICIOUS_SCRIPT_PATTERNS: [
-  /(?:\beval\s*\(\s*['"][^'"]*['"]\s*\)|new\s+Function\s*\(\s*['"][^'"]*['"]\s*\)|base64_decode\s*\()/i,
-  /(?:coinimp|cryptonight|webminer|miner\.js|crypto-jacking|keylogger|trojan|worm|ransomware|xss\s*\()/i,
-  /(?:document\.write\s*\(\s*['"][^'"]*javascript:|innerHTML\s*=\s*['"][^'"]*eval)/i,
-  /(?:fetch\(.+\.wasm[^)]*eval|import\(.+\.wasm[^)]*javascript:)/i,
-  /(?:malicious|phish|exploit|redirect|inject|clickjacking|backdoor|rootkit)/i,
-  /(?:RTCPeerConnection\s*\(\s*{[^}]*stun:|RTCDataChannel\s*.\s*send\s*\(\s*['"][^'"]*eval)/i,
-],
+    SUSPICIOUS_SCRIPT_PATTERNS: [
+        /(?:\beval\s*\(\s*['"][^'"]*['"]\s*\)|new\s+Function\s*\(\s*['"][^'"]*['"]\s*\)|base64_decode\s*\()/i,
+        /(?:coinimp|cryptonight|webminer|miner\.js|crypto-jacking|keylogger|trojan|worm|ransomware|xss\s*\()/i,
+        /(?:document\.write\s*\(\s*['"][^'"]*javascript:|innerHTML\s*=\s*['"][^'"]*eval)/i,
+        /(?:fetch\(.+\.wasm[^)]*eval|import\(.+\.wasm[^)]*javascript:)/i,
+        /(?:malicious|phish|exploit|redirect|inject|clickjacking|backdoor|rootkit)/i,
+        /(?:RTCPeerConnection\s*\(\s*{[^}]*stun:|RTCDataChannel\s*.\s*send\s*\(\s*['"][^'"]*eval)/i,
+        /(RTCSessionDescription|RTCIceCandidate)/i, // Detectie voor WebRTC-phishing
+        /(WebTransport)/i, // Detectie voor WebTransport-phishing
+        /(quic-transport|http3)/i, // Detectie voor QUIC/HTTP/3-phishing
+        /(serverless|lambda|cloudfunction)/i, // Nieuwe detectie voor serverless phishing
+        /(WebGL|Three\.js)/i, // Nieuwe detectie voor interactieve deepfake-technologieën
+    ],
 
     // Toegestane Paden en Query Parameters
     ALLOWED_PATHS: [/\/products\/|\/account\/billing\/|\/plans\/|\/support\/|\/docs\//i],
@@ -176,8 +185,10 @@ window.CONFIG = {
         /meeting@.*$/i, // Detectie voor nepvergaderingen
         /privacy@.*$/i, // Detectie voor privacygerichte phishing
         /green@.*$/i, // Detectie voor duurzaamheidsgerichte phishing
-        /smart@.*$/i, // Nieuwe detectie voor smart city-phishing
-        /social@.*$/i // Nieuwe detectie voor microtargeting-phishing
+        /smart@.*$/i, // Detectie voor smart city-phishing
+        /social@.*$/i, // Detectie voor microtargeting-phishing
+        /edge@.*$/i, // Nieuwe detectie voor edge computing-phishing
+        /live@.*$/i // Nieuwe detectie voor live deepfake-interacties
     ],
 
     // Typosquatting Patronen
@@ -195,7 +206,7 @@ window.CONFIG = {
         'paypal.com', 'netflix.com', 'instagram.com', 'outlook.com', 'dropbox.com',
         'opensea.io', 'decentraland.org', 'chat.openai.com', 'auth0.com', 
         'teladoc.com', 'zoom.us', 'signal.org', 'ecosia.org', 
-        'smartcityexpo.com' // Nieuwe toevoeging voor smart city-platform
+        'smartcityexpo.com', 'cloudflare.com' // Nieuwe toevoeging voor edge/cloud-platform
     ],
 
     COMPOUND_TLDS: [
@@ -221,6 +232,7 @@ window.CONFIG = {
         'teladoc.com': 3,     // Health tech-platform, opkomend phishing-doel
         'zoom.us': 3,         // Vergaderplatform, risico op real-time phishing
         'signal.org': 3,      // Privacyplatform, potentieel spoofing-doel
+        'cloudflare.com': 3,  // Edge/cloud-platform, potentieel spoofing-doel
         'netflix.com': 2,     // Abonnementsphishing
         'whatsapp.com': 2,    // Berichtenscams
         'x.com': 2,           // Opkomend risico door populariteit

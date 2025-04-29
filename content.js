@@ -2500,12 +2500,28 @@ async function performSuspiciousChecks(url) {
   }
 
   // Homoglyph/typosquatting controle
-  if (isHttpProtocol && isHomoglyphAttack(domain, homoglyphMap, knownBrands) && !isSafeDomain) {
-    const isTyposquatting = globalConfig.TYPOSQUATTING_PATTERNS.some(pattern => pattern.test(domain));
-    reasons.add(isTyposquatting ? 'typosquattingAttack' : 'homoglyphAttack');
-    totalRiskRef.value += isTyposquatting ? 8 : 10;
-    logDebug(`${isTyposquatting ? 'Typosquatting' : 'Homoglyph'}-aanval gedetecteerd: ${domain}`);
+if (isHttpProtocol && !isSafeDomain) {
+  let added = false;
+
+  if (isHomoglyphAttack(domain, homoglyphMap, knownBrands)) {
+    reasons.add('homoglyphAttack');
+    totalRiskRef.value += 10;
+    logDebug(`Homoglyph-aanval gedetecteerd: ${domain}`);
+    added = true;
   }
+
+  if (globalConfig.TYPOSQUATTING_PATTERNS.some(pattern => pattern.test(domain))) {
+    reasons.add('typosquattingAttack');
+    totalRiskRef.value += 8;
+    logDebug(`Typosquatting gedetecteerd: ${domain}`);
+    added = true;
+  }
+
+  if (!added) {
+    logDebug(`Geen homoglyph of typosquatting detectie voor ${domain}`);
+  }
+}
+
 
   // Dynamische controles
   const dynamicChecks = [

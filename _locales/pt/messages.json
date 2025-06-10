@@ -3,139 +3,139 @@
     "message": "LinkShield"
   },
   "extDescription": {
-    "message": "O LinkShield ajuda a identificar sites perigosos. Nunca compartilhe informações sensíveis com sites desconhecidos."
+    "message": "LinkShield ajuda a identificar sites perigosos. Nunca partilhe informações sensíveis com sites desconhecidos."
   },
   "alertTitle": {
     "message": "Atenção!"
   },
   "alertMessage": {
-    "message": "Este site contém um link para:"
+    "message": "Este website contém um link para:"
   },
   "severityLabel": {
     "message": "Risco"
   },
   "reasonLabel": {
-    "message": "Por quê?"
+    "message": "Porquê?"
   },
   "adviceMessage": {
-    "message": "O que você pode fazer?"
+    "message": "O que pode fazer?"
   },
   "severityMediumRisk": {
-    "message": "Risco médio: este link pode não ser seguro. Tenha cuidado."
+    "message": "Risco médio: Este link pode ser inseguro. Seja cuidadoso."
   },
   "adviceCheckUrl": {
-    "message": "Abra este link apenas se tiver certeza de que é seguro. Verifique o endereço da web cuidadosamente. Nunca faça login se tiver dúvidas sobre o URL."
+    "message": "Abra este link apenas se tiver certeza de que é seguro. Verifique cuidadosamente o endereço web. Nunca inicie sessão se tiver dúvidas sobre o URL."
   },
   "noHttps": {
-    "message": "Este link não usa HTTPS (alto risco). Seus dados podem ser roubados com mais facilidade."
+    "message": "Este link não usa HTTPS (alto risco). Os seus dados podem ser roubados mais facilmente."
   },
   "ipAsDomain": {
-    "message": "Este site usa um endereço IP em vez de um nome (alto risco). Pode ser uma armadilha para enganar você."
+    "message": "Este site usa um endereço IP em vez de um **nome de domínio** (alto risco). Isso pode ser um truque para o enganar."
   },
   "tooManySubdomains": {
-    "message": "Este endereço da web contém muitas partes (alto risco). O site pode ser falso."
+    "message": "Este endereço web tem muitos **subdomínios** (alto risco). O site pode ser falso."
   },
   "suspiciousKeywords": {
-    "message": "Palavras suspeitas encontradas (risco médio). Elas são frequentemente usadas em golpes."
+    "message": "Palavras-chave suspeitas encontradas (risco médio). Estas são frequentemente usadas para golpes."
   },
   "suspiciousPattern": {
-    "message": "O endereço da web parece suspeito (alto risco). Pode ser usado para enganar você."
+    "message": "O endereço web parece suspeito (alto risco). Isto pode ser usado para o enganar."
   },
   "shortenedUrl": {
-    "message": "Este é um link encurtado (alto risco). Você não pode ver para onde ele realmente leva."
+    "message": "Este é um link encurtado (alto risco). Não consegue ver para onde realmente leva."
   },
   "downloadPage": {
     "message": "Esta página oferece um download suspeito (alto risco). Pode conter software malicioso."
   },
   "freeHosting": {
-    "message": "Este site usa hospedagem gratuita (alto risco). Esses sites geralmente têm menos proteção."
+    "message": "Este site usa alojamento gratuito (alto risco). Estes sites **geralmente têm menos segurança**."
   },
   "encodedCharacters": {
-    "message": "Este endereço da web contém caracteres estranhos (alto risco). Pode ser usado para esconder algo perigoso."
+    "message": "Este endereço web contém caracteres estranhos (alto risco). Isto pode ser usado para esconder algo perigoso."
   },
   "homoglyphAttack": {
-    "message": "Este endereço usa caracteres semelhantes (risco médio). Pode tentar parecer um site real."
+    "message": "Este endereço usa caracteres semelhantes (risco médio). Pode estar a tentar parecer um site legítimo."
   },
   "metaRedirect": {
-    "message": "Este site redireciona você automaticamente (alto risco). Você pode ser enviado para um site perigoso."
+    "message": "Este site redireciona-o automaticamente (alto risco). Poderá ser enviado para um site perigoso."
   },
   "cryptoPhishing": {
-    "message": "Este endereço parece um golpe de criptomoedas (alto risco). Cuidado para não perder dinheiro."
+    "message": "Este endereço assemelha-se a um golpe de criptomoedas (alto risco). Tenha cuidado para não perder dinheiro."
   },
   "externalScripts": {
-    "message": "Este site carrega código externo suspeito (alto risco). Pode ser perigoso."
+    "message": "Este site carrega código externo suspeito (alto risco). Isto pode ser perigoso."
   },
   "suspiciousIframes": {
-    "message": "Este site contém janelas incorporadas suspeitas (alto risco). Elas podem ser usadas para enganar você."
+    "message": "Este site contém iframes suspeitos (alto risco). Estes podem ser usados para o enganar."
   },
   "suspiciousParams": {
-    "message": "Este endereço contém informações extras suspeitas (risco médio). Pode ser usado para burlar a segurança."
+    "message": "Este endereço contém informações extra suspeitas (risco médio). Pode ser usado para contornar a segurança."
   },
   "mixedContent": {
-    "message": "Esta página usa partes seguras e inseguras (risco médio). Isso pode enfraquecer a segurança da página."
+    "message": "Esta página usa elementos seguros e não seguros (risco médio). Pode enfraquecer a segurança."
   },
   "unusualPort": {
-    "message": "Este site usa uma porta incomum (alto risco). Pode tentar burlar medidas de segurança."
+    "message": "Este site usa uma porta incomum (alto risco). Pode estar a tentar contornar a segurança."
   },
   "javascriptScheme": {
     "message": "Este endereço usa JavaScript (alto risco). Pode executar código malicioso."
   },
   "urlFragmentTrick": {
-    "message": "Este endereço contém um fragmento suspeito (risco médio). Pode enganar você sobre sua localização real."
+    "message": "Este endereço contém um fragmento suspeito (risco médio). Pode enganá-lo sobre a sua verdadeira localização."
   },
   "suspiciousTLD": {
-    "message": "Este domínio usa uma extensão arriscada (alto risco). Algumas extensões são frequentemente usadas em fraudes."
+    "message": "Este domínio usa um TLD (Domínio de Nível Superior) de risco (alto risco). Alguns TLDs são frequentemente usados para fraude."
   },
   "base64OrHex": {
     "message": "Este endereço contém informações codificadas (risco médio). Pode esconder algo perigoso."
   },
   "iframeHidden": {
-    "message": "Este site usa uma janela oculta (risco médio). Pode estar escondendo algo de você."
+    "message": "Este site usa um iframe oculto (risco médio). Isto pode esconder algo de si."
   },
   "similarToLegitimateDomain": {
-    "message": "Este site é muito semelhante a um site confiável conhecido. Pode ser uma cópia falsa."
+    "message": "Este site parece muito semelhante a um site conhecido e confiável. Pode ser uma cópia falsa."
   },
   "popupTitle": {
-    "message": "LinkShield: Proteja-se contra phishing"
+    "message": "LinkShield: Proteja-se contra Phishing"
   },
   "popupSubtitle": {
     "message": "Mantenha-se seguro com alertas e proteção."
   },
   "backgroundAnalysis": {
-    "message": "Verificação em segundo plano"
+    "message": "Análise em segundo plano"
   },
   "backgroundAnalysisDescription": {
-    "message": "Bloqueie sites perigosos antes de visitá-los."
+    "message": "Bloqueie sites perigosos antes de os visitar."
   },
   "activationRequired": {
-    "message": "Por favor, ative este recurso antes de usá-lo."
+    "message": "Ative esta funcionalidade antes de a usar."
   },
   "integratedProtection": {
-    "message": "Proteção integrada contra phishing e malware"
+    "message": "Proteção integrada contra Phishing e Malware"
   },
   "integratedProtectionDescription": {
-    "message": "Este recurso verifica sites e links instantaneamente."
+    "message": "Esta funcionalidade verifica sites e links diretamente."
   },
   "premiumFeaturesActive": {
-    "message": "Você está usando a versão premium agora!"
+    "message": "Está a usar a versão premium!"
   },
   "upgradePrompt": {
-    "message": "Atualize para o premium para desbloquear recursos extras."
+    "message": "Atualize para premium para desbloquear funcionalidades extra."
   },
   "saveSettings": {
-    "message": "Salvar configurações"
+    "message": "Guardar Definições"
   },
   "settingsSaved": {
-    "message": "Configurações salvas!"
+    "message": "Definições guardadas!"
   },
   "licenseActivate": {
-    "message": "Ativar licença"
+    "message": "Ativar Licença"
   },
   "licenseInputPlaceholder": {
-    "message": "Digite sua chave de licença"
+    "message": "Introduza a sua chave de licença"
   },
   "licenseCheck": {
-    "message": "Verificar licença"
+    "message": "Verificar Licença"
   },
   "licenseInvalid": {
     "message": "Licença inválida."
@@ -144,28 +144,28 @@
     "message": "Licença ativada!"
   },
   "lastRuleUpdate": {
-    "message": "Última atualização do banco de dados de phishing: "
+    "message": "Última atualização da base de dados de phishing: "
   },
   "licenseStatus": {
     "message": "Licença:"
   },
   "licenseFreemium": {
-    "message": "Versão gratuita"
+    "message": "Versão Gratuita"
   },
   "bulkUrlCheck": {
-    "message": "Verificar múltiplos links"
+    "message": "Verificar Múltiplos Links"
   },
   "bulkUrlCheckDescription": {
-    "message": "Carregue um arquivo .txt para verificar vários links de uma vez."
+    "message": "Carregue um ficheiro .txt para verificar muitos links de uma só vez."
   },
   "fileChoose": {
-    "message": "Escolher arquivo"
+    "message": "Escolher um ficheiro"
   },
   "fileCheck": {
-    "message": "Verificar arquivo"
+    "message": "Verificar ficheiro"
   },
   "fileCheckNoUrls": {
-    "message": "O arquivo não contém links."
+    "message": "O ficheiro não contém links."
   },
   "fileCheckFailed": {
     "message": "Verificação falhou."
@@ -177,90 +177,267 @@
     "message": "Este link usa um protocolo seguro."
   },
   "insecureLoginPage": {
-    "message": "Esta página de login não usa HTTPS (alto risco). Seus dados podem ser roubados."
+    "message": "Esta página de login não usa HTTPS (alto risco). Os seus dados podem ser roubados."
   },
   "invalidUrl": {
-    "message": "Este endereço da web é inválido ou foi digitado incorretamente."
+    "message": "Este endereço web é inválido ou está mal digitado."
   },
   "loadingMessage": {
-    "message": "Um momento, o sistema está verificando..."
+    "message": "Por favor, aguarde, o sistema está a verificar..."
   },
   "cannotRetrieveSiteStatus": {
-    "message": "⚠️ Não foi possível obter o status do site."
+    "message": "Não é possível obter o estado do site."
   },
   "unknownRisk": {
-    "message": "⚠️ Risco desconhecido"
+    "message": "Risco Desconhecido"
   },
   "highRisk": {
-    "message": "🔴 Alto risco: muito perigoso!"
+    "message": "Alto Risco: Muito perigoso!"
   },
   "mediumRisk": {
-    "message": "🟠 Risco médio: tenha cuidado."
+    "message": "Risco Médio: Seja cuidadoso."
   },
   "lowRisk": {
-    "message": "🟢 Baixo risco: provavelmente seguro."
+    "message": "Baixo Risco: Provavelmente seguro."
   },
   "noSuspiciousFeatures": {
-    "message": "✅ Nenhuma característica suspeita."
+    "message": "Sem características suspeitas."
   },
   "siteStatusNotAvailable": {
-    "message": "⚠️ Status do site não disponível."
+    "message": "Estado do site não disponível."
   },
   "loginPageNoMX": {
-    "message": "Uma página de login foi encontrada, mas o domínio não possui servidor de e-mail. Isso pode ser uma tentativa de phishing."
+    "message": "Foi encontrada uma página de login, mas o domínio não tem um servidor de email. Isto pode ser phishing."
   },
   "sslValidationFailed": {
-    "message": "A segurança deste site não é válida. O certificado está ausente ou é inseguro."
+    "message": "A segurança deste site é inválida. O certificado está em falta ou é inseguro."
   },
   "malwareExtension": {
-    "message": "Este arquivo tem uma extensão suspeita (alto risco). Pode conter software malicioso."
+    "message": "Este ficheiro tem uma extensão suspeita (alto risco). Pode conter software malicioso."
   },
   "shortenedUrlError": {
-    "message": "Algo deu errado ao verificar este link encurtado (baixo risco). Não sabemos para onde ele leva."
+    "message": "Algo correu mal ao verificar este link curto (baixo risco). Não sabemos para onde leva."
   },
   "redirectedShortenedUrl": {
-    "message": "Este link encurtado leva a outro site (risco médio)."
+    "message": "Este link encurtado redireciona para outro site (risco médio)."
   },
   "cryptoPhishingAd": {
-    "message": "Este anúncio parece um golpe de criptomoedas (alto risco). Tenha muito cuidado."
+    "message": "Este anúncio assemelha-se a um golpe de criptomoedas (alto risco). Seja extremamente cauteloso."
   },
   "suspiciousAdStructure": {
     "message": "O link neste anúncio parece estranho (risco médio). Pode não ser seguro."
   },
   "suspiciousAdTLD": {
-    "message": "O anúncio usa um domínio frequentemente mal utilizado (alto risco)."
+    "message": "Este anúncio usa um domínio de nível superior (TLD) frequentemente abusado (alto risco)."
   },
   "homoglyphAdAttack": {
-    "message": "O anúncio usa caracteres que parecem de um site conhecido (risco médio)."
+    "message": "O anúncio usa caracteres semelhantes a um site conhecido (risco médio)."
   },
   "brandMisuse": {
     "message": "O anúncio usa indevidamente um nome de marca conhecido (alto risco). Pode ser falso."
   },
   "unknownWarning": {
-    "message": "Aviso desconhecido (risco médio). Tenha cuidado."
+    "message": "Aviso desconhecido (risco médio). Seja cuidadoso."
   },
   "typosquattingAttack": {
-    "message": "Este endereço da web parece um real, mas é ligeiramente diferente (alto risco). Pode ser falso."
+    "message": "Este endereço web **é um ataque de typosquatting**, o que significa que parece um domínio real mas está ligeiramente alterado para o enganar (alto risco)."
   },
   "downloadKeyword": {
-    "message": "Encontramos uma palavra suspeita relacionada a downloads no link (risco médio). Pode não ser seguro."
+    "message": "Encontramos uma palavra-chave suspeita sobre downloads no link (risco médio). Pode **indicar um download malicioso**."
   },
   "suspiciousScriptContent": {
     "message": "Este script contém código suspeito, como 'eval()' ou 'document.write()'. Pode ser inseguro."
   },
   "invalidScriptSrc": {
-    "message": "O link para o script está incorreto ou não pode ser lido corretamente."
+    "message": "O link do script está incorreto ou não pode ser lido."
   },
   "suspiciousIframeKeyword": {
-    "message": "Uma palavra suspeita foi encontrada no link de uma janela incorporada (iframe)."
+    "message": "Foi encontrada uma palavra suspeita no link de um iframe."
   },
   "allowedQueryParam": {
-    "message": "O link contém uma palavra de busca segura que é permitida."
+    "message": "O link contém um parâmetro de consulta seguro e permitido."
   },
   "suspiciousPageText": {
-    "message": "Esta página contém texto suspeito (alto risco). Pode tentar enganar você para agir."
+    "message": "Esta página contém texto suspeito (alto risco). Pode enganá-lo a fazer algo."
   },
   "urgencyTactic": {
-    "message": "Esta página usa linguagem urgente para pressionar você (alto risco). Cuidado com golpes."
+    "message": "Esta página usa linguagem urgente para o pressionar (alto risco). Cuidado com golpes."
+  },
+  "mixedScripts": {
+    "message": "Este endereço mistura diferentes **sistemas de scripts** (risco médio). Pode ser um truque de phishing."
+  },
+  "homoglyphAttack_microsoft_com": {
+    "message": "Este endereço usa caracteres semelhantes a microsoft.com (risco médio)."
+  },
+  "homoglyphAttack_apple_com": {
+    "message": "Este endereço usa caracteres semelhantes a apple.com (risco médio)."
+  },
+  "homoglyphAttack_google_com": {
+    "message": "Este endereço usa caracteres semelhantes a google.com (risco médio)."
+  },
+  "homoglyphAttack_linkedin_com": {
+    "message": "Este endereço usa caracteres semelhantes a linkedin.com (risco médio)."
+  },
+  "homoglyphAttack_alibaba_com": {
+    "message": "Este endereço usa caracteres semelhantes a alibaba.com (risco médio)."
+  },
+  "homoglyphAttack_whatsapp_com": {
+    "message": "Este endereço usa caracteres semelhantes a whatsapp.com (risco médio)."
+  },
+  "homoglyphAttack_amazon_com": {
+    "message": "Este endereço usa caracteres semelhantes a amazon.com (risco médio)."
+  },
+  "homoglyphAttack_x_com": {
+    "message": "Este endereço usa caracteres semelhantes a x.com (risco médio)."
+  },
+  "homoglyphAttack_facebook_com": {
+    "message": "Este endereço usa caracteres semelhantes a facebook.com (risco médio)."
+  },
+  "homoglyphAttack_adobe_com": {
+    "message": "Este endereço usa caracteres semelhantes a adobe.com (risco médio)."
+  },
+  "homoglyphAttack_paypal_com": {
+    "message": "Este endereço usa caracteres semelhantes a paypal.com (risco médio)."
+  },
+  "typosquattingAttack_microsoft_com": {
+    "message": "Este endereço web é muito semelhante a microsoft.com (alto risco). Pode ser falso."
+  },
+  "typosquattingAttack_apple_com": {
+    "message": "Este endereço web é muito semelhante a apple.com (alto risco). Pode ser falso."
+  },
+  "typosquattingAttack_google_com": {
+    "message": "Este endereço web é muito semelhante a google.com (alto risco). Pode ser falso."
+  },
+  "typosquattingAttack_linkedin_com": {
+    "message": "Este endereço web é muito semelhante a linkedin.com (alto risco). Pode ser falso."
+  },
+  "typosquattingAttack_alibaba_com": {
+    "message": "Este endereço web é muito semelhante a alibaba.com (alto risco). Pode ser falso."
+  },
+  "typosquattingAttack_whatsapp_com": {
+    "message": "Este endereço web é muito semelhante a whatsapp.com (alto risco). Pode ser falso."
+  },
+  "typosquattingAttack_amazon_com": {
+    "message": "Este endereço web é muito semelhante a amazon.com (alto risco). Pode ser falso."
+  },
+  "typosquattingAttack_x_com": {
+    "message": "Este endereço web é muito semelhante a x.com (alto risco). Pode ser falso."
+  },
+  "typosquattingAttack_facebook_com": {
+    "message": "Este endereço web é muito semelhante a facebook.com (alto risco). Pode ser falso."
+  },
+  "typosquattingAttack_adobe_com": {
+    "message": "Este endereço web é muito semelhante a adobe.com (alto risco). Pode ser falso."
+  },
+  "typosquattingAttack_paypal_com": {
+    "message": "Este endereço web é muito semelhante a paypal.com (alto risco). Pode ser falso."
+  },
+  "similarToLegitimateDomain_microsoft_com": {
+    "message": "Este site é quase idêntico a microsoft.com (risco médio). Pode ser uma cópia falsa."
+  },
+  "similarToLegitimateDomain_apple_com": {
+    "message": "Este site é quase idêntico a apple.com (risco médio). Pode ser uma cópia falsa."
+  },
+  "similarToLegitimateDomain_google_com": {
+    "message": "Este site é quase idêntico a google.com (risco médio). Pode ser uma cópia falsa."
+  },
+  "similarToLegitimateDomain_linkedin_com": {
+    "message": "Este site é quase idêntico a linkedin.com (risco médio). Pode ser uma cópia falsa."
+  },
+  "similarToLegitimateDomain_alibaba_com": {
+    "message": "Este site é quase idêntico a alibaba.com (risco médio). Pode ser uma cópia falsa."
+  },
+  "similarToLegitimateDomain_whatsapp_com": {
+    "message": "Este site é quase idêntico a whatsapp.com (risco médio). Pode ser uma cópia falsa."
+  },
+  "similarToLegitimateDomain_amazon_com": {
+    "message": "Este site é quase idêntico a amazon.com (risco médio). Pode ser uma cópia falsa."
+  },
+  "similarToLegitimateDomain_x_com": {
+    "message": "Este site é quase idêntico a x.com (risco médio). Pode ser uma cópia falsa."
+  },
+  "similarToLegitimateDomain_facebook_com": {
+    "message": "Este site é quase idêntico a facebook.com (risco médio). Pode ser uma cópia falsa."
+  },
+  "similarToLegitimateDomain_adobe_com": {
+    "message": "Este site é quase idêntico a adobe.com (risco médio). Pode ser uma cópia falsa."
+  },
+  "similarToLegitimateDomain_paypal_com": {
+    "message": "Este site é quase idêntico a paypal.com (risco médio). Pode ser uma cópia falsa."
+  },
+  "suspiciousPunycodeDecoding_microsoft_com": {
+    "message": "Este endereço punycode decodifica-se inesperadamente para microsoft.com (alto risco)."
+  },
+  "suspiciousPunycodeDecoding_apple_com": {
+    "message": "Este endereço punycode decodifica-se inesperadamente para apple.com (alto risco)."
+  },
+  "suspiciousPunycodeDecoding_google_com": {
+    "message": "Este endereço punycode decodifica-se inesperadamente para google.com (alto risco)."
+  },
+  "suspiciousPunycodeDecoding_linkedin_com": {
+    "message": "Este endereço punycode decodifica-se inesperadamente para linkedin.com (alto risco)."
+  },
+  "suspiciousPunycodeDecoding_alibaba_com": {
+    "message": "Este endereço punycode decodifica-se inesperadamente para alibaba.com (alto risco)."
+  },
+  "suspiciousPunycodeDecoding_whatsapp_com": {
+    "message": "Este endereço punycode decodifica-se inesperadamente para whatsapp.com (alto risco)."
+  },
+  "suspiciousPunycodeDecoding_amazon_com": {
+    "message": "Este endereço punycode decodifica-se inesperadamente para amazon.com (alto risco)."
+  },
+  "suspiciousPunycodeDecoding_x_com": {
+    "message": "Este endereço punycode decodifica-se inesperadamente para x.com (alto risco)."
+  },
+  "suspiciousPunycodeDecoding_facebook_com": {
+    "message": "Este endereço punycode decodifica-se inesperadamente para facebook.com (alto risco)."
+  },
+  "suspiciousPunycodeDecoding_adobe_com": {
+    "message": "Este endereço punycode decodifica-se inesperadamente para adobe.com (alto risco)."
+  },
+  "suspiciousPunycodeDecoding_paypal_com": {
+    "message": "Este endereço punycode decodifica inesperadamente para paypal.com (alto risco)."
+  },
+  "digitHomoglyph": {
+    "message": "Este endereço usa dígitos que parecem letras (risco médio). Pode ser um site falso."
+  },
+  "trustedTLD": {
+    "message": "Este domínio tem um domínio de nível superior (TLD) confiável (baixo risco). Isto é geralmente seguro."
+  },
+  "trustedTld": {
+    "message": "Este domínio tem um domínio de nível superior (TLD) confiável (baixo risco). Isto é geralmente seguro."
+  },
+  "typosquatting_alibaba_com": {
+    "message": "Este endereço é muito semelhante a alibaba.com (alto risco). Pode ser uma página falsa."
+  },
+  "typosquatting_amazon_com": {
+    "message": "Este endereço é muito semelhante a amazon.com (alto risco). Pode ser uma página falsa."
+  },
+  "typosquatting_apple_com": {
+    "message": "Este endereço é muito semelhante a apple.com (alto risco). Pode ser uma página falsa."
+  },
+  "typosquatting_facebook_com": {
+    "message": "Este endereço é muito semelhante a facebook.com (alto risco). Pode ser uma página falsa."
+  },
+  "typosquatting_google_com": {
+    "message": "Este endereço é muito semelhante a google.com (alto risco). Pode ser uma página falsa."
+  },
+  "typosquatting_linkedin_com": {
+    "message": "Este endereço é muito semelhante a linkedin.com (alto risco). Pode ser uma página falsa."
+  },
+  "typosquatting_microsoft_com": {
+    "message": "Este endereço é muito semelhante a microsoft.com (alto risco). Pode ser uma página falsa."
+  },
+  "typosquatting_whatsapp_com": {
+    "message": "Este endereço é muito semelhante a whatsapp.com (alto risco). Pode ser uma página falsa."
+  },
+  "typosquatting_x_com": {
+    "message": "Este endereço é muito semelhante a x.com (alto risco). Pode ser uma página falsa."
+  },
+  "typosquatting_adobe_com": {
+    "message": "Este endereço é muito semelhante a adobe.com (alto risco). Pode ser uma página falsa."
+  },
+  "typosquatting_paypal_com": {
+    "message": "Este endereço se assemelha muito a paypal.com (alto risco). Pode ser uma página falsa."
   }
 }

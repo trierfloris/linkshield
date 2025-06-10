@@ -1,9 +1,9 @@
 window.CONFIG = {
     // Verdachte Top-Level Domeinen (TLD’s)
-    SUSPICIOUS_TLDS: /\.(academy|accountant|accountants|agency|ap|app|art|asia|auto|bank|bar|beauty|bet|bid|bio|biz|blog|buzz|cam|capital|casa|casino|cfd|charity|cheap|church|city|claims|click|club|company|crispsalt|cyou|data|date|design|dev|digital|directory|download|email|energy|estate|events|exchange|expert|exposed|express|finance|fit|forsale|foundation|fun|games|gle|goog|gq|guide|guru|health|help|home|host|html|icu|ink|institute|investments|ip|jobs|life|limited|link|live|loan|lol|ltd|ly|mall|market|me|media|men|ml|mom|money|monster|mov|network|one|online|page|partners|party|php|pics|play|press|pro|promo|pw|quest|racing|rest|review|rocks|run|sbs|school|science|services|shop|shopping|site|software|solutions|space|store|stream|support|team|tech|tickets|to|today|tools|top|trade|trading|uno|ventures|vip|website|wiki|win|work|world|xin|xyz|zip|zone|co|cc|tv|name|team|live|stream|quest|sbs|lat|click|monster|bond|cyou|store|crypto|wallet|quantum|nft|web3|metaverse|ai|vr|dao|health|green|privacy|smart|edge|cloud|network|connect)$/i,
+    SUSPICIOUS_TLDS: /\.(academy|accountant|accountants|agency|ap|app|art|asia|auto|bank|bar|beauty|bet|bid|bio|biz|blog|buzz|cam|capital|casa|casino|cfd|charity|cheap|church|city|claims|click|club|company|crispsalt|cyou|data|date|design|dev|digital|directory|download|email|energy|estate|events|exchange|expert|exposed|express|finance|fit|forsale|foundation|fun|games|gle|goog|gq|guide|guru|health|help|home|host|html|icu|ink|institute|investments|ip|jobs|life|limited|link|live|loan|lol|ltd|ly|mall|market|me|media|men|ml|mom|money|monster|mov|network|one|online|page|partners|party|php|pics|play|press|pro|promo|pw|quest|racing|rest|review|rocks|run|sbs|school|science|services|shop|shopping|site|software|solutions|space|store|stream|support|team|tech|tickets|to|today|tools|top|trade|trading|uno|ventures|vip|website|wiki|win|work|world|xin|xyz|zip|zone|co|cc|tv|name|team|live|stream|quest|sbs|lat|click|monster|bond|cyou|store|crypto|wallet|quantum|nft|web3|metaverse|ai|vr|dao|health|green|privacy|smart|edge|cloud|network|connect|quantum|holo|neuro)$/i,
 
     // Debug Modus
-    DEBUG_MODE: false, // Zet op true voor debugging, false voor productie
+    DEBUG_MODE: true, // Zet op true voor debugging, false voor productie
 
     // Toegestane URL Protocollen
     ALLOWED_PROTOCOLS: ['http:', 'https:', 'mailto:', 'tel:', 'ftp:'],
@@ -34,7 +34,11 @@ window.CONFIG = {
         "mutate", "evolve", "variant", "polymorphic", "interactive", "live", "stream", 
         "avatar", "edge", "distributed", "cdn", "fog",
         "track", "monitor", "analytics", "behavioral", "assistant", "bot", "support", 
-        "guide", "6g", "ultra", "network", "connectivity" // Nieuwe trefwoorden
+        "guide", "6g", "ultra", "network", "connectivity",
+        "voice-clone", "speech", "vishing", "callbot", "hologram", "holo", "ar-interface", 
+        "spatial", "quantum-secure", "post-quantum", "qkd",
+        "bci", "neural", "brainwave", "neuro", "emotion", "sentiment", "affective", 
+        "psychometric", "zkp", "zero-knowledge", "proof" // Nieuwe trefwoorden
     ]),
 
     // Phishing Trefwoorden
@@ -56,7 +60,11 @@ window.CONFIG = {
         "mutate", "evolve", "variant", "polymorphic", "interactive", "live", "stream", 
         "avatar", "edge", "distributed", "cdn", "fog",
         "track", "monitor", "analytics", "behavioral", "assistant", "bot", "support", 
-        "guide", "6g", "ultra", "network", "connectivity" // Nieuwe trefwoorden
+        "guide", "6g", "ultra", "network", "connectivity",
+        "voice-clone", "speech", "vishing", "callbot", "hologram", "holo", "ar-interface", 
+        "spatial", "quantum-secure", "post-quantum", "qkd",
+        "bci", "neural", "brainwave", "neuro", "emotion", "sentiment", "affective", 
+        "psychometric", "zkp", "zero-knowledge", "proof" // Nieuwe trefwoorden
     ]),
 
     // Verdachte Iframe Trefwoorden
@@ -98,12 +106,12 @@ window.CONFIG = {
         "fw.to", "lnk2.me", "shurl.net", "mrk.to", "clk.im", "u.to", "ezurl.cc", "fur.ly", "v.gd", "2ty.cc", "sh.ky",
         "s.coop", "cutt.us", "bitly.com", "q.gs", "i.cut", "s.id", "linklyhq.com", "slkt.io", "pp.gg", "short.url",
         "zpr.io", "me.qr", "short.io", "dub.co", "cl.ly", "bl.ink", "go.ly", "soo.gd", "jmp.sh", "u.nu", "t2m.io", "short.link",
-        "tiny.one", "short.link", "shr.link", "linkly.me", "cut.link", "shorty.ai" // Nieuwe shortener toegevoegd
+        "tiny.one", "short.link", "shr.link", "linkly.me", "cut.link", "shorty.ai", "link.ai", "tiny.ai", "cut.ai" // Nieuwe shorteners toegevoegd
     ],
 
     // Verdachte URL Patronen
     SUSPICIOUS_URL_PATTERNS: [
-        /\/(payment|invoice|billing|money|bank|secure|login|checkout|subscription|refund|delivery|2fa|mfa|ai|quantum|crypto|wallet|blockchain|ledger|metaverse|deepfake|nft|web3|ar|chatbot|voice|biometric|zero-trust|telehealth|healthcare|prescription|patient|meeting|call|model|privacy|secure-chat|green|eco|sustainable|adaptive|personalize|targeted|social|smart|city|iot|mutate|interactive|live|avatar|edge|distributed|cdn|track|monitor|analytics|assistant|bot|6g|ultra|connectivity)\//i,
+        /\/(payment|invoice|billing|money|bank|secure|login|checkout|subscription|refund|delivery|2fa|mfa|ai|quantum|crypto|wallet|blockchain|ledger|metaverse|deepfake|nft|web3|ar|chatbot|voice|biometric|zero-trust|telehealth|healthcare|prescription|patient|meeting|call|model|privacy|secure-chat|green|eco|sustainable|adaptive|personalize|targeted|social|smart|city|iot|mutate|interactive|live|avatar|edge|distributed|cdn|track|monitor|analytics|assistant|bot|6g|ultra|connectivity|voice-clone|speech|vishing|callbot|hologram|holo|ar-interface|spatial|quantum-secure|post-quantum|qkd|bci|neural|brainwave|neuro|emotion|sentiment|affective|psychometric|zkp|zero-knowledge|proof)\//i,
         /(Base64|hexadecimal|b64|encode|urlencode|obfuscate|crypt)/i,
         /\/(signup|register|confirmation|securepayment|order|tracking|verify-account|reset-password|oauth)\//i,
         /(?:\bsecurepay\b|\baccountverify\b|\bresetpassword\b|\bverifyemail\b|\bupdateinfo\b)/i,
@@ -111,7 +119,7 @@ window.CONFIG = {
         /(fake|clone|spoof|impersonate|fraud|scam|phish)/i,
         /[^a-zA-Z0-9]{2,}/,
         /(http[s]?:\/\/[^\/]+){2,}/i,
-        /\/(chat|ai|machine-learning|quantum|crypto|wallet|blockchain|ledger|metaverse|deepfake|face-swap|nft|web3|ar|chatbot|voice|biometric|zero-trust|telehealth|healthcare|prescription|patient|meeting|call|model|privacy|secure-chat|green|eco|sustainable|adaptive|personalize|targeted|social|smart|city|iot|mutate|interactive|live|avatar|edge|distributed|cdn|track|monitor|analytics|assistant|bot|6g|ultra|connectivity)\//i // Nieuwe detectie voor spearphishing, AI-assistenten, en 6G
+        /\/(chat|ai|machine-learning|quantum|crypto|wallet|blockchain|ledger|metaverse|deepfake|face-swap|nft|web3|ar|chatbot|voice|biometric|zero-trust|telehealth|healthcare|prescription|patient|meeting|call|model|privacy|secure-chat|green|eco|sustainable|adaptive|personalize|targeted|social|smart|city|iot|mutate|interactive|live|avatar|edge|distributed|cdn|track|monitor|analytics|assistant|bot|6g|ultra|connectivity|voice-clone|speech|vishing|callbot|hologram|holo|ar-interface|spatial|quantum-secure|post-quantum|qkd|bci|neural|brainwave|neuro|emotion|sentiment|affective|psychometric|zkp|zero-knowledge|proof)\//i // Nieuwe detectie voor BCI, emotie-analyse, en ZKP
     ],
 
     // Verdachte Script Patronen
@@ -127,7 +135,9 @@ window.CONFIG = {
         /(quic-transport|http3)/i, // Detectie voor QUIC/HTTP/3-phishing
         /(serverless|lambda|cloudfunction)/i, // Detectie voor serverless phishing
         /(WebGL|Three\.js)/i, // Detectie voor interactieve deepfake-technologieën
-        /(ipfs|decentralized|dweb)/i // Nieuwe detectie voor gedecentraliseerde netwerken
+        /(ipfs|decentralized|dweb)/i, // Detectie voor gedecentraliseerde netwerken
+        /(federated-learning|distributed-ai|edge-ai)/i, // Detectie voor gedistribueerde AI-modellen
+        /(WebGPU)/i // Nieuwe detectie voor WebGPU-gebaseerde phishing
     ],
 
     // Toegestane Paden en Query Parameters
@@ -194,8 +204,14 @@ window.CONFIG = {
         /social@.*$/i, // Detectie voor microtargeting-phishing
         /edge@.*$/i, // Detectie voor edge computing-phishing
         /live@.*$/i, // Detectie voor live deepfake-interacties
-        /assistant@.*$/i, // Nieuwe detectie voor nep-AI-assistenten
-        /6g@.*$/i // Nieuwe detectie voor 6G-phishing
+        /assistant@.*$/i, // Detectie voor nep-AI-assistenten
+        /6g@.*$/i, // Detectie voor 6G-phishing
+        /voice@.*$/i, // Detectie voor stemimitatie-phishing
+        /holo@.*$/i, // Detectie voor holografische phishing
+        /quantum@.*$/i, // Detectie voor quantumcryptografie-phishing
+        /bci@.*$/i, // Nieuwe detectie voor BCI-phishing
+        /neuro@.*$/i, // Nieuwe detectie voor BCI-phishing
+        /zkp@.*$/i // Nieuwe detectie voor zero-knowledge proof phishing
     ],
 
     // Typosquatting Patronen
@@ -213,7 +229,8 @@ window.CONFIG = {
         'paypal.com', 'netflix.com', 'instagram.com', 'outlook.com', 'dropbox.com',
         'opensea.io', 'decentraland.org', 'chat.openai.com', 'auth0.com', 
         'teladoc.com', 'zoom.us', 'signal.org', 'ecosia.org', 
-        'smartcityexpo.com', 'cloudflare.com', 'nokia.com' // Nieuwe toevoeging voor 6G-platform
+        'smartcityexpo.com', 'cloudflare.com', 'nokia.com', 'idquantique.com', 
+        'neuralink.com' // Nieuwe toevoeging voor BCI
     ],
 
     COMPOUND_TLDS: [
@@ -241,6 +258,8 @@ window.CONFIG = {
         'signal.org': 3,      // Privacyplatform, potentieel spoofing-doel
         'cloudflare.com': 3,  // Edge/cloud-platform, potentieel spoofing-doel
         'nokia.com': 3,       // 6G-platform, potentieel spoofing-doel
+        'idquantique.com': 3, // Quantumcryptografie-platform, potentieel spoofing-doel
+        'neuralink.com': 3,   // BCI-platform, potentieel spoofing-doel
         'netflix.com': 2,     // Abonnementsphishing
         'whatsapp.com': 2,    // Berichtenscams
         'x.com': 2,           // Opkomend risico door populariteit

@@ -1,9 +1,20 @@
 window.CONFIG = {
     // Verdachte Top-Level Domeinen (TLD’s)
-    SUSPICIOUS_TLDS: /\.(academy|accountant|accountants|agency|ap|app|art|asia|auto|bank|bar|beauty|bet|bid|bio|biz|blog|buzz|cam|capital|casa|casino|cfd|charity|cheap|church|city|claims|click|club|company|crispsalt|cyou|data|date|design|dev|digital|directory|download|email|energy|estate|events|exchange|expert|exposed|express|finance|fit|forsale|foundation|fun|games|gle|goog|gq|guide|guru|health|help|home|host|html|icu|ink|institute|investments|ip|jobs|life|limited|link|live|loan|lol|ltd|ly|mall|market|me|media|men|ml|mom|money|monster|mov|network|one|online|page|partners|party|php|pics|play|press|pro|promo|pw|quest|racing|rest|review|rocks|run|sbs|school|science|services|shop|shopping|site|software|solutions|space|store|stream|support|team|tech|tickets|to|today|tools|top|trade|trading|uno|ventures|vip|website|wiki|win|work|world|xin|xyz|zip|zone|co|cc|tv|name|team|live|stream|quest|sbs|lat|click|monster|bond|cyou|store|crypto|wallet|quantum|nft|web3|metaverse|ai|vr|dao|health|green|privacy|smart|edge|cloud|network|connect|quantum|holo|neuro)$/i,
+    SUSPICIOUS_TLDS: /\.(academy|accountant|accountants|agency|ap|app|art|asia|auto|bar|beauty|bet|bid|bio|biz|blog|buzz|cam|capital|casa|casino|cfd|charity|cheap|church|city|claims|click|club|company|crispsalt|cyou|data|date|design|dev|digital|directory|download|email|energy|estate|events|exchange|expert|exposed|express|finance|fit|forsale|foundation|fun|games|gle|goog|gq|guide|guru|health|help|home|host|html|icu|ink|institute|investments|ip|jobs|life|limited|link|live|loan|lol|ltd|ly|mall|market|me|media|men|ml|mom|money|monster|mov|network|one|online|page|partners|party|php|pics|play|press|pro|promo|pw|quest|racing|rest|review|rocks|run|sbs|school|science|services|shop|shopping|site|software|solutions|space|store|stream|support|team|tech|tickets|to|today|tools|top|trade|trading|uno|ventures|vip|website|wiki|win|work|world|xin|xyz|zip|zone|co|cc|tv|name|team|live|stream|quest|sbs|lat|click|monster|bond|cyou|store|crypto|wallet|quantum|nft|web3|metaverse|vr|dao|health|green|privacy|smart|edge|network|connect|quantum|holo|neuro)$/i,
+
+
+// ==== Risicodrempels voor gefaseerde analyse en UI-feedback ====
+LOW_THRESHOLD: 4,             //  risico < 4 → safe
+MEDIUM_THRESHOLD: 8,          //  4 ≤ risico < 8 → caution
+HIGH_THRESHOLD: 15,           //  risico ≥ 15 → alert
+
+YOUNG_DOMAIN_THRESHOLD_DAYS: 14,  // Domeinen jonger dan 2 weken (blijft 14)
+DOMAIN_AGE_MIN_RISK: 5,           // Domeinleeftijd‐check vanaf 5 punten (was 3)
+YOUNG_DOMAIN_RISK: 5,             // Risico‐gewicht voor jonge domeinen (was 7)
+PROTOCOL_RISK: 4,
 
     // Debug Modus
-    DEBUG_MODE: true, // Zet op true voor debugging, false voor productie
+    DEBUG_MODE: false, // Zet op true voor debugging, false voor productie
 
     // Toegestane URL Protocollen
     ALLOWED_PROTOCOLS: ['http:', 'https:', 'mailto:', 'tel:', 'ftp:'],
@@ -68,7 +79,37 @@ window.CONFIG = {
     ]),
 
     // Verdachte Iframe Trefwoorden
-    SUSPICIOUS_IFRAME_KEYWORDS: /(malicious|phish|track|adserver|spy|exploit|redirect|inject|unsafe|popup|banner|ads|clickjacking|overlay|hidden|cloak|fake-login|overlay-login)/i,
+    // VERVANG DE OUDE SUSPICIOUS_IFRAME_KEYWORDS REGEL MET DIT BLOK:
+
+SUSPICIOUS_IFRAME_PATTERNS: [
+  {
+    name: 'suspiciousIframeAdComponent',
+    pattern: /(adserver|banner|ads|doubleclick|pubmatic)/i,
+    // De 'reason' hier is een fallback voor als de vertaling niet gevonden wordt.
+    reason: 'Een advertentiecomponent van een derde partij is gedetecteerd.' 
+  },
+  {
+    name: 'suspiciousIframeTracking',
+    pattern: /(track|spy|analytics)/i,
+    reason: 'Een trackingelement dat uw activiteit kan volgen, is gevonden.'
+  },
+  {
+    name: 'suspiciousIframeMalicious',
+    pattern: /(malicious|phish|exploit|inject|clickjacking|fake-login)/i,
+    reason: 'Een potentieel schadelijk element (zoals phishing of een exploit) is gevonden.'
+  },
+  {
+    name: 'suspiciousIframeHidden',
+    // Deze check is een functie, geen regex, maar de logica kan dit aan.
+    check: (iframe) => {
+      const style = window.getComputedStyle(iframe);
+      const isHidden = style.display === 'none' || style.visibility === 'hidden' || style.opacity === '0' || parseInt(style.width) < 2 || parseInt(style.height) < 2;
+      const hasSuspiciousAttributes = iframe.hasAttribute('onload') || iframe.src.startsWith('javascript:');
+      return isHidden && hasSuspiciousAttributes;
+    },
+    reason: 'Een verdacht, verborgen element is gedetecteerd.'
+  }
+],
 
     // Cache Duur (in milliseconden)
     CACHE_DURATION_MS: 24 * 60 * 60 * 1000, // 24 uur
@@ -226,7 +267,7 @@ window.CONFIG = {
     legitimateDomains: [
         'microsoft.com', 'apple.com', 'google.com', 'linkedin.com', 'alibaba.com',
         'whatsapp.com', 'amazon.com', 'x.com', 'facebook.com', 'adobe.com',
-        'paypal.com', 'netflix.com', 'instagram.com', 'outlook.com', 'dropbox.com',
+        'paypal.com', 'netflix.com', 'instagram.com', 'outlook.com',
         'opensea.io', 'decentraland.org', 'chat.openai.com', 'auth0.com', 
         'teladoc.com', 'zoom.us', 'signal.org', 'ecosia.org', 
         'smartcityexpo.com', 'cloudflare.com', 'nokia.com', 'idquantique.com', 

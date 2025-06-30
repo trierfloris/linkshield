@@ -5,10 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title data-i18n="alertTitle"></title>
   <style>
+    /* Reset en globale stijlen */
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #F8D7DA; /* lichtroze achtergrond voor alarm */
+      background-color: #FFF9E6; /* lichtgeel achtergrond, contrast 4.5:1+ */
       color: #1F1F1F;
       line-height: 1.5;
       padding: 20px;
@@ -22,7 +23,7 @@
       padding: 20px;
     }
     h1 {
-      color: #721C24;         /* donkerrood */
+      color: #D39E00;         /* donkerder geel/oranje voor contrast */
       font-size: 1.2rem;
       text-align: center;
       margin-bottom: 10px;
@@ -34,12 +35,12 @@
       font-size: 0.9rem;
     }
     #url-info a {
-      color: #C82333;
+      color: #C82333;         /* rood voor link */
       text-decoration: underline;
     }
     .risk-level {
       font-weight: bold;
-      color: #C82333;         /* rood */
+      color: #D39E00;
       margin-bottom: 15px;
       font-size: 0.9rem;
     }
@@ -55,8 +56,8 @@
       margin-bottom: 0.3em;
     }
     .advice {
-      background-color: #F5C6CB; /* lichtere rode advise-box */
-      color: #721C24;
+      background-color: #FFF2CC; /* lichtere advise-box */
+      color: #665500;
       padding: 10px;
       border-radius: 4px;
       font-size: 0.9rem;
@@ -84,6 +85,6 @@
       <div data-i18n="adviceCheckUrl"></div>
     </div>
   </div>
-  <script src="alert.js"></script>
+  <script src="caution.js"></script>
 </body>
 </html>

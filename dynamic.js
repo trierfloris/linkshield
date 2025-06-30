@@ -1,54 +1,56 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Debugging is uitgeschakeld, dus alle console.log/console.error worden niet gebruikt.
-    // console.log("Dynamic popup geladen. Bezig met ophalen van site-status...");
+    // Debugging is uitgeschakeld; console.log/console.error blijven uit
 
     /**
      * Centrale foutafhandelingsfunctie.
-     * In deze versie doet deze functie niets (logging uitgeschakeld).
      * @param {Error} error - De opgetreden fout.
      * @param {string} context - De context waarin de fout optrad.
      */
     function handleError(error, context) {
-        // Logging uitgeschakeld: 
-        // console.error(`[${context}] ${error.message}`, error);
+        // Logging uitgeschakeld
     }
 
     /**
      * Valideert of de site-status het verwachte format heeft.
-     * @param {any} status - De opgehaalde status.
-     * @returns {boolean} True als status geldig is, anders false.
+     * @param {any} status
+     * @returns {boolean}
      */
     function validateSiteStatus(status) {
-        return status && typeof status === 'object' && 
-            ('isSafe' in status) && (typeof status.isSafe === 'boolean');
+        return status && typeof status === 'object' &&
+            ('level' in status) && typeof status.level === 'string';
     }
 
-    // Probeer de huidige site-status op te halen
-    chrome.storage.local.get("currentSiteStatus", ({ currentSiteStatus }) => {
+    // Haal de huidige site-status op uit storage
+    chrome.storage.local.get('currentSiteStatus', ({ currentSiteStatus }) => {
         if (chrome.runtime.lastError) {
-            // Logging uitgeschakeld:
-            // console.error("Fout bij ophalen van site-status:", chrome.runtime.lastError.message);
-            document.body.innerHTML = "<h2>Fout bij laden</h2><p>Kan site-status niet ophalen.</p>";
+            document.body.innerHTML =
+                '<h2>Fout bij laden</h2>' +
+                '<p>Kan site-status niet ophalen.</p>';
             return;
         }
 
-        // Valideer de opgehaalde site-status
+        // Valideer de opgehaalde status
         if (!validateSiteStatus(currentSiteStatus)) {
-            // Geen geldige status gevonden; standaard naar popup.html
-            // console.warn("Ongeldige of ontbrekende site-status. Standaard naar popup.html.");
-            window.location.href = chrome.runtime.getURL("popup.html");
+            // Standaard naar normale popup
+            window.location.href = chrome.runtime.getURL('popup.html');
             return;
         }
 
-        // Site-status is geldig
-        // console.log("Huidige site-status:", currentSiteStatus);
-
-        if (!currentSiteStatus.isSafe) {
-            // console.log("Onveilige site gedetecteerd. Doorsturen naar alert.html...");
-            window.location.href = chrome.runtime.getURL("alert.html");
-        } else {
-            // console.log("Veilige site gedetecteerd. Doorsturen naar popup.html...");
-            window.location.href = chrome.runtime.getURL("popup.html");
+        // Bepaal actie op basis van level
+        const lvl = currentSiteStatus.level.trim().toLowerCase();
+        switch (lvl) {
+            case 'alert':
+                // Hoge urgentie
+                window.location.href = chrome.runtime.getURL('alert.html');
+                break;
+            case 'caution':
+                // Milde waarschuwing
+                window.location.href = chrome.runtime.getURL('caution.html');
+                break;
+            case 'safe':
+            default:
+                // Veilig of onbekend
+                window.location.href = chrome.runtime.getURL('popup.html');
         }
     });
 });

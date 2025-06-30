@@ -1,126 +1,135 @@
 {
   "extName": {
-    "message": "LinkShield"
+    "message": "链接盾 (LinkShield)"
   },
   "extDescription": {
-    "message": "LinkShield 帮助您识别危险网站。切勿与未知网站分享敏感信息。"
+    "message": "链接盾 (LinkShield) 帮助您识别不安全的网站和链接，确保您的上网安全。"
   },
   "alertTitle": {
     "message": "警告！"
   },
   "alertMessage": {
-    "message": "本网站包含指向以下内容的链接："
+    "message": "该网站包含一个指向以下地址的链接："
   },
   "severityLabel": {
-    "message": "风险"
+    "message": "风险："
   },
   "reasonLabel": {
-    "message": "原因？"
+    "message": "原因："
   },
   "adviceMessage": {
-    "message": "您能做什么？"
-  },
-  "severityMediumRisk": {
-    "message": "中等风险：此链接可能不安全。请小心。"
+    "message": "您可以做什么？"
   },
   "adviceCheckUrl": {
-    "message": "只有在确定安全的情况下才打开此链接。仔细检查网址。如果对 URL 有疑问，切勿登录。"
+    "message": "只有在完全信任发件人的情况下才打开此链接。如有疑问，请勿点击。切勿在不信任的网站上输入您的密码。"
   },
   "noHttps": {
-    "message": "此链接未使用 HTTPS（高风险）。您的数据更容易被盗。"
+    "message": "与此网站的连接不安全（无 HTTPS）。您的信息可能会被他人看到。"
   },
   "ipAsDomain": {
-    "message": "本网站使用 IP 地址而非**域名**（高风险）。这可能是一种欺骗手段。"
+    "message": "此网站使用 IP 地址而非域名。这种情况不寻常且风险很高。"
   },
   "tooManySubdomains": {
-    "message": "此网址包含多个**子域名**（高风险）。该网站可能是虚假的。"
+    "message": "此网址包含许多子域名（例如 part1.part2.site.com）。这可能表示一个不安全的网站（中等风险）。"
   },
   "suspiciousKeywords": {
-    "message": "发现可疑关键词（中等风险）。这些词常用于诈骗。"
+    "message": "该链接包含通常与诈骗相关的词语（低风险）。"
   },
   "suspiciousPattern": {
-    "message": "网址看起来可疑（高风险）。这可能被用来欺骗您。"
+    "message": "此网址的结构似乎不寻常（中等风险）。"
   },
   "shortenedUrl": {
-    "message": "这是一个缩短的链接（高风险）。您无法看到它实际指向哪里。"
+    "message": "这是一个短链接（如 bit.ly）。无法直接看到实际目标地址（中等风险）。"
   },
   "downloadPage": {
-    "message": "此页面提供可疑下载（高风险）。它可能包含恶意软件。"
+    "message": "此链接似乎会下载一个文件。请仅打开您完全信任的文件（中等风险）。"
   },
   "freeHosting": {
-    "message": "此网站使用免费托管（高风险）。这些网站通常安全性较低。"
+    "message": "此网站使用免费托管平台。诈骗者有时会利用这一点（中等风险）。"
   },
   "encodedCharacters": {
-    "message": "此网址包含奇怪的字符（高风险）。这可能被用来隐藏危险内容。"
+    "message": "该链接包含不寻常的字符（低风险）。这可能被用来隐藏真实的目标地址。"
   },
   "homoglyphAttack": {
-    "message": "此地址使用了相似字符（中等风险）。它可能试图伪装成合法网站。"
+    "message": "此网址使用的字符与一个已知网站的字符几乎完全相同（高风险）。这是一个误导您的伎俩。"
   },
   "metaRedirect": {
-    "message": "本网站会自动重定向您（高风险）。您可能会被引导至危险网站。"
+    "message": "此网站会自动将您重定向。这可能导向一个不安全的网站（中等风险）。"
   },
   "cryptoPhishing": {
-    "message": "此地址类似于加密货币诈骗（高风险）。请小心，以免损失金钱。"
+    "message": "此链接似乎是一个加密货币骗局（高风险）。请格外小心您的钱包和凭证。"
   },
   "externalScripts": {
-    "message": "此网站加载可疑的外部代码（高风险）。这可能很危险。"
-  },
-  "suspiciousIframes": {
-    "message": "此网站包含可疑的嵌入式框架（高风险）。这可能被用来欺骗您。"
+    "message": "此网站从一个被标记为有风险的外部来源加载代码。"
   },
   "suspiciousParams": {
-    "message": "此地址包含可疑的额外信息（中等风险）。它可能被用来绕过安全检测。"
+    "message": "该链接包含有时用于不安全操作的技术参数（低风险）。"
   },
   "mixedContent": {
-    "message": "此页面同时使用安全和不安全元素（中等风险）。它可能削弱安全性。"
+    "message": "这个安全页面正在加载不安全的内容。这是一个安全风险（中等风险）。"
   },
   "unusualPort": {
-    "message": "此网站使用不寻常的端口（高风险）。它可能试图绕过安全检测。"
+    "message": "此网站使用一个不寻常的技术端口。这可能是试图绕过安全设置（中等风险）。"
   },
   "javascriptScheme": {
-    "message": "此地址使用 JavaScript（高风险）。它可能执行恶意代码。"
+    "message": "此链接试图直接在您的浏览器中执行代码（高风险）。"
   },
   "urlFragmentTrick": {
-    "message": "此地址包含可疑的片段（中等风险）。它可能误导您真实的位置。"
+    "message": "该链接包含一个异常长的片段。这是一种有时用于误导的技术（低风险）。"
   },
   "suspiciousTLD": {
-    "message": "此域名使用有风险的顶级域名（高风险）。某些顶级域名常用于诈骗。"
+    "message": "此网站使用的域名后缀（如 .zip 或 .mov）经常被用于诈骗（高风险）。"
   },
   "base64OrHex": {
-    "message": "此地址包含编码信息（中等风险）。它可能隐藏危险内容。"
-  },
-  "iframeHidden": {
-    "message": "此网站使用隐藏框架（中等风险）。这可能向您隐瞒一些内容。"
+    "message": "此链接包含高度编码的信息。这通常用于隐藏恶意代码（高风险）。"
   },
   "similarToLegitimateDomain": {
-    "message": "此网站与知名可信网站非常相似。它可能是虚假副本。"
+    "message": "此网站与一个知名的受信任网站非常相似。请仔细检查地址，这可能是一个伪造的副本。"
+  },
+  "youngDomain": {
+    "message": "此域名仅在 $AGE$ 天前注册（高风险）。新域名更常被用于诈骗。",
+    "placeholders": {
+      "AGE": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "insecureLoginPage": {
+    "message": "此登录页面不安全（无 HTTPS）。切勿在此处输入您的密码（高风险）。"
+  },
+  "loginPageNoMX": {
+    "message": "此登录页面所属的域名无法接收电子邮件。这是非常危险的（高风险）。"
+  },
+  "malwareExtension": {
+    "message": "此链接指向一个可能有害的文件（例如 .exe 或 .zip）。请勿下载（高风险）。"
   },
   "popupTitle": {
-    "message": "LinkShield：保护自己免受网络钓鱼侵害"
+    "message": "链接盾：您的反网络钓鱼保护"
   },
   "popupSubtitle": {
-    "message": "通过警报和保护保持安全。"
+    "message": "通过实时警报和保护确保安全。"
   },
   "backgroundAnalysis": {
-    "message": "后台检查"
+    "message": "后台扫描"
   },
   "backgroundAnalysisDescription": {
-    "message": "在您访问危险网站之前将其阻止。"
+    "message": "在您访问危险网站之前就将其阻止。"
   },
   "activationRequired": {
-    "message": "使用此功能前请先启用它。"
+    "message": "请启用此功能以使用它。"
   },
   "integratedProtection": {
-    "message": "内置网络钓鱼和恶意软件防护"
+    "message": "集成保护"
   },
   "integratedProtectionDescription": {
-    "message": "此功能直接扫描网站和链接。"
+    "message": "直接检查网站和链接是否存在风险特征。"
   },
   "premiumFeaturesActive": {
-    "message": "您现在正在使用高级版！"
+    "message": "您现在正在使用高级版本！"
   },
   "upgradePrompt": {
-    "message": "升级到高级版以解锁更多功能。"
+    "message": "升级到高级版以获得额外功能。"
   },
   "saveSettings": {
     "message": "保存设置"
@@ -138,25 +147,25 @@
     "message": "检查许可证"
   },
   "licenseInvalid": {
-    "message": "许可证无效。"
+    "message": "许可证密钥无效。"
   },
   "licenseValid": {
-    "message": "许可证已激活！"
+    "message": "许可证已成功激活！"
   },
   "lastRuleUpdate": {
-    "message": "上次网络钓鱼数据库更新："
+    "message": "上次数据库更新："
   },
   "licenseStatus": {
-    "message": "许可证："
+    "message": "许可证状态："
   },
   "licenseFreemium": {
     "message": "免费版"
   },
   "bulkUrlCheck": {
-    "message": "批量检查链接"
+    "message": "检查多个链接"
   },
   "bulkUrlCheckDescription": {
-    "message": "上传 .txt 文件以同时检查多个链接。"
+    "message": "上传一个 .txt 文件以检查链接列表。"
   },
   "fileChoose": {
     "message": "选择文件"
@@ -165,279 +174,294 @@
     "message": "检查文件"
   },
   "fileCheckNoUrls": {
-    "message": "文件不包含链接。"
+    "message": "所选文件不包含任何链接。"
   },
   "fileCheckFailed": {
-    "message": "检查失败。"
+    "message": "文件检查失败。"
   },
   "safeDomain": {
-    "message": "本网站是安全的。"
+    "message": "这是一个已知的安全网站。"
   },
   "allowedProtocol": {
-    "message": "此链接使用安全协议。"
-  },
-  "insecureLoginPage": {
-    "message": "此登录页面未使用 HTTPS（高风险）。您的数据可能被盗。"
+    "message": "此链接使用安全协议（例如 'mailto:' 或 'tel:'）。"
   },
   "invalidUrl": {
     "message": "此网址无效或拼写错误。"
   },
   "loadingMessage": {
-    "message": "请稍候，系统正在检查..."
+    "message": "正在分析页面..."
   },
   "cannotRetrieveSiteStatus": {
-    "message": "无法获取网站状态。"
+    "message": "无法检索网站状态。"
   },
   "unknownRisk": {
     "message": "未知风险"
   },
   "highRisk": {
-    "message": "高风险：非常危险！"
+    "message": "高风险：请非常小心。"
   },
   "mediumRisk": {
-    "message": "中等风险：请小心。"
+    "message": "中等风险：请密切注意。"
   },
   "lowRisk": {
-    "message": "低风险：可能安全。"
+    "message": "低风险：一些值得关注的问题。"
   },
   "noSuspiciousFeatures": {
-    "message": "没有可疑特征。"
+    "message": "未发现直接的风险特征。"
   },
   "siteStatusNotAvailable": {
-    "message": "网站状态不可用。"
-  },
-  "loginPageNoMX": {
-    "message": "检测到登录页面，但该域名没有邮件服务器。这可能是网络钓鱼。"
+    "message": "此网站的状态不可用。"
   },
   "sslValidationFailed": {
-    "message": "此网站的安全性无效。证书缺失或不安全。"
-  },
-  "malwareExtension": {
-    "message": "此文件具有可疑扩展名（高风险）。它可能包含恶意软件。"
+    "message": "此网站的安全证书无效。"
   },
   "shortenedUrlError": {
-    "message": "检查此短链接时发生错误（低风险）。我们不知道它指向何处。"
+    "message": "无法检查此短链接的最终目标地址。"
   },
   "redirectedShortenedUrl": {
-    "message": "此缩短的链接重定向到另一个网站（中等风险）。"
+    "message": "此短链接将您重定向到另一个网站。"
   },
   "cryptoPhishingAd": {
-    "message": "此广告类似于加密货币诈骗（高风险）。请格外小心。"
+    "message": "此广告具有加密货币骗局的特征（高风险）。"
   },
   "suspiciousAdStructure": {
-    "message": "此广告中的链接看起来很奇怪（中等风险）。它可能不安全。"
+    "message": "此广告的链接结构不寻常（中等风险）。"
   },
   "suspiciousAdTLD": {
-    "message": "此广告使用常被滥用的顶级域名（高风险）。"
+    "message": "此广告使用的域名后缀经常被滥用（中等风险）。"
   },
   "homoglyphAdAttack": {
-    "message": "此广告使用与已知网站相似的字符（中等风险）。"
+    "message": "该广告使用的字符与一个已知网站的字符几乎完全相同（中等风险）。"
   },
   "brandMisuse": {
-    "message": "此广告不当使用知名品牌名称（高风险）。它可能是虚假的。"
+    "message": "该广告不正当地使用了一个知名品牌名称（高风险）。"
   },
   "unknownWarning": {
-    "message": "未知警告（中等风险）。请小心。"
+    "message": "发现未知风险。请格外小心。"
   },
   "typosquattingAttack": {
-    "message": "此网址是**网络钓鱼攻击**，看起来像真实域名但略有修改以欺骗您（高风险）。"
+    "message": "此网址看起来像一个真实的网站，但被故意拼写错误（高风险）。这可能是一个假冒版本。"
   },
   "downloadKeyword": {
-    "message": "我们在链接中发现了可疑的下载关键词（中等风险）。它可能**指示恶意下载**。"
+    "message": "该链接包含与下载相关的词语（低风险）。请仅打开您信任的文件。"
   },
   "suspiciousScriptContent": {
-    "message": "此脚本包含可疑代码，例如 'eval()' 或 'document.write()'。它可能不安全。"
+    "message": "此页面上的一个脚本包含有风险的代码。这可能不安全。"
   },
   "invalidScriptSrc": {
-    "message": "脚本链接不正确或无法读取。"
-  },
-  "suspiciousIframeKeyword": {
-    "message": "在嵌入式框架（iframe）的链接中发现了可疑词。"
-  },
-  "allowedQueryParam": {
-    "message": "此链接包含一个安全的、允许的查询参数。"
-  },
-  "suspiciousPageText": {
-    "message": "此页面包含可疑文本（高风险）。它可能会诱骗您做某事。"
-  },
-  "urgencyTactic": {
-    "message": "此页面使用紧急语言向您施压（高风险）。请注意诈骗。"
+    "message": "此页面上一个脚本的链接不正确。"
   },
   "mixedScripts": {
-    "message": "此地址混合了不同的**脚本系统**（中等风险）。这可能是网络钓鱼伎俩。"
+    "message": "此地址混合使用了不同的书写系统（例如拉丁字母和西里尔字母）。这是一种已知的网络钓鱼伎俩（高风险）。"
   },
-  "homoglyphAttack_microsoft_com": {
-    "message": "此地址使用了与 microsoft.com 相似的字符（中等风险）。"
-  },
-  "homoglyphAttack_apple_com": {
-    "message": "此地址使用了与 apple.com 相似的字符（中等风险）。"
-  },
-  "homoglyphAttack_google_com": {
-    "message": "此地址使用了与 google.com 相似的字符（中等风险）。"
-  },
-  "homoglyphAttack_linkedin_com": {
-    "message": "此地址使用了与 linkedin.com 相似的字符（中等风险）。"
-  },
-  "homoglyphAttack_alibaba_com": {
-    "message": "此地址使用了与 alibaba.com 相似的字符（中等风险）。"
-  },
-  "homoglyphAttack_whatsapp_com": {
-    "message": "此地址使用了与 whatsapp.com 相似的字符（中等风险）。"
-  },
-  "homoglyphAttack_amazon_com": {
-    "message": "此地址使用了与 amazon.com 相似的字符（中等风险）。"
-  },
-  "homoglyphAttack_x_com": {
-    "message": "此地址使用了与 x.com 相似的字符（中等风险）。"
-  },
-  "homoglyphAttack_facebook_com": {
-    "message": "此地址使用了与 facebook.com 相似的字符（中等风险）。"
-  },
-  "homoglyphAttack_adobe_com": {
-    "message": "此地址使用了与 adobe.com 相似的字符（中等风险）。"
-  },
-  "homoglyphAttack_paypal_com": {
-    "message": "此地址使用了与 paypal.com 相似的字符（中等风险）。"
-  },
-  "typosquattingAttack_microsoft_com": {
-    "message": "此网址与 microsoft.com 非常相似（高风险）。它可能是虚假的。"
-  },
-  "typosquattingAttack_apple_com": {
-    "message": "此网址与 apple.com 非常相似（高风险）。它可能是虚假的。"
-  },
-  "typosquattingAttack_google_com": {
-    "message": "此网址与 google.com 非常相似（高风险）。它可能是虚假的。"
-  },
-  "typosquattingAttack_linkedin_com": {
-    "message": "此网址与 linkedin.com 非常相似（高风险）。它可能是虚假的。"
-  },
-  "typosquattingAttack_alibaba_com": {
-    "message": "此网址与 alibaba.com 非常相似（高风险）。它可能是虚假的。"
-  },
-  "typosquattingAttack_whatsapp_com": {
-    "message": "此网址与 whatsapp.com 非常相似（高风险）。它可能是虚假的。"
-  },
-  "typosquattingAttack_amazon_com": {
-    "message": "此网址与 amazon.com 非常相似（高风险）。它可能是虚假的。"
-  },
-  "typosquattingAttack_x_com": {
-    "message": "此网址与 x.com 非常相似（高风险）。它可能是虚假的。"
-  },
-  "typosquattingAttack_facebook_com": {
-    "message": "此网址与 facebook.com 非常相似（高风险）。它可能是虚假的。"
-  },
-  "typosquattingAttack_adobe_com": {
-    "message": "此网址与 adobe.com 非常相似（高风险）。它可能是虚假的。"
-  },
-  "typosquattingAttack_paypal_com": {
-    "message": "此网址与 paypal.com 非常相似（高风险）。它可能是虚假的。"
-  },
-  "similarToLegitimateDomain_microsoft_com": {
-    "message": "此网站与 microsoft.com 几乎相同（中等风险）。它可能是虚假副本。"
-  },
-  "similarToLegitimateDomain_apple_com": {
-    "message": "此网站与 apple.com 几乎相同（中等风险）。它可能是虚假副本。"
-  },
-  "similarToLegitimateDomain_google_com": {
-    "message": "此网站与 google.com 几乎相同（中等风险）。它可能是虚假副本。"
-  },
-  "similarToLegitimateDomain_linkedin_com": {
-    "message": "此网站与 linkedin.com 几乎相同（中等风险）。它可能是虚假副本。"
-  },
-  "similarToLegitimateDomain_alibaba_com": {
-    "message": "此网站与 alibaba.com 几乎相同（中等风险）。它可能是虚假副本。"
-  },
-  "similarToLegitimateDomain_whatsapp_com": {
-    "message": "此网站与 whatsapp.com 几乎相同（中等风险）。它可能是虚假副本。"
-  },
-  "similarToLegitimateDomain_amazon_com": {
-    "message": "此网站与 amazon.com 几乎相同（中等风险）。它可能是虚假副本。"
-  },
-  "similarToLegitimateDomain_x_com": {
-    "message": "此网站与 x.com 几乎相同（中等风险）。它可能是虚假副本。"
-  },
-  "similarToLegitimateDomain_facebook_com": {
-    "message": "此网站与 facebook.com 几乎相同（中等风险）。它可能是虚假副本。"
-  },
-  "similarToLegitimateDomain_adobe_com": {
-    "message": "此网站与 adobe.com 几乎相同（中等风险）。它可能是虚假副本。"
-  },
-  "similarToLegitimateDomain_paypal_com": {
-    "message": "此网站几乎与 paypal.com 相同（中等风险）。它可能是一个虚假副本。"
-  },
-  "suspiciousPunycodeDecoding_microsoft_com": {
-    "message": "此 Punycode 地址意外解析为 microsoft.com（高风险）。"
-  },
-  "suspiciousPunycodeDecoding_apple_com": {
-    "message": "此 Punycode 地址意外解析为 apple.com（高风险）。"
-  },
-  "suspiciousPunycodeDecoding_google_com": {
-    "message": "此 Punycode 地址意外解析为 google.com（高风险）。"
-  },
-  "suspiciousPunycodeDecoding_linkedin_com": {
-    "message": "此 Punycode 地址意外解析为 linkedin.com（高风险）。"
-  },
-  "suspiciousPunycodeDecoding_alibaba_com": {
-    "message": "此 Punycode 地址意外解析为 alibaba.com（高风险）。"
-  },
-  "suspiciousPunycodeDecoding_whatsapp_com": {
-    "message": "此 Punycode 地址意外解析为 whatsapp.com（高风险）。"
-  },
-  "suspiciousPunycodeDecoding_amazon_com": {
-    "message": "此 Punycode 地址意外解析为 amazon.com（高风险）。"
-  },
-  "suspiciousPunycodeDecoding_x_com": {
-    "message": "此 Punycode 地址意外解析为 x.com（高风险）。"
-  },
-  "suspiciousPunycodeDecoding_facebook_com": {
-    "message": "此 Punycode 地址意外解析为 facebook.com（高风险）。"
-  },
-  "suspiciousPunycodeDecoding_adobe_com": {
-    "message": "此 Punycode 地址意外解析为 adobe.com（高风险）。"
-  },
-  "suspiciousPunycodeDecoding_paypal_com": {
-    "message": "此 Punycode 地址意外解码为 paypal.com（高风险）。"
+  "introBannerMessage": {
+    "message": "链接盾 (LinkShield) 已激活，并用 ⚠️ 标记有风险的链接。将鼠标悬停在图标上查看原因。"
   },
   "digitHomoglyph": {
-    "message": "此地址使用看起来像字母的数字（中等风险）。它可能是虚假网站。"
+    "message": "此地址使用看起来像字母的数字来模仿一个知名品牌（中等风险）。"
   },
   "trustedTLD": {
-    "message": "此域名具有受信任的顶级域名（低风险）。这通常是安全的。"
+    "message": "此域名具有标准域名后缀（低风险）。"
   },
   "trustedTld": {
-    "message": "此域名具有受信任的顶级域名（低风险）。这通常是安全的。"
+    "message": "此域名具有标准域名后缀（低风险）。"
   },
-  "typosquatting_alibaba_com": {
-    "message": "此地址与 alibaba.com 极其相似（高风险）。它可能是虚假页面。"
+  "suspiciousPageText": {
+    "message": "此页面的文本包含常用于诈骗的词语（高风险）。"
   },
-  "typosquatting_amazon_com": {
-    "message": "此地址与 amazon.com 极其相似（高风险）。它可能是虚假页面。"
+  "urgencyTactic": {
+    "message": "此页面使用紧迫性语言向您施压（高风险）。谨防诈骗。"
   },
-  "typosquatting_apple_com": {
-    "message": "此地址与 apple.com 极其相似（高风险）。它可能是虚假页面。"
+  "severityMediumRisk": {
+    "message": "中等风险：此链接可能不安全。请小心。"
   },
-  "typosquatting_facebook_com": {
-    "message": "此地址与 facebook.com 极其相似（高风险）。它可能是虚假页面。"
+  "allowedQueryParam": {
+    "message": "该链接包含一个安全的、允许的技术参数。"
   },
-  "typosquatting_google_com": {
-    "message": "此地址与 google.com 极其相似（高风险）。它可能是虚假页面。"
+  "suspiciousIframeAdComponent": {
+    "message": "此页面从另一个网站加载广告组件。"
   },
-  "typosquatting_linkedin_com": {
-    "message": "此地址与 linkedin.com 极其相似（高风险）。它可能是虚假页面。"
+  "suspiciousIframeTracking": {
+    "message": "此页面加载一个可以监控您浏览行为的跟踪器。"
+  },
+  "suspiciousIframeMalicious": {
+    "message": "在此页面上发现一个潜在的有害组件（例如网络钓鱼）。"
+  },
+  "suspiciousIframeHidden": {
+    "message": "在页面上发现一个有风险的、不可见的元素。"
+  },
+  "mixedContentIframe": {
+    "message": "这个安全页面正在加载一个不安全的组件。这是一个安全风险。"
+  },
+  "invalidIframeSrc": {
+    "message": "此页面上的一个组件无法正确加载（源无效）。"
+  },
+  "iframeHidden": {
+    "message": "在页面上发现一个有风险的、不可见的元素。"
+  },
+  "typosquattingAttack_adobe_com": {
+    "message": "此网址看起来像 adobe.com，但被故意拼写错误（高风险）。"
+  },
+  "typosquattingAttack_alibaba_com": {
+    "message": "此网址看起来像 alibaba.com，但被故意拼写错误（高风险）。"
+  },
+  "typosquattingAttack_amazon_com": {
+    "message": "此网址看起来像 amazon.com，但被故意拼写错误（高风险）。"
+  },
+  "typosquattingAttack_apple_com": {
+    "message": "此网址看起来像 apple.com，但被故意拼写错误（高风险）。"
+  },
+  "typosquattingAttack_facebook_com": {
+    "message": "此网址看起来像 facebook.com，但被故意拼写错误（高风险）。"
+  },
+  "typosquattingAttack_google_com": {
+    "message": "此网址看起来像 google.com，但被故意拼写错误（高风险）。"
+  },
+  "typosquattingAttack_linkedin_com": {
+    "message": "此网址看起来像 linkedin.com，但被故意拼写错误（高风险）。"
+  },
+  "typosquattingAttack_microsoft_com": {
+    "message": "此网址看起来像 microsoft.com，但被故意拼写错误（高风险）。"
+  },
+  "typosquattingAttack_paypal_com": {
+    "message": "此网址看起来像 paypal.com，但被故意拼写错误（高风险）。"
+  },
+  "typosquattingAttack_whatsapp_com": {
+    "message": "此网址看起来像 whatsapp.com，但被故意拼写错误（高风险）。"
+  },
+  "typosquattingAttack_x_com": {
+    "message": "此网址看起来像 x.com，但被故意拼写错误（高风险）。"
+  },
+  "homoglyphAttack_microsoft_com": {
+    "message": "此地址使用的字符与 microsoft.com 几乎完全相同（高风险）。"
+  },
+  "homoglyphAttack_apple_com": {
+    "message": "此地址使用的字符与 apple.com 几乎完全相同（高风险）。"
+  },
+  "homoglyphAttack_google_com": {
+    "message": "此地址使用的字符与 google.com 几乎完全相同（高风险）。"
+  },
+  "homoglyphAttack_linkedin_com": {
+    "message": "此地址使用的字符与 linkedin.com 几乎完全相同（高风险）。"
+  },
+  "homoglyphAttack_alibaba_com": {
+    "message": "此地址使用的字符与 alibaba.com 几乎完全相同（高风险）。"
+  },
+  "homoglyphAttack_whatsapp_com": {
+    "message": "此地址使用的字符与 whatsapp.com 几乎完全相同（高风险）。"
+  },
+  "homoglyphAttack_amazon_com": {
+    "message": "此地址使用的字符与 amazon.com 几乎完全相同（高风险）。"
+  },
+  "homoglyphAttack_x_com": {
+    "message": "此地址使用的字符与 x.com 几乎完全相同（高风险）。"
+  },
+  "homoglyphAttack_facebook_com": {
+    "message": "此地址使用的字符与 facebook.com 几乎完全相同（高风险）。"
+  },
+  "homoglyphAttack_adobe_com": {
+    "message": "此地址使用的字符与 adobe.com 几乎完全相同（高风险）。"
+  },
+  "homoglyphAttack_paypal_com": {
+    "message": "此地址使用的字符与 paypal.com 几乎完全相同（高风险）。"
   },
   "typosquatting_microsoft_com": {
-    "message": "此地址与 microsoft.com 极其相似（高风险）。它可能是虚假页面。"
+    "message": "此地址与 microsoft.com 非常相似（高风险）。这可能是一个假冒页面。"
+  },
+  "typosquatting_apple_com": {
+    "message": "此地址与 apple.com 非常相似（高风险）。这可能是一个假冒页面。"
+  },
+  "typosquatting_google_com": {
+    "message": "此地址与 google.com 非常相似（高风险）。这可能是一个假冒页面。"
+  },
+  "typosquatting_linkedin_com": {
+    "message": "此地址与 linkedin.com 非常相似（高风险）。这可能是一个假冒页面。"
+  },
+  "typosquatting_alibaba_com": {
+    "message": "此地址与 alibaba.com 非常相似（高风险）。这可能是一个假冒页面。"
   },
   "typosquatting_whatsapp_com": {
-    "message": "此地址与 whatsapp.com 极其相似（高风险）。它可能是虚假页面。"
+    "message": "此地址与 whatsapp.com 非常相似（高风险）。这可能是一个假冒页面。"
+  },
+  "typosquatting_amazon_com": {
+    "message": "此地址与 amazon.com 非常相似（高风险）。这可能是一个假冒页面。"
   },
   "typosquatting_x_com": {
-    "message": "此地址与 x.com 极其相似（高风险）。它可能是虚假页面。"
+    "message": "此地址与 x.com 非常相似（高风险）。这可能是一个假冒页面。"
+  },
+  "typosquatting_facebook_com": {
+    "message": "此地址与 facebook.com 非常相似（高风险）。这可能是一个假冒页面。"
   },
   "typosquatting_adobe_com": {
-    "message": "此地址与 adobe.com 极其相似（高风险）。它可能是虚假页面。"
+    "message": "此地址与 adobe.com 非常相似（高风险）。这可能是一个假冒页面。"
   },
   "typosquatting_paypal_com": {
-    "message": "此地址与 paypal.com 极其相似（高风险）。它可能是一个虚假页面。"
+    "message": "此地址与 paypal.com 非常相似（高风险）。这可能是一个假冒页面。"
+  },
+  "similarToLegitimateDomain_microsoft_com": {
+    "message": "此网站看起来像 microsoft.com，请仔细检查地址。"
+  },
+  "similarToLegitimateDomain_apple_com": {
+    "message": "此网站看起来像 apple.com，请仔细检查地址。"
+  },
+  "similarToLegitimateDomain_google_com": {
+    "message": "此网站看起来像 google.com，请仔细检查地址。"
+  },
+  "similarToLegitimateDomain_linkedin_com": {
+    "message": "此网站看起来像 linkedin.com，请仔细检查地址。"
+  },
+  "similarToLegitimateDomain_alibaba_com": {
+    "message": "此网站看起来像 alibaba.com，请仔细检查地址。"
+  },
+  "similarToLegitimateDomain_whatsapp_com": {
+    "message": "此网站看起来像 whatsapp.com，请仔细检查地址。"
+  },
+  "similarToLegitimateDomain_amazon_com": {
+    "message": "此网站看起来像 amazon.com，请仔细检查地址。"
+  },
+  "similarToLegitimateDomain_x_com": {
+    "message": "此网站看起来像 x.com，请仔细检查地址。"
+  },
+  "similarToLegitimateDomain_facebook_com": {
+    "message": "此网站看起来像 facebook.com，请仔细检查地址。"
+  },
+  "similarToLegitimateDomain_adobe_com": {
+    "message": "此网站看起来像 adobe.com，请仔细检查地址。"
+  },
+  "similarToLegitimateDomain_paypal_com": {
+    "message": "此网站看起来像 paypal.com，请仔细检查地址。"
+  },
+  "suspiciousPunycodeDecoding_microsoft_com": {
+    "message": "此链接使用不寻常的字符使其看起来像 microsoft.com（高风险）。"
+  },
+  "suspiciousPunycodeDecoding_apple_com": {
+    "message": "此链接使用不寻常的字符使其看起来像 apple.com（高风险）。"
+  },
+  "suspiciousPunycodeDecoding_google_com": {
+    "message": "此链接使用不寻常的字符使其看起来像 google.com（高风险）。"
+  },
+  "suspiciousPunycodeDecoding_linkedin_com": {
+    "message": "此链接使用不寻常的字符使其看起来像 linkedin.com（高风险）。"
+  },
+  "suspiciousPunycodeDecoding_alibaba_com": {
+    "message": "此链接使用不寻常的字符使其看起来像 alibaba.com（高风险）。"
+  },
+  "suspiciousPunycodeDecoding_whatsapp_com": {
+    "message": "此链接使用不寻常的字符使其看起来像 whatsapp.com（高风险）。"
+  },
+  "suspiciousPunycodeDecoding_amazon_com": {
+    "message": "此链接使用不寻常的字符使其看起来像 amazon.com（高风险）。"
+  },
+  "suspiciousPunycodeDecoding_x_com": {
+    "message": "此链接使用不寻常的字符使其看起来像 x.com（高风险）。"
+  },
+  "suspiciousPunycodeDecoding_facebook_com": {
+    "message": "此链接使用不寻常的字符使其看起来像 facebook.com（高风险）。"
+  },
+  "suspiciousPunycodeDecoding_adobe_com": {
+    "message": "此链接使用不寻常的字符使其看起来像 adobe.com（高风险）。"
+  },
+  "suspiciousPunycodeDecoding_paypal_com": {
+    "message": "此链接使用不寻常的字符使其看起来像 paypal.com（高风险）。"
   }
 }

@@ -2,8 +2,8 @@ window.CONFIG = {
     // Verdachte Top-Level Domeinen (TLD’s)
     // Opgeschoond en ontdubbeld voor betere prestaties en onderhoud.
     SUSPICIOUS_TLDS: new RegExp('\\.(' + Array.from(new Set([
-        'academy', 'accountant', 'accountants', 'agency', 'ap', 'app', 'art', 'asia', 'auto', 'bar', 'beauty', 'bet', 'bid', 'bio', 'biz', 'blog', 'buzz', 'cam', 'capital', 'casa', 'casino', 'cfd', 'charity', 'cheap', 'church', 'city', 'claims', 'click', 'club', 'company', 'crispsalt', 'cyou', 'data', 'date', 'design', 'dev', 'digital', 'directory', 'download', 'email', 'energy', 'estate', 'events', 'exchange', 'expert', 'exposed', 'express', 'finance', 'fit', 'forsale', 'foundation', 'fun', 'games', 'gle', 'goog', 'gq', 'guide', 'guru', 'health', 'help', 'home', 'host', 'html', 'icu', 'ink', 'institute', 'investments', 'ip', 'jobs', 'life', 'limited', 'link', 'live', 'loan', 'lol', 'ltd', 'ly', 'mall', 'market', 'me', 'media', 'men', 'ml', 'mom', 'money', 'monster', 'mov', 'network', 'one', 'online', 'page', 'partners', 'party', 'php', 'pics', 'play', 'press', 'pro', 'promo', 'pw', 'quest', 'racing', 'rest', 'review', 'rocks', 'run', 'sbs', 'school', 'science', 'services', 'shop', 'shopping', 'site', 'software', 'solutions', 'space', 'store', 'stream', 'support', 'team', 'tech', 'tickets', 'to', 'today', 'tools', 'top', 'trade', 'trading', 'uno', 'ventures', 'vip', 'website', 'wiki', 'win', 'work', 'world', 'xin', 'xyz', 'zip', 'zone', 'co', 'cc', 'tv', 'name', 'lat', 'bond', 'crypto', 'wallet', 'quantum', 'nft', 'web3', 'metaverse', 'vr', 'dao', 'green', 'privacy', 'smart', 'edge', 'connect', 'holo', 'neuro'
-    ])).join('|') + ')$', 'i'),
+    'beauty', 'bond', 'buzz', 'cc', 'cf', 'club', 'cn', 'dev', 'es', 'ga', 'gq', 'hair', 'li', 'live', 'ml', 'mov', 'pro', 'rest', 'ru', 'sbs', 'shop', 'tk', 'top', 'uno', 'win', 'xin', 'xyz', 'zip'
+])).sort().join('|') + ')$', 'i'),
 
     // ==== Risicodrempels voor gefaseerde analyse en UI-feedback ====
     LOW_THRESHOLD: 4,      //  risico < 4 → safe
@@ -11,7 +11,7 @@ window.CONFIG = {
     HIGH_THRESHOLD: 15,    //  risico ≥ 15 → alert
     SCRIPT_RISK_THRESHOLD: 10,  // drempel voor inhoudsanalyse van externe scripts
 
-    YOUNG_DOMAIN_THRESHOLD_DAYS: 14, // Domeinen jonger dan 2 weken (blijft 14)
+    YOUNG_DOMAIN_THRESHOLD_DAYS: 7, // Domeinen jonger dan 1 week (blijft 7)
     DOMAIN_AGE_MIN_RISK: 5,        // Domeinleeftijd‐check vanaf 5 punten (was 3)
     YOUNG_DOMAIN_RISK: 5,          // Risico‐gewicht voor jonge domeinen (was 7)
     PROTOCOL_RISK: 4,

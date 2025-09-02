@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "__MSG_extName__",
-  "version": "6.7",
+  "version": "6.8",
   "description": "__MSG_extDescription__",
   "default_locale": "en",
   "content_security_policy": {
@@ -9,7 +9,6 @@
   },
   "permissions": [
     "tabs",
-    "activeTab",
     "storage",
     "notifications",
     "alarms",
@@ -30,7 +29,8 @@
       "js": [
         "config.js",
         "content.js",
-        "punycode.min.js"
+        "punycode.min.js",
+	"jsQR.js"
       ]
     }
   ],
@@ -54,6 +54,7 @@
         "TrustedDomains.json",
         "trustedScripts.json",
         "punycode.min.js",
+	"jsQR.js",
         "icons/green-circle-16.png",
         "icons/green-circle-48.png",
         "icons/green-circle-128.png",
@@ -80,3 +81,4 @@
     ]
   }
 }
+

@@ -463,5 +463,314 @@
   },
   "suspiciousPunycodeDecoding_paypal_com": {
     "message": "Dieser Link verwendet ungewöhnliche Zeichen, um wie paypal.com auszusehen (hohes Risiko)."
+  },
+
+  "reason_nonAscii": {
+    "message": "Verdächtige Zeichen erkannt (Homoglyphen)"
+  },
+  "reason_brandKeywordHomoglyph": {
+    "message": "Nachahmung einer bekannten Marke erkannt"
+  },
+  "reason_noHttps": {
+    "message": "Keine sichere Verbindung (HTTPS)"
+  },
+  "reason_suspiciousTLD": {
+    "message": "Verdächtige Domainendung"
+  },
+  "reason_ipAsDomain": {
+    "message": "IP-Adresse als Domainname"
+  },
+  "reason_tooManySubdomains": {
+    "message": "Zu viele Subdomains"
+  },
+  "reason_shortenedUrl": {
+    "message": "Gekürzter Link erkannt"
+  },
+  "reason_suspiciousKeywords": {
+    "message": "Verdächtige Schlüsselwörter in der URL"
+  },
+  "reason_malwareExtension": {
+    "message": "Potenziell schädliche Dateierweiterung"
+  },
+  "reason_urlTooLong": {
+    "message": "Ungewöhnlich lange URL"
+  },
+  "reason_encodedCharacters": {
+    "message": "Codierte Zeichen in der URL"
+  },
+  "reason_homoglyphAttack": {
+    "message": "Homoglyphen-Angriff erkannt"
+  },
+  "reason_typosquatting": {
+    "message": "Typosquatting erkannt"
+  },
+  "reason_suspiciousBrandPattern": {
+    "message": "Verdächtiges Markenmuster"
+  },
+  "reason_unusualPort": {
+    "message": "Ungewöhnlicher Port"
+  },
+  "reason_punycode": {
+    "message": "Punycode-Domain erkannt"
+  },
+  "reason_loginPageNoMX": {
+    "message": "Anmeldeseite ohne E-Mail-Server"
+  },
+  "reason_insecureLoginPage": {
+    "message": "Unsichere Anmeldeseite"
+  },
+  "reason_sslValidationFailed": {
+    "message": "SSL-Validierung fehlgeschlagen"
+  },
+  "reason_similarToLegitimateDomain": {
+    "message": "Ähnelt einer legitimen Domain"
+  },
+
+  "qrDangerTitle": {
+    "message": "GEFAHR: Phishing-QR-Code!"
+  },
+  "qrCautionTitle": {
+    "message": "Achtung: Verdächtiger QR-Code"
+  },
+  "ocrDangerTitle": {
+    "message": "GEFAHR: Phishing in Bild erkannt!"
+  },
+  "ocrCautionTitle": {
+    "message": "Achtung: Verdächtiger Text im Bild"
+  },
+  "asciiQrDangerTitle": {
+    "message": "GEFAHR: Phishing ASCII-QR!"
+  },
+  "asciiQrCautionTitle": {
+    "message": "Achtung: Verdächtiger ASCII-QR"
+  },
+  "suspiciousDomainDetected": {
+    "message": "Verdächtige Domain erkannt"
+  },
+  "hiddenUrl": {
+    "message": "Versteckte URL"
+  },
+  "fullUrl": {
+    "message": "Vollständige URL"
+  },
+  "reasons": {
+    "message": "Gründe"
+  },
+  "extractedText": {
+    "message": "Extrahierter Text"
+  },
+
+  "trialPeriodActive": {
+    "message": "Testphase aktiv"
+  },
+  "trialDaysRemaining": {
+    "message": "$DAYS$ Tage verbleibend in der Testphase",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "14"
+      }
+    }
+  },
+  "trialExpired": {
+    "message": "Testphase abgelaufen"
+  },
+  "trialExpiredMessage": {
+    "message": "Deine 30-tägige Testphase ist abgelaufen. Aktiviere eine Lizenz, um alle Funktionen weiterhin nutzen zu können."
+  },
+  "upgradeNow": {
+    "message": "Jetzt upgraden"
+  },
+
+  "popupPageTitle": {
+    "message": "LinkShield Dashboard"
+  },
+  "extNameFull": {
+    "message": "LinkShield: Deine Waffe gegen Phishing"
+  },
+  "extDescriptionFull": {
+    "message": "Erhöhe deine Sicherheit mit sofortigen Warnungen und fortschrittlichem Schutz vor Online-Bedrohungen."
+  },
+
+  "licenseTrialTitle": {
+    "message": "Testphase: $DAYS$ Tage verbleibend",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "licenseTrialSubtitle": {
+    "message": "Alle Premium-Funktionen sind während deiner Testphase aktiv"
+  },
+  "licenseUpgradeLink": {
+    "message": "Auf Premium upgraden →"
+  },
+  "licenseExpiredTitle": {
+    "message": "Testphase abgelaufen"
+  },
+  "licenseExpiredSubtitle": {
+    "message": "Aktiviere Premium für vollen Schutz"
+  },
+  "licenseBenefitsLabel": {
+    "message": "Premium enthält:"
+  },
+  "licenseBenefitsText": {
+    "message": "Hintergrundanalysen, QR-Code-Scanning, kontinuierlicher Schutz"
+  },
+  "licenseKeyPlaceholder": {
+    "message": "Gib deinen Lizenzcode ein"
+  },
+  "licenseActivateButton": {
+    "message": "Premium aktivieren"
+  },
+  "licenseBuyLink": {
+    "message": "Noch keine Lizenz? Hier kaufen →"
+  },
+  "licensePremiumTitle": {
+    "message": "Premium Aktiv"
+  },
+  "licensePremiumSubtitle": {
+    "message": "Voller Schutz aktiviert"
+  },
+
+  "sectionSecuritySettings": {
+    "message": "Sicherheitseinstellungen"
+  },
+  "backgroundAnalysisTitle": {
+    "message": "Sicherheitseinstellungen"
+  },
+  "backgroundAnalysisFeature": {
+    "message": "Hintergrundanalysen"
+  },
+  "premiumBadge": {
+    "message": "PREMIUM"
+  },
+  "integratedProtectionFeature": {
+    "message": "Integrierter Malware- und Phishing-Schutz"
+  },
+  "integratedProtectionDescription": {
+    "message": "Kombiniert mehrere Sicherheitsdienste für umfassenden Schutz."
+  },
+  "confirmationMessage": {
+    "message": "Einstellungen erfolgreich gespeichert!"
+  },
+  "lastRuleUpdateNone": {
+    "message": "Noch keine Datenbank-Aktualisierung durchgeführt"
+  },
+  "errorOccurred": {
+    "message": "Ein Fehler ist aufgetreten"
+  },
+
+  "gumroadErrorUnknown": {
+    "message": "Unbekannter Fehler"
+  },
+  "gumroadErrorLicenseNotExistProduct": {
+    "message": "Dieser Lizenzschlüssel existiert nicht für dieses Produkt"
+  },
+  "gumroadErrorLicenseNotExist": {
+    "message": "Dieser Lizenzschlüssel existiert nicht"
+  },
+  "gumroadErrorLicenseRequired": {
+    "message": "Bitte gib einen Lizenzschlüssel ein"
+  },
+  "gumroadErrorProductNotFound": {
+    "message": "Produkt nicht gefunden"
+  },
+  "gumroadErrorLicenseDisabled": {
+    "message": "Diese Lizenz wurde deaktiviert"
+  },
+  "gumroadErrorLicenseRefunded": {
+    "message": "Diese Lizenz wurde erstattet"
+  },
+  "gumroadErrorLicenseRevoked": {
+    "message": "Diese Lizenz wurde erstattet oder widerrufen"
+  },
+  "gumroadErrorLicenseInvalid": {
+    "message": "Ungültiger Lizenzschlüssel"
+  },
+  "gumroadErrorNetwork": {
+    "message": "Netzwerkfehler bei der Validierung. Überprüfe deine Internetverbindung."
+  },
+
+  "licenseEmptyError": {
+    "message": "Bitte gib einen Lizenzcode ein"
+  },
+  "licenseActivating": {
+    "message": "Aktivierung läuft..."
+  },
+  "licenseActivatedSuccess": {
+    "message": "Premium erfolgreich aktiviert!"
+  },
+  "licenseConnectionError": {
+    "message": "Verbindungsfehler. Bitte versuche es erneut."
+  },
+
+  "debugModeTitle": {
+    "message": "Debug-Modus"
+  },
+  "debugTrial30": {
+    "message": "Trial (30T)"
+  },
+  "debugTrial3": {
+    "message": "Trial (3T)"
+  },
+  "debugExpired": {
+    "message": "Abgelaufen"
+  },
+  "debugPremium": {
+    "message": "Premium"
+  },
+  "debugReset": {
+    "message": "Zurücksetzen"
+  },
+  "debugTrialSimulated": {
+    "message": "✓ Trial ($DAYS$ Tage) simuliert",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "debugExpiredSimulated": {
+    "message": "✓ Abgelaufene Testphase simuliert"
+  },
+  "debugPremiumSimulated": {
+    "message": "✓ Premium simuliert"
+  },
+  "debugStorageReset": {
+    "message": "✓ Speicher zurückgesetzt - Erweiterung neu laden"
+  },
+  "debugError": {
+    "message": "✗ Fehler: $ERROR$",
+    "placeholders": {
+      "ERROR": {
+        "content": "$1",
+        "example": "Unknown error"
+      }
+    }
+  },
+  "reason_redirectChain": {
+    "message": "Verdächtige Weiterleitungskette erkannt. Der Link durchläuft mehrere Server, bevor er sein Ziel erreicht."
+  },
+  "reason_excessiveRedirects": {
+    "message": "Zu viele Weiterleitungen in der Kette (hohes Risiko). Dieser Link leitet mehr als 5 Mal weiter, was oft verwendet wird, um das wahre Ziel zu verbergen."
+  },
+  "reason_domainHopping": {
+    "message": "Mehrere Domainwechsel in der Weiterleitungskette (hohes Risiko). Der Link springt zwischen vielen verschiedenen Websites."
+  },
+  "reason_chainedShorteners": {
+    "message": "Mehrere URL-Verkürzer hintereinander (mittleres Risiko). Legitime Links verwenden selten mehrere Verkürzungsdienste."
+  },
+  "reason_suspiciousFinalTLD": {
+    "message": "Endziel hat verdächtige Domainendung (hohes Risiko). Der tatsächliche Endpunkt verwendet eine risikoreiche TLD."
+  },
+  "reason_redirectToIP": {
+    "message": "Weiterleitung führt zu IP-Adresse (hohes Risiko). Das Endziel ist eine rohe IP-Adresse statt eines Domainnamens."
+  },
+  "reason_redirectTimeout": {
+    "message": "Weiterleitungsanalyse Zeitüberschreitung (mittleres Risiko). Die Weiterleitungskette konnte nicht innerhalb des Zeitlimits vollständig verfolgt werden."
   }
 }

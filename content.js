@@ -1,12 +1,10 @@
 /**
- * Logt debug-informatie als DEBUG_MODE aanstaat.
+ * Logt debug-informatie - PRODUCTIE: functie doet niets.
  * @param {string} message - Het bericht om te loggen.
  * @param {...any} optionalParams - Optionele parameters.
  */
 function logDebug(message, ...optionalParams) {
-  if (globalConfig && globalConfig.DEBUG_MODE) {
-    console.info(message, ...optionalParams);
-  }
+  // PRODUCTIE: Logging uitgeschakeld
 }
 function isHiddenInput(el) {
   return el.tagName === 'INPUT' && el.type === 'hidden';
@@ -937,20 +935,38 @@ async function isProtectionEnabled() {
   return settings.backgroundSecurity && settings.integratedProtection;
 }
 async function getStoredSettings() {
+  const defaultSettings = { backgroundSecurity: true, integratedProtection: true };
+
   try {
-    const settings = await new Promise((resolve) => {
-      chrome.storage.sync.get(['backgroundSecurity', 'integratedProtection'], resolve);
-    });
-    if (!settings || typeof settings !== 'object') {
-      throw new Error("Invalid settings structure.");
+    // Check of chrome.storage beschikbaar is
+    if (!chrome?.storage?.sync) {
+      logDebug("chrome.storage.sync niet beschikbaar, gebruik standaardinstellingen");
+      return defaultSettings;
     }
+
+    const settings = await new Promise((resolve, reject) => {
+      chrome.storage.sync.get(['backgroundSecurity', 'integratedProtection'], (result) => {
+        if (chrome.runtime.lastError) {
+          reject(new Error(chrome.runtime.lastError.message));
+        } else {
+          resolve(result);
+        }
+      });
+    });
+
+    if (!settings || typeof settings !== 'object') {
+      logDebug("Ongeldige settings structuur, gebruik standaardinstellingen");
+      return defaultSettings;
+    }
+
     return {
       backgroundSecurity: Boolean(settings.backgroundSecurity),
       integratedProtection: Boolean(settings.integratedProtection)
     };
   } catch (error) {
-    handleError(error, `getStoredSettings: Kon instellingen niet ophalen uit chrome.storage.sync`);
-    return { backgroundSecurity: true, integratedProtection: true };
+    // Stil falen met standaardinstellingen - geen crash
+    logDebug(`getStoredSettings fout: ${error.message}, gebruik standaardinstellingen`);
+    return defaultSettings;
   }
 }
 async function getFinalUrl(url) {
@@ -1094,6 +1110,423 @@ async function initContentScript() {
 let debounceTimer = null;
 const checkedLinks = new Set();
 const scannedLinks = new Set();
+
+// =============================================================================
+// OPTIMIZED LINK SCANNER - Performance verbeteringen voor 2026
+// Gebruikt IntersectionObserver + requestIdleCallback om CPU-pieken te voorkomen
+// =============================================================================
+
+/**
+ * LinkScannerOptimized - Lazy scanning van links met IntersectionObserver
+ * - Scant alleen zichtbare links (in viewport)
+ * - Gebruikt requestIdleCallback voor niet-blokkerende verwerking
+ * - Bevat TTL-gebaseerde caching om dubbel werk te voorkomen
+ */
+class LinkScannerOptimized {
+  constructor(options = {}) {
+    this.batchSize = options.batchSize || 10;
+    this.idleTimeout = options.idleTimeout || 2000;
+    this.cacheTTL = options.cacheTTL || 3600000; // 1 uur default
+    this.maxCacheSize = options.maxCacheSize || 2000;
+
+    // Cache met TTL voor gescande URLs
+    this.urlCache = new Map();
+
+    // Queue voor te verwerken links
+    this.pendingLinks = new Set();
+    this.isProcessing = false;
+
+    // IntersectionObserver voor lazy loading
+    this.observer = null;
+    this.observedLinks = new WeakSet();
+
+    // Bind methods
+    this.handleIntersection = this.handleIntersection.bind(this);
+    this.processQueue = this.processQueue.bind(this);
+
+    this.initObserver();
+  }
+
+  /**
+   * Initialiseert de IntersectionObserver
+   */
+  initObserver() {
+    if (typeof IntersectionObserver === 'undefined') {
+      logDebug('[LinkScanner] IntersectionObserver niet beschikbaar, fallback naar direct scanning');
+      return;
+    }
+
+    this.observer = new IntersectionObserver(this.handleIntersection, {
+      root: null, // viewport
+      rootMargin: '100px', // start 100px voor element zichtbaar wordt
+      threshold: 0
+    });
+
+    logDebug('[LinkScanner] IntersectionObserver geïnitialiseerd');
+  }
+
+  /**
+   * Handler voor IntersectionObserver callbacks
+   */
+  handleIntersection(entries) {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const link = entry.target;
+        const href = link.href;
+
+        // Stop met observeren van deze link
+        this.observer?.unobserve(link);
+
+        // Check cache
+        if (!this.isCached(href)) {
+          this.pendingLinks.add(link);
+        }
+      }
+    });
+
+    // Start queue processing als er nieuwe links zijn
+    if (this.pendingLinks.size > 0 && !this.isProcessing) {
+      this.scheduleProcessing();
+    }
+  }
+
+  /**
+   * Controleert of een URL in cache zit en nog geldig is
+   */
+  isCached(url) {
+    const cached = this.urlCache.get(url);
+    if (!cached) return false;
+
+    // Check TTL
+    if (Date.now() - cached.timestamp > this.cacheTTL) {
+      this.urlCache.delete(url);
+      return false;
+    }
+
+    return true;
+  }
+
+  /**
+   * Voegt een scan resultaat toe aan cache
+   */
+  addToCache(url, result) {
+    // Verwijder oudste entries als cache vol is
+    if (this.urlCache.size >= this.maxCacheSize) {
+      const oldestKey = this.urlCache.keys().next().value;
+      this.urlCache.delete(oldestKey);
+    }
+
+    this.urlCache.set(url, {
+      result,
+      timestamp: Date.now()
+    });
+  }
+
+  /**
+   * Plant verwerking in met requestIdleCallback of setTimeout fallback
+   */
+  scheduleProcessing() {
+    if (this.isProcessing) return;
+
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(this.processQueue, { timeout: this.idleTimeout });
+    } else {
+      // Fallback voor browsers zonder requestIdleCallback
+      setTimeout(this.processQueue, 0);
+    }
+  }
+
+  /**
+   * Verwerkt links in batches tijdens idle time
+   */
+  async processQueue(deadline) {
+    this.isProcessing = true;
+    const startTime = performance.now();
+    let processed = 0;
+
+    // Converteer Set naar Array voor batch processing
+    const linksArray = Array.from(this.pendingLinks);
+
+    for (const link of linksArray) {
+      // Check of we nog tijd hebben (requestIdleCallback)
+      const hasIdleTime = deadline
+        ? deadline.timeRemaining() > 0
+        : (performance.now() - startTime) < 50; // 50ms max per batch
+
+      if (!hasIdleTime && processed >= this.batchSize) {
+        break;
+      }
+
+      const href = link.href;
+
+      // Skip als al verwerkt of in cache
+      if (this.isCached(href) || scannedLinks.has(href)) {
+        this.pendingLinks.delete(link);
+        continue;
+      }
+
+      try {
+        // Markeer als gescand
+        scannedLinks.add(href);
+        this.pendingLinks.delete(link);
+
+        // Voer de daadwerkelijke check uit
+        const result = await this.scanLink(link);
+
+        // Cache het resultaat
+        this.addToCache(href, result);
+
+        processed++;
+      } catch (error) {
+        handleError(error, `LinkScanner.processQueue: Error scanning ${href}`);
+        this.pendingLinks.delete(link);
+      }
+    }
+
+    this.isProcessing = false;
+
+    // Als er nog links in de queue staan, plan volgende batch
+    if (this.pendingLinks.size > 0) {
+      this.scheduleProcessing();
+    }
+
+    logDebug(`[LinkScanner] Batch verwerkt: ${processed} links, ${this.pendingLinks.size} in queue`);
+  }
+
+  /**
+   * Scant een enkele link en past waarschuwingen toe indien nodig
+   */
+  async scanLink(link) {
+    const href = link.href;
+    let urlObj;
+
+    try {
+      urlObj = new URL(href);
+    } catch {
+      return { level: 'safe', skip: true };
+    }
+
+    // Skip links naar hetzelfde domein
+    const currentDomain = window.location.hostname.toLowerCase();
+    const linkDomain = urlObj.hostname.toLowerCase();
+
+    if (isSameDomain(linkDomain, currentDomain)) {
+      return { level: 'safe', sameDomain: true };
+    }
+
+    // Voer security checks uit
+    const result = await performSuspiciousChecks(href);
+
+    // Pas visuele waarschuwing toe als nodig
+    if (result.level !== 'safe') {
+      warnLinkByLevel(link, result);
+      logDebug(`[LinkScanner] Verdachte link: ${href} → level=${result.level}`);
+    }
+
+    return result;
+  }
+
+  /**
+   * Observeert een link element
+   */
+  observe(link) {
+    if (!link || !link.href || !isValidURL(link.href)) return;
+    if (this.observedLinks.has(link)) return;
+    if (this.isCached(link.href) || scannedLinks.has(link.href)) return;
+
+    this.observedLinks.add(link);
+
+    if (this.observer) {
+      this.observer.observe(link);
+    } else {
+      // Fallback: direct toevoegen aan queue
+      this.pendingLinks.add(link);
+      this.scheduleProcessing();
+    }
+  }
+
+  /**
+   * Scant alle links op de pagina (lazy)
+   * Inclusief Shadow DOM en same-origin iframes
+   */
+  scanAllLinks() {
+    let observedCount = 0;
+
+    // 1. Normale document links
+    const links = document.querySelectorAll('a[href]');
+    links.forEach(link => {
+      if (isValidURL(link.href) && !scannedLinks.has(link.href)) {
+        this.observe(link);
+        observedCount++;
+      }
+    });
+
+    // 2. Shadow DOM links
+    const shadowLinks = this.scanShadowDOM(document.body);
+    shadowLinks.forEach(link => {
+      if (isValidURL(link.href) && !scannedLinks.has(link.href)) {
+        this.observe(link);
+        observedCount++;
+      }
+    });
+
+    // 3. Same-origin iframe links
+    const iframeLinks = this.scanIframeLinks();
+    iframeLinks.forEach(link => {
+      if (isValidURL(link.href) && !scannedLinks.has(link.href)) {
+        this.observe(link);
+        observedCount++;
+      }
+    });
+
+    logDebug(`[LinkScanner] ${observedCount} links worden geobserveerd (incl. Shadow DOM en iframes)`);
+  }
+
+  /**
+   * Recursief scannen van Shadow DOM voor links
+   * @param {Element} root - Root element om te scannen
+   * @param {number} depth - Huidige diepte (max 5)
+   * @returns {Array} Array van gevonden link elementen
+   */
+  scanShadowDOM(root, depth = 0) {
+    const MAX_SHADOW_DEPTH = 5;
+    const links = [];
+
+    if (!root || depth >= MAX_SHADOW_DEPTH) return links;
+
+    try {
+      // Vind alle elementen die mogelijk een shadowRoot hebben
+      const allElements = root.querySelectorAll ? root.querySelectorAll('*') : [];
+
+      allElements.forEach(el => {
+        // Check voor open shadow root
+        if (el.shadowRoot) {
+          // Vind links in de shadow root
+          const shadowLinks = el.shadowRoot.querySelectorAll('a[href]');
+          shadowLinks.forEach(link => links.push(link));
+
+          // Recursief scannen van geneste shadow roots
+          const nestedLinks = this.scanShadowDOM(el.shadowRoot, depth + 1);
+          links.push(...nestedLinks);
+        }
+      });
+    } catch (error) {
+      logDebug(`[LinkScanner] Shadow DOM scan error: ${error.message}`);
+    }
+
+    return links;
+  }
+
+  /**
+   * Scant same-origin iframes voor links
+   * @returns {Array} Array van gevonden link elementen
+   */
+  scanIframeLinks() {
+    const MAX_IFRAME_DEPTH = 3;
+    const links = [];
+    const currentOrigin = window.location.origin;
+
+    try {
+      const iframes = document.querySelectorAll('iframe');
+
+      iframes.forEach(iframe => {
+        try {
+          // Check of iframe same-origin is
+          const iframeSrc = iframe.src;
+          if (!iframeSrc) return;
+
+          const iframeOrigin = new URL(iframeSrc).origin;
+
+          // Alleen same-origin iframes scannen (security restriction)
+          if (iframeOrigin !== currentOrigin) {
+            logDebug(`[LinkScanner] Cross-origin iframe geskipt: ${iframeSrc}`);
+            return;
+          }
+
+          // Probeer toegang tot iframe content
+          const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+          if (!iframeDoc) return;
+
+          // Scan links in iframe
+          const iframeLinks = iframeDoc.querySelectorAll('a[href]');
+          iframeLinks.forEach(link => links.push(link));
+
+          // Check voor Shadow DOM in iframe
+          const shadowLinks = this.scanShadowDOM(iframeDoc.body);
+          links.push(...shadowLinks);
+
+        } catch (e) {
+          // SecurityError bij cross-origin - dit is verwacht gedrag
+          if (e.name !== 'SecurityError') {
+            logDebug(`[LinkScanner] Iframe scan error: ${e.message}`);
+          }
+        }
+      });
+    } catch (error) {
+      logDebug(`[LinkScanner] Iframe scanning error: ${error.message}`);
+    }
+
+    return links;
+  }
+
+  /**
+   * Ruimt de cache op (verwijdert verlopen entries)
+   */
+  cleanCache() {
+    const now = Date.now();
+    let removed = 0;
+
+    for (const [url, data] of this.urlCache) {
+      if (now - data.timestamp > this.cacheTTL) {
+        this.urlCache.delete(url);
+        removed++;
+      }
+    }
+
+    if (removed > 0) {
+      logDebug(`[LinkScanner] Cache cleanup: ${removed} entries verwijderd`);
+    }
+  }
+
+  /**
+   * Stopt de observer en ruimt resources op
+   */
+  destroy() {
+    this.observer?.disconnect();
+    this.pendingLinks.clear();
+    this.urlCache.clear();
+    logDebug('[LinkScanner] Destroyed');
+  }
+}
+
+// Globale instance van de geoptimaliseerde scanner
+let linkScanner = null;
+
+/**
+ * Initialiseert de geoptimaliseerde link scanner
+ */
+function initOptimizedLinkScanner() {
+  if (linkScanner) {
+    linkScanner.destroy();
+  }
+
+  linkScanner = new LinkScannerOptimized({
+    batchSize: 10,
+    idleTimeout: 2000,
+    cacheTTL: 3600000, // 1 uur
+    maxCacheSize: 2000
+  });
+
+  // Start cache cleanup interval
+  setInterval(() => linkScanner?.cleanCache(), 600000); // Elke 10 minuten
+
+  return linkScanner;
+}
+
+// =============================================================================
+// EINDE OPTIMIZED LINK SCANNER
+// =============================================================================
+
 function debounce(func, delay = 250) {
   let timer;
   return (...args) => {
@@ -2526,7 +2959,47 @@ async function isHomoglyphAttack(domain, homoglyphMap, knownBrands, tld = '', re
                 return true; // Markeer als verdacht
             }
         }
-        // 14) EINDOORDEEL: Retourneer true als er enige reden is gevonden.
+
+        // 14) BRAND-KEYWORD SUBSTRING CHECK
+        // Detecteert wanneer een bekend merk-keyword IN het domein voorkomt met homoglyfen
+        // Bijv. "phishıng-ing.com" bevat "ing" (merk) maar met Turkse ı in plaats van normale i
+        const brandKeywords = globalConfig.BRAND_KEYWORDS || [];
+        if (brandKeywords.length > 0) {
+            // Check of het originele domein niet-ASCII karakters bevat (potentiële homoglyfen)
+            const hasNonAscii = /[^\x00-\x7F]/.test(cleanHostname);
+            // Check of het genormaliseerde domein een merk-keyword bevat
+            for (const brand of brandKeywords) {
+                const brandLower = brand.toLowerCase();
+                // Check in het skeleton domein (genormaliseerd)
+                if (skeletonDomain.includes(brandLower)) {
+                    // Als het originele domein non-ASCII bevat EN het merk bevat na normalisatie
+                    if (hasNonAscii) {
+                        logDebug(`Brand-keyword homoglyph: "${cleanHostname}" bevat "${brand}" met homoglyfen`);
+                        reasons.add(`brandKeywordHomoglyph:${brand}`);
+                        return true; // Hoog risico - merknaam met homoglyfen
+                    }
+                    // Of check of het domein verdachte prefixen/suffixen heeft rond het merk
+                    const suspiciousPrefixes = ['secure-', 'login-', 'verify-', 'update-', 'account-', 'bank-', 'my-', 'online-'];
+                    const suspiciousSuffixes = ['-login', '-secure', '-verify', '-update', '-account', '-bank', '-online', '-portal'];
+                    for (const prefix of suspiciousPrefixes) {
+                        if (skeletonDomain.includes(prefix + brandLower)) {
+                            logDebug(`Suspicious brand pattern: "${skeletonDomain}" heeft verdacht prefix "${prefix}" voor "${brand}"`);
+                            reasons.add(`suspiciousBrandPattern:${brand}`);
+                            return true;
+                        }
+                    }
+                    for (const suffix of suspiciousSuffixes) {
+                        if (skeletonDomain.includes(brandLower + suffix)) {
+                            logDebug(`Suspicious brand pattern: "${skeletonDomain}" heeft verdacht suffix "${suffix}" na "${brand}"`);
+                            reasons.add(`suspiciousBrandPattern:${brand}`);
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        // 15) EINDOORDEEL: Retourneer true als er enige reden is gevonden.
         return reasons.size > 0;
     } catch (error) {
         logError(`isHomoglyphAttack error voor ${domain}: ${error.message}`);
@@ -3108,6 +3581,16 @@ function checkStaticConditions(url, reasons, totalRiskRef) {
       condition: hasUnusualPort(url),
       weight: 5,
       reason: 'unusualPort'
+    },
+    // Non-ASCII karakters in originele URL (homoglyph indicator)
+    // Check de originele URL string, want new URL() converteert IDN naar Punycode
+    {
+      condition: (() => {
+        const originalDomain = url.split('//')[1]?.split('/')[0]?.split('?')[0] || '';
+        return /[^\x00-\x7F]/.test(originalDomain) || rawHost.includes('xn--');
+      })(),
+      weight: 8,
+      reason: 'nonAscii'
     }
   ];
   for (const { condition, weight, reason } of staticChecks) {
@@ -3115,6 +3598,38 @@ function checkStaticConditions(url, reasons, totalRiskRef) {
       logDebug(`Static: ${reason} gedetecteerd op ${hostNFC}`);
       reasons.add(reason);
       totalRiskRef.value += weight;
+    }
+  }
+  // 4b) Brand keyword + homoglyph combinatie detectie (HIGH RISK)
+  // Als nonAscii gedetecteerd is, controleer of genormaliseerd domein een bekend merk bevat
+  if (reasons.has('nonAscii')) {
+    const originalDomain = url.split('//')[1]?.split('/')[0]?.split('?')[0] || '';
+    let normalizedDomain = originalDomain.toLowerCase();
+
+    // Normaliseer door homoglyphs te vervangen
+    const homoglyphs = globalConfig.HOMOGLYPHS || {};
+    for (const [latinChar, variants] of Object.entries(homoglyphs)) {
+      if (Array.isArray(variants)) {
+        for (const variant of variants) {
+          normalizedDomain = normalizedDomain.split(variant).join(latinChar);
+        }
+      }
+    }
+
+    // Brand keywords die vaak het doelwit zijn van phishing
+    const brandKeywords = ['ing', 'paypal', 'rabobank', 'abnamro', 'microsoft', 'apple',
+      'google', 'amazon', 'netflix', 'facebook', 'linkedin', 'bank', 'verify', 'secure'];
+
+    for (const brand of brandKeywords) {
+      if (normalizedDomain.includes(brand)) {
+        const key = `brandKeywordHomoglyph:${brand}`;
+        if (!reasons.has(key)) {
+          logDebug(`Static: ${key} gedetecteerd - homoglyph attack op merk "${brand}"`);
+          reasons.add(key);
+          totalRiskRef.value += 10; // Hoge score voor homoglyph + brand combinatie
+        }
+        break;
+      }
     }
   }
   // 5) Adaptieve Levenshtein-check tegen legitieme domeinen
@@ -3954,6 +4469,133 @@ async function isFreeHostingDomain(url) {
     return false;
   }
 }
+
+/**
+ * Analyzes a URL's redirect chain by calling the background service worker.
+ * Only triggered for shortened URLs or links with 'caution' level.
+ *
+ * @param {string} url - The URL to analyze
+ * @param {string} level - Current risk level ('safe', 'caution', 'alert')
+ * @param {boolean} force - Force analysis regardless of conditions
+ * @returns {Promise<{finalUrl: string, chain: string[], threats: string[], redirectCount: number, error?: string}|null>}
+ */
+async function analyzeRedirectChain(url, level = 'safe', force = false) {
+  try {
+    const urlObj = new URL(url);
+    const domain = urlObj.hostname.toLowerCase();
+
+    // Check if URL is a shortened URL
+    const isShortened = globalConfig && globalConfig.SHORTENED_URL_DOMAINS &&
+                        globalConfig.SHORTENED_URL_DOMAINS.has(domain);
+
+    // Only analyze if: forced, shortened URL, or caution level
+    if (!force && !isShortened && level !== 'caution') {
+      return null;
+    }
+
+    // Send message to background script for redirect chain analysis
+    const response = await chrome.runtime.sendMessage({
+      action: 'analyzeRedirectChain',
+      url: url,
+      level: level,
+      force: force
+    });
+
+    if (response && response.success) {
+      return response.result;
+    } else if (response && response.error) {
+      logDebug(`[RedirectChain] Error: ${response.error}`);
+      return null;
+    }
+
+    return null;
+  } catch (error) {
+    handleError(error, 'analyzeRedirectChain');
+    return null;
+  }
+}
+
+/**
+ * Merges redirect chain analysis results with the original analysis result.
+ * The highest risk level and all unique reasons are combined.
+ *
+ * @param {Object} originalResult - Original performSuspiciousChecks result
+ * @param {Object} chainResult - Result from redirect chain analysis
+ * @returns {Object} Merged result with worst-case level and combined reasons
+ */
+function mergeRedirectChainResult(originalResult, chainResult) {
+  if (!chainResult || !chainResult.threats || chainResult.threats.length === 0) {
+    return originalResult;
+  }
+
+  const levelPriority = { 'safe': 0, 'caution': 1, 'alert': 2 };
+
+  // Calculate risk from redirect threats
+  let redirectRisk = 0;
+  const redirectReasons = [];
+
+  for (const threat of chainResult.threats) {
+    switch (threat) {
+      case 'excessiveRedirects':
+        redirectRisk += 4;
+        redirectReasons.push('reason_excessiveRedirects');
+        break;
+      case 'domainHopping':
+        redirectRisk += 5;
+        redirectReasons.push('reason_domainHopping');
+        break;
+      case 'chainedShorteners':
+        redirectRisk += 3;
+        redirectReasons.push('reason_chainedShorteners');
+        break;
+      case 'suspiciousFinalTLD':
+        redirectRisk += 4;
+        redirectReasons.push('reason_suspiciousFinalTLD');
+        break;
+      case 'redirectToIP':
+        redirectRisk += 6;
+        redirectReasons.push('reason_redirectToIP');
+        break;
+      case 'timeout':
+        redirectRisk += 2;
+        redirectReasons.push('reason_redirectTimeout');
+        break;
+      default:
+        redirectRisk += 2;
+        redirectReasons.push('reason_redirectChain');
+    }
+  }
+
+  // Determine new level based on combined risk
+  const combinedRisk = originalResult.risk + redirectRisk;
+  let newLevel = originalResult.level;
+
+  if (combinedRisk >= (globalConfig?.HIGH_THRESHOLD || 15)) {
+    newLevel = 'alert';
+  } else if (combinedRisk >= (globalConfig?.LOW_THRESHOLD || 4)) {
+    newLevel = 'caution';
+  }
+
+  // Ensure level never decreases
+  if (levelPriority[newLevel] < levelPriority[originalResult.level]) {
+    newLevel = originalResult.level;
+  }
+
+  // Merge reasons (remove duplicates)
+  const allReasons = [...new Set([...originalResult.reasons, ...redirectReasons])];
+
+  return {
+    level: newLevel,
+    risk: combinedRisk,
+    reasons: allReasons,
+    redirectChain: {
+      finalUrl: chainResult.finalUrl,
+      chain: chainResult.chain,
+      redirectCount: chainResult.redirectCount
+    }
+  };
+}
+
 /**
  * Checks the safety of a link upon user interaction (mouseover, click).
  * It calls the layered detection logic (`performSuspiciousChecks`) and manages visual warnings.
@@ -4025,12 +4667,47 @@ async function unifiedCheckLinkSafety(link, eventType, event) {
     // Step 3: Perform the full, layered suspicious checks ONE time
     // This is the core logic now, replacing redundant checks in this function.
     // ─────────────────────────────────────────────────────────────────────
-    const analysisResult = await performSuspiciousChecks(href);
+    let analysisResult = await performSuspiciousChecks(href);
+
+    // ─────────────────────────────────────────────────────────────────────
+    // Step 3.5: Redirect Chain Analysis (for shortened URLs or caution level)
+    // Analyze the redirect chain to detect cloaked malicious destinations
+    // ─────────────────────────────────────────────────────────────────────
+    try {
+      const chainResult = await analyzeRedirectChain(href, analysisResult.level);
+      if (chainResult) {
+        // If we got a different final URL, also check that URL
+        if (chainResult.finalUrl && chainResult.finalUrl !== href) {
+          const finalUrlResult = await performSuspiciousChecks(chainResult.finalUrl);
+          // Merge final URL result if it's worse
+          if (finalUrlResult.risk > analysisResult.risk) {
+            analysisResult = {
+              ...analysisResult,
+              risk: Math.max(analysisResult.risk, finalUrlResult.risk),
+              reasons: [...new Set([...analysisResult.reasons, ...finalUrlResult.reasons])]
+            };
+            // Recalculate level based on combined risk
+            if (analysisResult.risk >= (globalConfig?.HIGH_THRESHOLD || 15)) {
+              analysisResult.level = 'alert';
+            } else if (analysisResult.risk >= (globalConfig?.LOW_THRESHOLD || 4)) {
+              analysisResult.level = 'caution';
+            }
+          }
+        }
+        // Merge redirect chain threats
+        analysisResult = mergeRedirectChainResult(analysisResult, chainResult);
+        logDebug(`[RedirectChain] Final result after chain analysis: level=${analysisResult.level}, risk=${analysisResult.risk}`);
+      }
+    } catch (chainError) {
+      // Don't fail the entire check if redirect chain analysis fails
+      handleError(chainError, 'unifiedCheckLinkSafety:redirectChain');
+    }
+
     // ─────────────────────────────────────────────────────────────────────
     // Step 4: Apply visual warning based on analysis result
     // ─────────────────────────────────────────────────────────────────────
     warnLinkByLevel(link, analysisResult);
-   
+
     // Return the analysis result for potential further use (e.g., caching in event handlers)
     return analysisResult;
   } catch (error) {
@@ -4258,8 +4935,37 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 });
-// 1) checkLinks stuurt nu géén berichten meer, maar returned alleen of er verdachte externe links zijn
+// 1) checkLinks - Geoptimaliseerde versie met IntersectionObserver
+// Gebruikt lazy loading voor betere performance op grote pagina's
 async function checkLinks() {
+  if (isSearchResultPage()) {
+    logDebug("Zoekresultatenpagina gedetecteerd, linkcontrole wordt overgeslagen.");
+    return false;
+  }
+
+  // Initialiseer de geoptimaliseerde scanner als die nog niet bestaat
+  if (!linkScanner) {
+    initOptimizedLinkScanner();
+  }
+
+  // Start lazy scanning van alle links
+  linkScanner.scanAllLinks();
+
+  // Voor backward compatibility: check of er al verdachte links in cache zijn
+  let hasSuspicious = false;
+  for (const [url, data] of linkScanner.urlCache) {
+    if (data.result && data.result.level && data.result.level !== 'safe') {
+      hasSuspicious = true;
+      break;
+    }
+  }
+
+  logDebug(`[checkLinks] Geoptimaliseerde scanner gestart, cache bevat ${linkScanner.urlCache.size} entries`);
+  return hasSuspicious;
+}
+
+// Legacy functie voor backward compatibility - synchrone batch scan
+async function checkLinksLegacy() {
   if (isSearchResultPage()) {
     logDebug("Zoekresultatenpagina gedetecteerd, linkcontrole wordt overgeslagen.");
     return false;
@@ -4361,7 +5067,7 @@ function isSameDomain(linkDomain, currentDomain) {
   return linkDomain === currentDomain || linkDomain.endsWith(`.${currentDomain}`);
 }
 // Eenvoudige URL-validatie
-function isValidURL(url) {
+function isValidURLBasic(url) {
   try {
     new URL(url);
     return true;
@@ -4576,90 +5282,397 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 
-// New: QR scan cache to avoid re-scanning images, with TTL for expiration
-const qrScanCache = new Map();
-const QR_CACHE_TTL_MS = 3600000; // 1 hour expiration
+// =============================================================================
+// QR CODE IMAGE SCANNER - Using jsQR
+// OCR (OCRAD.js) disabled due to Chrome Extension CSP incompatibility
+// Integrates with IntersectionObserver for viewport-based scanning
+// =============================================================================
 
-async function scanForQRPhishing() {
-  if (typeof jsQR === 'undefined') {
-    logDebug('jsQR not loaded, skipping QR scan');
-    return;
+const IMAGE_SCAN_CACHE_TTL_MS = 3600000; // 1 hour expiration
+const imageScanCache = new Map();
+
+/**
+ * ImageScannerOptimized - Scans images for QR codes and text using IntersectionObserver
+ */
+class ImageScannerOptimized {
+  constructor(options = {}) {
+    this.cacheTTL = options.cacheTTL || IMAGE_SCAN_CACHE_TTL_MS;
+    this.maxCacheSize = options.maxCacheSize || 500;
+    this.pendingImages = new Set();
+    this.isProcessing = false;
+    this.observer = null;
+    this.observedImages = new WeakSet();
+
+    this.handleIntersection = this.handleIntersection.bind(this);
+    this.processQueue = this.processQueue.bind(this);
+
+    this.initObserver();
+    logDebug('[LinkShield OCR] ImageScannerOptimized initialized');
   }
 
-  // Clean expired cache entries
-  const now = Date.now();
-  for (const [key, value] of qrScanCache.entries()) {
-    if (now - value.timestamp > QR_CACHE_TTL_MS) {
-      qrScanCache.delete(key);
+  initObserver() {
+    if (typeof IntersectionObserver === 'undefined') {
+      logDebug('[LinkShield OCR] IntersectionObserver not available, using fallback');
+      return;
+    }
+
+    this.observer = new IntersectionObserver(this.handleIntersection, {
+      root: null,
+      rootMargin: '50px',
+      threshold: 0.1
+    });
+
+    logDebug('[LinkShield OCR] IntersectionObserver initialized for image scanning');
+  }
+
+  handleIntersection(entries) {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const img = entry.target;
+        this.observer?.unobserve(img);
+
+        if (!this.isCached(img.src)) {
+          this.pendingImages.add(img);
+        }
+      }
+    });
+
+    if (this.pendingImages.size > 0 && !this.isProcessing) {
+      this.scheduleProcessing();
     }
   }
 
-  // Scan visible images
-  const images = document.querySelectorAll('img[src]');
-  for (const imgEl of images) {
-    if (!isVisible(imgEl)) continue; // Skip hidden images for performance
-    const src = imgEl.src;
-    if (qrScanCache.has(src)) continue;
+  isCached(src) {
+    const cached = imageScanCache.get(src);
+    if (!cached) return false;
+    if (Date.now() - cached.timestamp > this.cacheTTL) {
+      imageScanCache.delete(src);
+      return false;
+    }
+    return true;
+  }
 
-    try {
-      const code = await new Promise((resolve, reject) => {
-        const img = new Image();
-        img.crossOrigin = 'anonymous'; // Enable CORS
-        img.src = src;
-        img.onload = () => {
+  addToCache(src, result) {
+    if (imageScanCache.size >= this.maxCacheSize) {
+      const oldestKey = imageScanCache.keys().next().value;
+      imageScanCache.delete(oldestKey);
+    }
+    imageScanCache.set(src, { ...result, timestamp: Date.now() });
+  }
+
+  scheduleProcessing() {
+    if (this.isProcessing) return;
+    if ('requestIdleCallback' in window) {
+      requestIdleCallback(this.processQueue, { timeout: 2000 });
+    } else {
+      setTimeout(this.processQueue, 100);
+    }
+  }
+
+  async processQueue() {
+    this.isProcessing = true;
+    const images = Array.from(this.pendingImages);
+
+    for (const img of images) {
+      this.pendingImages.delete(img);
+
+      if (this.isCached(img.src)) continue;
+
+      try {
+        await this.scanImage(img);
+      } catch (error) {
+        handleError(error, `[LinkShield OCR] Error scanning image ${img.src}`);
+        this.addToCache(img.src, { level: 'safe', type: 'error' });
+      }
+    }
+
+    this.isProcessing = false;
+
+    if (this.pendingImages.size > 0) {
+      this.scheduleProcessing();
+    }
+  }
+
+  async scanImage(imgEl) {
+    const src = imgEl.src;
+
+    // First try QR code detection
+    const qrResult = await scanImageForQR(imgEl);
+    if (qrResult && qrResult.detected) {
+      this.addToCache(src, qrResult);
+      return;
+    }
+
+    // Then try OCR for text detection
+    const ocrResult = await scanImageForOCR(imgEl);
+    if (ocrResult && ocrResult.detected) {
+      this.addToCache(src, ocrResult);
+      return;
+    }
+
+    // No detection
+    this.addToCache(src, { level: 'safe', type: 'none' });
+  }
+
+  observeImage(img) {
+    if (!this.observer || this.observedImages.has(img)) return;
+    if (!img.src || img.src.startsWith('data:')) return;
+
+    this.observedImages.add(img);
+    this.observer.observe(img);
+  }
+
+  scanAllVisibleImages() {
+    const images = document.querySelectorAll('img[src]');
+    images.forEach(img => {
+      if (isVisible(img) && !this.isCached(img.src)) {
+        this.observeImage(img);
+      }
+    });
+  }
+
+  destroy() {
+    this.observer?.disconnect();
+    this.pendingImages.clear();
+  }
+}
+
+// Global image scanner instance
+let imageScanner = null;
+
+/**
+ * Scan image for QR codes using jsQR library (IIFE, MV3 compatible)
+ */
+async function scanImageForQR(imgEl) {
+  // Check if jsQR is available
+  if (typeof jsQR === 'undefined') {
+    logDebug('[LinkShield OCR] jsQR not loaded, skipping QR scan');
+    return null;
+  }
+
+  try {
+    // Load image and draw to canvas for jsQR
+    const qrData = await new Promise((resolve, reject) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+
+      img.onload = () => {
+        try {
           const canvas = document.createElement('canvas');
           canvas.width = img.width;
           canvas.height = img.height;
           const ctx = canvas.getContext('2d');
           ctx.drawImage(img, 0, 0);
           const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-          resolve(jsQR(imageData.data, imageData.width, imageData.height));
-        };
-        img.onerror = () => reject(new Error('Image load error'));
-        setTimeout(() => reject(new Error('Image load timeout')), 5000);
-      });
-
-      if (code && code.data && isValidURL(code.data)) {
-        logDebug(`Decoded QR URL: ${code.data}`);
-        
-        // Enhanced: Context check for suspicious parent elements (e.g., email-like)
-        const contextReasons = checkQRContext(imgEl);
-        
-        // Core check with existing logic
-        let result = await performSuspiciousChecks(code.data);
-        
-        // Integrate with Chrome Safe Browsing if available (Manifest V3 permission needed)
-        if (chrome.safeBrowsing) {
-          const sbResult = await checkSafeBrowsing(code.data);
-          if (sbResult.threatType) {
-            result.level = 'alert';
-            result.reasons.push(`Safe Browsing threat: ${sbResult.threatType}`);
-          }
+          const code = jsQR(imageData.data, imageData.width, imageData.height);
+          resolve(code);
+        } catch (e) {
+          reject(e);
         }
-        
-        // Add context reasons to result
+      };
+
+      img.onerror = () => reject(new Error('Image load failed'));
+      setTimeout(() => reject(new Error('Image load timeout')), 5000);
+      img.src = imgEl.src;
+    });
+
+    if (qrData && qrData.data) {
+      const decodedUrl = qrData.data;
+
+      if (isValidURL(decodedUrl)) {
+        logDebug(`[LinkShield OCR] Decoded QR URL: ${decodedUrl}`);
+
+        // Context check
+        const contextReasons = checkQRContext(imgEl);
+
+        // Perform suspicious checks
+        let result = await performSuspiciousChecks(decodedUrl);
+
+        // Integrate Chrome Safe Browsing if available
+        if (chrome.safeBrowsing) {
+          try {
+            const sbResult = await checkSafeBrowsing(decodedUrl);
+            if (sbResult.threatType) {
+              result.level = 'alert';
+              result.reasons.push(`Safe Browsing threat: ${sbResult.threatType}`);
+            }
+          } catch (e) { /* Safe Browsing not available */ }
+        }
+
+        // Add context reasons
         if (contextReasons.length > 0) {
           result.reasons = [...result.reasons, ...contextReasons];
-          if (result.level === 'safe' && contextReasons.length > 0) result.level = 'caution';
+          if (result.level === 'safe') result.level = 'caution';
         }
-        
-        qrScanCache.set(src, { ...result, timestamp: now });
-        
+
         if (result.level !== 'safe') {
-          warnQRImage(imgEl, result);
-          logDebug(`⚠️ Suspicious QR code found in image ${src}, decoded URL: ${code.data}, level: ${result.level}`);
+          warnQRImage(imgEl, { ...result, url: decodedUrl });
+          logDebug(`[LinkShield OCR] ⚠️ Suspicious QR: ${decodedUrl}, level: ${result.level}`);
         }
-      } else {
-        qrScanCache.set(src, { level: 'safe', timestamp: now });
+
+        return { detected: true, type: 'qr', url: decodedUrl, ...result };
       }
-    } catch (error) {
-      handleError(error, `scanForQRPhishing: Error scanning image ${src}`);
-      qrScanCache.set(src, { level: 'safe', timestamp: now });
     }
+  } catch (error) {
+    // jsQR returns null when no QR found, errors are actual errors
+    logDebug(`[LinkShield OCR] QR scan error: ${error.message}`);
   }
 
-  // New: Scan for text/ASCII-based QR (evasion technique in 2025)
+  return null;
+}
+
+/**
+ * Scan image for text using OCR
+ * DISABLED: OCRAD.js is incompatible with Chrome Extension CSP (requires unsafe-eval)
+ * QR code scanning via jsQR still works and is the primary image scanning method.
+ */
+async function scanImageForOCR(imgEl) {
+  // OCR is disabled due to CSP incompatibility with OCRAD.js
+  // QR code detection via jsQR is still active
+  return null;
+}
+
+/**
+ * Extract URLs from text
+ */
+function extractURLsFromText(text) {
+  const urlRegex = /https?:\/\/[^\s<>"']+/gi;
+  const matches = text.match(urlRegex) || [];
+  return matches.map(url => url.replace(/[.,;:!?)]+$/, '')); // Clean trailing punctuation
+}
+
+/**
+ * Warn about suspicious OCR-detected content with translated reasons
+ */
+function warnOCRImage(img, { level, reasons = [], url, extractedText }) {
+  const parent = img.parentElement;
+  if (!parent) return;
+
+  const wrapper = document.createElement('div');
+  wrapper.style.position = 'relative';
+  wrapper.style.display = 'inline-block';
+  img.parentNode.insertBefore(wrapper, img);
+  wrapper.appendChild(img);
+
+  const isAlert = level === 'alert';
+  const bgColor = isAlert ? 'rgba(220, 38, 38, 0.85)' : 'rgba(234, 179, 8, 0.85)';
+  const borderColor = isAlert ? '#dc2626' : '#eab308';
+  const title = isAlert
+    ? (chrome.i18n.getMessage('ocrDangerTitle') || 'GEVAAR: Phishing gedetecteerd in afbeelding!')
+    : (chrome.i18n.getMessage('ocrCautionTitle') || 'Let op: Verdachte tekst in afbeelding');
+
+  // Translate reasons
+  const translatedReasons = Array.isArray(reasons) && reasons.length > 0
+    ? reasons.slice(0, 3).map(r => translateReason(r)).join(', ')
+    : (chrome.i18n.getMessage('suspiciousDomainDetected') || 'Verdacht domein gedetecteerd');
+
+  const displayUrl = url && url.length > 40 ? url.substring(0, 40) + '...' : (url || 'N/A');
+
+  const overlay = document.createElement('div');
+  overlay.className = 'qr-warning-overlay ocr-warning';
+  overlay.innerHTML = `
+    <div style="font-weight:bold;margin-bottom:4px;">${isAlert ? '⚠️' : '⚡'} ${title}</div>
+    <div style="font-size:10px;margin-bottom:3px;">URL: ${displayUrl}</div>
+    <div style="font-size:9px;opacity:0.9;">${translatedReasons}</div>
+  `;
+
+  // Translate reasons for tooltip
+  const translatedReasonsForTooltip = Array.isArray(reasons)
+    ? reasons.map(r => translateReason(r)).join('\n')
+    : '';
+  overlay.title = `${chrome.i18n.getMessage('extractedText') || 'Geëxtraheerde tekst'}: ${extractedText}\n\n${chrome.i18n.getMessage('reasons') || 'Redenen'}:\n${translatedReasonsForTooltip}`;
+
+  overlay.style.cssText = `
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: ${bgColor};
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 11px;
+    padding: 8px;
+    z-index: 10000;
+    border: 2px solid ${borderColor};
+    border-radius: 4px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  `;
+  wrapper.appendChild(overlay);
+}
+
+/**
+ * Initialize image scanning with IntersectionObserver
+ */
+async function scanForQRPhishing() {
+  // Initialize scanner if not exists
+  if (!imageScanner) {
+    imageScanner = new ImageScannerOptimized();
+  }
+
+  // Scan all currently visible images
+  imageScanner.scanAllVisibleImages();
+
+  // Also scan for text-based QR codes
   await scanForTextQR();
+}
+
+// Helper: Translate reason keys to user-friendly messages via chrome.i18n
+function translateReason(reasonKey) {
+  if (!reasonKey) return '';
+
+  // Extract base key (remove dynamic parts like :domain)
+  const baseKey = reasonKey.split(':')[0];
+  const dynamicPart = reasonKey.includes(':') ? reasonKey.split(':').slice(1).join(':') : '';
+
+  // Try to get translation from chrome.i18n
+  const translationKey = `reason_${baseKey}`;
+  let translated = chrome.i18n.getMessage(translationKey);
+
+  // If no translation found, use fallback mapping
+  if (!translated) {
+    const fallbackMap = {
+      'nonAscii': 'Verdachte tekens gedetecteerd (homoglyphs)',
+      'brandKeywordHomoglyph': 'Imitatie van een bekend merk gedetecteerd',
+      'noHttps': 'Geen beveiligde verbinding (HTTPS)',
+      'suspiciousTLD': 'Verdachte domeinextensie',
+      'ipAsDomain': 'IP-adres als domeinnaam',
+      'tooManySubdomains': 'Te veel subdomeinen',
+      'shortenedUrl': 'Verkorte URL gedetecteerd',
+      'suspiciousKeywords': 'Verdachte trefwoorden in URL',
+      'malwareExtension': 'Potentieel schadelijke bestandsextensie',
+      'urlTooLong': 'Ongewoon lange URL',
+      'encodedCharacters': 'Gecodeerde tekens in URL',
+      'homoglyphAttack': 'Homoglyph-aanval gedetecteerd',
+      'typosquatting': 'Typosquatting gedetecteerd',
+      'suspiciousBrandPattern': 'Verdacht merkpatroon',
+      'unusualPort': 'Ongebruikelijke poort',
+      'punycode': 'Punycode domein gedetecteerd',
+      'loginPageNoMX': 'Inlogpagina zonder e-mailserver',
+      'insecureLoginPage': 'Onveilige inlogpagina',
+      'sslValidationFailed': 'SSL-validatie mislukt',
+      'similarToLegitimateDomain': 'Lijkt op legitiem domein',
+      'reason_redirectChain': 'Verdachte redirect-keten gedetecteerd',
+      'reason_excessiveRedirects': 'Te veel redirects in keten',
+      'reason_domainHopping': 'Meerdere domeinwisselingen in redirect-keten',
+      'reason_chainedShorteners': 'Meerdere URL-verkorters achter elkaar',
+      'reason_suspiciousFinalTLD': 'Einddoel heeft verdachte domeinextensie',
+      'reason_redirectToIP': 'Redirect naar IP-adres',
+      'reason_redirectTimeout': 'Redirect-analyse time-out'
+    };
+    translated = fallbackMap[baseKey] || fallbackMap[reasonKey] || baseKey;
+  }
+
+  // Append dynamic part if present (e.g., brand name)
+  if (dynamicPart && baseKey !== dynamicPart) {
+    return `${translated} (${dynamicPart})`;
+  }
+
+  return translated;
 }
 
 // Helper: Check context around QR for phishing indicators
@@ -4688,68 +5701,227 @@ async function checkSafeBrowsing(url) {
   });
 }
 
-// New: Function to scan for text/ASCII QR in <pre>, <code>, SVG (2025 evasion)
+// Function to scan for text/ASCII QR in <pre>, <code>, SVG (2025 evasion technique)
 async function scanForTextQR() {
   const textElements = document.querySelectorAll('pre, code, svg');
+
   for (const el of textElements) {
     if (!isVisible(el)) continue;
+
     const text = el.textContent.trim();
-    if (isPotentialTextQR(text)) { // Simple heuristic or regex for QR-like patterns
-      // Convert text to imageData (simulate QR rendering)
-      const simulatedCode = simulateTextQRDecode(text);
-      if (simulatedCode && isValidURL(simulatedCode.data)) {
-        const result = await performSuspiciousChecks(simulatedCode.data);
+    if (!isPotentialTextQR(text)) continue;
+
+    try {
+      // Render ASCII art to canvas for QR scanning
+      const qrData = await decodeAsciiQR(text);
+
+      if (qrData && isValidURL(qrData)) {
+        logDebug(`[LinkShield OCR] ASCII QR decoded URL: ${qrData}`);
+
+        const result = await performSuspiciousChecks(qrData);
         if (result.level !== 'safe') {
-          warnTextQR(el, result);
+          warnTextQR(el, { ...result, url: qrData });
+          logDebug(`[LinkShield OCR] ⚠️ Suspicious ASCII QR: ${qrData}, level: ${result.level}`);
         }
       }
+    } catch (error) {
+      logDebug(`[LinkShield OCR] ASCII QR decode error: ${error.message}`);
     }
   }
 }
 
 // Helper: Heuristic to detect text-based QR patterns
 function isPotentialTextQR(text) {
-  // Simple check for blocky patterns (e.g., lines with # or █ characters)
-  return /[#█]{5,}/g.test(text) && text.split('\n').length > 5; // Tune based on examples
+  // Check for blocky patterns (e.g., lines with #, █, ▄, ▀, ■ characters)
+  const blockChars = /[#█▄▀■◼◾▪⬛🔲⬜🔳]{5,}/g;
+  const hasBlocks = blockChars.test(text);
+  const hasMultipleLines = text.split('\n').length >= 5;
+
+  // Also check for Unicode block patterns
+  const unicodeBlocks = /[\u2580-\u259F]{3,}/g;
+  const hasUnicodeBlocks = unicodeBlocks.test(text);
+
+  return (hasBlocks || hasUnicodeBlocks) && hasMultipleLines;
 }
 
-// Helper: Simulate decoding text QR (placeholder; use a lib or custom parser)
-function simulateTextQRDecode(text) {
-  // For real impl: Parse ASCII art to binary and decode like jsQR
-  // Placeholder: Assume it decodes to a URL
-  return { data: extractURLFromText(text) }; // Custom extract function
+// Helper: Decode ASCII art QR by rendering to canvas and scanning with jsQR
+async function decodeAsciiQR(asciiText) {
+  if (typeof jsQR === 'undefined') {
+    // Fallback: try to extract URL directly from text
+    return extractURLFromAsciiText(asciiText);
+  }
+
+  // Create canvas and render ASCII art
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+
+  const lines = asciiText.split('\n').filter(line => line.trim());
+  const cellSize = 4; // Pixels per character
+
+  canvas.width = Math.max(...lines.map(l => l.length)) * cellSize;
+  canvas.height = lines.length * cellSize;
+
+  // White background
+  ctx.fillStyle = 'white';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Render each character
+  ctx.fillStyle = 'black';
+  const blockChars = new Set(['#', '█', '▄', '▀', '■', '◼', '◾', '▪', '⬛', '🔲', '1']);
+
+  lines.forEach((line, y) => {
+    [...line].forEach((char, x) => {
+      if (blockChars.has(char) || /[\u2580-\u259F]/.test(char)) {
+        ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+      }
+    });
+  });
+
+  try {
+    // Use jsQR to decode the rendered canvas
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const result = jsQR(imageData.data, imageData.width, imageData.height);
+    return result?.data || null;
+  } catch (e) {
+    // QR not found in rendered ASCII
+    return null;
+  }
 }
 
-function extractURLFromText(text) {
-  const urlRegex = /(https?:\/\/[^\s]+)/g;
-  return text.match(urlRegex)?.[0] || null;
+// Helper: Extract URL directly from ASCII text (fallback)
+function extractURLFromAsciiText(text) {
+  const urlRegex = /(https?:\/\/[^\s<>"']+)/gi;
+  const matches = text.match(urlRegex);
+  return matches?.[0]?.replace(/[.,;:!?)]+$/, '') || null;
 }
 
-// Function to warn near a text QR element
-function warnTextQR(el, { level, reasons }) {
+// Function to warn near a text QR element with translated reasons
+function warnTextQR(el, { level, reasons = [], url }) {
+  const wrapper = document.createElement('div');
+  wrapper.style.position = 'relative';
+  wrapper.style.display = 'inline-block';
+
+  el.parentNode?.insertBefore(wrapper, el);
+  wrapper.appendChild(el);
+
+  const isAlert = level === 'alert';
+  const bgColor = isAlert ? 'rgba(220, 38, 38, 0.85)' : 'rgba(234, 179, 8, 0.85)';
+  const borderColor = isAlert ? '#dc2626' : '#eab308';
+  const title = isAlert
+    ? (chrome.i18n.getMessage('asciiQrDangerTitle') || 'GEVAAR: Phishing ASCII QR!')
+    : (chrome.i18n.getMessage('asciiQrCautionTitle') || 'Let op: Verdachte ASCII QR');
+
+  // Translate reasons
+  const translatedReasons = Array.isArray(reasons) && reasons.length > 0
+    ? reasons.slice(0, 3).map(r => translateReason(r)).join(', ')
+    : (chrome.i18n.getMessage('suspiciousDomainDetected') || 'Verdacht domein gedetecteerd');
+
+  const displayUrl = url && url.length > 40 ? url.substring(0, 40) + '...' : (url || (chrome.i18n.getMessage('hiddenUrl') || 'Verborgen'));
+
   const overlay = document.createElement('div');
-  overlay.className = 'qr-warning-overlay';
-  overlay.textContent = level === 'alert' ? 'DANGER: Phishing Text QR!' : 'Caution: Suspicious Text QR';
-  overlay.title = reasons.join('\n');
-  el.style.position = 'relative';
-  el.appendChild(overlay);
+  overlay.className = 'qr-warning-overlay ascii-qr-warning';
+  overlay.innerHTML = `
+    <div style="font-weight:bold;margin-bottom:4px;">${isAlert ? '⚠️' : '⚡'} ${title}</div>
+    <div style="font-size:10px;margin-bottom:3px;">URL: ${displayUrl}</div>
+    <div style="font-size:9px;opacity:0.9;">${translatedReasons}</div>
+  `;
+
+  // Translate reasons for tooltip
+  const translatedReasonsForTooltip = Array.isArray(reasons)
+    ? reasons.map(r => translateReason(r)).join('\n')
+    : '';
+  overlay.title = `${chrome.i18n.getMessage('reasons') || 'Redenen'}:\n${translatedReasonsForTooltip}`;
+
+  overlay.style.cssText = `
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: ${bgColor};
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 11px;
+    padding: 8px;
+    z-index: 10000;
+    border: 2px solid ${borderColor};
+    border-radius: 4px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  `;
+  wrapper.appendChild(overlay);
 }
 
-// Updated: Function to warn near a QR image, with clickable overlay and URL preview
-function warnQRImage(img, { level, reasons, url }) {
+// Updated: Function to warn near a QR image with translated reasons
+function warnQRImage(img, { level, reasons = [], url }) {
   const parent = img.parentElement;
   if (!parent) return;
+
+  // Check if already warned
+  if (img.dataset.qrWarned === 'true') return;
+  img.dataset.qrWarned = 'true';
+
   const wrapper = document.createElement('div');
   wrapper.style.position = 'relative';
   wrapper.style.display = 'inline-block';
   img.parentNode.insertBefore(wrapper, img);
   wrapper.appendChild(img);
+
   const overlay = document.createElement('div');
   overlay.className = 'qr-warning-overlay';
-  overlay.innerHTML = `${level === 'alert' ? 'DANGER: Phishing QR!' : 'Caution: Suspicious QR'}<br>Decoded: ${url || 'Hidden URL'}<br>Click to report`;
-  overlay.title = reasons.join('\n');
-  overlay.style.cursor = 'pointer';
-  overlay.addEventListener('click', () => reportPhishing(url)); // Add report function
+
+  // Determine colors based on level
+  const isAlert = level === 'alert';
+  const bgColor = isAlert ? 'rgba(220, 38, 38, 0.9)' : 'rgba(234, 179, 8, 0.9)';
+  const borderColor = isAlert ? '#dc2626' : '#eab308';
+  const emoji = isAlert ? '⚠️' : '⚡';
+  const title = isAlert
+    ? (chrome.i18n.getMessage('qrDangerTitle') || 'GEVAAR: Phishing QR-code!')
+    : (chrome.i18n.getMessage('qrCautionTitle') || 'Let op: Verdachte QR-code');
+
+  // Translate reasons for display
+  const translatedReasons = Array.isArray(reasons) && reasons.length > 0
+    ? reasons.slice(0, 3).map(r => translateReason(r)).join(', ')
+    : (chrome.i18n.getMessage('suspiciousDomainDetected') || 'Verdacht domein gedetecteerd');
+
+  // Truncate URL for display
+  const displayUrl = url && url.length > 50 ? url.substring(0, 50) + '...' : url;
+
+  overlay.innerHTML = `
+    <div style="font-weight:bold;font-size:14px;margin-bottom:4px;">${emoji} ${title}</div>
+    <div style="font-size:11px;margin-bottom:4px;">URL: ${displayUrl || (chrome.i18n.getMessage('hiddenUrl') || 'Verborgen URL')}</div>
+    <div style="font-size:10px;opacity:0.9;">${translatedReasons}</div>
+  `;
+
+  overlay.style.cssText = `
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: ${bgColor};
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 10px;
+    z-index: 10000;
+    border: 3px solid ${borderColor};
+    border-radius: 4px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  `;
+
+  // Translate reasons for tooltip
+  const translatedReasonsForTooltip = Array.isArray(reasons)
+    ? reasons.map(r => translateReason(r)).join('\n')
+    : (chrome.i18n.getMessage('suspiciousDomainDetected') || 'Verdacht domein');
+  overlay.title = `${chrome.i18n.getMessage('fullUrl') || 'Volledige URL'}: ${url}\n\n${chrome.i18n.getMessage('reasons') || 'Redenen'}:\n${translatedReasonsForTooltip}`;
   wrapper.appendChild(overlay);
 }
 

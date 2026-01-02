@@ -463,5 +463,216 @@
   },
   "suspiciousPunycodeDecoding_paypal_com": {
     "message": "This link uses unusual characters to look like paypal.com (high risk)."
+  },
+
+  "popupPageTitle": {
+    "message": "LinkShield Dashboard"
+  },
+  "extNameFull": {
+    "message": "LinkShield: Your Weapon Against Phishing"
+  },
+  "extDescriptionFull": {
+    "message": "Increase your security with direct alerts and advanced protection against online threats."
+  },
+
+  "licenseTrialTitle": {
+    "message": "Trial: $DAYS$ days remaining",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "licenseTrialSubtitle": {
+    "message": "All premium features are active during your trial"
+  },
+  "licenseUpgradeLink": {
+    "message": "Upgrade to Premium →"
+  },
+  "licenseExpiredTitle": {
+    "message": "Trial Expired"
+  },
+  "licenseExpiredSubtitle": {
+    "message": "Activate Premium for full protection"
+  },
+  "licenseBenefitsLabel": {
+    "message": "Premium includes:"
+  },
+  "licenseBenefitsText": {
+    "message": "Background analysis, QR code scanning, continuous protection"
+  },
+  "licenseKeyPlaceholder": {
+    "message": "Enter your license code"
+  },
+  "licenseActivateButton": {
+    "message": "Activate Premium"
+  },
+  "licenseBuyLink": {
+    "message": "No license yet? Buy here →"
+  },
+  "licensePremiumTitle": {
+    "message": "Premium Active"
+  },
+  "licensePremiumSubtitle": {
+    "message": "Full protection enabled"
+  },
+
+  "sectionSecuritySettings": {
+    "message": "Security Settings"
+  },
+  "backgroundAnalysisTitle": {
+    "message": "Security Settings"
+  },
+  "backgroundAnalysisFeature": {
+    "message": "Background Analysis"
+  },
+  "premiumBadge": {
+    "message": "PREMIUM"
+  },
+  "integratedProtectionFeature": {
+    "message": "Integrated Malware & Phishing Protection"
+  },
+  "integratedProtectionDescription": {
+    "message": "Combines multiple security services for comprehensive protection."
+  },
+  "confirmationMessage": {
+    "message": "Settings saved successfully!"
+  },
+  "lastRuleUpdateNone": {
+    "message": "No database update performed yet"
+  },
+  "errorOccurred": {
+    "message": "An error occurred"
+  },
+
+  "trialDaysRemaining": {
+    "message": "$DAYS$ days remaining in trial",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "14"
+      }
+    }
+  },
+  "trialExpired": {
+    "message": "Trial expired"
+  },
+  "trialExpiredMessage": {
+    "message": "Your 30-day trial has expired. Activate a license to continue using all features."
+  },
+  "upgradeNow": {
+    "message": "Upgrade now"
+  },
+
+  "gumroadErrorUnknown": {
+    "message": "Unknown error"
+  },
+  "gumroadErrorLicenseNotExistProduct": {
+    "message": "This license key does not exist for this product"
+  },
+  "gumroadErrorLicenseNotExist": {
+    "message": "This license key does not exist"
+  },
+  "gumroadErrorLicenseRequired": {
+    "message": "Please enter a license key"
+  },
+  "gumroadErrorProductNotFound": {
+    "message": "Product not found"
+  },
+  "gumroadErrorLicenseDisabled": {
+    "message": "This license has been disabled"
+  },
+  "gumroadErrorLicenseRefunded": {
+    "message": "This license has been refunded"
+  },
+  "gumroadErrorLicenseRevoked": {
+    "message": "This license has been refunded or revoked"
+  },
+  "gumroadErrorLicenseInvalid": {
+    "message": "Invalid license key"
+  },
+  "gumroadErrorNetwork": {
+    "message": "Network error during validation. Please check your internet connection."
+  },
+
+  "licenseEmptyError": {
+    "message": "Please enter a license code"
+  },
+  "licenseActivating": {
+    "message": "Activating..."
+  },
+  "licenseActivatedSuccess": {
+    "message": "Premium successfully activated!"
+  },
+  "licenseConnectionError": {
+    "message": "Connection error. Please try again."
+  },
+
+  "debugModeTitle": {
+    "message": "Debug Mode"
+  },
+  "debugTrial30": {
+    "message": "Trial (30d)"
+  },
+  "debugTrial3": {
+    "message": "Trial (3d)"
+  },
+  "debugExpired": {
+    "message": "Expired"
+  },
+  "debugPremium": {
+    "message": "Premium"
+  },
+  "debugReset": {
+    "message": "Reset"
+  },
+  "debugTrialSimulated": {
+    "message": "✓ Trial ($DAYS$ days) simulated",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "debugExpiredSimulated": {
+    "message": "✓ Expired trial simulated"
+  },
+  "debugPremiumSimulated": {
+    "message": "✓ Premium simulated"
+  },
+  "debugStorageReset": {
+    "message": "✓ Storage reset - reload extension"
+  },
+  "debugError": {
+    "message": "✗ Error: $ERROR$",
+    "placeholders": {
+      "ERROR": {
+        "content": "$1",
+        "example": "Unknown error"
+      }
+    }
+  },
+  "reason_redirectChain": {
+    "message": "Suspicious redirect chain detected. The link passes through multiple servers before reaching its destination."
+  },
+  "reason_excessiveRedirects": {
+    "message": "Too many redirects in chain (high risk). This link redirects more than 5 times, which is often used to hide the true destination."
+  },
+  "reason_domainHopping": {
+    "message": "Multiple domain switches in redirect chain (high risk). The link jumps between many different websites."
+  },
+  "reason_chainedShorteners": {
+    "message": "Multiple URL shorteners chained together (medium risk). Legitimate links rarely use multiple shortening services."
+  },
+  "reason_suspiciousFinalTLD": {
+    "message": "Final destination has a suspicious domain extension (high risk). The actual endpoint uses a risky TLD."
+  },
+  "reason_redirectToIP": {
+    "message": "Redirect leads to IP address (high risk). The final destination is a raw IP address instead of a domain name."
+  },
+  "reason_redirectTimeout": {
+    "message": "Redirect analysis timed out (medium risk). Could not fully trace the redirect chain within the time limit."
   }
 }

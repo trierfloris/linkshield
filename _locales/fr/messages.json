@@ -463,5 +463,314 @@
   },
   "suspiciousPunycodeDecoding_paypal_com": {
     "message": "Ce lien utilise des caractères inhabituels pour ressembler à paypal.com (risque élevé)."
+  },
+
+  "reason_nonAscii": {
+    "message": "Caractères suspects détectés (homoglyphes)"
+  },
+  "reason_brandKeywordHomoglyph": {
+    "message": "Imitation de marque connue détectée"
+  },
+  "reason_noHttps": {
+    "message": "Pas de connexion sécurisée (HTTPS)"
+  },
+  "reason_suspiciousTLD": {
+    "message": "Extension de domaine suspecte"
+  },
+  "reason_ipAsDomain": {
+    "message": "Adresse IP comme nom de domaine"
+  },
+  "reason_tooManySubdomains": {
+    "message": "Trop de sous-domaines"
+  },
+  "reason_shortenedUrl": {
+    "message": "Lien raccourci détecté"
+  },
+  "reason_suspiciousKeywords": {
+    "message": "Mots-clés suspects dans l'URL"
+  },
+  "reason_malwareExtension": {
+    "message": "Extension de fichier potentiellement dangereuse"
+  },
+  "reason_urlTooLong": {
+    "message": "URL inhabituellement longue"
+  },
+  "reason_encodedCharacters": {
+    "message": "Caractères encodés dans l'URL"
+  },
+  "reason_homoglyphAttack": {
+    "message": "Attaque par homoglyphes détectée"
+  },
+  "reason_typosquatting": {
+    "message": "Typosquatting détecté"
+  },
+  "reason_suspiciousBrandPattern": {
+    "message": "Motif de marque suspect"
+  },
+  "reason_unusualPort": {
+    "message": "Port inhabituel"
+  },
+  "reason_punycode": {
+    "message": "Domaine Punycode détecté"
+  },
+  "reason_loginPageNoMX": {
+    "message": "Page de connexion sans serveur de messagerie"
+  },
+  "reason_insecureLoginPage": {
+    "message": "Page de connexion non sécurisée"
+  },
+  "reason_sslValidationFailed": {
+    "message": "Validation SSL échouée"
+  },
+  "reason_similarToLegitimateDomain": {
+    "message": "Similaire à un domaine légitime"
+  },
+
+  "qrDangerTitle": {
+    "message": "DANGER : Code QR d'hameçonnage !"
+  },
+  "qrCautionTitle": {
+    "message": "Attention : Code QR suspect"
+  },
+  "ocrDangerTitle": {
+    "message": "DANGER : Hameçonnage détecté dans l'image !"
+  },
+  "ocrCautionTitle": {
+    "message": "Attention : Texte suspect dans l'image"
+  },
+  "asciiQrDangerTitle": {
+    "message": "DANGER : QR ASCII d'hameçonnage !"
+  },
+  "asciiQrCautionTitle": {
+    "message": "Attention : QR ASCII suspect"
+  },
+  "suspiciousDomainDetected": {
+    "message": "Domaine suspect détecté"
+  },
+  "hiddenUrl": {
+    "message": "URL cachée"
+  },
+  "fullUrl": {
+    "message": "URL complète"
+  },
+  "reasons": {
+    "message": "Raisons"
+  },
+  "extractedText": {
+    "message": "Texte extrait"
+  },
+
+  "trialPeriodActive": {
+    "message": "Période d'essai active"
+  },
+  "trialDaysRemaining": {
+    "message": "$DAYS$ jours restants dans la période d'essai",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "14"
+      }
+    }
+  },
+  "trialExpired": {
+    "message": "Période d'essai expirée"
+  },
+  "trialExpiredMessage": {
+    "message": "Votre période d'essai de 30 jours a expiré. Activez une licence pour continuer à utiliser toutes les fonctionnalités."
+  },
+  "upgradeNow": {
+    "message": "Mettre à niveau maintenant"
+  },
+
+  "popupPageTitle": {
+    "message": "Tableau de bord LinkShield"
+  },
+  "extNameFull": {
+    "message": "LinkShield : Votre arme contre l'hameçonnage"
+  },
+  "extDescriptionFull": {
+    "message": "Augmentez votre sécurité avec des alertes instantanées et une protection avancée contre les menaces en ligne."
+  },
+
+  "licenseTrialTitle": {
+    "message": "Période d'essai : $DAYS$ jours restants",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "licenseTrialSubtitle": {
+    "message": "Toutes les fonctionnalités premium sont actives pendant votre période d'essai"
+  },
+  "licenseUpgradeLink": {
+    "message": "Passer à Premium →"
+  },
+  "licenseExpiredTitle": {
+    "message": "Période d'essai expirée"
+  },
+  "licenseExpiredSubtitle": {
+    "message": "Activez Premium pour une protection complète"
+  },
+  "licenseBenefitsLabel": {
+    "message": "Premium inclut :"
+  },
+  "licenseBenefitsText": {
+    "message": "Analyses en arrière-plan, scan de codes QR, protection continue"
+  },
+  "licenseKeyPlaceholder": {
+    "message": "Entrez votre code de licence"
+  },
+  "licenseActivateButton": {
+    "message": "Activer Premium"
+  },
+  "licenseBuyLink": {
+    "message": "Pas de licence ? Achetez ici →"
+  },
+  "licensePremiumTitle": {
+    "message": "Premium Actif"
+  },
+  "licensePremiumSubtitle": {
+    "message": "Protection complète activée"
+  },
+
+  "sectionSecuritySettings": {
+    "message": "Paramètres de sécurité"
+  },
+  "backgroundAnalysisTitle": {
+    "message": "Paramètres de sécurité"
+  },
+  "backgroundAnalysisFeature": {
+    "message": "Analyses en arrière-plan"
+  },
+  "premiumBadge": {
+    "message": "PREMIUM"
+  },
+  "integratedProtectionFeature": {
+    "message": "Protection intégrée contre les malwares et l'hameçonnage"
+  },
+  "integratedProtectionDescription": {
+    "message": "Combine plusieurs services de sécurité pour une protection complète."
+  },
+  "confirmationMessage": {
+    "message": "Paramètres enregistrés avec succès !"
+  },
+  "lastRuleUpdateNone": {
+    "message": "Aucune mise à jour de la base de données effectuée"
+  },
+  "errorOccurred": {
+    "message": "Une erreur s'est produite"
+  },
+
+  "gumroadErrorUnknown": {
+    "message": "Erreur inconnue"
+  },
+  "gumroadErrorLicenseNotExistProduct": {
+    "message": "Cette clé de licence n'existe pas pour ce produit"
+  },
+  "gumroadErrorLicenseNotExist": {
+    "message": "Cette clé de licence n'existe pas"
+  },
+  "gumroadErrorLicenseRequired": {
+    "message": "Veuillez entrer une clé de licence"
+  },
+  "gumroadErrorProductNotFound": {
+    "message": "Produit non trouvé"
+  },
+  "gumroadErrorLicenseDisabled": {
+    "message": "Cette licence a été désactivée"
+  },
+  "gumroadErrorLicenseRefunded": {
+    "message": "Cette licence a été remboursée"
+  },
+  "gumroadErrorLicenseRevoked": {
+    "message": "Cette licence a été remboursée ou révoquée"
+  },
+  "gumroadErrorLicenseInvalid": {
+    "message": "Clé de licence invalide"
+  },
+  "gumroadErrorNetwork": {
+    "message": "Erreur réseau lors de la validation. Vérifiez votre connexion internet."
+  },
+
+  "licenseEmptyError": {
+    "message": "Veuillez entrer un code de licence"
+  },
+  "licenseActivating": {
+    "message": "Activation en cours..."
+  },
+  "licenseActivatedSuccess": {
+    "message": "Premium activé avec succès !"
+  },
+  "licenseConnectionError": {
+    "message": "Erreur de connexion. Veuillez réessayer."
+  },
+
+  "debugModeTitle": {
+    "message": "Mode débogage"
+  },
+  "debugTrial30": {
+    "message": "Essai (30j)"
+  },
+  "debugTrial3": {
+    "message": "Essai (3j)"
+  },
+  "debugExpired": {
+    "message": "Expiré"
+  },
+  "debugPremium": {
+    "message": "Premium"
+  },
+  "debugReset": {
+    "message": "Réinitialiser"
+  },
+  "debugTrialSimulated": {
+    "message": "✓ Essai ($DAYS$ jours) simulé",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "debugExpiredSimulated": {
+    "message": "✓ Essai expiré simulé"
+  },
+  "debugPremiumSimulated": {
+    "message": "✓ Premium simulé"
+  },
+  "debugStorageReset": {
+    "message": "✓ Stockage réinitialisé - rechargez l'extension"
+  },
+  "debugError": {
+    "message": "✗ Erreur : $ERROR$",
+    "placeholders": {
+      "ERROR": {
+        "content": "$1",
+        "example": "Unknown error"
+      }
+    }
+  },
+  "reason_redirectChain": {
+    "message": "Chaîne de redirection suspecte détectée. Le lien passe par plusieurs serveurs avant d'atteindre sa destination."
+  },
+  "reason_excessiveRedirects": {
+    "message": "Trop de redirections dans la chaîne (risque élevé). Ce lien redirige plus de 5 fois, ce qui est souvent utilisé pour masquer la vraie destination."
+  },
+  "reason_domainHopping": {
+    "message": "Plusieurs changements de domaine dans la chaîne de redirection (risque élevé). Le lien saute entre de nombreux sites web différents."
+  },
+  "reason_chainedShorteners": {
+    "message": "Plusieurs raccourcisseurs d'URL enchaînés (risque moyen). Les liens légitimes utilisent rarement plusieurs services de raccourcissement."
+  },
+  "reason_suspiciousFinalTLD": {
+    "message": "La destination finale a une extension de domaine suspecte (risque élevé). Le point final réel utilise un TLD à risque."
+  },
+  "reason_redirectToIP": {
+    "message": "La redirection mène à une adresse IP (risque élevé). La destination finale est une adresse IP brute au lieu d'un nom de domaine."
+  },
+  "reason_redirectTimeout": {
+    "message": "Délai d'analyse de redirection dépassé (risque moyen). Impossible de tracer complètement la chaîne de redirection dans le délai imparti."
   }
 }

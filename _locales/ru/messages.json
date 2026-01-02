@@ -463,5 +463,314 @@
   },
   "suspiciousPunycodeDecoding_paypal_com": {
     "message": "Эта ссылка использует необычные символы, чтобы выглядеть как paypal.com (высокий риск)."
+  },
+
+  "reason_nonAscii": {
+    "message": "Обнаружены подозрительные символы (омоглифы)"
+  },
+  "reason_brandKeywordHomoglyph": {
+    "message": "Обнаружена имитация бренда"
+  },
+  "reason_noHttps": {
+    "message": "Нет защищенного соединения (HTTPS)"
+  },
+  "reason_suspiciousTLD": {
+    "message": "Подозрительное доменное расширение"
+  },
+  "reason_ipAsDomain": {
+    "message": "IP-адрес в качестве доменного имени"
+  },
+  "reason_tooManySubdomains": {
+    "message": "Слишком много поддоменов"
+  },
+  "reason_shortenedUrl": {
+    "message": "Обнаружена сокращенная ссылка"
+  },
+  "reason_suspiciousKeywords": {
+    "message": "Подозрительные ключевые слова в URL"
+  },
+  "reason_malwareExtension": {
+    "message": "Потенциально опасное расширение файла"
+  },
+  "reason_urlTooLong": {
+    "message": "Необычно длинный URL"
+  },
+  "reason_encodedCharacters": {
+    "message": "Закодированные символы в URL"
+  },
+  "reason_homoglyphAttack": {
+    "message": "Обнаружена атака с использованием омоглифов"
+  },
+  "reason_typosquatting": {
+    "message": "Обнаружен тайпсквоттинг"
+  },
+  "reason_suspiciousBrandPattern": {
+    "message": "Подозрительный паттерн бренда"
+  },
+  "reason_unusualPort": {
+    "message": "Необычный порт"
+  },
+  "reason_punycode": {
+    "message": "Обнаружен Punycode-домен"
+  },
+  "reason_loginPageNoMX": {
+    "message": "Страница входа без почтового сервера"
+  },
+  "reason_insecureLoginPage": {
+    "message": "Небезопасная страница входа"
+  },
+  "reason_sslValidationFailed": {
+    "message": "Ошибка проверки SSL"
+  },
+  "reason_similarToLegitimateDomain": {
+    "message": "Похож на легитимный домен"
+  },
+
+  "qrDangerTitle": {
+    "message": "ОПАСНОСТЬ: Фишинговый QR-код!"
+  },
+  "qrCautionTitle": {
+    "message": "Внимание: Подозрительный QR-код"
+  },
+  "ocrDangerTitle": {
+    "message": "ОПАСНОСТЬ: Обнаружен фишинг в изображении!"
+  },
+  "ocrCautionTitle": {
+    "message": "Внимание: Подозрительный текст в изображении"
+  },
+  "asciiQrDangerTitle": {
+    "message": "ОПАСНОСТЬ: Фишинговый ASCII QR!"
+  },
+  "asciiQrCautionTitle": {
+    "message": "Внимание: Подозрительный ASCII QR"
+  },
+  "suspiciousDomainDetected": {
+    "message": "Обнаружен подозрительный домен"
+  },
+  "hiddenUrl": {
+    "message": "Скрытый URL"
+  },
+  "fullUrl": {
+    "message": "Полный URL"
+  },
+  "reasons": {
+    "message": "Причины"
+  },
+  "extractedText": {
+    "message": "Извлеченный текст"
+  },
+
+  "trialPeriodActive": {
+    "message": "Пробный период активен"
+  },
+  "trialDaysRemaining": {
+    "message": "Осталось $DAYS$ дней пробного периода",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "14"
+      }
+    }
+  },
+  "trialExpired": {
+    "message": "Пробный период истек"
+  },
+  "trialExpiredMessage": {
+    "message": "Ваш 30-дневный пробный период истек. Активируйте лицензию, чтобы продолжить использовать все функции."
+  },
+  "upgradeNow": {
+    "message": "Обновить сейчас"
+  },
+
+  "popupPageTitle": {
+    "message": "Панель управления LinkShield"
+  },
+  "extNameFull": {
+    "message": "LinkShield: ваше оружие против фишинга"
+  },
+  "extDescriptionFull": {
+    "message": "Повысьте свою онлайн-безопасность с мгновенными оповещениями и расширенной защитой."
+  },
+
+  "licenseTrialTitle": {
+    "message": "Пробный период: осталось $DAYS$ дней",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "licenseTrialSubtitle": {
+    "message": "Все премиум-функции активны в течение пробного периода"
+  },
+  "licenseUpgradeLink": {
+    "message": "Перейти на Premium →"
+  },
+  "licenseExpiredTitle": {
+    "message": "Пробный период истек"
+  },
+  "licenseExpiredSubtitle": {
+    "message": "Активируйте Premium для полной защиты"
+  },
+  "licenseBenefitsLabel": {
+    "message": "Premium включает:"
+  },
+  "licenseBenefitsText": {
+    "message": "Фоновый анализ, сканирование QR-кодов, непрерывная защита"
+  },
+  "licenseKeyPlaceholder": {
+    "message": "Введите ваш лицензионный код"
+  },
+  "licenseActivateButton": {
+    "message": "Активировать Premium"
+  },
+  "licenseBuyLink": {
+    "message": "Нет лицензии? Купить здесь →"
+  },
+  "licensePremiumTitle": {
+    "message": "Premium активен"
+  },
+  "licensePremiumSubtitle": {
+    "message": "Полная защита включена"
+  },
+
+  "sectionSecuritySettings": {
+    "message": "Настройки безопасности"
+  },
+  "backgroundAnalysisTitle": {
+    "message": "Настройки безопасности"
+  },
+  "backgroundAnalysisFeature": {
+    "message": "Фоновый анализ"
+  },
+  "premiumBadge": {
+    "message": "PREMIUM"
+  },
+  "integratedProtectionFeature": {
+    "message": "Интегрированная защита от вредоносного ПО и фишинга"
+  },
+  "integratedProtectionDescription": {
+    "message": "Объединяет несколько служб безопасности для комплексной защиты."
+  },
+  "confirmationMessage": {
+    "message": "Настройки успешно сохранены!"
+  },
+  "lastRuleUpdateNone": {
+    "message": "Обновление базы данных еще не выполнено"
+  },
+  "errorOccurred": {
+    "message": "Произошла ошибка"
+  },
+
+  "gumroadErrorUnknown": {
+    "message": "Неизвестная ошибка"
+  },
+  "gumroadErrorLicenseNotExistProduct": {
+    "message": "Этот лицензионный ключ не существует для данного продукта"
+  },
+  "gumroadErrorLicenseNotExist": {
+    "message": "Этот лицензионный ключ не существует"
+  },
+  "gumroadErrorLicenseRequired": {
+    "message": "Пожалуйста, введите лицензионный ключ"
+  },
+  "gumroadErrorProductNotFound": {
+    "message": "Продукт не найден"
+  },
+  "gumroadErrorLicenseDisabled": {
+    "message": "Эта лицензия отключена"
+  },
+  "gumroadErrorLicenseRefunded": {
+    "message": "Эта лицензия была возвращена"
+  },
+  "gumroadErrorLicenseRevoked": {
+    "message": "Эта лицензия была возвращена или отозвана"
+  },
+  "gumroadErrorLicenseInvalid": {
+    "message": "Недействительный лицензионный ключ"
+  },
+  "gumroadErrorNetwork": {
+    "message": "Ошибка сети при проверке. Проверьте ваше интернет-соединение."
+  },
+
+  "licenseEmptyError": {
+    "message": "Пожалуйста, введите лицензионный код"
+  },
+  "licenseActivating": {
+    "message": "Активация..."
+  },
+  "licenseActivatedSuccess": {
+    "message": "Premium успешно активирован!"
+  },
+  "licenseConnectionError": {
+    "message": "Ошибка соединения. Попробуйте снова."
+  },
+
+  "debugModeTitle": {
+    "message": "Режим отладки"
+  },
+  "debugTrial30": {
+    "message": "Пробный (30 дн.)"
+  },
+  "debugTrial3": {
+    "message": "Пробный (3 дн.)"
+  },
+  "debugExpired": {
+    "message": "Истек"
+  },
+  "debugPremium": {
+    "message": "Premium"
+  },
+  "debugReset": {
+    "message": "Сброс"
+  },
+  "debugTrialSimulated": {
+    "message": "✓ Пробный период ($DAYS$ дн.) смоделирован",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "debugExpiredSimulated": {
+    "message": "✓ Истекший пробный период смоделирован"
+  },
+  "debugPremiumSimulated": {
+    "message": "✓ Premium смоделирован"
+  },
+  "debugStorageReset": {
+    "message": "✓ Хранилище сброшено - перезагрузите расширение"
+  },
+  "debugError": {
+    "message": "✗ Ошибка: $ERROR$",
+    "placeholders": {
+      "ERROR": {
+        "content": "$1",
+        "example": "Unknown error"
+      }
+    }
+  },
+  "reason_redirectChain": {
+    "message": "Обнаружена подозрительная цепочка перенаправлений. Ссылка проходит через несколько серверов перед достижением пункта назначения."
+  },
+  "reason_excessiveRedirects": {
+    "message": "Слишком много перенаправлений в цепочке (высокий риск). Эта ссылка перенаправляет более 5 раз, что часто используется для сокрытия истинного назначения."
+  },
+  "reason_domainHopping": {
+    "message": "Множественные смены домена в цепочке перенаправлений (высокий риск). Ссылка переходит между многими различными сайтами."
+  },
+  "reason_chainedShorteners": {
+    "message": "Несколько сервисов сокращения URL связаны в цепочку (средний риск). Легитимные ссылки редко используют несколько сервисов сокращения."
+  },
+  "reason_suspiciousFinalTLD": {
+    "message": "Конечный пункт назначения имеет подозрительное расширение домена (высокий риск). Фактическая конечная точка использует рискованный TLD."
+  },
+  "reason_redirectToIP": {
+    "message": "Перенаправление ведёт на IP-адрес (высокий риск). Конечный пункт назначения — это необработанный IP-адрес вместо доменного имени."
+  },
+  "reason_redirectTimeout": {
+    "message": "Тайм-аут анализа перенаправлений (средний риск). Не удалось полностью отследить цепочку перенаправлений в установленное время."
   }
 }

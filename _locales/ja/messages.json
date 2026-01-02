@@ -463,5 +463,314 @@
   },
   "suspiciousPunycodeDecoding_paypal_com": {
     "message": "このリンクは、paypal.comに見せかけるために珍しい文字を使用しています（高リスク）。"
+  },
+
+  "reason_nonAscii": {
+    "message": "疑わしい文字を検出（同形異字）"
+  },
+  "reason_brandKeywordHomoglyph": {
+    "message": "ブランド模倣を検出"
+  },
+  "reason_noHttps": {
+    "message": "安全な接続なし（HTTPS）"
+  },
+  "reason_suspiciousTLD": {
+    "message": "疑わしいドメイン拡張子"
+  },
+  "reason_ipAsDomain": {
+    "message": "ドメイン名としてのIPアドレス"
+  },
+  "reason_tooManySubdomains": {
+    "message": "サブドメインが多すぎます"
+  },
+  "reason_shortenedUrl": {
+    "message": "短縮URLを検出"
+  },
+  "reason_suspiciousKeywords": {
+    "message": "URLに疑わしいキーワード"
+  },
+  "reason_malwareExtension": {
+    "message": "潜在的に危険なファイル拡張子"
+  },
+  "reason_urlTooLong": {
+    "message": "異常に長いURL"
+  },
+  "reason_encodedCharacters": {
+    "message": "URLにエンコードされた文字"
+  },
+  "reason_homoglyphAttack": {
+    "message": "同形異字攻撃を検出"
+  },
+  "reason_typosquatting": {
+    "message": "タイポスクワッティングを検出"
+  },
+  "reason_suspiciousBrandPattern": {
+    "message": "疑わしいブランドパターン"
+  },
+  "reason_unusualPort": {
+    "message": "異常なポート"
+  },
+  "reason_punycode": {
+    "message": "Punycodeドメインを検出"
+  },
+  "reason_loginPageNoMX": {
+    "message": "メールサーバーのないログインページ"
+  },
+  "reason_insecureLoginPage": {
+    "message": "安全でないログインページ"
+  },
+  "reason_sslValidationFailed": {
+    "message": "SSL検証に失敗"
+  },
+  "reason_similarToLegitimateDomain": {
+    "message": "正規ドメインに類似"
+  },
+
+  "qrDangerTitle": {
+    "message": "危険：フィッシングQRコード！"
+  },
+  "qrCautionTitle": {
+    "message": "注意：疑わしいQRコード"
+  },
+  "ocrDangerTitle": {
+    "message": "危険：画像内にフィッシングを検出！"
+  },
+  "ocrCautionTitle": {
+    "message": "注意：画像内に疑わしいテキスト"
+  },
+  "asciiQrDangerTitle": {
+    "message": "危険：フィッシングASCII QR！"
+  },
+  "asciiQrCautionTitle": {
+    "message": "注意：疑わしいASCII QR"
+  },
+  "suspiciousDomainDetected": {
+    "message": "疑わしいドメインを検出"
+  },
+  "hiddenUrl": {
+    "message": "隠されたURL"
+  },
+  "fullUrl": {
+    "message": "完全なURL"
+  },
+  "reasons": {
+    "message": "理由"
+  },
+  "extractedText": {
+    "message": "抽出されたテキスト"
+  },
+
+  "trialPeriodActive": {
+    "message": "試用期間有効"
+  },
+  "trialDaysRemaining": {
+    "message": "試用期間残り $DAYS$ 日",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "14"
+      }
+    }
+  },
+  "trialExpired": {
+    "message": "試用期間終了"
+  },
+  "trialExpiredMessage": {
+    "message": "30日間の試用期間が終了しました。すべての機能を引き続き使用するには、ライセンスを有効化してください。"
+  },
+  "upgradeNow": {
+    "message": "今すぐアップグレード"
+  },
+
+  "popupPageTitle": {
+    "message": "LinkShield ダッシュボード"
+  },
+  "extNameFull": {
+    "message": "LinkShield：フィッシング対策の武器"
+  },
+  "extDescriptionFull": {
+    "message": "即時アラートと高度な保護でオンラインセキュリティを強化します。"
+  },
+
+  "licenseTrialTitle": {
+    "message": "試用期間：残り $DAYS$ 日",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "licenseTrialSubtitle": {
+    "message": "試用期間中はすべてのプレミアム機能が有効です"
+  },
+  "licenseUpgradeLink": {
+    "message": "プレミアムにアップグレード →"
+  },
+  "licenseExpiredTitle": {
+    "message": "試用期間終了"
+  },
+  "licenseExpiredSubtitle": {
+    "message": "完全な保護のためにプレミアムを有効化"
+  },
+  "licenseBenefitsLabel": {
+    "message": "プレミアムに含まれる機能："
+  },
+  "licenseBenefitsText": {
+    "message": "バックグラウンド分析、QRコードスキャン、継続的な保護"
+  },
+  "licenseKeyPlaceholder": {
+    "message": "ライセンスキーを入力してください"
+  },
+  "licenseActivateButton": {
+    "message": "プレミアムを有効化"
+  },
+  "licenseBuyLink": {
+    "message": "ライセンスをお持ちでない方はこちら →"
+  },
+  "licensePremiumTitle": {
+    "message": "プレミアム有効"
+  },
+  "licensePremiumSubtitle": {
+    "message": "完全な保護が有効化されました"
+  },
+
+  "sectionSecuritySettings": {
+    "message": "セキュリティ設定"
+  },
+  "backgroundAnalysisTitle": {
+    "message": "セキュリティ設定"
+  },
+  "backgroundAnalysisFeature": {
+    "message": "バックグラウンド分析"
+  },
+  "premiumBadge": {
+    "message": "プレミアム"
+  },
+  "integratedProtectionFeature": {
+    "message": "統合マルウェア・フィッシング保護"
+  },
+  "integratedProtectionDescription": {
+    "message": "複数のセキュリティサービスを組み合わせて包括的な保護を提供します。"
+  },
+  "confirmationMessage": {
+    "message": "設定が正常に保存されました！"
+  },
+  "lastRuleUpdateNone": {
+    "message": "データベース更新はまだ実行されていません"
+  },
+  "errorOccurred": {
+    "message": "エラーが発生しました"
+  },
+
+  "gumroadErrorUnknown": {
+    "message": "不明なエラー"
+  },
+  "gumroadErrorLicenseNotExistProduct": {
+    "message": "この製品にはこのライセンスキーは存在しません"
+  },
+  "gumroadErrorLicenseNotExist": {
+    "message": "このライセンスキーは存在しません"
+  },
+  "gumroadErrorLicenseRequired": {
+    "message": "ライセンスキーを入力してください"
+  },
+  "gumroadErrorProductNotFound": {
+    "message": "製品が見つかりません"
+  },
+  "gumroadErrorLicenseDisabled": {
+    "message": "このライセンスは無効化されています"
+  },
+  "gumroadErrorLicenseRefunded": {
+    "message": "このライセンスは返金されました"
+  },
+  "gumroadErrorLicenseRevoked": {
+    "message": "このライセンスは返金または取り消されました"
+  },
+  "gumroadErrorLicenseInvalid": {
+    "message": "無効なライセンスキー"
+  },
+  "gumroadErrorNetwork": {
+    "message": "検証中にネットワークエラーが発生しました。インターネット接続を確認してください。"
+  },
+
+  "licenseEmptyError": {
+    "message": "ライセンスキーを入力してください"
+  },
+  "licenseActivating": {
+    "message": "有効化中..."
+  },
+  "licenseActivatedSuccess": {
+    "message": "プレミアムが正常に有効化されました！"
+  },
+  "licenseConnectionError": {
+    "message": "接続エラー。もう一度お試しください。"
+  },
+
+  "debugModeTitle": {
+    "message": "デバッグモード"
+  },
+  "debugTrial30": {
+    "message": "試用 (30日)"
+  },
+  "debugTrial3": {
+    "message": "試用 (3日)"
+  },
+  "debugExpired": {
+    "message": "期限切れ"
+  },
+  "debugPremium": {
+    "message": "プレミアム"
+  },
+  "debugReset": {
+    "message": "リセット"
+  },
+  "debugTrialSimulated": {
+    "message": "✓ 試用（$DAYS$ 日）をシミュレート",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "debugExpiredSimulated": {
+    "message": "✓ 期限切れ試用をシミュレート"
+  },
+  "debugPremiumSimulated": {
+    "message": "✓ プレミアムをシミュレート"
+  },
+  "debugStorageReset": {
+    "message": "✓ ストレージをリセット - 拡張機能を再読み込みしてください"
+  },
+  "debugError": {
+    "message": "✗ エラー：$ERROR$",
+    "placeholders": {
+      "ERROR": {
+        "content": "$1",
+        "example": "Unknown error"
+      }
+    }
+  },
+  "reason_redirectChain": {
+    "message": "疑わしいリダイレクトチェーンが検出されました。リンクは目的地に到達する前に複数のサーバーを経由します。"
+  },
+  "reason_excessiveRedirects": {
+    "message": "チェーン内のリダイレクトが多すぎます（高リスク）。このリンクは5回以上リダイレクトされており、真の目的地を隠すためによく使用されます。"
+  },
+  "reason_domainHopping": {
+    "message": "リダイレクトチェーン内で複数のドメイン変更（高リスク）。リンクは多くの異なるウェブサイト間を跳び回っています。"
+  },
+  "reason_chainedShorteners": {
+    "message": "複数のURL短縮サービスが連鎖（中リスク）。正当なリンクが複数の短縮サービスを使用することは稀です。"
+  },
+  "reason_suspiciousFinalTLD": {
+    "message": "最終目的地に疑わしいドメイン拡張子があります（高リスク）。実際のエンドポイントはリスクの高いTLDを使用しています。"
+  },
+  "reason_redirectToIP": {
+    "message": "リダイレクト先がIPアドレス（高リスク）。最終目的地はドメイン名ではなく生のIPアドレスです。"
+  },
+  "reason_redirectTimeout": {
+    "message": "リダイレクト分析がタイムアウト（中リスク）。時間制限内にリダイレクトチェーンを完全に追跡できませんでした。"
   }
 }

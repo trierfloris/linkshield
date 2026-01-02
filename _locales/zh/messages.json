@@ -463,5 +463,314 @@
   },
   "suspiciousPunycodeDecoding_paypal_com": {
     "message": "此链接使用不寻常的字符使其看起来像 paypal.com（高风险）。"
+  },
+
+  "reason_nonAscii": {
+    "message": "检测到可疑字符（同形字）"
+  },
+  "reason_brandKeywordHomoglyph": {
+    "message": "检测到品牌模仿"
+  },
+  "reason_noHttps": {
+    "message": "无安全连接 (HTTPS)"
+  },
+  "reason_suspiciousTLD": {
+    "message": "可疑域名后缀"
+  },
+  "reason_ipAsDomain": {
+    "message": "IP地址作为域名"
+  },
+  "reason_tooManySubdomains": {
+    "message": "子域名过多"
+  },
+  "reason_shortenedUrl": {
+    "message": "检测到短链接"
+  },
+  "reason_suspiciousKeywords": {
+    "message": "URL中包含可疑关键词"
+  },
+  "reason_malwareExtension": {
+    "message": "潜在危险的文件扩展名"
+  },
+  "reason_urlTooLong": {
+    "message": "URL异常长"
+  },
+  "reason_encodedCharacters": {
+    "message": "URL中包含编码字符"
+  },
+  "reason_homoglyphAttack": {
+    "message": "检测到同形字攻击"
+  },
+  "reason_typosquatting": {
+    "message": "检测到域名抢注"
+  },
+  "reason_suspiciousBrandPattern": {
+    "message": "可疑的品牌模式"
+  },
+  "reason_unusualPort": {
+    "message": "异常端口"
+  },
+  "reason_punycode": {
+    "message": "检测到Punycode域名"
+  },
+  "reason_loginPageNoMX": {
+    "message": "登录页面无邮件服务器"
+  },
+  "reason_insecureLoginPage": {
+    "message": "不安全的登录页面"
+  },
+  "reason_sslValidationFailed": {
+    "message": "SSL验证失败"
+  },
+  "reason_similarToLegitimateDomain": {
+    "message": "与合法域名相似"
+  },
+
+  "qrDangerTitle": {
+    "message": "危险：钓鱼二维码！"
+  },
+  "qrCautionTitle": {
+    "message": "注意：可疑二维码"
+  },
+  "ocrDangerTitle": {
+    "message": "危险：图片中检测到钓鱼内容！"
+  },
+  "ocrCautionTitle": {
+    "message": "注意：图片中存在可疑文字"
+  },
+  "asciiQrDangerTitle": {
+    "message": "危险：钓鱼ASCII二维码！"
+  },
+  "asciiQrCautionTitle": {
+    "message": "注意：可疑ASCII二维码"
+  },
+  "suspiciousDomainDetected": {
+    "message": "检测到可疑域名"
+  },
+  "hiddenUrl": {
+    "message": "隐藏的URL"
+  },
+  "fullUrl": {
+    "message": "完整URL"
+  },
+  "reasons": {
+    "message": "原因"
+  },
+  "extractedText": {
+    "message": "提取的文字"
+  },
+
+  "trialPeriodActive": {
+    "message": "试用期活跃"
+  },
+  "trialDaysRemaining": {
+    "message": "试用期剩余 $DAYS$ 天",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "14"
+      }
+    }
+  },
+  "trialExpired": {
+    "message": "试用期已过期"
+  },
+  "trialExpiredMessage": {
+    "message": "您的30天试用期已过期。请激活许可证以继续使用所有功能。"
+  },
+  "upgradeNow": {
+    "message": "立即升级"
+  },
+
+  "popupPageTitle": {
+    "message": "LinkShield 控制面板"
+  },
+  "extNameFull": {
+    "message": "LinkShield：您的反钓鱼武器"
+  },
+  "extDescriptionFull": {
+    "message": "通过即时警报和高级保护来增强您的在线安全。"
+  },
+
+  "licenseTrialTitle": {
+    "message": "试用期：剩余 $DAYS$ 天",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "licenseTrialSubtitle": {
+    "message": "试用期内所有高级功能均已激活"
+  },
+  "licenseUpgradeLink": {
+    "message": "升级到高级版 →"
+  },
+  "licenseExpiredTitle": {
+    "message": "试用期已过期"
+  },
+  "licenseExpiredSubtitle": {
+    "message": "激活高级版以获得完整保护"
+  },
+  "licenseBenefitsLabel": {
+    "message": "高级版包含："
+  },
+  "licenseBenefitsText": {
+    "message": "后台分析、二维码扫描、持续保护"
+  },
+  "licenseKeyPlaceholder": {
+    "message": "输入您的许可证密钥"
+  },
+  "licenseActivateButton": {
+    "message": "激活高级版"
+  },
+  "licenseBuyLink": {
+    "message": "还没有许可证？点击这里购买 →"
+  },
+  "licensePremiumTitle": {
+    "message": "高级版已激活"
+  },
+  "licensePremiumSubtitle": {
+    "message": "完整保护已启用"
+  },
+
+  "sectionSecuritySettings": {
+    "message": "安全设置"
+  },
+  "backgroundAnalysisTitle": {
+    "message": "安全设置"
+  },
+  "backgroundAnalysisFeature": {
+    "message": "后台分析"
+  },
+  "premiumBadge": {
+    "message": "高级版"
+  },
+  "integratedProtectionFeature": {
+    "message": "集成恶意软件和钓鱼防护"
+  },
+  "integratedProtectionDescription": {
+    "message": "结合多种安全服务提供全面保护。"
+  },
+  "confirmationMessage": {
+    "message": "设置保存成功！"
+  },
+  "lastRuleUpdateNone": {
+    "message": "尚未进行数据库更新"
+  },
+  "errorOccurred": {
+    "message": "发生错误"
+  },
+
+  "gumroadErrorUnknown": {
+    "message": "未知错误"
+  },
+  "gumroadErrorLicenseNotExistProduct": {
+    "message": "此产品不存在该许可证密钥"
+  },
+  "gumroadErrorLicenseNotExist": {
+    "message": "此许可证密钥不存在"
+  },
+  "gumroadErrorLicenseRequired": {
+    "message": "请输入许可证密钥"
+  },
+  "gumroadErrorProductNotFound": {
+    "message": "未找到产品"
+  },
+  "gumroadErrorLicenseDisabled": {
+    "message": "此许可证已被禁用"
+  },
+  "gumroadErrorLicenseRefunded": {
+    "message": "此许可证已退款"
+  },
+  "gumroadErrorLicenseRevoked": {
+    "message": "此许可证已退款或撤销"
+  },
+  "gumroadErrorLicenseInvalid": {
+    "message": "无效的许可证密钥"
+  },
+  "gumroadErrorNetwork": {
+    "message": "验证期间发生网络错误。请检查您的网络连接。"
+  },
+
+  "licenseEmptyError": {
+    "message": "请输入许可证密钥"
+  },
+  "licenseActivating": {
+    "message": "正在激活..."
+  },
+  "licenseActivatedSuccess": {
+    "message": "高级版激活成功！"
+  },
+  "licenseConnectionError": {
+    "message": "连接错误，请重试。"
+  },
+
+  "debugModeTitle": {
+    "message": "调试模式"
+  },
+  "debugTrial30": {
+    "message": "试用 (30天)"
+  },
+  "debugTrial3": {
+    "message": "试用 (3天)"
+  },
+  "debugExpired": {
+    "message": "已过期"
+  },
+  "debugPremium": {
+    "message": "高级版"
+  },
+  "debugReset": {
+    "message": "重置"
+  },
+  "debugTrialSimulated": {
+    "message": "✓ 已模拟试用（$DAYS$ 天）",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "debugExpiredSimulated": {
+    "message": "✓ 已模拟过期试用"
+  },
+  "debugPremiumSimulated": {
+    "message": "✓ 已模拟高级版"
+  },
+  "debugStorageReset": {
+    "message": "✓ 存储已重置 - 请重新加载扩展"
+  },
+  "debugError": {
+    "message": "✗ 错误：$ERROR$",
+    "placeholders": {
+      "ERROR": {
+        "content": "$1",
+        "example": "Unknown error"
+      }
+    }
+  },
+  "reason_redirectChain": {
+    "message": "检测到可疑的重定向链。该链接在到达目的地之前经过多个服务器。"
+  },
+  "reason_excessiveRedirects": {
+    "message": "重定向链中重定向次数过多（高风险）。此链接重定向超过5次，这通常用于隐藏真实目的地。"
+  },
+  "reason_domainHopping": {
+    "message": "重定向链中多次域名跳转（高风险）。该链接在多个不同网站之间跳转。"
+  },
+  "reason_chainedShorteners": {
+    "message": "多个URL缩短服务串联使用（中等风险）。合法链接很少使用多个缩短服务。"
+  },
+  "reason_suspiciousFinalTLD": {
+    "message": "最终目的地具有可疑的域名后缀（高风险）。实际端点使用有风险的TLD。"
+  },
+  "reason_redirectToIP": {
+    "message": "重定向指向IP地址（高风险）。最终目的地是原始IP地址而非域名。"
+  },
+  "reason_redirectTimeout": {
+    "message": "重定向分析超时（中等风险）。无法在时间限制内完全追踪重定向链。"
   }
 }

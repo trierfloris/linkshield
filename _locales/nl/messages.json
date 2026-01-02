@@ -463,5 +463,314 @@
   },
   "suspiciousPunycodeDecoding_paypal_com": {
     "message": "Deze link gebruikt ongebruikelijke tekens om op paypal.com te lijken (hoog risico)."
+  },
+
+  "reason_nonAscii": {
+    "message": "Verdachte tekens gedetecteerd (homoglyphs)"
+  },
+  "reason_brandKeywordHomoglyph": {
+    "message": "Imitatie van een bekend merk gedetecteerd"
+  },
+  "reason_noHttps": {
+    "message": "Geen beveiligde verbinding (HTTPS)"
+  },
+  "reason_suspiciousTLD": {
+    "message": "Verdachte domeinextensie"
+  },
+  "reason_ipAsDomain": {
+    "message": "IP-adres als domeinnaam"
+  },
+  "reason_tooManySubdomains": {
+    "message": "Te veel subdomeinen"
+  },
+  "reason_shortenedUrl": {
+    "message": "Verkorte URL gedetecteerd"
+  },
+  "reason_suspiciousKeywords": {
+    "message": "Verdachte trefwoorden in URL"
+  },
+  "reason_malwareExtension": {
+    "message": "Potentieel schadelijke bestandsextensie"
+  },
+  "reason_urlTooLong": {
+    "message": "Ongewoon lange URL"
+  },
+  "reason_encodedCharacters": {
+    "message": "Gecodeerde tekens in URL"
+  },
+  "reason_homoglyphAttack": {
+    "message": "Homoglyph-aanval gedetecteerd"
+  },
+  "reason_typosquatting": {
+    "message": "Typosquatting gedetecteerd"
+  },
+  "reason_suspiciousBrandPattern": {
+    "message": "Verdacht merkpatroon"
+  },
+  "reason_unusualPort": {
+    "message": "Ongebruikelijke poort"
+  },
+  "reason_punycode": {
+    "message": "Punycode domein gedetecteerd"
+  },
+  "reason_loginPageNoMX": {
+    "message": "Inlogpagina zonder e-mailserver"
+  },
+  "reason_insecureLoginPage": {
+    "message": "Onveilige inlogpagina"
+  },
+  "reason_sslValidationFailed": {
+    "message": "SSL-validatie mislukt"
+  },
+  "reason_similarToLegitimateDomain": {
+    "message": "Lijkt op legitiem domein"
+  },
+
+  "qrDangerTitle": {
+    "message": "GEVAAR: Phishing QR-code!"
+  },
+  "qrCautionTitle": {
+    "message": "Let op: Verdachte QR-code"
+  },
+  "ocrDangerTitle": {
+    "message": "GEVAAR: Phishing gedetecteerd in afbeelding!"
+  },
+  "ocrCautionTitle": {
+    "message": "Let op: Verdachte tekst in afbeelding"
+  },
+  "asciiQrDangerTitle": {
+    "message": "GEVAAR: Phishing ASCII QR!"
+  },
+  "asciiQrCautionTitle": {
+    "message": "Let op: Verdachte ASCII QR"
+  },
+  "suspiciousDomainDetected": {
+    "message": "Verdacht domein gedetecteerd"
+  },
+  "hiddenUrl": {
+    "message": "Verborgen URL"
+  },
+  "fullUrl": {
+    "message": "Volledige URL"
+  },
+  "reasons": {
+    "message": "Redenen"
+  },
+  "extractedText": {
+    "message": "Geëxtraheerde tekst"
+  },
+
+  "trialPeriodActive": {
+    "message": "Proefperiode actief"
+  },
+  "trialDaysRemaining": {
+    "message": "$DAYS$ dagen resterend in proefperiode",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "14"
+      }
+    }
+  },
+  "trialExpired": {
+    "message": "Proefperiode verlopen"
+  },
+  "trialExpiredMessage": {
+    "message": "Je proefperiode van 30 dagen is verlopen. Activeer een licentie om alle functies te blijven gebruiken."
+  },
+  "upgradeNow": {
+    "message": "Nu upgraden"
+  },
+
+  "popupPageTitle": {
+    "message": "LinkShield Dashboard"
+  },
+  "extNameFull": {
+    "message": "LinkShield: jouw wapen tegen phishing"
+  },
+  "extDescriptionFull": {
+    "message": "Verhoog jouw veiligheid met directe alerts en geavanceerde bescherming tegen online bedreigingen."
+  },
+
+  "licenseTrialTitle": {
+    "message": "Proefperiode: $DAYS$ dagen resterend",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "licenseTrialSubtitle": {
+    "message": "Alle premium functies zijn actief tijdens je proefperiode"
+  },
+  "licenseUpgradeLink": {
+    "message": "Upgrade naar Premium →"
+  },
+  "licenseExpiredTitle": {
+    "message": "Proefperiode verlopen"
+  },
+  "licenseExpiredSubtitle": {
+    "message": "Activeer Premium voor volledige bescherming"
+  },
+  "licenseBenefitsLabel": {
+    "message": "Premium bevat:"
+  },
+  "licenseBenefitsText": {
+    "message": "Achtergrondanalyses, QR-code scanning, continue bescherming"
+  },
+  "licenseKeyPlaceholder": {
+    "message": "Voer je licentiecode in"
+  },
+  "licenseActivateButton": {
+    "message": "Activeer Premium"
+  },
+  "licenseBuyLink": {
+    "message": "Nog geen licentie? Koop hier →"
+  },
+  "licensePremiumTitle": {
+    "message": "Premium Actief"
+  },
+  "licensePremiumSubtitle": {
+    "message": "Volledige bescherming ingeschakeld"
+  },
+
+  "sectionSecuritySettings": {
+    "message": "Beveiligingsinstellingen"
+  },
+  "backgroundAnalysisTitle": {
+    "message": "Beveiligingsinstellingen"
+  },
+  "backgroundAnalysisFeature": {
+    "message": "Achtergrondanalyses"
+  },
+  "premiumBadge": {
+    "message": "PREMIUM"
+  },
+  "integratedProtectionFeature": {
+    "message": "Geïntegreerde Malware- en Phishingbescherming"
+  },
+  "integratedProtectionDescription": {
+    "message": "Combineert meerdere beveiligingsdiensten voor uitgebreide bescherming."
+  },
+  "confirmationMessage": {
+    "message": "Instellingen succesvol opgeslagen!"
+  },
+  "lastRuleUpdateNone": {
+    "message": "Nog geen database-update uitgevoerd"
+  },
+  "errorOccurred": {
+    "message": "Er is een fout opgetreden"
+  },
+
+  "gumroadErrorUnknown": {
+    "message": "Onbekende fout"
+  },
+  "gumroadErrorLicenseNotExistProduct": {
+    "message": "Deze licentiesleutel bestaat niet voor dit product"
+  },
+  "gumroadErrorLicenseNotExist": {
+    "message": "Deze licentiesleutel bestaat niet"
+  },
+  "gumroadErrorLicenseRequired": {
+    "message": "Voer een licentiesleutel in"
+  },
+  "gumroadErrorProductNotFound": {
+    "message": "Product niet gevonden"
+  },
+  "gumroadErrorLicenseDisabled": {
+    "message": "Deze licentie is uitgeschakeld"
+  },
+  "gumroadErrorLicenseRefunded": {
+    "message": "Deze licentie is terugbetaald"
+  },
+  "gumroadErrorLicenseRevoked": {
+    "message": "Deze licentie is terugbetaald of ingetrokken"
+  },
+  "gumroadErrorLicenseInvalid": {
+    "message": "Ongeldige licentiesleutel"
+  },
+  "gumroadErrorNetwork": {
+    "message": "Netwerkfout tijdens validatie. Controleer je internetverbinding."
+  },
+
+  "licenseEmptyError": {
+    "message": "Voer een licentiecode in"
+  },
+  "licenseActivating": {
+    "message": "Bezig met activeren..."
+  },
+  "licenseActivatedSuccess": {
+    "message": "Premium succesvol geactiveerd!"
+  },
+  "licenseConnectionError": {
+    "message": "Verbindingsfout. Probeer het opnieuw."
+  },
+
+  "debugModeTitle": {
+    "message": "Debug Mode"
+  },
+  "debugTrial30": {
+    "message": "Trial (30d)"
+  },
+  "debugTrial3": {
+    "message": "Trial (3d)"
+  },
+  "debugExpired": {
+    "message": "Verlopen"
+  },
+  "debugPremium": {
+    "message": "Premium"
+  },
+  "debugReset": {
+    "message": "Reset"
+  },
+  "debugTrialSimulated": {
+    "message": "✓ Trial ($DAYS$ dagen) gesimuleerd",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "debugExpiredSimulated": {
+    "message": "✓ Verlopen trial gesimuleerd"
+  },
+  "debugPremiumSimulated": {
+    "message": "✓ Premium gesimuleerd"
+  },
+  "debugStorageReset": {
+    "message": "✓ Storage gereset - herlaad extensie"
+  },
+  "debugError": {
+    "message": "✗ Fout: $ERROR$",
+    "placeholders": {
+      "ERROR": {
+        "content": "$1",
+        "example": "Unknown error"
+      }
+    }
+  },
+  "reason_redirectChain": {
+    "message": "Verdachte redirect-keten gedetecteerd. De link passeert meerdere servers voordat de bestemming wordt bereikt."
+  },
+  "reason_excessiveRedirects": {
+    "message": "Te veel redirects in keten (hoog risico). Deze link redirectt meer dan 5 keer, wat vaak wordt gebruikt om de echte bestemming te verbergen."
+  },
+  "reason_domainHopping": {
+    "message": "Meerdere domeinwisselingen in redirect-keten (hoog risico). De link springt tussen veel verschillende websites."
+  },
+  "reason_chainedShorteners": {
+    "message": "Meerdere URL-verkorters achter elkaar (gemiddeld risico). Legitieme links gebruiken zelden meerdere verkortingsservices."
+  },
+  "reason_suspiciousFinalTLD": {
+    "message": "Einddoel heeft verdachte domeinextensie (hoog risico). Het daadwerkelijke eindpunt gebruikt een risicovolle TLD."
+  },
+  "reason_redirectToIP": {
+    "message": "Redirect leidt naar IP-adres (hoog risico). De uiteindelijke bestemming is een ruw IP-adres in plaats van een domeinnaam."
+  },
+  "reason_redirectTimeout": {
+    "message": "Redirect-analyse time-out (gemiddeld risico). Kon de redirect-keten niet volledig traceren binnen de tijdslimiet."
   }
 }

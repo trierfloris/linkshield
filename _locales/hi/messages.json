@@ -463,5 +463,314 @@
   },
   "suspiciousPunycodeDecoding_paypal_com": {
     "message": "यह लिंक paypal.com जैसा दिखने के लिए असामान्य वर्णों का उपयोग करता है (उच्च जोखिम)।"
+  },
+
+  "reason_nonAscii": {
+    "message": "संदिग्ध वर्ण पाए गए (होमोग्लिफ्स)"
+  },
+  "reason_brandKeywordHomoglyph": {
+    "message": "ब्रांड नकल का पता चला"
+  },
+  "reason_noHttps": {
+    "message": "कोई सुरक्षित कनेक्शन नहीं (HTTPS)"
+  },
+  "reason_suspiciousTLD": {
+    "message": "संदिग्ध डोमेन एक्सटेंशन"
+  },
+  "reason_ipAsDomain": {
+    "message": "डोमेन नाम के रूप में IP पता"
+  },
+  "reason_tooManySubdomains": {
+    "message": "बहुत अधिक सबडोमेन"
+  },
+  "reason_shortenedUrl": {
+    "message": "छोटा किया गया URL पाया गया"
+  },
+  "reason_suspiciousKeywords": {
+    "message": "URL में संदिग्ध कीवर्ड"
+  },
+  "reason_malwareExtension": {
+    "message": "संभावित खतरनाक फ़ाइल एक्सटेंशन"
+  },
+  "reason_urlTooLong": {
+    "message": "असामान्य रूप से लंबा URL"
+  },
+  "reason_encodedCharacters": {
+    "message": "URL में एन्कोडेड वर्ण"
+  },
+  "reason_homoglyphAttack": {
+    "message": "होमोग्लिफ हमले का पता चला"
+  },
+  "reason_typosquatting": {
+    "message": "टाइपोस्क्वाटिंग का पता चला"
+  },
+  "reason_suspiciousBrandPattern": {
+    "message": "संदिग्ध ब्रांड पैटर्न"
+  },
+  "reason_unusualPort": {
+    "message": "असामान्य पोर्ट"
+  },
+  "reason_punycode": {
+    "message": "Punycode डोमेन का पता चला"
+  },
+  "reason_loginPageNoMX": {
+    "message": "मेल सर्वर के बिना लॉगिन पेज"
+  },
+  "reason_insecureLoginPage": {
+    "message": "असुरक्षित लॉगिन पेज"
+  },
+  "reason_sslValidationFailed": {
+    "message": "SSL सत्यापन विफल"
+  },
+  "reason_similarToLegitimateDomain": {
+    "message": "वैध डोमेन के समान"
+  },
+
+  "qrDangerTitle": {
+    "message": "खतरा: फ़िशिंग QR कोड!"
+  },
+  "qrCautionTitle": {
+    "message": "सावधान: संदिग्ध QR कोड"
+  },
+  "ocrDangerTitle": {
+    "message": "खतरा: छवि में फ़िशिंग पाई गई!"
+  },
+  "ocrCautionTitle": {
+    "message": "सावधान: छवि में संदिग्ध टेक्स्ट"
+  },
+  "asciiQrDangerTitle": {
+    "message": "खतरा: फ़िशिंग ASCII QR!"
+  },
+  "asciiQrCautionTitle": {
+    "message": "सावधान: संदिग्ध ASCII QR"
+  },
+  "suspiciousDomainDetected": {
+    "message": "संदिग्ध डोमेन पाया गया"
+  },
+  "hiddenUrl": {
+    "message": "छिपा हुआ URL"
+  },
+  "fullUrl": {
+    "message": "पूरा URL"
+  },
+  "reasons": {
+    "message": "कारण"
+  },
+  "extractedText": {
+    "message": "निकाला गया टेक्स्ट"
+  },
+
+  "trialPeriodActive": {
+    "message": "परीक्षण अवधि सक्रिय"
+  },
+  "trialDaysRemaining": {
+    "message": "परीक्षण अवधि में $DAYS$ दिन शेष",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "14"
+      }
+    }
+  },
+  "trialExpired": {
+    "message": "परीक्षण अवधि समाप्त"
+  },
+  "trialExpiredMessage": {
+    "message": "आपकी 30 दिन की परीक्षण अवधि समाप्त हो गई है। सभी सुविधाओं का उपयोग जारी रखने के लिए लाइसेंस सक्रिय करें।"
+  },
+  "upgradeNow": {
+    "message": "अभी अपग्रेड करें"
+  },
+
+  "popupPageTitle": {
+    "message": "LinkShield डैशबोर्ड"
+  },
+  "extNameFull": {
+    "message": "LinkShield: फ़िशिंग के खिलाफ आपका हथियार"
+  },
+  "extDescriptionFull": {
+    "message": "तत्काल अलर्ट और उन्नत सुरक्षा के साथ अपनी ऑनलाइन सुरक्षा बढ़ाएं।"
+  },
+
+  "licenseTrialTitle": {
+    "message": "परीक्षण अवधि: $DAYS$ दिन शेष",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "licenseTrialSubtitle": {
+    "message": "परीक्षण अवधि के दौरान सभी प्रीमियम सुविधाएं सक्रिय हैं"
+  },
+  "licenseUpgradeLink": {
+    "message": "प्रीमियम में अपग्रेड करें →"
+  },
+  "licenseExpiredTitle": {
+    "message": "परीक्षण अवधि समाप्त"
+  },
+  "licenseExpiredSubtitle": {
+    "message": "पूर्ण सुरक्षा के लिए प्रीमियम सक्रिय करें"
+  },
+  "licenseBenefitsLabel": {
+    "message": "प्रीमियम में शामिल:"
+  },
+  "licenseBenefitsText": {
+    "message": "पृष्ठभूमि विश्लेषण, QR कोड स्कैनिंग, निरंतर सुरक्षा"
+  },
+  "licenseKeyPlaceholder": {
+    "message": "अपना लाइसेंस कोड दर्ज करें"
+  },
+  "licenseActivateButton": {
+    "message": "प्रीमियम सक्रिय करें"
+  },
+  "licenseBuyLink": {
+    "message": "लाइसेंस नहीं है? यहां खरीदें →"
+  },
+  "licensePremiumTitle": {
+    "message": "प्रीमियम सक्रिय"
+  },
+  "licensePremiumSubtitle": {
+    "message": "पूर्ण सुरक्षा सक्षम"
+  },
+
+  "sectionSecuritySettings": {
+    "message": "सुरक्षा सेटिंग्स"
+  },
+  "backgroundAnalysisTitle": {
+    "message": "सुरक्षा सेटिंग्स"
+  },
+  "backgroundAnalysisFeature": {
+    "message": "पृष्ठभूमि विश्लेषण"
+  },
+  "premiumBadge": {
+    "message": "प्रीमियम"
+  },
+  "integratedProtectionFeature": {
+    "message": "एकीकृत मैलवेयर और फ़िशिंग सुरक्षा"
+  },
+  "integratedProtectionDescription": {
+    "message": "व्यापक सुरक्षा के लिए कई सुरक्षा सेवाओं को जोड़ता है।"
+  },
+  "confirmationMessage": {
+    "message": "सेटिंग्स सफलतापूर्वक सहेजी गईं!"
+  },
+  "lastRuleUpdateNone": {
+    "message": "अभी तक कोई डेटाबेस अपडेट नहीं किया गया"
+  },
+  "errorOccurred": {
+    "message": "एक त्रुटि हुई"
+  },
+
+  "gumroadErrorUnknown": {
+    "message": "अज्ञात त्रुटि"
+  },
+  "gumroadErrorLicenseNotExistProduct": {
+    "message": "इस उत्पाद के लिए यह लाइसेंस कुंजी मौजूद नहीं है"
+  },
+  "gumroadErrorLicenseNotExist": {
+    "message": "यह लाइसेंस कुंजी मौजूद नहीं है"
+  },
+  "gumroadErrorLicenseRequired": {
+    "message": "कृपया लाइसेंस कुंजी दर्ज करें"
+  },
+  "gumroadErrorProductNotFound": {
+    "message": "उत्पाद नहीं मिला"
+  },
+  "gumroadErrorLicenseDisabled": {
+    "message": "यह लाइसेंस अक्षम है"
+  },
+  "gumroadErrorLicenseRefunded": {
+    "message": "यह लाइसेंस वापस कर दिया गया है"
+  },
+  "gumroadErrorLicenseRevoked": {
+    "message": "यह लाइसेंस वापस या रद्द कर दिया गया है"
+  },
+  "gumroadErrorLicenseInvalid": {
+    "message": "अमान्य लाइसेंस कुंजी"
+  },
+  "gumroadErrorNetwork": {
+    "message": "सत्यापन के दौरान नेटवर्क त्रुटि। अपना इंटरनेट कनेक्शन जांचें।"
+  },
+
+  "licenseEmptyError": {
+    "message": "कृपया लाइसेंस कोड दर्ज करें"
+  },
+  "licenseActivating": {
+    "message": "सक्रिय हो रहा है..."
+  },
+  "licenseActivatedSuccess": {
+    "message": "प्रीमियम सफलतापूर्वक सक्रिय!"
+  },
+  "licenseConnectionError": {
+    "message": "कनेक्शन त्रुटि। पुनः प्रयास करें।"
+  },
+
+  "debugModeTitle": {
+    "message": "डीबग मोड"
+  },
+  "debugTrial30": {
+    "message": "परीक्षण (30 दिन)"
+  },
+  "debugTrial3": {
+    "message": "परीक्षण (3 दिन)"
+  },
+  "debugExpired": {
+    "message": "समाप्त"
+  },
+  "debugPremium": {
+    "message": "प्रीमियम"
+  },
+  "debugReset": {
+    "message": "रीसेट"
+  },
+  "debugTrialSimulated": {
+    "message": "✓ परीक्षण ($DAYS$ दिन) सिमुलेट किया गया",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "debugExpiredSimulated": {
+    "message": "✓ समाप्त परीक्षण सिमुलेट किया गया"
+  },
+  "debugPremiumSimulated": {
+    "message": "✓ प्रीमियम सिमुलेट किया गया"
+  },
+  "debugStorageReset": {
+    "message": "✓ स्टोरेज रीसेट - एक्सटेंशन पुनः लोड करें"
+  },
+  "debugError": {
+    "message": "✗ त्रुटि: $ERROR$",
+    "placeholders": {
+      "ERROR": {
+        "content": "$1",
+        "example": "Unknown error"
+      }
+    }
+  },
+  "reason_redirectChain": {
+    "message": "संदिग्ध रीडायरेक्ट चेन का पता चला। लिंक अपने गंतव्य तक पहुंचने से पहले कई सर्वरों से होकर गुजरता है।"
+  },
+  "reason_excessiveRedirects": {
+    "message": "चेन में बहुत अधिक रीडायरेक्ट (उच्च जोखिम)। यह लिंक 5 से अधिक बार रीडायरेक्ट करता है, जो अक्सर असली गंतव्य छिपाने के लिए उपयोग किया जाता है।"
+  },
+  "reason_domainHopping": {
+    "message": "रीडायरेक्ट चेन में कई डोमेन परिवर्तन (उच्च जोखिम)। लिंक कई अलग-अलग वेबसाइटों के बीच कूदता है।"
+  },
+  "reason_chainedShorteners": {
+    "message": "कई URL शॉर्टनर एक साथ जुड़े हुए (मध्यम जोखिम)। वैध लिंक शायद ही कभी कई शॉर्टनिंग सेवाओं का उपयोग करते हैं।"
+  },
+  "reason_suspiciousFinalTLD": {
+    "message": "अंतिम गंतव्य में संदिग्ध डोमेन एक्सटेंशन है (उच्च जोखिम)। वास्तविक एंडपॉइंट जोखिम भरे TLD का उपयोग करता है।"
+  },
+  "reason_redirectToIP": {
+    "message": "रीडायरेक्ट IP पते पर जाता है (उच्च जोखिम)। अंतिम गंतव्य डोमेन नाम के बजाय कच्चा IP पता है।"
+  },
+  "reason_redirectTimeout": {
+    "message": "रीडायरेक्ट विश्लेषण समय समाप्त (मध्यम जोखिम)। समय सीमा के भीतर रीडायरेक्ट चेन को पूरी तरह से ट्रेस नहीं किया जा सका।"
   }
 }

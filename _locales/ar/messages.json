@@ -463,5 +463,314 @@
   },
   "suspiciousPunycodeDecoding_paypal_com": {
     "message": "يستخدم هذا الرابط أحرفًا غير عادية ليبدو مثل paypal.com (خطورة عالية)."
+  },
+
+  "reason_nonAscii": {
+    "message": "تم اكتشاف أحرف مشبوهة (متشابهة الشكل)"
+  },
+  "reason_brandKeywordHomoglyph": {
+    "message": "تم اكتشاف تقليد للعلامة التجارية"
+  },
+  "reason_noHttps": {
+    "message": "لا يوجد اتصال آمن (HTTPS)"
+  },
+  "reason_suspiciousTLD": {
+    "message": "امتداد نطاق مشبوه"
+  },
+  "reason_ipAsDomain": {
+    "message": "عنوان IP كاسم نطاق"
+  },
+  "reason_tooManySubdomains": {
+    "message": "عدد كبير جدًا من النطاقات الفرعية"
+  },
+  "reason_shortenedUrl": {
+    "message": "تم اكتشاف رابط مختصر"
+  },
+  "reason_suspiciousKeywords": {
+    "message": "كلمات رئيسية مشبوهة في الرابط"
+  },
+  "reason_malwareExtension": {
+    "message": "امتداد ملف قد يكون ضارًا"
+  },
+  "reason_urlTooLong": {
+    "message": "رابط طويل بشكل غير عادي"
+  },
+  "reason_encodedCharacters": {
+    "message": "أحرف مشفرة في الرابط"
+  },
+  "reason_homoglyphAttack": {
+    "message": "تم اكتشاف هجوم بأحرف متشابهة"
+  },
+  "reason_typosquatting": {
+    "message": "تم اكتشاف احتلال الأخطاء الإملائية"
+  },
+  "reason_suspiciousBrandPattern": {
+    "message": "نمط علامة تجارية مشبوه"
+  },
+  "reason_unusualPort": {
+    "message": "منفذ غير عادي"
+  },
+  "reason_punycode": {
+    "message": "تم اكتشاف نطاق Punycode"
+  },
+  "reason_loginPageNoMX": {
+    "message": "صفحة تسجيل دخول بدون خادم بريد"
+  },
+  "reason_insecureLoginPage": {
+    "message": "صفحة تسجيل دخول غير آمنة"
+  },
+  "reason_sslValidationFailed": {
+    "message": "فشل التحقق من SSL"
+  },
+  "reason_similarToLegitimateDomain": {
+    "message": "مشابه لنطاق شرعي"
+  },
+
+  "qrDangerTitle": {
+    "message": "خطر: رمز QR للتصيد الاحتيالي!"
+  },
+  "qrCautionTitle": {
+    "message": "تحذير: رمز QR مشبوه"
+  },
+  "ocrDangerTitle": {
+    "message": "خطر: تم اكتشاف تصيد احتيالي في الصورة!"
+  },
+  "ocrCautionTitle": {
+    "message": "تحذير: نص مشبوه في الصورة"
+  },
+  "asciiQrDangerTitle": {
+    "message": "خطر: رمز ASCII QR للتصيد الاحتيالي!"
+  },
+  "asciiQrCautionTitle": {
+    "message": "تحذير: رمز ASCII QR مشبوه"
+  },
+  "suspiciousDomainDetected": {
+    "message": "تم اكتشاف نطاق مشبوه"
+  },
+  "hiddenUrl": {
+    "message": "رابط مخفي"
+  },
+  "fullUrl": {
+    "message": "الرابط الكامل"
+  },
+  "reasons": {
+    "message": "الأسباب"
+  },
+  "extractedText": {
+    "message": "النص المستخرج"
+  },
+
+  "trialPeriodActive": {
+    "message": "فترة التجربة نشطة"
+  },
+  "trialDaysRemaining": {
+    "message": "$DAYS$ أيام متبقية في فترة التجربة",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "14"
+      }
+    }
+  },
+  "trialExpired": {
+    "message": "انتهت فترة التجربة"
+  },
+  "trialExpiredMessage": {
+    "message": "انتهت فترة التجربة المجانية لمدة 30 يومًا. قم بتفعيل الترخيص للاستمرار في استخدام جميع الميزات."
+  },
+  "upgradeNow": {
+    "message": "الترقية الآن"
+  },
+
+  "popupPageTitle": {
+    "message": "لوحة تحكم LinkShield"
+  },
+  "extNameFull": {
+    "message": "LinkShield: سلاحك ضد التصيد الاحتيالي"
+  },
+  "extDescriptionFull": {
+    "message": "عزز أمانك على الإنترنت من خلال التنبيهات الفورية والحماية المتقدمة."
+  },
+
+  "licenseTrialTitle": {
+    "message": "فترة التجربة: $DAYS$ أيام متبقية",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "licenseTrialSubtitle": {
+    "message": "جميع ميزات Premium نشطة خلال فترة التجربة"
+  },
+  "licenseUpgradeLink": {
+    "message": "الترقية إلى Premium ←"
+  },
+  "licenseExpiredTitle": {
+    "message": "انتهت فترة التجربة"
+  },
+  "licenseExpiredSubtitle": {
+    "message": "قم بتفعيل Premium للحماية الكاملة"
+  },
+  "licenseBenefitsLabel": {
+    "message": "يتضمن Premium:"
+  },
+  "licenseBenefitsText": {
+    "message": "تحليلات في الخلفية، مسح رموز QR، حماية مستمرة"
+  },
+  "licenseKeyPlaceholder": {
+    "message": "أدخل رمز الترخيص الخاص بك"
+  },
+  "licenseActivateButton": {
+    "message": "تفعيل Premium"
+  },
+  "licenseBuyLink": {
+    "message": "ليس لديك ترخيص؟ اشترِ من هنا ←"
+  },
+  "licensePremiumTitle": {
+    "message": "Premium نشط"
+  },
+  "licensePremiumSubtitle": {
+    "message": "الحماية الكاملة مفعلة"
+  },
+
+  "sectionSecuritySettings": {
+    "message": "إعدادات الأمان"
+  },
+  "backgroundAnalysisTitle": {
+    "message": "إعدادات الأمان"
+  },
+  "backgroundAnalysisFeature": {
+    "message": "التحليلات في الخلفية"
+  },
+  "premiumBadge": {
+    "message": "PREMIUM"
+  },
+  "integratedProtectionFeature": {
+    "message": "حماية متكاملة ضد البرامج الضارة والتصيد الاحتيالي"
+  },
+  "integratedProtectionDescription": {
+    "message": "يجمع بين خدمات أمنية متعددة لتوفير حماية شاملة."
+  },
+  "confirmationMessage": {
+    "message": "تم حفظ الإعدادات بنجاح!"
+  },
+  "lastRuleUpdateNone": {
+    "message": "لم يتم تحديث قاعدة البيانات بعد"
+  },
+  "errorOccurred": {
+    "message": "حدث خطأ"
+  },
+
+  "gumroadErrorUnknown": {
+    "message": "خطأ غير معروف"
+  },
+  "gumroadErrorLicenseNotExistProduct": {
+    "message": "مفتاح الترخيص هذا غير موجود لهذا المنتج"
+  },
+  "gumroadErrorLicenseNotExist": {
+    "message": "مفتاح الترخيص هذا غير موجود"
+  },
+  "gumroadErrorLicenseRequired": {
+    "message": "يرجى إدخال مفتاح الترخيص"
+  },
+  "gumroadErrorProductNotFound": {
+    "message": "المنتج غير موجود"
+  },
+  "gumroadErrorLicenseDisabled": {
+    "message": "هذا الترخيص معطل"
+  },
+  "gumroadErrorLicenseRefunded": {
+    "message": "تم استرداد هذا الترخيص"
+  },
+  "gumroadErrorLicenseRevoked": {
+    "message": "تم استرداد أو إلغاء هذا الترخيص"
+  },
+  "gumroadErrorLicenseInvalid": {
+    "message": "مفتاح ترخيص غير صالح"
+  },
+  "gumroadErrorNetwork": {
+    "message": "خطأ في الشبكة أثناء التحقق. تحقق من اتصالك بالإنترنت."
+  },
+
+  "licenseEmptyError": {
+    "message": "يرجى إدخال رمز الترخيص"
+  },
+  "licenseActivating": {
+    "message": "جارِ التفعيل..."
+  },
+  "licenseActivatedSuccess": {
+    "message": "تم تفعيل Premium بنجاح!"
+  },
+  "licenseConnectionError": {
+    "message": "خطأ في الاتصال. حاول مرة أخرى."
+  },
+
+  "debugModeTitle": {
+    "message": "وضع التصحيح"
+  },
+  "debugTrial30": {
+    "message": "تجربة (30 يوم)"
+  },
+  "debugTrial3": {
+    "message": "تجربة (3 أيام)"
+  },
+  "debugExpired": {
+    "message": "منتهي"
+  },
+  "debugPremium": {
+    "message": "Premium"
+  },
+  "debugReset": {
+    "message": "إعادة تعيين"
+  },
+  "debugTrialSimulated": {
+    "message": "✓ تمت محاكاة التجربة ($DAYS$ أيام)",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "debugExpiredSimulated": {
+    "message": "✓ تمت محاكاة التجربة المنتهية"
+  },
+  "debugPremiumSimulated": {
+    "message": "✓ تمت محاكاة Premium"
+  },
+  "debugStorageReset": {
+    "message": "✓ تم إعادة تعيين التخزين - أعد تحميل الإضافة"
+  },
+  "debugError": {
+    "message": "✗ خطأ: $ERROR$",
+    "placeholders": {
+      "ERROR": {
+        "content": "$1",
+        "example": "Unknown error"
+      }
+    }
+  },
+  "reason_redirectChain": {
+    "message": "تم اكتشاف سلسلة إعادة توجيه مشبوهة. يمر الرابط عبر عدة خوادم قبل الوصول إلى وجهته."
+  },
+  "reason_excessiveRedirects": {
+    "message": "عدد كبير جدًا من عمليات إعادة التوجيه في السلسلة (خطر عالٍ). يعيد هذا الرابط التوجيه أكثر من 5 مرات، وهو ما يُستخدم غالبًا لإخفاء الوجهة الحقيقية."
+  },
+  "reason_domainHopping": {
+    "message": "تغييرات متعددة في النطاق في سلسلة إعادة التوجيه (خطر عالٍ). ينتقل الرابط بين العديد من المواقع المختلفة."
+  },
+  "reason_chainedShorteners": {
+    "message": "خدمات متعددة لتقصير الروابط متسلسلة (خطر متوسط). نادرًا ما تستخدم الروابط الشرعية خدمات تقصير متعددة."
+  },
+  "reason_suspiciousFinalTLD": {
+    "message": "الوجهة النهائية لها امتداد نطاق مشبوه (خطر عالٍ). تستخدم نقطة النهاية الفعلية امتدادًا خطيرًا."
+  },
+  "reason_redirectToIP": {
+    "message": "إعادة التوجيه تؤدي إلى عنوان IP (خطر عالٍ). الوجهة النهائية هي عنوان IP خام بدلاً من اسم نطاق."
+  },
+  "reason_redirectTimeout": {
+    "message": "انتهت مهلة تحليل إعادة التوجيه (خطر متوسط). تعذر تتبع سلسلة إعادة التوجيه بالكامل ضمن الحد الزمني."
   }
 }

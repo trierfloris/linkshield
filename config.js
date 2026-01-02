@@ -1,9 +1,26 @@
 window.CONFIG = {
-    // Verdachte Top-Level Domeinen (TLD’s)
-    // Opgeschoond en ontdubbeld voor betere prestaties en onderhoud.
+    // =============================================================================
+    // LINKSHIELD CONFIG - Geüpdatet voor 2026
+    // Laatste update: 2026-01-01
+    // =============================================================================
+
+    // Verdachte Top-Level Domeinen (TLD's)
+    // Uitgebreid met nieuwe TLD's die in 2025-2026 veel voor phishing worden gebruikt
     SUSPICIOUS_TLDS: new RegExp('\\.(' + Array.from(new Set([
-    'beauty', 'bond', 'buzz', 'cc', 'cf', 'club', 'cn', 'dev', 'es', 'ga', 'gq', 'hair', 'li', 'live', 'ml', 'mov', 'pro', 'rest', 'ru', 'sbs', 'shop', 'tk', 'top', 'uno', 'win', 'xin', 'xyz', 'zip'
-])).sort().join('|') + ')$', 'i'),
+        // Originele verdachte TLD's
+        'beauty', 'bond', 'buzz', 'cc', 'cf', 'club', 'cn', 'dev', 'es', 'ga', 'gq',
+        'hair', 'li', 'live', 'ml', 'mov', 'pro', 'rest', 'ru', 'sbs', 'shop', 'tk',
+        'top', 'uno', 'win', 'xin', 'xyz', 'zip',
+        // Nieuwe TLD's 2025-2026 (veel misbruikt voor phishing)
+        'autos', 'boats', 'cam', 'casa', 'cfd', 'click', 'cloud', 'cyou', 'desi',
+        'digital', 'fit', 'fun', 'gdn', 'gives', 'icu', 'lat', 'lol', 'mom', 'monster',
+        'nexus', 'observer', 'online', 'ooo', 'pics', 'quest', 'racing', 'realty',
+        'rodeo', 'sbs', 'site', 'skin', 'space', 'store', 'stream', 'surf', 'tech',
+        'today', 'vip', 'wang', 'webcam', 'website', 'work', 'world', 'wtf', 'yachts',
+        // AI/Tech gerelateerde TLD's (hoog risico in 2026)
+        'ai', 'bot', 'chat', 'crypto', 'dao', 'data', 'dex', 'eth', 'gpt', 'llm',
+        'metaverse', 'nft', 'sol', 'token', 'wallet', 'web3'
+    ])).sort().join('|') + ')$', 'i'),
 
     // ==== Risicodrempels voor gefaseerde analyse en UI-feedback ====
     LOW_THRESHOLD: 4,      //  risico < 4 → safe
@@ -138,9 +155,58 @@ SUSPICIOUS_URL_PATTERNS: [
         "binance.com", "kraken.com", "metamask.io", "wallet-connect.org", "coinbase.com", "bybit.com", "okx.com", "kucoin.com", "hashkey.com", "binance.us", "global.hashkey.com", "bitget.com", "gate.io", "huobi.com", "bingx.com", "bitfinex.com", "luno.com", "backpack.exchange", "woox.io", "mexc.com", "bitmart.com", "lbank.com", "coinw.com", "crypto.com", "p2pb2b.com", "bitunix.com", "bigone.com", "azbit.com", "pionex.com", "coinstore.com", "coinex.com", "exchange.fastex.com", "dex-trade.com", "links.bitstamp.net", "gemini.com", "phemex.com", "exmo.com", "bitkub.com", "arkm.com", "bitso.com", "deribit.com", "bitcastle.io", "bitopro.com", "xeggex.com", "coins.ph", "bitcointry.com", "emirex.com", "upbit.com", "digifinex.com", "bithumb.com", "xt.com", "toobit.com", "latoken.com", "bvox.com", "weex.com", "ascendex.com", "biconomy.com", "hibt.com", "bitrue.com", "bitvavo.com", "btse.com", "exchange.pointpay.io", "qmall.io", "bitflyer.com", "coincheck.com", "paribu.com", "slex.io", "bitbank.cc", "bitdelta.com", "blofin.com", "kanga.exchange", "korbit.co.kr", "trade.cex.io", "nonkyc.io", "tokenize.exchange", "foxbit.com.br", "independentreserve.com", "coindcx.com", "bitmex.com", "app.uniswap.org", "hotcoin.com", "fameex.com", "tapbit.com", "deepcoin.com", "bydfi.com", "trubit.com", "pancakeswap.finance", "app.cetus.zone", "coin.z.com", "bitci.com.tr", "fmfw.io", "bitstorage.finance", "ledger.com", "trezor.io", "ellipal.com", "safepal.io", "shapeshift.com", "shiftcrypto.ch", "coldcardwallet.com", "dcentwallet.com", "secuxtech.com", "gridplus.io", "coingecko.com", "coinmarketcap.com", "cryptoslate.com", "theblock.co", "decrypt.co", "coindesk.com", "bitcoin.org", "messari.io", "cryptocompare.com", "glassnode.com", "tradingview.com", "bitinfocharts.com", "blockchain.com", "etherscan.io", "phantom.app", "trustwallet.com", "keplr.app", "cosmostation.io", "solflare.com", "opensea.io", "rarible.com", "sushi.com", "curve.fi", "balancer.fi", "1inch.io", "raydium.io"
     ],
 
-    // Homoglyphs Mapping
+    // Homoglyphs Mapping - Uitgebreid voor 2026
+    // Bevat Unicode confusables, Cyrillisch, Grieks, en speciale tekens
     HOMOGLYPHS: {
-        'a': ['а', 'α', 'ⱥ', 'ä', 'å', 'á', 'à', 'â', 'ã', 'ā', 'ă', 'ǎ', 'ȁ', 'ȃ', 'ǻ', 'ª'], 'e': ['е', 'ε', 'ë', 'ē', 'ĕ', 'ė', 'ę', 'ě', 'ê', 'è', 'é', 'ȅ', 'ȇ', '€', 'ɛ'], 'o': ['ο', 'о', 'ö', 'ó', 'ò', 'ô', 'õ', 'ō', 'ŏ', 'ő', 'ø', 'ǒ', 'ȍ', 'ȏ', 'º'], 'i': ['і', 'í', 'ì', 'î', 'ï', 'ī', 'ĭ', 'į', 'ǐ', 'ɨ', 'ı', '¡'], 's': ['ѕ', 'ß', '$', 'ś', 'ŝ', 'ş', 'š', '§', 'ʃ'], 'c': ['с', 'ç', '¢', 'ć', 'ĉ', 'ċ', 'č', '©', 'ȼ', 'ƈ'], 'd': ['ԁ', 'đ', 'ď', 'ḋ', 'ḍ', 'ḏ', 'ḑ', 'ḓ', 'ɖ'], 'g': ['ɡ', 'ġ', 'ğ', 'ĝ', 'ǧ', 'ģ', 'ǥ', 'ɢ'], 'h': ['һ', 'ħ', 'ĥ', 'ḥ', 'ḧ', 'ḩ', 'ḫ', 'ɦ'], 'k': ['κ', 'ќ', 'ḱ', 'ǩ', 'ķ', 'ḳ', 'ḵ', 'ƙ'], 'l': ['ӏ', 'Ɩ', 'ĺ', 'ļ', 'ľ', 'ŀ', 'ł', 'Ɨ', 'ǀ'], 'n': ['п', 'ñ', 'ń', 'ņ', 'ň', 'ŉ', 'ŋ', 'ṅ', 'ṇ', 'ṉ', 'ƞ'], 'p': ['р', 'ƿ', 'ṕ', 'ṗ', 'ƥ', '℗'], 't': ['τ', 'т', 'ţ', 'ť', 'ŧ', 'ṭ', 'ṯ', 'ṱ', 'ƭ', '†'], 'u': ['υ', 'ц', 'ü', 'ú', 'ù', 'û', 'ū', 'ŭ', 'ů', 'ű', 'ų', 'ǔ', 'ȕ', 'ȗ', 'µ'], 'x': ['х', '×', 'ẋ', 'ẍ', 'χ'], 'y': ['у', 'ý', 'ÿ', 'ŷ', 'ȳ', '¥', 'ƴ', 'ɏ'], 'z': ['ž', 'ƶ', 'ź', 'ż', 'ẑ', 'ẓ', 'ẕ', 'ƹ', 'ɀ']
+        // Basis letters met Cyrillische en Griekse varianten
+        'a': ['а', 'α', 'ⱥ', 'ä', 'å', 'á', 'à', 'â', 'ã', 'ā', 'ă', 'ǎ', 'ȁ', 'ȃ', 'ǻ', 'ª', 'ɑ', 'ạ', 'ả', 'ấ', 'ầ', 'ẩ', 'ẫ', 'ậ', 'ắ', 'ằ', 'ẳ', 'ẵ', 'ặ'],
+        'b': ['Ь', 'ь', 'Ƅ', 'ƅ', 'ɓ', 'ḃ', 'ḅ', 'ḇ', 'ß'],
+        'c': ['с', 'ç', '¢', 'ć', 'ĉ', 'ċ', 'č', '©', 'ȼ', 'ƈ', 'ḉ', 'ꮯ', 'ⅽ'],
+        'd': ['ԁ', 'đ', 'ď', 'ḋ', 'ḍ', 'ḏ', 'ḑ', 'ḓ', 'ɖ', 'ⅾ', 'ꓒ'],
+        'e': ['е', 'ε', 'ë', 'ē', 'ĕ', 'ė', 'ę', 'ě', 'ê', 'è', 'é', 'ȅ', 'ȇ', '€', 'ɛ', 'ẹ', 'ẻ', 'ẽ', 'ế', 'ề', 'ể', 'ễ', 'ệ', 'ⅇ'],
+        'f': ['ſ', 'ƒ', 'ḟ', 'ꬵ'],
+        'g': ['ɡ', 'ġ', 'ğ', 'ĝ', 'ǧ', 'ģ', 'ǥ', 'ɢ', 'ḡ', 'ꮐ'],
+        'h': ['һ', 'ħ', 'ĥ', 'ḥ', 'ḧ', 'ḩ', 'ḫ', 'ɦ', 'ⱨ', 'ꜧ'],
+        'i': ['і', 'í', 'ì', 'î', 'ï', 'ī', 'ĭ', 'į', 'ǐ', 'ɨ', 'ı', '¡', 'ị', 'ỉ', 'ĩ', 'ⅰ', 'ⅼ', '১', '۱', 'ⵏ'],
+        'j': ['ј', 'ʝ', 'ɉ', 'ĵ', 'ǰ'],
+        'k': ['κ', 'ќ', 'ḱ', 'ǩ', 'ķ', 'ḳ', 'ḵ', 'ƙ', 'ⱪ', 'ꝁ'],
+        'l': ['ӏ', 'Ɩ', 'ĺ', 'ļ', 'ľ', 'ŀ', 'ł', 'Ɨ', 'ǀ', 'ⅼ', 'ⅰ', '|', 'ꓲ', 'ꮮ'],
+        'm': ['м', 'ṁ', 'ṃ', 'ⅿ', 'ꮇ', 'ɱ'],
+        'n': ['п', 'ñ', 'ń', 'ņ', 'ň', 'ŉ', 'ŋ', 'ṅ', 'ṇ', 'ṉ', 'ƞ', 'ꞑ', 'ꮑ'],
+        'o': ['ο', 'о', 'ö', 'ó', 'ò', 'ô', 'õ', 'ō', 'ŏ', 'ő', 'ø', 'ǒ', 'ȍ', 'ȏ', 'º', '0', 'ọ', 'ỏ', 'ố', 'ồ', 'ổ', 'ỗ', 'ộ', 'ớ', 'ờ', 'ở', 'ỡ', 'ợ', 'ꮎ', 'ⲟ'],
+        'p': ['р', 'ƿ', 'ṕ', 'ṗ', 'ƥ', '℗', 'ⲣ', 'ꮲ'],
+        'q': ['ԛ', 'ɋ', 'ꝗ', 'ꝙ'],
+        'r': ['г', 'ŕ', 'ŗ', 'ř', 'ṙ', 'ṛ', 'ṝ', 'ṟ', 'ɍ', 'ꞧ', 'ꮁ'],
+        's': ['ѕ', 'ß', '$', 'ś', 'ŝ', 'ş', 'š', '§', 'ʃ', 'ṡ', 'ṣ', 'ꮪ', 'Ȿ'],
+        't': ['τ', 'т', 'ţ', 'ť', 'ŧ', 'ṭ', 'ṯ', 'ṱ', 'ƭ', '†', 'ⱦ', 'ꮦ'],
+        'u': ['υ', 'ц', 'ü', 'ú', 'ù', 'û', 'ū', 'ŭ', 'ů', 'ű', 'ų', 'ǔ', 'ȕ', 'ȗ', 'µ', 'ụ', 'ủ', 'ứ', 'ừ', 'ử', 'ữ', 'ự', 'ꮜ'],
+        'v': ['ν', 'ѵ', 'ṽ', 'ṿ', 'ⅴ', 'ꮩ', 'ⱱ'],
+        'w': ['ω', 'ẁ', 'ẃ', 'ẅ', 'ẇ', 'ẉ', 'ⱳ', 'ꮃ'],
+        'x': ['х', '×', 'ẋ', 'ẍ', 'χ', 'ⅹ', 'ꭓ', 'ꮖ'],
+        'y': ['у', 'ý', 'ÿ', 'ŷ', 'ȳ', '¥', 'ƴ', 'ɏ', 'ỳ', 'ỵ', 'ỷ', 'ỹ', 'ꮍ'],
+        'z': ['ž', 'ƶ', 'ź', 'ż', 'ẑ', 'ẓ', 'ẕ', 'ƹ', 'ɀ', 'ⱬ', 'ꮓ'],
+        // Cijfers (vaak gebruikt in l33t-speak phishing)
+        '0': ['ο', 'о', 'О', 'O', 'Ο', '〇', '०', '٠', '۰', 'ⲟ', 'ꮎ'],
+        '1': ['l', 'I', 'i', '|', 'ⅰ', 'ⅼ', 'ӏ', '١', '۱', 'ꓲ'],
+        '3': ['Ʒ', 'ʒ', 'Ȝ', 'ȝ', 'з', 'З', '�765', 'ⳍ'],
+        '4': ['Ꮞ', 'ч', 'Ч'],
+        '5': ['Ƽ', 'ƽ', 'Ѕ', 'ѕ'],
+        '6': ['б', 'Ꮾ', 'ꮾ', 'ⳓ'],
+        '8': ['Ȣ', 'ȣ', '�765', 'ⲑ'],
+        '9': ['ɋ', 'ꝙ', 'ⳋ']
+    },
+
+    // Homoglyph combinaties - 2026 technieken
+    // Detecteert combinaties zoals 'rn' -> 'm', 'cl' -> 'd', etc.
+    HOMOGLYPH_COMBINATIONS: {
+        'rn': 'm',
+        'cl': 'd',
+        'vv': 'w',
+        'nn': 'm',
+        'ri': 'n',
+        'ii': 'u',
+        'ln': 'in',
+        'lm': 'im'
     },
 
     // Verdachte E-mailpatronen
@@ -162,7 +228,24 @@ SUSPICIOUS_URL_PATTERNS: [
 
     // Legitieme Domeinen (uitgebreid)
     legitimateDomains: [
-        'microsoft.com', 'apple.com', 'google.com', 'linkedin.com', 'alibaba.com', 'whatsapp.com', 'amazon.com', 'x.com', 'facebook.com', 'adobe.com', 'paypal.com', 'netflix.com', 'instagram.com', 'outlook.com', 'opensea.io', 'decentraland.org', 'chat.openai.com', 'auth0.com', 'teladoc.com', 'zoom.us', 'signal.org', 'ecosia.org', 'smartcityexpo.com', 'cloudflare.com', 'nokia.com', 'idquantique.com', 'neuralink.com'
+        'microsoft.com', 'apple.com', 'google.com', 'linkedin.com', 'alibaba.com', 'whatsapp.com', 'amazon.com', 'x.com', 'facebook.com', 'adobe.com', 'paypal.com', 'netflix.com', 'instagram.com', 'outlook.com', 'opensea.io', 'decentraland.org', 'chat.openai.com', 'auth0.com', 'teladoc.com', 'zoom.us', 'signal.org', 'ecosia.org', 'smartcityexpo.com', 'cloudflare.com', 'nokia.com', 'idquantique.com', 'neuralink.com',
+        // Nederlandse banken en financiële instellingen (veelgebruikt in phishing)
+        'ing.nl', 'ing.com', 'rabobank.nl', 'abnamro.nl', 'sns.nl', 'bunq.com', 'triodos.nl', 'asn.nl', 'knab.nl', 'regiobank.nl', 'volksbank.nl',
+        // Overheid en uitkeringen (veelgebruikt in phishing)
+        'digid.nl', 'mijnoverheid.nl', 'belastingdienst.nl', 'duo.nl', 'uwv.nl', 'svb.nl', 'toeslagen.nl',
+        // Telecom en utilities
+        'kpn.nl', 'vodafone.nl', 't-mobile.nl', 'ziggo.nl', 'tele2.nl',
+        // E-commerce
+        'bol.com', 'coolblue.nl', 'zalando.nl', 'marktplaats.nl', 'thuisbezorgd.nl',
+        // Post en bezorging
+        'postnl.nl', 'dhl.nl', 'ups.com', 'fedex.com'
+    ],
+
+    // Bekende merknamen (kort) voor substring-detectie in homoglyph-aanvallen
+    BRAND_KEYWORDS: [
+        'ing', 'rabo', 'abnamro', 'abn', 'sns', 'bunq', 'digid', 'belasting', 'overheid',
+        'paypal', 'amazon', 'google', 'microsoft', 'apple', 'facebook', 'netflix', 'instagram',
+        'whatsapp', 'linkedin', 'twitter', 'postnl', 'dhl', 'ups'
     ],
 
     COMPOUND_TLDS: [

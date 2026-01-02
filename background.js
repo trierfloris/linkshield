@@ -1,6 +1,5 @@
 // =================================================================================
-// --- ONVOORWAARDELIJKE TEST LOG #1 ---
-console.log(`--- BACKGROUND.JS VOLLEDIG GELADEN --- TIJD: ${new Date().toLocaleTimeString()}`);
+// LINKSHIELD BACKGROUND SERVICE WORKER - PRODUCTIE
 // =================================================================================
 
 // ==== Globale Instellingen en Debugging ====
@@ -45,8 +44,6 @@ async function loadThresholdsFromStorage() {
         ]);
         // Gebruik Object.assign om de globale variabele bij te werken
         Object.assign(globalThresholds, storedConfig);
-        // --- ONVOORWAARDELIJK GEMAAKT ---
-        console.log("Configuratie geladen. DEBUG_MODE is nu:", globalThresholds.DEBUG_MODE);
     } catch (error) {
         console.error("Error loading thresholds from storage:", error);
     }
@@ -54,11 +51,27 @@ async function loadThresholdsFromStorage() {
 
 // Laad de drempels direct bij het opstarten van de service worker
 loadThresholdsFromStorage()
-  .then(() => {
-    console.log("[INIT] Thresholds geladen, nu icon herstellen...");
-    return restoreIconState();
-  })
+  .then(() => restoreIconState())
   .catch(err => console.error("[INIT] Fout bij laden thresholds of herstellen icon:", err));
+
+/**
+ * Voert licentie/trial check uit bij startup en past instellingen aan indien nodig
+ * Deze functie wordt aangeroepen nadat alle functies gedefinieerd zijn
+ */
+async function performStartupLicenseCheck() {
+  try {
+    const isAllowed = await isBackgroundSecurityAllowed();
+
+    if (!isAllowed) {
+      // Trial verlopen zonder licentie - forceer backgroundSecurity uit
+      await chrome.storage.sync.set({ backgroundSecurity: false });
+      await clearDynamicRules();
+      await manageDNRules();
+    }
+  } catch (err) {
+    console.error("[INIT] Fout bij startup licentie check:", err);
+  }
+}
 
 
 // ==== Icon Animation and Tab Safety (Vroegere declaratie om ReferenceError te voorkomen) ====
@@ -122,8 +135,6 @@ function startSmoothIconAnimation(duration = 30000, interval = 500) { // Standaa
 
 /** Resets the icon to a neutral state (green) */
 function resetIconToNeutral() {
-    // --- ONVOORWAARDELIJK GEMAAKT ---
-    console.log(`[RESET ICON] Icoon wordt gereset. Tijd: ${new Date().toLocaleTimeString()}`);
     chrome.action.setIcon({
         path: {
             "16": "icons/green-circle-16.png",
@@ -147,7 +158,6 @@ async function restoreIconState() {
         currentSiteStatus.risk,
         currentSiteStatus.url
       );
-      console.log("[RESTORE ICON] Hersteld naar level:", currentSiteStatus.level);
     }
   } catch (e) {
     console.error("[RESTORE ICON] Fout bij herstellen icon state:", e);
@@ -186,11 +196,6 @@ async function updateIconBasedOnSafety(level, reasons, risk, url) {
         lvl = 'safe';
     }
 
-    // --- LOGGING WAS AL AANWEZIG MAAR IS NU ONVOORWAARDELIJK GEMAAKT ---
-    console.log(
-        `[ICON UPDATE] Functie uitgevoerd. Status: ${lvl.toUpperCase()}. URL: ${url}. Tijdstip: ${new Date().toLocaleTimeString()}`
-    );
-    // --- EINDE AANPASSING ---
 
     // 2) Status opslaan (om popup/dynamic de juiste data te geven)
     const status = { level: lvl, reasons, risk, url, isSafe: lvl === 'safe' };
@@ -252,11 +257,16 @@ async function updateIconBasedOnSafety(level, reasons, risk, url) {
 let isUpdatingRules = false; // Debounce flag to prevent overlapping updates
 let lastUpdate = 0; // Timestamp of the last update for additional control
 
-/** Manages the enabling/disabling of declarativeNetRequest rulesets based on settings */
+/** Manages the enabling/disabling of declarativeNetRequest rulesets based on settings and license */
 async function manageDNRules() {
     try {
         const { backgroundSecurity } = await chrome.storage.sync.get('backgroundSecurity');
-        if (backgroundSecurity) {
+
+        // LICENTIE CHECK: Controleer of achtergrondbeveiliging toegestaan is
+        const isAllowed = await isBackgroundSecurityAllowed();
+
+        // Alleen inschakelen als backgroundSecurity AAN staat EN licentie/trial actief is
+        if (backgroundSecurity && isAllowed) {
             await chrome.declarativeNetRequest.updateEnabledRulesets({
                 enableRulesetIds: ["ruleset_1"]
             });
@@ -265,7 +275,13 @@ async function manageDNRules() {
             await chrome.declarativeNetRequest.updateEnabledRulesets({
                 disableRulesetIds: ["ruleset_1"]
             });
-            if (globalThresholds.DEBUG_MODE) console.log("DNR Ruleset 1 disabled.");
+            if (globalThresholds.DEBUG_MODE) {
+                if (!isAllowed) {
+                    console.log("DNR Ruleset 1 disabled: trial verlopen zonder licentie.");
+                } else {
+                    console.log("DNR Ruleset 1 disabled: backgroundSecurity is off.");
+                }
+            }
         }
     } catch (error) {
         console.error("Error managing DNR rules:", error);
@@ -278,6 +294,15 @@ async function fetchAndLoadRules() {
         if (globalThresholds.DEBUG_MODE) console.log("Already updating rules, skipping.");
         return;
     }
+
+    // LICENTIE CHECK: Stop als trial verlopen is zonder licentie
+    const isAllowed = await isBackgroundSecurityAllowed();
+    if (!isAllowed) {
+        if (globalThresholds.DEBUG_MODE) console.log("fetchAndLoadRules overgeslagen: trial verlopen zonder licentie.");
+        await clearDynamicRules(); // Verwijder bestaande regels
+        return;
+    }
+
     isUpdatingRules = true;
 
     // Hardgecodeerde whitelist voor kritieke Google/Microsoft/Apple domeinen
@@ -414,6 +439,207 @@ async function updateLastRuleUpdate() {
     }
 }
 
+
+// ==== Redirect Chain Analysis (v7.1) ====
+
+// Cache voor redirect chain resultaten (voorkomt dubbele scans)
+const redirectChainCache = new Map();
+const REDIRECT_CACHE_TTL = 30 * 60 * 1000; // 30 minuten cache
+
+// Bekende URL shorteners (moet synchroon beschikbaar zijn)
+const KNOWN_SHORTENERS = new Set([
+    'bit.ly', 't.co', 'tinyurl.com', 'goo.gl', 'ow.ly', 'is.gd', 'buff.ly',
+    'rebrand.ly', 'cutt.ly', 'short.io', 't.ly', 'rb.gy', 'shorturl.at',
+    'tiny.cc', 'urlz.fr', 'v.gd', 's.id', 'qr.ae', 'clk.sh', 'dub.sh',
+    'linktr.ee', 'lnk.to', 'bl.ink', 'soo.gd', 'u.to', 'x.co', 'zi.ma'
+]);
+
+/**
+ * Analyseert de redirect chain van een URL
+ * @param {string} url - De te analyseren URL
+ * @param {number} timeout - Timeout in milliseconden (default 3000)
+ * @returns {Promise<{finalUrl: string, chain: string[], redirectCount: number, threats: string[], error?: string}>}
+ */
+async function traceRedirectChain(url, timeout = 3000) {
+    // Cache check
+    const cached = redirectChainCache.get(url);
+    if (cached && (Date.now() - cached.timestamp < REDIRECT_CACHE_TTL)) {
+        if (globalThresholds.DEBUG_MODE) console.log(`[RedirectChain] Cache hit voor ${url}`);
+        return cached.result;
+    }
+
+    const chain = [url];
+    let currentUrl = url;
+    let redirectCount = 0;
+    const maxRedirects = 10;
+    const threats = [];
+    const visitedDomains = new Set();
+
+    try {
+        // Extract initial domain
+        try {
+            visitedDomains.add(new URL(url).hostname.toLowerCase());
+        } catch (e) {
+            // Invalid URL
+        }
+
+        while (redirectCount < maxRedirects) {
+            // AbortController voor timeout
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+            try {
+                const response = await fetch(currentUrl, {
+                    method: 'HEAD',
+                    redirect: 'manual', // Volg niet automatisch, we willen elke stap zien
+                    signal: controller.signal,
+                    headers: {
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                    }
+                });
+
+                clearTimeout(timeoutId);
+
+                // Check voor redirect status codes
+                if ([301, 302, 303, 307, 308].includes(response.status)) {
+                    const location = response.headers.get('Location');
+                    if (!location) break;
+
+                    // Converteer relatieve URL naar absoluut
+                    try {
+                        currentUrl = new URL(location, currentUrl).href;
+                    } catch (e) {
+                        // Ongeldige redirect URL
+                        threats.push('invalidRedirectUrl');
+                        break;
+                    }
+
+                    chain.push(currentUrl);
+                    redirectCount++;
+
+                    // Track domeinen voor domain hopping detectie
+                    try {
+                        const newDomain = new URL(currentUrl).hostname.toLowerCase();
+                        visitedDomains.add(newDomain);
+                    } catch (e) {
+                        // URL parsing error
+                    }
+                } else {
+                    // Geen redirect meer, eindbestemming bereikt
+                    break;
+                }
+            } catch (fetchError) {
+                clearTimeout(timeoutId);
+
+                if (fetchError.name === 'AbortError') {
+                    threats.push('redirectTimeout');
+                    if (globalThresholds.DEBUG_MODE) console.log(`[RedirectChain] Timeout voor ${currentUrl}`);
+                }
+                // Bij andere fouten (CORS, netwerk), stop gracefully
+                break;
+            }
+        }
+
+        // Threat analyse op de chain
+        analyzeRedirectChainThreats(chain, visitedDomains, redirectCount, threats);
+
+        const result = {
+            finalUrl: currentUrl,
+            chain: chain,
+            redirectCount: redirectCount,
+            threats: threats,
+            domainCount: visitedDomains.size
+        };
+
+        // Cache resultaat
+        redirectChainCache.set(url, { result, timestamp: Date.now() });
+
+        // Cache cleanup (max 500 entries)
+        if (redirectChainCache.size > 500) {
+            const oldestKey = redirectChainCache.keys().next().value;
+            redirectChainCache.delete(oldestKey);
+        }
+
+        return result;
+
+    } catch (error) {
+        console.error(`[RedirectChain] Fout bij analyseren van ${url}:`, error);
+        return {
+            finalUrl: url,
+            chain: [url],
+            redirectCount: 0,
+            threats: [],
+            error: error.message
+        };
+    }
+}
+
+/**
+ * Analyseert de redirect chain op verdachte patronen
+ */
+function analyzeRedirectChainThreats(chain, visitedDomains, redirectCount, threats) {
+    // 1. Excessive redirects (>5 is verdacht)
+    if (redirectCount > 5) {
+        threats.push('excessiveRedirects');
+    }
+
+    // 2. Domain hopping (>2 verschillende domeinen)
+    if (visitedDomains.size > 2) {
+        threats.push('domainHopping');
+    }
+
+    // 3. Shortener in het midden van de chain (niet alleen aan het begin)
+    for (let i = 1; i < chain.length; i++) {
+        try {
+            const domain = new URL(chain[i]).hostname.toLowerCase().replace(/^www\./, '');
+            if (KNOWN_SHORTENERS.has(domain)) {
+                threats.push('chainedShorteners');
+                break;
+            }
+        } catch (e) {
+            // URL parsing error
+        }
+    }
+
+    // 4. Verdachte TLD aan het einde
+    if (chain.length > 0) {
+        const finalUrl = chain[chain.length - 1];
+        try {
+            const finalDomain = new URL(finalUrl).hostname.toLowerCase();
+            if (/\.(xyz|top|club|tk|ml|ga|cf|gq|buzz|rest|icu|cyou|cfd)$/i.test(finalDomain)) {
+                threats.push('suspiciousFinalTLD');
+            }
+        } catch (e) {
+            // URL parsing error
+        }
+    }
+
+    // 5. Redirect naar IP adres
+    for (const url of chain.slice(1)) { // Skip eerste URL
+        try {
+            const host = new URL(url).hostname;
+            if (/^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/.test(host)) {
+                threats.push('redirectToIP');
+                break;
+            }
+        } catch (e) {
+            // URL parsing error
+        }
+    }
+}
+
+/**
+ * Controleert of een URL een bekende shortener is
+ */
+function isKnownShortener(url) {
+    try {
+        const domain = new URL(url).hostname.toLowerCase().replace(/^www\./, '');
+        return KNOWN_SHORTENERS.has(domain);
+    } catch (e) {
+        return false;
+    }
+}
+
 /** Fetches a URL with retry logic */
 async function fetchWithRetry(url, options, maxRetries = 3, retryDelay = 1000) {
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
@@ -442,25 +668,232 @@ async function fetchWithRetry(url, options, maxRetries = 3, retryDelay = 1000) {
 
 // ==== License Validation ====
 
-/** Validates a license key against Gumroad API */
-async function validateLicenseKey(licenseKey) {
-    try {
-        const response = await fetchWithRetry('https://api.gumroad.com/v2/licenses/verify', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ product_id: 'iiiJel9dwJ9Vj6GVgU_T4w==', license_key: licenseKey })
-        });
+// Gumroad Product ID's (volledige ID, niet de permalink)
+const LINKSHIELD_ID = 'SGJcxK8Uy2PnPpkgLkso7w==';
+const CLICKMATE_ID = 'zdfmya';
 
-        if (!response.ok) {
-            throw new Error(`Server returned error: ${response.status}`);
+/**
+ * Valideert een licentiesleutel tegen alle ondersteunde Gumroad producten.
+ * Probeert eerst LinkShield, daarna ClickMate.
+ * @param {string} licenseKey - De licentiesleutel om te valideren
+ * @returns {Promise<{success: boolean, email?: string, error?: string}>}
+ */
+async function validateLicenseKey(licenseKey) {
+    const cleanKey = licenseKey.trim();
+
+    // We proberen beide ID's, omdat ClickMate-klanten soms ook LinkShield gebruiken
+    const productIds = [LINKSHIELD_ID, CLICKMATE_ID];
+
+    for (const productId of productIds) {
+        try {
+            const response = await fetch('https://api.gumroad.com/v2/licenses/verify', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    product_id: productId,
+                    license_key: cleanKey
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success && data.purchase) {
+                // Check op refunds
+                if (data.purchase.refunded || data.purchase.chargebacked) {
+                    continue;
+                }
+
+                // SUCCES! Sla de gegevens op
+                await chrome.storage.sync.set({
+                    licenseKey: cleanKey,
+                    licenseValid: true,
+                    licenseEmail: data.purchase.email,
+                    licenseValidatedAt: Date.now()
+                });
+
+                return { success: true, email: data.purchase.email };
+            }
+        } catch (error) {
+            console.error(`[License] Fout tijdens aanroep voor ${productId}:`, error);
+        }
+    }
+
+    // Als beide mislukken
+    return { success: false, error: "Licentie niet gevonden voor LinkShield of ClickMate." };
+}
+
+/** Revalidates stored license key in the background - probeert beide producten */
+async function revalidateLicense() {
+    try {
+        const data = await chrome.storage.sync.get(['licenseKey', 'licenseValid']);
+
+        if (!data.licenseKey || !data.licenseValid) {
+            return { revalidated: false, reason: 'No valid license to revalidate' };
         }
 
-        const result = await response.json();
-        return result.success && result.purchase.license_key === licenseKey;
+        // Probeer beide product ID's
+        const productIds = [LINKSHIELD_ID, CLICKMATE_ID];
+
+        for (const productId of productIds) {
+            try {
+                const response = await fetch('https://api.gumroad.com/v2/licenses/verify', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        product_id: productId,
+                        license_key: data.licenseKey
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success && result.purchase) {
+                    // Check for refunded/chargebacked status
+                    if (result.purchase.refunded || result.purchase.chargebacked || result.purchase.disputed) {
+                        continue; // Probeer volgende product
+                    }
+
+                    // License still valid - update timestamp
+                    await chrome.storage.sync.set({
+                        licenseValid: true,
+                        licenseValidatedAt: Date.now()
+                    });
+                    return { revalidated: true, valid: true };
+                }
+            } catch (err) {
+                console.error(`[License] Error revalidating with ${productId}:`, err);
+            }
+        }
+
+        // Beide producten gefaald - markeer als ongeldig
+        await chrome.storage.sync.set({
+            licenseValid: false,
+            licenseValidatedAt: Date.now()
+        });
+        return { revalidated: true, valid: false };
+
     } catch (error) {
-        if (globalThresholds.DEBUG_MODE) console.error("License validation failed:", error);
-        return false;
+        // Network error - don't change license status (fail-safe)
+        console.error("[License] Revalidation network error:", error);
+        return { revalidated: false, reason: 'Network error', networkError: true };
     }
+}
+
+// ==== Trial Period Management ====
+
+const TRIAL_DAYS = 30;
+const MS_PER_DAY = 24 * 60 * 60 * 1000;
+
+// Gecachete trial status voor performance (voorkomt herhaalde storage reads)
+let cachedTrialStatus = null;
+let trialStatusCacheTime = 0;
+const TRIAL_CACHE_TTL = 60000; // 1 minuut cache TTL
+
+/**
+ * Haalt gecachete trial status op of leest uit storage indien cache verlopen
+ * @returns {Promise<{isActive: boolean, daysRemaining: number, isExpired: boolean, hasLicense: boolean}>}
+ */
+async function getCachedTrialStatus() {
+    const now = Date.now();
+
+    // Gebruik cache als deze nog geldig is
+    if (cachedTrialStatus && (now - trialStatusCacheTime) < TRIAL_CACHE_TTL) {
+        return cachedTrialStatus;
+    }
+
+    // Cache verlopen of niet aanwezig, haal nieuwe status op
+    cachedTrialStatus = await checkTrialStatus();
+    trialStatusCacheTime = now;
+    return cachedTrialStatus;
+}
+
+/**
+ * Invalideert de trial status cache (bijv. na licentie activatie)
+ */
+function invalidateTrialCache() {
+    cachedTrialStatus = null;
+    trialStatusCacheTime = 0;
+}
+
+/**
+ * Controleert of achtergrondbeveiliging toegestaan is op basis van licentie/trial
+ * @returns {Promise<boolean>}
+ */
+async function isBackgroundSecurityAllowed() {
+    const status = await getCachedTrialStatus();
+    const allowed = status.hasLicense || status.isActive;
+
+    return allowed;
+}
+
+/**
+ * Controleert de status van de proefperiode
+ * @returns {Promise<{isActive: boolean, daysRemaining: number, isExpired: boolean, hasLicense: boolean}>}
+ */
+async function checkTrialStatus() {
+    try {
+        const data = await chrome.storage.sync.get(['installDate', 'trialDays', 'licenseKey', 'licenseValid']);
+
+        // Als er een geldige licentie is, is de proefperiode niet relevant
+        if (data.licenseValid === true) {
+            return {
+                isActive: false,
+                daysRemaining: 0,
+                isExpired: false,
+                hasLicense: true
+            };
+        }
+
+        // Als er geen installatiedatum is, stel deze nu in (voor bestaande installaties)
+        if (!data.installDate) {
+            const now = Date.now();
+            await chrome.storage.sync.set({ installDate: now, trialDays: TRIAL_DAYS });
+            return {
+                isActive: true,
+                daysRemaining: TRIAL_DAYS,
+                isExpired: false,
+                hasLicense: false
+            };
+        }
+
+        const installDate = data.installDate;
+        const trialDays = data.trialDays || TRIAL_DAYS;
+        const now = Date.now();
+        const daysSinceInstall = Math.floor((now - installDate) / MS_PER_DAY);
+        const daysRemaining = Math.max(0, trialDays - daysSinceInstall);
+        const isExpired = daysRemaining <= 0;
+
+        return {
+            isActive: !isExpired,
+            daysRemaining: daysRemaining,
+            isExpired: isExpired,
+            hasLicense: false
+        };
+    } catch (error) {
+        console.error("[Trial] Error checking trial status:", error);
+        // Bij fout, ga uit van actieve proefperiode
+        return {
+            isActive: true,
+            daysRemaining: TRIAL_DAYS,
+            isExpired: false,
+            hasLicense: false
+        };
+    }
+}
+
+/**
+ * Controleert of premium functies beschikbaar zijn (licentie OF actieve proefperiode)
+ * @returns {Promise<boolean>}
+ */
+async function isPremiumActive() {
+    const status = await checkTrialStatus();
+    return status.hasLicense || status.isActive;
 }
 
 
@@ -576,11 +1009,14 @@ chrome.runtime.onInstalled.addListener(async (details) => {
                 DOMAIN_AGE_MIN_RISK: 5,
                 YOUNG_DOMAIN_RISK: 5,
                 YOUNG_DOMAIN_THRESHOLD_DAYS: 7,
-                DEBUG_MODE: false // Default off
+                DEBUG_MODE: false, // Default off
+                // Proefperiode: sla installatiedatum op
+                installDate: Date.now(),
+                trialDays: 30
             };
 
             await chrome.storage.sync.set(defaultSettings);
-            if (globalThresholds.DEBUG_MODE) console.log("Default settings saved on install.");
+            if (globalThresholds.DEBUG_MODE) console.log("Default settings saved on install with trial period.");
 
             chrome.tabs.create({ url: "https://linkshield.nl/#install" });
 
@@ -603,6 +1039,12 @@ chrome.runtime.onInstalled.addListener(async (details) => {
         });
         if (globalThresholds.DEBUG_MODE) console.log("Hourly rule fetch alarm created.");
 
+        // Create daily license check alarm (every 24 hours = 1440 minutes)
+        chrome.alarms.create("daily_license_check", {
+            periodInMinutes: 1440
+        });
+        if (globalThresholds.DEBUG_MODE) console.log("Daily license check alarm created.");
+
     } catch (error) {
         console.error("Error during extension installation or update:", error);
     }
@@ -614,6 +1056,13 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
         await loadThresholdsFromStorage(); // Laad thresholds opnieuw voor het geval ze zijn veranderd
         fetchAndLoadRules().catch(error => {
             console.error("[ERROR] Error fetching rules via alarm:", error.message);
+        });
+    }
+
+    if (alarm.name === "daily_license_check") {
+        if (globalThresholds.DEBUG_MODE) console.log("Daily license check alarm triggered.");
+        revalidateLicense().catch(error => {
+            console.error("[ERROR] Error revalidating license via alarm:", error.message);
         });
     }
 });
@@ -632,10 +1081,53 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
         case 'validateLicense':
             validateLicenseKey(request.licenseKey)
-                .then(result => sendResponse({ success: result }))
+                .then(result => {
+                    // Invalideer cache bij succesvolle licentie activatie
+                    if (result.success) {
+                        invalidateTrialCache();
+                        // Heractiveer achtergrondbeveiliging met nieuwe status
+                        manageDNRules();
+                        fetchAndLoadRules();
+                    }
+                    sendResponse(result);
+                })
                 .catch(error => {
                     console.error("[validateLicense] Error:", error);
                     sendResponse({ success: false, error: "License validation failed" });
+                });
+            return true;
+
+        case 'checkLicense':
+            chrome.storage.sync.get(['licenseKey', 'licenseValid', 'licenseEmail', 'licenseValidatedAt'])
+                .then(data => {
+                    sendResponse({
+                        hasLicense: data.licenseValid === true,
+                        licenseKey: data.licenseKey || '',
+                        email: data.licenseEmail || '',
+                        validatedAt: data.licenseValidatedAt || null
+                    });
+                })
+                .catch(error => {
+                    console.error("[checkLicense] Error:", error);
+                    sendResponse({ hasLicense: false, error: error.message });
+                });
+            return true;
+
+        case 'checkTrialStatus':
+            checkTrialStatus()
+                .then(status => sendResponse(status))
+                .catch(error => {
+                    console.error("[checkTrialStatus] Error:", error);
+                    sendResponse({ isActive: true, daysRemaining: 30, isExpired: false, hasLicense: false });
+                });
+            return true;
+
+        case 'isPremiumActive':
+            isPremiumActive()
+                .then(isActive => sendResponse({ isPremium: isActive }))
+                .catch(error => {
+                    console.error("[isPremiumActive] Error:", error);
+                    sendResponse({ isPremium: true });
                 });
             return true;
 
@@ -643,14 +1135,57 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             sendResponse({ status: "not_implemented" });
             return true;
 
+        case 'analyzeRedirectChain': {
+            // Redirect Chain Analysis (v7.1)
+            const targetUrl = request.url;
+            const shouldAnalyze = request.force || isKnownShortener(targetUrl) || request.level === 'caution';
+
+            if (!shouldAnalyze) {
+                sendResponse({
+                    analyzed: false,
+                    reason: 'not_eligible',
+                    finalUrl: targetUrl,
+                    chain: [targetUrl],
+                    threats: []
+                });
+                return true;
+            }
+
+            traceRedirectChain(targetUrl, 3000)
+                .then(result => {
+                    sendResponse({
+                        analyzed: true,
+                        ...result
+                    });
+                })
+                .catch(error => {
+                    console.error("[analyzeRedirectChain] Error:", error);
+                    sendResponse({
+                        analyzed: false,
+                        error: error.message,
+                        finalUrl: targetUrl,
+                        chain: [targetUrl],
+                        threats: []
+                    });
+                });
+            return true; // Async response
+        }
+
         case 'checkResult': {
-            console.log(
-                `[BERICHT ONTVANGEN] 'checkResult' van content script. Level: ${request.level}. Tijd: ${new Date().toLocaleTimeString()}`
-            );
             const { url, level, reasons, risk } = request;
 
             (async () => {
                 try {
+                    // LICENTIE CHECK: Controleer of achtergrondscans toegestaan zijn
+                    const isAllowed = await isBackgroundSecurityAllowed();
+                    if (!isAllowed) {
+                        if (globalThresholds.DEBUG_MODE) {
+                            console.log("[Background] checkResult overgeslagen: trial verlopen zonder licentie.");
+                        }
+                        sendResponse({ status: 'skipped', reason: 'trial_expired' });
+                        return;
+                    }
+
                     const { integratedProtection } = await chrome.storage.sync.get('integratedProtection');
                     if (!integratedProtection) {
                         if (globalThresholds.DEBUG_MODE) {
@@ -876,6 +1411,27 @@ chrome.storage.onChanged.addListener(async (changes, area) => {
       await loadThresholdsFromStorage();
     }
 
+    // LICENTIE/TRIAL SYNCHRONISATIE: Reageer op wijzigingen in licentie of trial status
+    if ('licenseValid' in changes || 'installDate' in changes || 'trialDays' in changes) {
+      invalidateTrialCache();
+
+      // Controleer of achtergrondbeveiliging (de)geactiveerd moet worden
+      const isAllowed = await isBackgroundSecurityAllowed();
+
+      // Update DNR regels op basis van nieuwe status
+      await manageDNRules();
+
+      // Als licentie nu geldig is (was ongeldig), herlaad regels
+      if ('licenseValid' in changes && changes.licenseValid.newValue === true) {
+        await fetchAndLoadRules();
+      }
+
+      // Als licentie nu ongeldig is (was geldig) of trial verlopen, verwijder regels
+      if (!isAllowed) {
+        await clearDynamicRules();
+      }
+    }
+
     // Regel updates als backgroundSecurity verandert
     if ("backgroundSecurity" in changes) {
       const now = Date.now();
@@ -910,7 +1466,6 @@ chrome.storage.onChanged.addListener(async (changes, area) => {
       return;
     }
 
-    console.log(`[STORAGE LISTENER] 'currentSiteStatus' is gewijzigd. Nieuwe waarde:`, newValue);
     const { level, reasons, risk, url } = newValue;
     await updateIconBasedOnSafety(level, reasons, risk, url);
   }
@@ -918,9 +1473,24 @@ chrome.storage.onChanged.addListener(async (changes, area) => {
 
 
 
-chrome.runtime.onStartup.addListener(restoreIconState);
-chrome.runtime.onInstalled.addListener(details => {
+chrome.runtime.onStartup.addListener(async () => {
+  await restoreIconState();
+  // Voer licentie check uit bij browser startup
+  await performStartupLicenseCheck();
+});
+
+chrome.runtime.onInstalled.addListener(async (details) => {
   if (details.reason === "install" || details.reason === "update") {
-    restoreIconState();
+    await restoreIconState();
+    // Voer licentie check uit na installatie of update
+    await performStartupLicenseCheck();
   }
 });
+
+// Voer ook direct een licentie check uit wanneer de service worker start
+// Dit vangt gevallen op waarin de browser al open was
+setTimeout(() => {
+  performStartupLicenseCheck().catch(err =>
+    console.error("[INIT] Vertraagde licentie check mislukt:", err)
+  );
+}, 1000); // 1 seconde vertraging om te zorgen dat alle functies geladen zijn

@@ -772,5 +772,17 @@
   },
   "reason_redirectTimeout": {
     "message": "Timeout dell'analisi di reindirizzamento (rischio medio). Impossibile tracciare completamente la catena di reindirizzamento entro il limite di tempo."
+  },
+  "atSymbolPhishing": {
+    "message": "CRITICO: Questo link usa un simbolo @ per nascondere la vera destinazione (alto rischio). L'indirizzo prima della @ è falso - verrai reindirizzato a un sito web diverso."
+  },
+  "doubleEncoding": {
+    "message": "Questo link usa doppia codifica URL per nascondere il suo vero contenuto (alto rischio). Questa è una tecnica comune per aggirare i filtri di sicurezza."
+  },
+  "fullwidthCharacters": {
+    "message": "Questo link usa caratteri Unicode a larghezza piena che sembrano lettere normali (alto rischio). Questo è un trucco per far sembrare legittimi siti web falsi."
+  },
+  "nullByteInjection": {
+    "message": "Questo link contiene un carattere null byte (alto rischio). Questa è una tecnica di hacking che può essere usata per aggirare i controlli di sicurezza."
   }
 }

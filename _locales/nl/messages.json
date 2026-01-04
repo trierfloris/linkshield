@@ -772,5 +772,32 @@
   },
   "reason_redirectTimeout": {
     "message": "Redirect-analyse time-out (gemiddeld risico). Kon de redirect-keten niet volledig traceren binnen de tijdslimiet."
+  },
+  "atSymbolPhishing": {
+    "message": "KRITIEK: Deze link gebruikt een @-symbool om de werkelijke bestemming te verbergen (hoog risico). Het adres voor de @ is nep - je gaat eigenlijk naar een andere website."
+  },
+  "atSymbolInPath": {
+    "message": "De link bevat een @-symbool in het pad dat mogelijk wordt gebruikt voor verhulling (gemiddeld risico)."
+  },
+  "doubleEncoding": {
+    "message": "Deze link gebruikt dubbele URL-codering om de ware inhoud te verbergen (hoog risico). Dit is een veelgebruikte techniek om beveiligingsfilters te omzeilen."
+  },
+  "fullwidthCharacters": {
+    "message": "Deze link gebruikt volledige-breedte Unicode-tekens die op normale letters lijken (hoog risico). Dit is een truc om nepwebsites er legitiem uit te laten zien."
+  },
+  "nullByteInjection": {
+    "message": "Deze link bevat een null-byte karakter (hoog risico). Dit is een hacktechniek die kan worden gebruikt om beveiligingscontroles te omzeilen."
+  },
+  "reason_atSymbolPhishing": {
+    "message": "KRITIEK: Credential URL-aanval gedetecteerd. Het zichtbare domein is nep - je wordt doorgestuurd naar een andere website."
+  },
+  "reason_doubleEncoding": {
+    "message": "Dubbele URL-codering gedetecteerd (hoog risico). Deze verhullingstechniek wordt gebruikt om kwaadaardige inhoud te verbergen."
+  },
+  "reason_fullwidthCharacters": {
+    "message": "Volledige-breedte Unicode-tekens gedetecteerd (hoog risico). Deze speciale tekens imiteren normale letters om gebruikers te misleiden."
+  },
+  "reason_nullByteInjection": {
+    "message": "Null-byte injectie gedetecteerd (hoog risico). Deze techniek wordt gebruikt om beveiligingsfilters te omzeilen en kan wijzen op een kwaadaardige link."
   }
 }

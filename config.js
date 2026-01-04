@@ -40,8 +40,10 @@ window.CONFIG = {
     ALLOWED_PROTOCOLS: ['http:', 'https:', 'mailto:', 'tel:', 'ftp:'],
 
     // Verdachte Bestandsextensies
-    // Verfijnd om false positives op .js, .py, en .dll te vermijden.
-    MALWARE_EXTENSIONS: /\.(exe|zip|bak|tar|gz|msi|dmg|jar|rar|7z|iso|bin|scr|bat|cmd|sh|vbs|lnk|chm|ps2|apk|ps1|vbscript|docm|xlsm|pptm|doc|xls|ppt|rtf|torrent|wsf|hta|jse|reg|swf|svg|wsh|pif|wasm)$/i,
+    // Verfijnd om false positives te vermijden:
+    // - .js, .py, .svg, .dll VERWIJDERD (te veel legitieme resources)
+    // - Focus op echte executables en macro-enabled documenten
+    MALWARE_EXTENSIONS: /\.(exe|zip|bak|tar|gz|msi|dmg|jar|rar|7z|iso|bin|scr|bat|cmd|vbs|lnk|chm|ps1|apk|vbscript|docm|xlsm|pptm|torrent|wsf|hta|jse|reg|swf|wsh|pif|wasm|cab|cpl|inf|msc|pcd|sct|shb|sys)$/i,
 
     // Trefwoorden voor Verdachte Downloads
     // Ontdubbeld voor betere prestaties.

@@ -301,11 +301,11 @@ function validateRegexOrSetPatternFields(cfg) {
       cfg.LOGIN_PATTERNS = safeRegex();
     }
   }
-  // MALWARE_EXTENSIONS: RegExp
+  // MALWARE_EXTENSIONS: RegExp (false positives verwijderd: .js, .py, .svg, .dll, .doc, .xls, .ppt, .rtf, .sh)
   if (!(cfg.MALWARE_EXTENSIONS instanceof RegExp)) {
     try {
       cfg.MALWARE_EXTENSIONS = new RegExp(
-        '\\.(exe|zip|bak|tar|gz|msi|dmg|jar|rar|7z|iso|bin|scr|bat|cmd|sh|vbs|lnk|chm|ps2|apk|ps1|py|js|vbscript|dll|docm|xlsm|pptm|doc|xls|ppt|rtf|torrent|wsf|hta|jse|reg|swf|svg|lnk|chm)$',
+        '\\.(exe|zip|bak|tar|gz|msi|dmg|jar|rar|7z|iso|bin|scr|bat|cmd|vbs|lnk|chm|ps1|apk|vbscript|docm|xlsm|pptm|torrent|wsf|hta|jse|reg|swf|wsh|pif|wasm|cab|cpl|inf|msc|pcd|sct|shb|sys)$',
         'i'
       );
     } catch (error) {
@@ -548,7 +548,8 @@ const defaultConfig = {
     'z': ['ž', 'ƶ', 'ź', 'ż', 'ẑ', 'ẓ', 'ẕ', 'ƹ', 'ɀ']
   },
   LOGIN_PATTERNS: /(login|account|auth|authenticate|signin|wp-login|sign-in|log-in|dashboard|portal|session|user|profile)/i,
-  MALWARE_EXTENSIONS: /\.(exe|zip|bak|tar|gz|msi|dmg|jar|rar|7z|iso|bin|scr|bat|cmd|sh|vbs|lnk|chm|ps2|apk|ps1|py|js|vbscript|dll|docm|xlsm|pptm|doc|xls|ppt|rtf|torrent|wsf|hta|jse|reg|swf|svg|lnk|chm)$/i,
+  // MALWARE_EXTENSIONS: .js, .py, .svg, .dll, .doc, .xls, .ppt, .rtf, .sh VERWIJDERD (false positives)
+  MALWARE_EXTENSIONS: /\.(exe|zip|bak|tar|gz|msi|dmg|jar|rar|7z|iso|bin|scr|bat|cmd|vbs|lnk|chm|ps1|apk|vbscript|docm|xlsm|pptm|torrent|wsf|hta|jse|reg|swf|wsh|pif|wasm|cab|cpl|inf|msc|pcd|sct|shb|sys)$/i,
   PHISHING_KEYWORDS: new Set([
     'login', 'password', 'verify', 'access', 'account', 'auth', 'blocked', 'bonus', 'captcha', 'claim',
     'click', 'credentials', 'free', 'gift', 'notification', 'pay', 'pending', 'prize', 'recover',
@@ -2494,134 +2495,245 @@ function hasSuspiciousUrlPattern(url) {
   return matches.length >= 2;
 }
 // Definieer de cache buiten de functie voor persistentie
-const scriptFetchCache = new Map();
+const scriptAnalysisCache = new Map();
 const SCRIPT_CACHE_TTL_MS = 3600000; // 1 uur TTL
+
+/**
+ * MV3 FIX: Analyseert scripts op basis van URL-patronen in plaats van content fetching.
+ *
+ * CORS PROBLEEM OPGELOST: Content scripts kunnen geen cross-origin fetches doen naar
+ * externe scripts (CORS blocking). In plaats daarvan analyseren we:
+ * - URL structuur (verdachte paden, parameters)
+ * - Domein kenmerken (leeftijd suggesties, verdachte patronen)
+ * - Bestandsnaam patronen (obfuscatie indicatoren)
+ *
+ * Dit is ook sneller en werkt 100% betrouwbaar.
+ *
+ * @param {URL} scriptUrl - De URL van het script om te analyseren
+ * @returns {{isSuspicious: boolean, matchedPatterns: string[], totalWeight: number}}
+ */
 async function analyzeScriptContent(scriptUrl) {
   try {
     const urlString = scriptUrl.href;
-    const cached = scriptFetchCache.get(urlString);
     const now = Date.now();
+
+    // Cache check
+    const cached = scriptAnalysisCache.get(urlString);
     if (cached && now - cached.timestamp < SCRIPT_CACHE_TTL_MS) {
-      logDebug(`Cache hit voor script fetch: ${urlString}`);
+      logDebug(`Cache hit voor script URL analyse: ${urlString}`);
       return cached.result;
     }
-    const response = await fetch(urlString);
-    if (!response.ok) {
-      logDebug(`Kan script niet ophalen: ${urlString} (Status: ${response.status})`);
-      const result = { isSuspicious: false, matchedPatterns: [], totalWeight: 0 };
-      scriptFetchCache.set(urlString, { result, timestamp: now });
-      return result;
-    }
-    const scriptText = await response.text();
-    // Overslaan kleine scripts
-    if (scriptText.length < 2048) {
-      logDebug(`Script te klein om verdacht te zijn: ${urlString} (${scriptText.length} bytes)`);
-      const result = { isSuspicious: false, matchedPatterns: [], totalWeight: 0 };
-      scriptFetchCache.set(urlString, { result, timestamp: now });
-      return result;
-    }
-    // Controleer op bekende bibliotheken
-    const knownLibraries = [
-      /jQuery\s+v?[\d.]+/,
-      /React(?:DOM)?\s+v?[\d.]+/,
-      /angular[\d.]+/,
-      /vue[\d.]+/,
-      /bootstrap[\d.]+/,
-      /lodash[\d.]+/,
-      /moment\.js/,
-      /axios[\d.]+/,
-      /d3\s+v?[\d.]+/,
-      /chart\.js/,
-      /backbone[\d.]+/,
-      /underscore[\d.]+/,
-      /polyfill[\d.]+/,
-      /sw[\d.]+/,
-      /gtag/,
-      /sentry\.io/,
-    ];
-    if (knownLibraries.some((pattern) => pattern.test(scriptText))) {
-      logDebug(`Bekende bibliotheek gedetecteerd: ${urlString}`);
-      const result = { isSuspicious: false, matchedPatterns: [], totalWeight: 0 };
-      scriptFetchCache.set(urlString, { result, timestamp: now });
-      return result;
-    }
-    // Controleer op verdachte patronen
+
+    const hostname = scriptUrl.hostname.toLowerCase();
+    const pathname = scriptUrl.pathname.toLowerCase();
+    const filename = pathname.split('/').pop() || '';
+    const search = scriptUrl.search.toLowerCase();
+
     let totalWeight = 0;
     const matchedPatterns = [];
-    const suspiciousPatterns = globalConfig?.SUSPICIOUS_SCRIPT_PATTERNS;
-    if (Array.isArray(suspiciousPatterns)) {
-      suspiciousPatterns.forEach(({ regex, weight, description }) => {
-        if (regex && typeof regex.test === 'function' && regex.test(scriptText)) {
-          totalWeight += weight;
-          matchedPatterns.push(description);
-        }
-      });
-    } else {
-      logDebug("Waarschuwing: SUSPICIOUS_SCRIPT_PATTERNS is niet beschikbaar of geen array.");
+
+    // 1. Bekende veilige bibliotheken in URL (snel overslaan)
+    const safeLibraryPatterns = [
+      /jquery[-.]?[\d.]*\.min\.js$/i,
+      /react[-.]?[\d.]*\.min\.js$/i,
+      /angular[-.]?[\d.]*\.min\.js$/i,
+      /vue[-.]?[\d.]*\.min\.js$/i,
+      /bootstrap[-.]?[\d.]*\.min\.js$/i,
+      /lodash[-.]?[\d.]*\.min\.js$/i,
+      /moment[-.]?[\d.]*\.min\.js$/i,
+      /axios[-.]?[\d.]*\.min\.js$/i,
+      /d3[-.]?[\d.]*\.min\.js$/i,
+      /chart[-.]?[\d.]*\.min\.js$/i,
+      /gtag\.js$/i,
+      /analytics\.js$/i,
+      /gtm\.js$/i,
+      /polyfill[-.]?[\d.]*\.js$/i,
+    ];
+
+    if (safeLibraryPatterns.some(pattern => pattern.test(pathname))) {
+      logDebug(`Bekende bibliotheek URL gedetecteerd: ${urlString}`);
+      const result = { isSuspicious: false, matchedPatterns: [], totalWeight: 0 };
+      scriptAnalysisCache.set(urlString, { result, timestamp: now });
+      return result;
     }
-    // Drempels voor verdacht script
-    const isMinified = scriptText.replace(/\s/g, '').length > scriptText.length * 0.8;
-    const hasNoSourceMap = !/\/\/\s*sourceMappingURL=/i.test(scriptText);
-    const hasExplicitMalware = totalWeight > 0;
-    const isSuspicious = isMinified && hasNoSourceMap && hasExplicitMalware && totalWeight >= 12;
+
+    // 2. Verdachte URL patronen analyseren
+
+    // 2a. Obfuscated bestandsnamen (random karakters, base64-achtig)
+    if (/^[a-z0-9]{20,}\.js$/i.test(filename)) {
+      totalWeight += 4;
+      matchedPatterns.push('obfuscatedFilename');
+      logDebug(`[URL] Obfuscated bestandsnaam: ${filename}`);
+    }
+
+    // 2b. Verdachte paden die op malware wijzen
+    const suspiciousPathPatterns = [
+      { regex: /\/inject/i, weight: 5, desc: 'injectPath' },
+      { regex: /\/keylog/i, weight: 8, desc: 'keyloggerPath' },
+      { regex: /\/stealer/i, weight: 8, desc: 'stealerPath' },
+      { regex: /\/miner/i, weight: 6, desc: 'cryptominerPath' },
+      { regex: /\/payload/i, weight: 6, desc: 'payloadPath' },
+      { regex: /\/exploit/i, weight: 7, desc: 'exploitPath' },
+      { regex: /\/shell/i, weight: 5, desc: 'shellPath' },
+      { regex: /\/c2\//i, weight: 8, desc: 'c2Path' },
+      { regex: /\/beacon/i, weight: 5, desc: 'beaconPath' },
+      { regex: /\/dropper/i, weight: 7, desc: 'dropperPath' },
+    ];
+
+    for (const { regex, weight, desc } of suspiciousPathPatterns) {
+      if (regex.test(pathname)) {
+        totalWeight += weight;
+        matchedPatterns.push(desc);
+        logDebug(`[URL] Verdacht pad patroon: ${desc}`);
+      }
+    }
+
+    // 2c. Verdachte query parameters
+    const suspiciousParams = [
+      { regex: /[?&](cmd|exec|eval|shell)=/i, weight: 6, desc: 'execParam' },
+      { regex: /[?&](callback|jsonp)=[^&]*\(/i, weight: 4, desc: 'callbackInjection' },
+      { regex: /[?&]token=[a-f0-9]{32,}/i, weight: 2, desc: 'suspiciousToken' },
+    ];
+
+    for (const { regex, weight, desc } of suspiciousParams) {
+      if (regex.test(search)) {
+        totalWeight += weight;
+        matchedPatterns.push(desc);
+        logDebug(`[URL] Verdachte parameter: ${desc}`);
+      }
+    }
+
+    // 2d. Verdachte domeinen (freehosting, dynamische DNS)
+    const suspiciousDomainPatterns = [
+      { regex: /\.(tk|ml|ga|cf|gq)$/i, weight: 3, desc: 'freeTLD' },
+      { regex: /\.(duckdns|no-ip|ddns)\./i, weight: 4, desc: 'dynamicDNS' },
+      { regex: /pastebin\.(com|io)/i, weight: 5, desc: 'pastebinScript' },
+      { regex: /raw\.githubusercontent\.com/i, weight: 2, desc: 'githubRaw' },
+      { regex: /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/i, weight: 3, desc: 'ipAddress' },
+    ];
+
+    for (const { regex, weight, desc } of suspiciousDomainPatterns) {
+      if (regex.test(hostname)) {
+        totalWeight += weight;
+        matchedPatterns.push(desc);
+        logDebug(`[URL] Verdacht domein patroon: ${desc}`);
+      }
+    }
+
+    // 2e. Data URL in script src (zeldzaam maar verdacht)
+    if (scriptUrl.protocol === 'data:') {
+      totalWeight += 8;
+      matchedPatterns.push('dataUrlScript');
+      logDebug(`[URL] Data URL script gedetecteerd`);
+    }
+
+    // Drempel: script is verdacht als gewicht >= 8
+    const isSuspicious = totalWeight >= 8;
+
     const result = { isSuspicious, matchedPatterns, totalWeight };
+
     if (isSuspicious) {
-      logDebug(`Verdacht script gedetecteerd: ${urlString}, Gewicht: ${totalWeight}, Patronen: ${matchedPatterns.join(', ')}`);
+      logDebug(`Verdacht script URL: ${urlString}, Gewicht: ${totalWeight}, Patronen: ${matchedPatterns.join(', ')}`);
+    } else if (totalWeight > 0) {
+      logDebug(`Script heeft enkele verdachte kenmerken: ${urlString}, Gewicht: ${totalWeight}`);
     } else {
-      logDebug(`Script is veilig: ${urlString}, Gewicht: ${totalWeight}, Patronen: ${matchedPatterns.join(', ')}`);
+      logDebug(`Script URL OK: ${urlString}`);
     }
-    scriptFetchCache.set(urlString, { result, timestamp: now });
+
+    scriptAnalysisCache.set(urlString, { result, timestamp: now });
     return result;
+
   } catch (error) {
-    handleError(error, `analyzeScriptContent: Fout bij analyseren van script ${scriptUrl.href}`);
+    handleError(error, `analyzeScriptContent: Fout bij URL-analyse van ${scriptUrl.href}`);
     const result = { isSuspicious: false, matchedPatterns: [], totalWeight: 0 };
-    scriptFetchCache.set(scriptUrl.href, { result, timestamp: Date.now() });
+    scriptAnalysisCache.set(scriptUrl.href, { result, timestamp: Date.now() });
     return result;
   }
 }
 // Optioneel: Periodieke cache-schoonmaak
 setInterval(() => {
   const now = Date.now();
-  for (const [url, { timestamp }] of scriptFetchCache) {
+  for (const [url, { timestamp }] of scriptAnalysisCache) {
     if (now - timestamp >= SCRIPT_CACHE_TTL_MS) {
-      scriptFetchCache.delete(url);
+      scriptAnalysisCache.delete(url);
       logDebug(`Removed expired script cache entry for ${url}`);
     }
   }
 }, SCRIPT_CACHE_TTL_MS);
-async function checkScriptMinification(scriptUrl) {
+// VERWIJDERD: checkScriptMinification en checkScriptObfuscation
+// Deze functies gebruikten cross-origin fetch die geblokkeerd wordt door CORS.
+// De functionaliteit is nu geïntegreerd in analyzeScriptContent() via URL-analyse.
+/**
+ * Detecteert @ Symbol Attack (credential URL phishing)
+ * Voorbeeld: https://google.com@evil.com gaat naar evil.com, niet google.com
+ * @param {string} urlString - De URL om te controleren
+ * @returns {{detected: boolean, fakeHost?: string, realHost?: string, reason?: string}}
+ */
+function detectAtSymbolAttack(urlString) {
   try {
-    const response = await fetch(scriptUrl.href);
-    const scriptText = await response.text();
-    if (scriptText.replace(/\s/g, '').length > scriptText.length * 0.8) {
-      if (!/\/\/#\s*sourceMappingURL=/i.test(scriptText)) {
-        return true;
-      }
+    const url = new URL(urlString, window.location.href);
+    // Check of de username eruitziet als een domein (bevat een punt)
+    // Dit detecteert: https://google.com@evil.com waar google.com de "username" is
+    if (url.username && url.username.includes('.')) {
+      return {
+        detected: true,
+        fakeHost: url.username,
+        realHost: url.hostname,
+        reason: 'atSymbolPhishing'
+      };
     }
-    return false;
-  } catch (error) {
-   handleError(error, `checkScriptMinification: Fout bij controleren van scriptminificatie voor ${scriptUrl.href}`);
-    return false;
+    // Check voor @ in het pad (URL-encoded of niet) - kan duiden op obfuscatie
+    if (url.pathname.includes('@') || url.pathname.includes('%40')) {
+      return {
+        detected: true,
+        reason: 'atSymbolInPath'
+      };
+    }
+    return { detected: false };
+  } catch {
+    return { detected: false, error: true };
   }
 }
-async function checkScriptObfuscation(scriptUrl) {
-  try {
-    const response = await fetch(scriptUrl.href);
-    const scriptText = await response.text();
-    const obfuscationPatterns = [
-      /^\s*function\s*\(\s*\w*\s*,\s*\w*\s*,\s*\w*\s*,\s*\w*\s*,\s*\w*\s*\)/i,
-      /\$[^A-Za-z0-9]/,
-      /[a-zA-Z]{3,}\.[a-zA-Z]{3,}\(/,
-      /[a-zA-Z]{4,}\s*=\s*\[[^]]+\]/,
-    ];
-    return obfuscationPatterns.some(pattern => pattern.test(scriptText));
-  } catch (error) {
-    handleError(error, "checkScriptObfuscation");
-    return false;
-  }
+
+/**
+ * Detecteert double encoding bypass pogingen
+ * Voorbeeld: %252e%252e decodeert naar %2e%2e en dan naar ..
+ * @param {string} urlString - De URL om te controleren
+ * @returns {boolean}
+ */
+function hasDoubleEncoding(urlString) {
+  // Double encoding: %25XX waar XX hex is (bijv. %252e = %2e = .)
+  return /%25[0-9A-Fa-f]{2}/.test(urlString);
 }
+
+/**
+ * Detecteert fullwidth Unicode karakters die ASCII imiteren
+ * Voorbeeld: ｇｏｏｇｌｅ (fullwidth) lijkt op google
+ * @param {string} urlString - De URL om te controleren
+ * @returns {boolean}
+ */
+function hasFullwidthCharacters(urlString) {
+  // Fullwidth karakters range: U+FF01 tot U+FF5E
+  return /[\uFF01-\uFF5E]/.test(urlString);
+}
+
+/**
+ * Detecteert null byte injection pogingen
+ * @param {string} urlString - De URL om te controleren
+ * @returns {boolean}
+ */
+function hasNullByteInjection(urlString) {
+  return urlString.includes('%00') || urlString.includes('\x00');
+}
+
 function isValidURL(string) {
   try {
+    // Blokkeer data: URLs expliciet (XSS vector)
+    if (string.trim().toLowerCase().startsWith('data:')) {
+      logDebug(`isValidURL: data: URL geblokkeerd: ${string.substring(0, 50)}...`);
+      return false;
+    }
+
     const url = new URL(string, window.location.href);
     const protocol = url.protocol;
     const allowedProtocols = ['http:', 'https:', 'mailto:', 'tel:', 'ftp:'];
@@ -3591,6 +3703,34 @@ function checkStaticConditions(url, reasons, totalRiskRef) {
       })(),
       weight: 8,
       reason: 'nonAscii'
+    },
+    // @ Symbol Attack detectie (KRITIEK - credential URL phishing)
+    // Voorbeeld: https://google.com@evil.com gaat naar evil.com
+    {
+      condition: (() => {
+        const atAttack = detectAtSymbolAttack(url);
+        return atAttack.detected;
+      })(),
+      weight: 15,
+      reason: 'atSymbolPhishing'
+    },
+    // Double encoding detectie (obfuscatie poging)
+    {
+      condition: hasDoubleEncoding(url),
+      weight: 6,
+      reason: 'doubleEncoding'
+    },
+    // Fullwidth Unicode karakters (homoglyph variant)
+    {
+      condition: hasFullwidthCharacters(url),
+      weight: 8,
+      reason: 'fullwidthCharacters'
+    },
+    // Null byte injection detectie
+    {
+      condition: hasNullByteInjection(url),
+      weight: 10,
+      reason: 'nullByteInjection'
     }
   ];
   for (const { condition, weight, reason } of staticChecks) {

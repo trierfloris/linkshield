@@ -3,19 +3,53 @@
 // =================================================================================
 
 // ==== Globale Instellingen en Debugging ====
-// Let op: IS_PRODUCTION bepaalt hier of de console.log/warn/info volledig worden overschreven.
-// Als IS_PRODUCTION true is, worden ALLE console.log/warn/info overschreven, ongeacht DEBUG_MODE in config.
-// Voor volledige controle via config.DEBUG_MODE, verwijder het IS_PRODUCTION blok hieronder.
 const IS_PRODUCTION = true; // Zet op 'true' voor productie build.
 const CACHE_TTL = 24 * 60 * 60 * 1000;
+const API_TIMEOUT_MS = 10000; // 10 seconden timeout voor API calls
 
-// Overschrijf console-functies voor productieomgeving als IS_PRODUCTION true is.
-// Anders wordt de controle overgelaten aan globalThresholds.DEBUG_MODE binnen de functies.
+// Overschrijf console-functies voor productieomgeving
 if (IS_PRODUCTION) {
     console.log = function() {};
     console.warn = function() {};
     console.info = function() {};
-    // console.error blijft intact
+    // SECURITY FIX: Ook console.error sanitizen om gevoelige data te verbergen
+    const originalError = console.error;
+    console.error = function(...args) {
+        // Filter gevoelige informatie uit error logs
+        const sanitizedArgs = args.map(arg => {
+            if (typeof arg === 'string') {
+                // Verwijder potentiële license keys, URLs met credentials, etc.
+                return arg
+                    .replace(/license[_-]?key[=:]\s*['"]?[A-Za-z0-9-]+['"]?/gi, 'license_key=[REDACTED]')
+                    .replace(/[A-Za-z0-9+/=]{20,}/g, '[REDACTED_TOKEN]')
+                    .replace(/https?:\/\/[^@\s]+@/g, 'https://[REDACTED]@');
+            }
+            return arg;
+        });
+        originalError.apply(console, sanitizedArgs);
+    };
+}
+
+/**
+ * Fetch met timeout - voorkomt dat extension hangt bij trage/dode API's
+ * @param {string} url - De URL om te fetchen
+ * @param {object} options - Fetch opties
+ * @param {number} timeout - Timeout in ms (default: API_TIMEOUT_MS)
+ * @returns {Promise<Response>}
+ */
+async function fetchWithTimeout(url, options = {}, timeout = API_TIMEOUT_MS) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+    try {
+        const response = await fetch(url, {
+            ...options,
+            signal: controller.signal
+        });
+        return response;
+    } finally {
+        clearTimeout(timeoutId);
+    }
 }
 
 
@@ -74,63 +108,64 @@ async function performStartupLicenseCheck() {
 }
 
 
-// ==== Icon Animation and Tab Safety (Vroegere declaratie om ReferenceError te voorkomen) ====
-// De functies die door event listeners worden aangeroepen moeten hier al gedefinieerd zijn.
+// ==== Icon State Management (MV3 Compatible - NO setInterval) ====
+// MV3 FIX: Service Workers zijn ephemeral en kunnen slapen na ~30 seconden.
+// setInterval en in-memory state werken NIET betrouwbaar.
+// Gebruik chrome.action.setBadgeText voor persistente visuele feedback.
 
-let iconState = true; // Voor de toggleIcon animatie
-let activeAnimationInterval = null;
-let animationTimeout = null;
-
-/** Toggles the extension icon between green and red */
-function toggleIcon() {
-    chrome.action.setIcon({
-        path: iconState ? {
-            "16": "icons/green-circle-16.png",
-            "48": "icons/green-circle-48.png",
-            "128": "icons/green-circle-128.png"
-        } : {
-            "16": "icons/red-circle-16.png",
-            "48": "icons/red-circle-48.png",
-            "128": "icons/red-circle-128.png"
-        }
-    });
-    iconState = !iconState;
+/**
+ * Sets a warning badge on the extension icon
+ * MV3 SAFE: Badge text persists even when service worker sleeps
+ * @param {string} text - Badge text ("!" for alert, "?" for caution, "" for safe)
+ * @param {string} color - Badge background color
+ */
+async function setIconBadge(text, color) {
+    try {
+        await chrome.action.setBadgeText({ text: text });
+        await chrome.action.setBadgeBackgroundColor({ color: color });
+    } catch (e) {
+        // Ignore errors when tab is closed
+    }
 }
 
-/** Stops the icon animation */
+/**
+ * Shows alert badge (high risk) - RED with "!"
+ */
+function showAlertBadge() {
+    setIconBadge("!", "#DC3545"); // Bootstrap danger red
+}
+
+/**
+ * Shows caution badge (medium risk) - YELLOW with "?"
+ */
+function showCautionBadge() {
+    setIconBadge("?", "#FFC107"); // Bootstrap warning yellow
+}
+
+/**
+ * Clears the badge (safe/no issues)
+ */
+function clearBadge() {
+    setIconBadge("", "#000000");
+}
+
+/** Stops any icon animation (legacy compatibility - now just clears badge) */
 function stopIconAnimation() {
-    if (activeAnimationInterval) {
-        clearInterval(activeAnimationInterval);
-        activeAnimationInterval = null;
-    }
-    if (animationTimeout) {
-        clearTimeout(animationTimeout);
-        animationTimeout = null;
-    }
+    clearBadge();
 }
 
-/** Starts a smooth icon animation for a specified duration */
-function startSmoothIconAnimation(duration = 30000, interval = 500) { // Standaard interval naar 500ms
-    stopIconAnimation(); // Stop een eventueel lopende animatie
+/**
+ * MV3 FIX: Replaced setInterval animation with static badge
+ * This function now sets a persistent warning badge instead of animating
+ */
+function startSmoothIconAnimation(duration = 30000, interval = 500) {
+    // MV3 FIX: Animation via setInterval doesn't work reliably in Service Workers
+    // Instead, we set a static alert badge that persists
+    showAlertBadge();
 
-    let elapsed = 0;
-    activeAnimationInterval = setInterval(() => {
-        toggleIcon();
-        elapsed += interval;
-        if (elapsed >= duration) {
-            clearInterval(activeAnimationInterval);
-            activeAnimationInterval = null;
-        }
-    }, interval);
-
-    animationTimeout = setTimeout(() => {
-        if (activeAnimationInterval) { // Zorg ervoor dat het interval nog actief is
-            clearInterval(activeAnimationInterval);
-            activeAnimationInterval = null;
-        }
-        animationTimeout = null; // Clear de timeout ID
-        resetIconToNeutral(); // Optioneel: zet terug naar neutraal na animatie
-    }, duration);
+    // Use chrome.alarms for delayed badge removal (MV3 safe)
+    // Note: minimum alarm delay is 1 minute in MV3
+    chrome.alarms.create('clearAlertBadge', { delayInMinutes: 1 });
 }
 
 /** Resets the icon to a neutral state (green) */
@@ -142,6 +177,7 @@ function resetIconToNeutral() {
             "128": "icons/green-circle-128.png"
         }
     });
+    clearBadge();
     chrome.action.setTitle({ title: chrome.i18n.getMessage("neutralIconTitle") || "Performing safety check..." });
 }
 
@@ -228,17 +264,23 @@ async function updateIconBasedOnSafety(level, reasons, risk, url) {
     }
     chrome.action.setTitle({ title: tooltip });
 
-    // 5) Animatie alleen bij 'alert'
+    // 5) MV3 FIX: Gebruik badge in plaats van animatie
+    // Badges zijn persistent en werken ook als Service Worker slaapt
     if (lvl === 'alert') {
         if (globalThresholds.DEBUG_MODE) {
-            console.log(`[ICON ANIMATION] Level is 'alert', animatie wordt gestart.`);
+            console.log(`[ICON BADGE] Level is 'alert', rode badge wordt getoond.`);
         }
-        startSmoothIconAnimation(60000, 500);
+        showAlertBadge(); // Shows "!" in red
+    } else if (lvl === 'caution') {
+        if (globalThresholds.DEBUG_MODE) {
+            console.log(`[ICON BADGE] Level is 'caution', gele badge wordt getoond.`);
+        }
+        showCautionBadge(); // Shows "?" in yellow
     } else {
         if (globalThresholds.DEBUG_MODE) {
-            console.log(`[ICON ANIMATION] Level is '${lvl}', animatie wordt gestopt (indien actief).`);
+            console.log(`[ICON BADGE] Level is '${lvl}', badge wordt verwijderd.`);
         }
-        stopIconAnimation();
+        clearBadge();
     }
 }
 
@@ -305,18 +347,61 @@ async function fetchAndLoadRules() {
 
     isUpdatingRules = true;
 
-    // Hardgecodeerde whitelist voor kritieke Google/Microsoft/Apple domeinen
-    const HARDCODED_WHITELIST = [
-        "accounts.google.com", "mail.google.com", "drive.google.com", "docs.google.com",
-        "calendar.google.com", "apis.google.com", "oauth2.googleapis.com", "www.googleapis.com",
-        "storage.googleapis.com", "fonts.googleapis.com", "fonts.gstatic.com", "www.google.com",
-        "translate.google.com", "chrome.google.com", "clients1.google.com", "ssl.gstatic.com",
-        "lh3.googleusercontent.com", "google.com", // fallback voor wildcard
-        "microsoftonline.com", "login.microsoft.com", "outlook.live.com", "apple.com"
-    ];
+    // Hardgecodeerde whitelist voor kritieke OAuth/API endpoints
+    // SECURITY FIX: docs.google.com, drive.google.com, forms.google.com VERWIJDERD
+    // Deze services worden misbruikt voor phishing (Google Forms phishing, kwaadaardige Docs links)
+    // Alleen technische endpoints die noodzakelijk zijn voor authenticatie/API's blijven gewhitelist
+    const HARDCODED_WHITELIST = new Set([
+        // Google OAuth en technische APIs (vereist voor authenticatie)
+        "accounts.google.com", "apis.google.com", "oauth2.googleapis.com", "www.googleapis.com",
+        // Google CDN/Fonts (veilige statische content)
+        "fonts.googleapis.com", "fonts.gstatic.com", "ssl.gstatic.com",
+        // Google Core services (zoeken, vertalen)
+        "www.google.com", "translate.google.com", "chrome.google.com",
+        // Google technische endpoints
+        "clients1.google.com", "lh3.googleusercontent.com",
+        // Microsoft OAuth/Login
+        "microsoftonline.com", "login.microsoft.com", "login.live.com",
+        // Microsoft productie endpoints
+        "outlook.live.com",
+        // Apple OAuth
+        "appleid.apple.com",
+        // Note: office.com, office365.com VERWIJDERD - kunnen misbruikt worden
+        // Note: mail.google.com, calendar.google.com behouden - legitieme services
+        "mail.google.com", "calendar.google.com"
+    ]);
 
+    /**
+     * SECURITY FIX: Verbeterde whitelist check die exact domein matching doet
+     * in plaats van simpele substring matching om bypasses te voorkomen.
+     * @param {string} urlFilter - Het URL filter patroon uit de regel
+     * @returns {boolean} - true als het domein gewhitelist is
+     */
     function isWhitelisted(urlFilter) {
-        return HARDCODED_WHITELIST.some(domain => urlFilter.includes(domain));
+        // Extraheer het domein uit het urlFilter patroon
+        // Patronen kunnen zijn: "*://domain.com/*", "||domain.com^", etc.
+        const cleanFilter = urlFilter
+            .replace(/^\*:\/\//, '')      // Verwijder *://
+            .replace(/^\|\|/, '')          // Verwijder ||
+            .replace(/\^.*$/, '')          // Verwijder ^ en alles erna
+            .replace(/\/.*$/, '')          // Verwijder pad
+            .replace(/^\*\./, '')          // Verwijder *. wildcard
+            .replace(/\*$/, '')            // Verwijder trailing *
+            .toLowerCase();
+
+        // Exact match check
+        if (HARDCODED_WHITELIST.has(cleanFilter)) {
+            return true;
+        }
+
+        // Subdomein check: check of het een subdomein is van een gewhitelist domein
+        for (const whitelistedDomain of HARDCODED_WHITELIST) {
+            if (cleanFilter.endsWith('.' + whitelistedDomain)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     try {
@@ -474,11 +559,13 @@ async function traceRedirectChain(url, timeout = 3000) {
     const maxRedirects = 10;
     const threats = [];
     const visitedDomains = new Set();
+    const visitedUrls = new Set(); // SECURITY FIX: Track bezochte URLs voor circular detectie
 
     try {
         // Extract initial domain
         try {
             visitedDomains.add(new URL(url).hostname.toLowerCase());
+            visitedUrls.add(url); // Track initiële URL
         } catch (e) {
             // Invalid URL
         }
@@ -500,6 +587,53 @@ async function traceRedirectChain(url, timeout = 3000) {
 
                 clearTimeout(timeoutId);
 
+                // MV3 FIX: Cross-origin redirects geven 'opaqueredirect' response type
+                // In dat geval kunnen we de Location header niet lezen
+                if (response.type === 'opaqueredirect') {
+                    if (globalThresholds.DEBUG_MODE) {
+                        console.log(`[RedirectChain] Opaque redirect gedetecteerd, fallback naar follow mode`);
+                    }
+
+                    // Fallback: Doe een nieuwe request met redirect: 'follow' om de finale URL te krijgen
+                    try {
+                        const followController = new AbortController();
+                        const followTimeoutId = setTimeout(() => followController.abort(), timeout);
+
+                        const followResponse = await fetch(currentUrl, {
+                            method: 'HEAD',
+                            redirect: 'follow',
+                            signal: followController.signal,
+                            headers: {
+                                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                            }
+                        });
+
+                        clearTimeout(followTimeoutId);
+
+                        // De finale URL is beschikbaar via response.url
+                        const finalUrl = followResponse.url;
+                        if (finalUrl && finalUrl !== currentUrl) {
+                            // We weten niet hoeveel redirects er waren, maar we kennen het eindpunt
+                            try {
+                                const finalDomain = new URL(finalUrl).hostname.toLowerCase();
+                                if (!visitedDomains.has(finalDomain)) {
+                                    visitedDomains.add(finalDomain);
+                                }
+                            } catch (e) {}
+
+                            chain.push(finalUrl);
+                            currentUrl = finalUrl;
+                            redirectCount++; // Minimaal 1 redirect
+                            threats.push('opaqueRedirectChain'); // Markeer dat we niet elke stap konden zien
+                        }
+                    } catch (e) {
+                        if (globalThresholds.DEBUG_MODE) {
+                            console.log(`[RedirectChain] Fallback fetch failed:`, e.message);
+                        }
+                    }
+                    break; // Stop de loop, we hebben wat we kunnen krijgen
+                }
+
                 // Check voor redirect status codes
                 if ([301, 302, 303, 307, 308].includes(response.status)) {
                     const location = response.headers.get('Location');
@@ -513,6 +647,16 @@ async function traceRedirectChain(url, timeout = 3000) {
                         threats.push('invalidRedirectUrl');
                         break;
                     }
+
+                    // SECURITY FIX: Vroege circular redirect detectie
+                    if (visitedUrls.has(currentUrl)) {
+                        threats.push('circularRedirect');
+                        if (globalThresholds.DEBUG_MODE) {
+                            console.log(`[RedirectChain] Circular redirect gedetecteerd: ${currentUrl}`);
+                        }
+                        break; // Stop de loop bij circular redirect
+                    }
+                    visitedUrls.add(currentUrl);
 
                     chain.push(currentUrl);
                     redirectCount++;
@@ -554,10 +698,18 @@ async function traceRedirectChain(url, timeout = 3000) {
         // Cache resultaat
         redirectChainCache.set(url, { result, timestamp: Date.now() });
 
-        // Cache cleanup (max 500 entries)
-        if (redirectChainCache.size > 500) {
-            const oldestKey = redirectChainCache.keys().next().value;
-            redirectChainCache.delete(oldestKey);
+        // SECURITY FIX: Timestamp-based cache cleanup in plaats van FIFO
+        // Verwijder verouderde entries EN limiteer grootte
+        const now = Date.now();
+        if (redirectChainCache.size > 400) { // Begin cleanup bij 400 om burst te voorkomen
+            for (const [key, value] of redirectChainCache) {
+                // Verwijder entries ouder dan TTL
+                if (now - value.timestamp > REDIRECT_CACHE_TTL) {
+                    redirectChainCache.delete(key);
+                }
+                // Stop als we onder 300 zijn
+                if (redirectChainCache.size <= 300) break;
+            }
         }
 
         return result;
@@ -640,11 +792,12 @@ function isKnownShortener(url) {
     }
 }
 
-/** Fetches a URL with retry logic */
-async function fetchWithRetry(url, options, maxRetries = 3, retryDelay = 1000) {
+/** Fetches a URL with retry logic AND timeout protection */
+async function fetchWithRetry(url, options = {}, maxRetries = 3, retryDelay = 1000) {
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
         try {
-            const response = await fetch(url, options);
+            // REGRESSIE FIX: Gebruik fetchWithTimeout om hangs te voorkomen
+            const response = await fetchWithTimeout(url, options, API_TIMEOUT_MS);
             if (response.status === 404) {
                 // Specifieke afhandeling voor 404, kan betekenen dat de resource niet bestaat
                 return response;
@@ -686,7 +839,8 @@ async function validateLicenseKey(licenseKey) {
 
     for (const productId of productIds) {
         try {
-            const response = await fetch('https://api.gumroad.com/v2/licenses/verify', {
+            // SECURITY FIX: Gebruik fetchWithTimeout om hangs te voorkomen
+            const response = await fetchWithTimeout('https://api.gumroad.com/v2/licenses/verify', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -696,7 +850,7 @@ async function validateLicenseKey(licenseKey) {
                     product_id: productId,
                     license_key: cleanKey
                 })
-            });
+            }, API_TIMEOUT_MS);
 
             const data = await response.json();
 
@@ -739,7 +893,8 @@ async function revalidateLicense() {
 
         for (const productId of productIds) {
             try {
-                const response = await fetch('https://api.gumroad.com/v2/licenses/verify', {
+                // SECURITY FIX: Gebruik fetchWithTimeout om hangs te voorkomen
+                const response = await fetchWithTimeout('https://api.gumroad.com/v2/licenses/verify', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -749,7 +904,7 @@ async function revalidateLicense() {
                         product_id: productId,
                         license_key: data.licenseKey
                     })
-                });
+                }, API_TIMEOUT_MS);
 
                 const result = await response.json();
 
@@ -1003,9 +1158,10 @@ chrome.runtime.onInstalled.addListener(async (details) => {
                 backgroundSecurity: true,
                 integratedProtection: true,
                 // Stel ook de default thresholds in bij de eerste installatie
-                LOW_THRESHOLD: 3,
-                MEDIUM_THRESHOLD: 7,
-                HIGH_THRESHOLD: 12,
+                // GESYNCHRONISEERD met config.js waarden (4/8/15)
+                LOW_THRESHOLD: 4,
+                MEDIUM_THRESHOLD: 8,
+                HIGH_THRESHOLD: 15,
                 DOMAIN_AGE_MIN_RISK: 5,
                 YOUNG_DOMAIN_RISK: 5,
                 YOUNG_DOMAIN_THRESHOLD_DAYS: 7,
@@ -1065,14 +1221,42 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
             console.error("[ERROR] Error revalidating license via alarm:", error.message);
         });
     }
+
+    // MV3 FIX: Clear alert badge after delay (replaces setInterval animation)
+    if (alarm.name === "clearAlertBadge") {
+        clearBadge();
+        if (globalThresholds.DEBUG_MODE) console.log("Alert badge cleared via alarm.");
+    }
 });
 
 
 // ==== Message Listener (Hoofdcommunicatie met Content Scripts) ====
-// =================== HIERONDER STAAT DE VOLLEDIG GECORRIGEERDE LISTENER ===================
+// =================== SECURITY: Sender validatie toegevoegd ===================
 
+/**
+ * Valideert of de sender een vertrouwde bron is
+ * @param {object} sender - Chrome message sender object
+ * @returns {boolean} - true als sender vertrouwd is
+ */
+function isValidSender(sender) {
+    // Accepteer berichten van:
+    // 1. Extension zelf (popup, background, etc.)
+    // 2. Content scripts van onze extensie (hebben sender.id)
+    if (sender.id === chrome.runtime.id) {
+        return true;
+    }
+    // Blokkeer berichten van onbekende bronnen
+    return false;
+}
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    // SECURITY: Valideer sender voordat we berichten verwerken
+    if (!isValidSender(sender)) {
+        console.error("[Security] Blocked message from untrusted sender:", sender.origin || sender.url);
+        sendResponse({ error: 'Unauthorized sender', blocked: true });
+        return false;
+    }
+
     if (globalThresholds.DEBUG_MODE) {
         console.log(`[Background Script] Received message:`, request, sender);
     }

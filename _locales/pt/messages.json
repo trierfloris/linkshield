@@ -772,5 +772,17 @@
   },
   "reason_redirectTimeout": {
     "message": "Tempo limite da análise de redirecionamento (risco médio). Não foi possível rastrear completamente a cadeia de redirecionamento dentro do limite de tempo."
+  },
+  "atSymbolPhishing": {
+    "message": "CRÍTICO: Este link usa um símbolo @ para esconder o destino real (alto risco). O endereço antes do @ é falso - você será redirecionado para um site diferente."
+  },
+  "doubleEncoding": {
+    "message": "Este link usa codificação URL dupla para esconder seu verdadeiro conteúdo (alto risco). Esta é uma técnica comum para burlar filtros de segurança."
+  },
+  "fullwidthCharacters": {
+    "message": "Este link usa caracteres Unicode de largura total que parecem letras normais (alto risco). Este é um truque para fazer sites falsos parecerem legítimos."
+  },
+  "nullByteInjection": {
+    "message": "Este link contém um caractere null byte (alto risco). Esta é uma técnica de hacking que pode ser usada para burlar verificações de segurança."
   }
 }

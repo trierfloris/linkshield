@@ -772,5 +772,17 @@
   },
   "reason_redirectTimeout": {
     "message": "重定向分析超时（中等风险）。无法在时间限制内完全追踪重定向链。"
+  },
+  "atSymbolPhishing": {
+    "message": "严重：此链接使用@符号隐藏真实目的地（高风险）。@前的地址是假的——您实际上将被重定向到另一个网站。"
+  },
+  "doubleEncoding": {
+    "message": "此链接使用双重URL编码隐藏其真实内容（高风险）。这是绕过安全过滤器的常见技术。"
+  },
+  "fullwidthCharacters": {
+    "message": "此链接使用看起来像普通字母的全角Unicode字符（高风险）。这是使虚假网站看起来合法的伎俩。"
+  },
+  "nullByteInjection": {
+    "message": "此链接包含空字节字符（高风险）。这是一种可用于绕过安全检查的黑客技术。"
   }
 }

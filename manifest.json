@@ -1,11 +1,11 @@
 {
   "manifest_version": 3,
   "name": "__MSG_extName__",
-  "version": "7.1",
+  "version": "7.2",
   "description": "__MSG_extDescription__",
   "default_locale": "en",
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'none';"
+    "extension_pages": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' https: data:; font-src 'self'; connect-src 'self' https://api.gumroad.com https://api.ssllabs.com https://linkshield.nl https://rdap.org; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';"
   },
   "permissions": [
     "tabs",
@@ -27,10 +27,10 @@
       "matches": ["<all_urls>"],
       "run_at": "document_start",
       "js": [
-        "config.js",
-        "content.js",
         "punycode.min.js",
-        "jsQR.js"
+        "jsQR.js",
+        "config.js",
+        "content.js"
       ]
     }
   ],

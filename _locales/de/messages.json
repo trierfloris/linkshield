@@ -772,5 +772,17 @@
   },
   "reason_redirectTimeout": {
     "message": "Weiterleitungsanalyse Zeitüberschreitung (mittleres Risiko). Die Weiterleitungskette konnte nicht innerhalb des Zeitlimits vollständig verfolgt werden."
+  },
+  "atSymbolPhishing": {
+    "message": "KRITISCH: Dieser Link verwendet ein @-Symbol, um das wahre Ziel zu verbergen (hohes Risiko). Die Adresse vor dem @ ist gefälscht - Sie werden tatsächlich zu einer anderen Website weitergeleitet."
+  },
+  "doubleEncoding": {
+    "message": "Dieser Link verwendet doppelte URL-Kodierung, um seinen wahren Inhalt zu verbergen (hohes Risiko). Dies ist eine gängige Technik, um Sicherheitsfilter zu umgehen."
+  },
+  "fullwidthCharacters": {
+    "message": "Dieser Link verwendet Unicode-Zeichen in voller Breite, die wie normale Buchstaben aussehen (hohes Risiko). Dies ist ein Trick, um gefälschte Websites legitim erscheinen zu lassen."
+  },
+  "nullByteInjection": {
+    "message": "Dieser Link enthält ein Null-Byte-Zeichen (hohes Risiko). Dies ist eine Hacking-Technik, die verwendet werden kann, um Sicherheitsprüfungen zu umgehen."
   }
 }

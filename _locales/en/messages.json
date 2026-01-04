@@ -674,5 +674,32 @@
   },
   "reason_redirectTimeout": {
     "message": "Redirect analysis timed out (medium risk). Could not fully trace the redirect chain within the time limit."
+  },
+  "atSymbolPhishing": {
+    "message": "CRITICAL: This link uses an @ symbol to hide the real destination (high risk). The address before @ is fake - you will actually go to a different website."
+  },
+  "atSymbolInPath": {
+    "message": "The link contains an @ symbol in the path which may be used for obfuscation (medium risk)."
+  },
+  "doubleEncoding": {
+    "message": "This link uses double URL encoding to hide its true content (high risk). This is a common technique to bypass security filters."
+  },
+  "fullwidthCharacters": {
+    "message": "This link uses fullwidth Unicode characters that look like normal letters (high risk). This is a trick to make fake websites look legitimate."
+  },
+  "nullByteInjection": {
+    "message": "This link contains a null byte character (high risk). This is a hacking technique that can be used to bypass security checks."
+  },
+  "reason_atSymbolPhishing": {
+    "message": "CRITICAL: Credential URL attack detected. The visible domain is fake - you will be redirected to a different website."
+  },
+  "reason_doubleEncoding": {
+    "message": "Double URL encoding detected (high risk). This obfuscation technique is used to hide malicious content."
+  },
+  "reason_fullwidthCharacters": {
+    "message": "Fullwidth Unicode characters detected (high risk). These special characters imitate normal letters to deceive users."
+  },
+  "reason_nullByteInjection": {
+    "message": "Null byte injection detected (high risk). This technique is used to bypass security filters and can indicate a malicious link."
   }
 }

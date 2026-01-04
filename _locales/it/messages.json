@@ -784,5 +784,71 @@
   },
   "nullByteInjection": {
     "message": "Questo link contiene un carattere null byte (alto rischio). Questa è una tecnica di hacking che può essere usata per aggirare i controlli di sicurezza."
+  },
+
+  "formActionHijacking": {
+    "message": "Questo modulo di login invia le tue credenziali a un sito web esterno (rischio critico). Il tuo nome utente e password potrebbero essere rubati."
+  },
+  "formActionExternal": {
+    "message": "Il modulo di login invia i dati a un dominio esterno: $DOMAIN$ (rischio critico). Questo è un tentativo di furto di credenziali.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "evil-site.com"
+      }
+    }
+  },
+  "formActionInvalid": {
+    "message": "Il modulo di login ha un URL di azione non valido o sospetto (alto rischio). Le tue credenziali potrebbero non essere inviate in modo sicuro."
+  },
+
+  "hiddenIframeZeroSize": {
+    "message": "Iframe nascosto con dimensione zero rilevato (alto rischio). Questo può essere usato per caricare contenuti dannosi in modo invisibile."
+  },
+  "hiddenIframeOffScreen": {
+    "message": "Iframe posizionato fuori schermo rilevato (alto rischio). Il contenuto nascosto potrebbe tracciarti o rubare dati."
+  },
+  "hiddenIframeCSSHidden": {
+    "message": "Iframe nascosto tramite CSS rilevato (alto rischio). I frame invisibili possono catturare le sequenze di tasti o caricare malware."
+  },
+  "hiddenIframeNegativePos": {
+    "message": "Iframe con posizionamento negativo rilevato (rischio medio). Questa tecnica viene usata per nascondere contenuti agli utenti."
+  },
+
+  "nrdCritical": {
+    "message": "CRITICO: Dominio registrato $DAYS$ giorno/i fa (rischio critico). I domini nuovissimi sono estremamente probabili essere malevoli.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "0"
+      }
+    }
+  },
+  "nrdHigh": {
+    "message": "Dominio registrato solo $DAYS$ giorni fa (alto rischio). I domini molto recenti sono frequentemente usati per truffe.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "nrdMedium": {
+    "message": "Dominio registrato $DAYS$ giorni fa (rischio medio). I nuovi domini sotto i 30 giorni richiedono cautela extra.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "15"
+      }
+    }
+  },
+  "nrdLow": {
+    "message": "Dominio registrato $DAYS$ giorni fa (basso rischio). Dominio relativamente nuovo, presta un po' di attenzione.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "60"
+      }
+    }
   }
 }

@@ -799,5 +799,71 @@
   },
   "reason_nullByteInjection": {
     "message": "Null-byte injectie gedetecteerd (hoog risico). Deze techniek wordt gebruikt om beveiligingsfilters te omzeilen en kan wijzen op een kwaadaardige link."
+  },
+
+  "formActionHijacking": {
+    "message": "Dit inlogformulier stuurt je gegevens naar een externe website (kritiek risico). Je gebruikersnaam en wachtwoord kunnen worden gestolen."
+  },
+  "formActionExternal": {
+    "message": "Inlogformulier stuurt gegevens naar extern domein: $DOMAIN$ (kritiek risico). Dit is een poging tot credential diefstal.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "evil-site.com"
+      }
+    }
+  },
+  "formActionInvalid": {
+    "message": "Inlogformulier heeft een ongeldige of verdachte actie-URL (hoog risico). Je gegevens worden mogelijk niet veilig verzonden."
+  },
+
+  "hiddenIframeZeroSize": {
+    "message": "Verborgen iframe met nul-grootte gedetecteerd (hoog risico). Dit kan worden gebruikt om onzichtbaar kwaadaardige inhoud te laden."
+  },
+  "hiddenIframeOffScreen": {
+    "message": "Iframe buiten het scherm gedetecteerd (hoog risico). Verborgen inhoud kan je volgen of gegevens stelen."
+  },
+  "hiddenIframeCSSHidden": {
+    "message": "CSS-verborgen iframe gedetecteerd (hoog risico). Onzichtbare frames kunnen toetsaanslagen vastleggen of malware laden."
+  },
+  "hiddenIframeNegativePos": {
+    "message": "Iframe met negatieve positionering gedetecteerd (gemiddeld risico). Deze techniek wordt gebruikt om inhoud voor gebruikers te verbergen."
+  },
+
+  "nrdCritical": {
+    "message": "KRITIEK: Domein $DAYS$ dag(en) geleden geregistreerd (kritiek risico). Gloednieuwe domeinen zijn zeer waarschijnlijk kwaadaardig.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "0"
+      }
+    }
+  },
+  "nrdHigh": {
+    "message": "Domein slechts $DAYS$ dagen geleden geregistreerd (hoog risico). Zeer nieuwe domeinen worden vaak voor oplichting gebruikt.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "nrdMedium": {
+    "message": "Domein $DAYS$ dagen geleden geregistreerd (gemiddeld risico). Nieuwe domeinen onder 30 dagen vereisen extra voorzichtigheid.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "15"
+      }
+    }
+  },
+  "nrdLow": {
+    "message": "Domein $DAYS$ dagen geleden geregistreerd (laag risico). Relatief nieuw domein, wees enigszins voorzichtig.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "60"
+      }
+    }
   }
 }

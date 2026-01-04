@@ -784,5 +784,71 @@
   },
   "nullByteInjection": {
     "message": "このリンクにはnullバイト文字が含まれています（高リスク）。これはセキュリティチェックをバイパスするために使用できるハッキング技術です。"
+  },
+
+  "formActionHijacking": {
+    "message": "このログインフォームは資格情報を外部サイトに送信しています（重大リスク）。ユーザー名とパスワードが盗まれる可能性があります。"
+  },
+  "formActionExternal": {
+    "message": "ログインフォームが外部ドメインにデータを送信：$DOMAIN$（重大リスク）。これは資格情報盗難の試みです。",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "evil-site.com"
+      }
+    }
+  },
+  "formActionInvalid": {
+    "message": "ログインフォームに無効または疑わしいアクションURLがあります（高リスク）。資格情報が安全に送信されない可能性があります。"
+  },
+
+  "hiddenIframeZeroSize": {
+    "message": "サイズゼロの隠しiframeが検出されました（高リスク）。これは目に見えない形で悪意のあるコンテンツを読み込むために使用される可能性があります。"
+  },
+  "hiddenIframeOffScreen": {
+    "message": "画面外に配置されたiframeが検出されました（高リスク）。隠されたコンテンツがあなたを追跡したりデータを盗んだりしている可能性があります。"
+  },
+  "hiddenIframeCSSHidden": {
+    "message": "CSSで隠されたiframeが検出されました（高リスク）。不可視のフレームはキーストロークをキャプチャしたりマルウェアを読み込んだりできます。"
+  },
+  "hiddenIframeNegativePos": {
+    "message": "負の位置指定のiframeが検出されました（中リスク）。この技術はユーザーからコンテンツを隠すために使用されます。"
+  },
+
+  "nrdCritical": {
+    "message": "重大：ドメインは$DAYS$日前に登録されました（重大リスク）。新規ドメインは悪意のある可能性が非常に高いです。",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "0"
+      }
+    }
+  },
+  "nrdHigh": {
+    "message": "ドメインはわずか$DAYS$日前に登録されました（高リスク）。非常に新しいドメインは詐欺によく使用されます。",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "nrdMedium": {
+    "message": "ドメインは$DAYS$日前に登録されました（中リスク）。30日未満の新しいドメインには特に注意が必要です。",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "15"
+      }
+    }
+  },
+  "nrdLow": {
+    "message": "ドメインは$DAYS$日前に登録されました（低リスク）。比較的新しいドメインです、多少の注意を払ってください。",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "60"
+      }
+    }
   }
 }

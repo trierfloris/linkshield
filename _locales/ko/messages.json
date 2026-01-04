@@ -784,5 +784,71 @@
   },
   "nullByteInjection": {
     "message": "이 링크에는 널 바이트 문자가 포함되어 있습니다 (높은 위험). 이것은 보안 검사를 우회하는 데 사용할 수 있는 해킹 기술입니다."
+  },
+
+  "formActionHijacking": {
+    "message": "이 로그인 양식이 자격 증명을 외부 웹사이트로 전송합니다 (심각한 위험). 사용자 이름과 비밀번호가 도난당할 수 있습니다."
+  },
+  "formActionExternal": {
+    "message": "로그인 양식이 외부 도메인으로 데이터 전송: $DOMAIN$ (심각한 위험). 이것은 자격 증명 도난 시도입니다.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "evil-site.com"
+      }
+    }
+  },
+  "formActionInvalid": {
+    "message": "로그인 양식에 잘못되거나 의심스러운 작업 URL이 있습니다 (높은 위험). 자격 증명이 안전하게 전송되지 않을 수 있습니다."
+  },
+
+  "hiddenIframeZeroSize": {
+    "message": "크기가 0인 숨겨진 iframe 감지됨 (높은 위험). 악성 콘텐츠를 보이지 않게 로드하는 데 사용될 수 있습니다."
+  },
+  "hiddenIframeOffScreen": {
+    "message": "화면 밖에 위치한 iframe 감지됨 (높은 위험). 숨겨진 콘텐츠가 당신을 추적하거나 데이터를 훔칠 수 있습니다."
+  },
+  "hiddenIframeCSSHidden": {
+    "message": "CSS로 숨겨진 iframe 감지됨 (높은 위험). 보이지 않는 프레임은 키 입력을 캡처하거나 맬웨어를 로드할 수 있습니다."
+  },
+  "hiddenIframeNegativePos": {
+    "message": "음수 위치 지정된 iframe 감지됨 (중간 위험). 이 기술은 사용자로부터 콘텐츠를 숨기는 데 사용됩니다."
+  },
+
+  "nrdCritical": {
+    "message": "심각: 도메인이 $DAYS$일 전에 등록됨 (심각한 위험). 아주 새로운 도메인은 악성일 가능성이 매우 높습니다.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "0"
+      }
+    }
+  },
+  "nrdHigh": {
+    "message": "도메인이 $DAYS$일 전에만 등록됨 (높은 위험). 매우 새로운 도메인은 사기에 자주 사용됩니다.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "nrdMedium": {
+    "message": "도메인이 $DAYS$일 전에 등록됨 (중간 위험). 30일 미만의 새 도메인은 추가 주의가 필요합니다.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "15"
+      }
+    }
+  },
+  "nrdLow": {
+    "message": "도메인이 $DAYS$일 전에 등록됨 (낮은 위험). 비교적 새로운 도메인이니 약간의 주의를 기울이세요.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "60"
+      }
+    }
   }
 }

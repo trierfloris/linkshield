@@ -848,23 +848,23 @@ async function checkDomainAgeDynamic(url, ctx) {
     logDebug(`checkDomainAgeDynamic: Kon geen aanmaakdatum vinden voor domein ${domain}. Overslaan.`);
     return false;
   }
-  const ageDays = (Date.now() - created.getTime()) / (1000 * 60 * 60 * 24);
-  // Gebruik de correcte drempel uit globalConfig; validateConfig zorgt voor een fallback als deze ontbreekt
-  const thresholdDays = globalConfig.YOUNG_DOMAIN_THRESHOLD_DAYS;
-  const riskWeight = globalConfig.YOUNG_DOMAIN_RISK;
-  if (ageDays < thresholdDays) {
-    const ageFormatted = ageDays.toFixed(1);
-    // Haal de vertaalde reden op, met de ageFormatted als parameter
-    const reasonMsg = chrome.i18n.getMessage(
-      'youngDomain',
-      [ageFormatted]
-    );
-    ctx.reasons.add(reasonMsg);
-    ctx.totalRiskRef.value += riskWeight;
-    logDebug(`⚠️ Jong domein: ${domain}, ${ageFormatted} dagen oud. Risico toegevoegd: ${riskWeight}. Huidig totaalrisico: ${ctx.totalRiskRef.value}`);
+
+  // Gebruik de nieuwe analyzeNRDRisk functie voor gedifferentieerde risicoscoring
+  const nrdAnalysis = analyzeNRDRisk(created);
+
+  if (nrdAnalysis.isNRD && nrdAnalysis.riskLevel !== 'none') {
+    // Bereken dynamische risicoscore gebaseerd op leeftijd
+    const riskScore = getNRDRiskScore(nrdAnalysis.riskLevel);
+
+    // Voeg de specifieke reden toe op basis van risiconiveau
+    ctx.reasons.add(nrdAnalysis.reason);
+    ctx.totalRiskRef.value += riskScore;
+
+    logDebug(`⚠️ NRD Gedetecteerd: ${domain}, ${nrdAnalysis.ageDays.toFixed(1)} dagen oud, niveau: ${nrdAnalysis.riskLevel}. Risico toegevoegd: ${riskScore}. Huidig totaalrisico: ${ctx.totalRiskRef.value}`);
     return true;
   }
-  logDebug(`checkDomainAgeDynamic: Domein ${domain} is ${ageDays.toFixed(1)} dagen oud, ouder dan drempel (${thresholdDays} dagen). Geen risico toegevoegd.`);
+
+  logDebug(`checkDomainAgeDynamic: Domein ${domain} is ${nrdAnalysis.ageDays.toFixed(1)} dagen oud (niveau: ${nrdAnalysis.riskLevel}). Geen risico toegevoegd.`);
   return false;
 }
 /**
@@ -2726,6 +2726,266 @@ function hasNullByteInjection(urlString) {
   return urlString.includes('%00') || urlString.includes('\x00');
 }
 
+/**
+ * SECURITY: Detecteert Form Action Hijacking
+ * Waarschuwt wanneer een login/password formulier data naar een ANDER domein stuurt.
+ * Dit is een klassieke credential theft techniek.
+ *
+ * @returns {{detected: boolean, forms: Array<{action: string, currentDomain: string, targetDomain: string}>, reasons: string[]}}
+ */
+function detectFormActionHijacking() {
+  const results = {
+    detected: false,
+    forms: [],
+    reasons: []
+  };
+
+  try {
+    const currentHostname = window.location.hostname.toLowerCase();
+    const forms = document.querySelectorAll('form');
+
+    for (const form of forms) {
+      // Check of het formulier password/login velden bevat
+      const hasPasswordField = form.querySelector('input[type="password"]') !== null;
+      const hasLoginIndicators = form.querySelector('input[type="email"], input[name*="user"], input[name*="login"], input[name*="email"], input[autocomplete="username"]') !== null;
+
+      // Alleen checken als het een credential-gerelateerd formulier is
+      if (!hasPasswordField && !hasLoginIndicators) continue;
+
+      // Bepaal de form action URL
+      const actionAttr = form.getAttribute('action');
+      let actionUrl;
+
+      try {
+        if (!actionAttr || actionAttr === '' || actionAttr === '#') {
+          // Leeg action = submit naar huidige pagina (veilig)
+          continue;
+        }
+        actionUrl = new URL(actionAttr, window.location.href);
+      } catch (e) {
+        // Ongeldige URL in action
+        results.detected = true;
+        results.reasons.push('formActionInvalid');
+        continue;
+      }
+
+      const targetHostname = actionUrl.hostname.toLowerCase();
+
+      // Check of het een ander domein is
+      if (targetHostname !== currentHostname) {
+        // Uitzonderingen voor bekende legitieme services
+        const legitimateFormTargets = [
+          'accounts.google.com',
+          'login.microsoft.com',
+          'login.live.com',
+          'appleid.apple.com',
+          'auth0.com',
+          'okta.com',
+          'cognito-idp',
+          'stripe.com',
+          'paypal.com',
+          'checkout.stripe.com'
+        ];
+
+        const isLegitimate = legitimateFormTargets.some(legit =>
+          targetHostname === legit || targetHostname.endsWith('.' + legit)
+        );
+
+        if (!isLegitimate) {
+          results.detected = true;
+          results.forms.push({
+            action: actionUrl.href,
+            currentDomain: currentHostname,
+            targetDomain: targetHostname
+          });
+          results.reasons.push('formActionHijacking');
+          logDebug(`[SECURITY] Form Action Hijacking gedetecteerd: ${currentHostname} -> ${targetHostname}`);
+        }
+      }
+    }
+  } catch (error) {
+    handleError(error, 'detectFormActionHijacking');
+  }
+
+  return results;
+}
+
+/**
+ * SECURITY: Detecteert verborgen iframes die gebruikt kunnen worden voor:
+ * - Credential theft (invisible login forms)
+ * - Keylogging
+ * - Clickjacking
+ * - Cryptomining
+ *
+ * @returns {{detected: boolean, count: number, reasons: string[]}}
+ */
+function detectHiddenIframes() {
+  const results = {
+    detected: false,
+    count: 0,
+    reasons: []
+  };
+
+  try {
+    const iframes = document.querySelectorAll('iframe');
+
+    for (const iframe of iframes) {
+      const src = iframe.src || '';
+      const style = window.getComputedStyle(iframe);
+      const rect = iframe.getBoundingClientRect();
+
+      // Check 1: Zero-size iframes (1x1 pixel of kleiner)
+      const isZeroSize = (
+        rect.width <= 1 ||
+        rect.height <= 1 ||
+        parseInt(style.width) <= 1 ||
+        parseInt(style.height) <= 1
+      );
+
+      // Check 2: Off-screen iframes (buiten viewport)
+      const isOffScreen = (
+        rect.right < 0 ||
+        rect.bottom < 0 ||
+        rect.left > window.innerWidth ||
+        rect.top > window.innerHeight ||
+        rect.left < -1000 ||
+        rect.top < -1000
+      );
+
+      // Check 3: CSS hidden iframes
+      const isCSSHidden = (
+        style.display === 'none' ||
+        style.visibility === 'hidden' ||
+        style.opacity === '0' ||
+        (parseInt(style.opacity) === 0)
+      );
+
+      // Check 4: Negative positioning
+      const hasNegativePosition = (
+        parseInt(style.left) < -100 ||
+        parseInt(style.top) < -100 ||
+        parseInt(style.marginLeft) < -100 ||
+        parseInt(style.marginTop) < -100
+      );
+
+      // Bepaal of iframe verdacht is
+      let isSuspicious = false;
+      let reason = '';
+
+      if (isZeroSize && src) {
+        isSuspicious = true;
+        reason = 'hiddenIframeZeroSize';
+      } else if (isOffScreen && src) {
+        isSuspicious = true;
+        reason = 'hiddenIframeOffScreen';
+      } else if (isCSSHidden && src && !iframe.closest('[aria-hidden="true"]')) {
+        // Negeer iframes die bewust verborgen zijn voor accessibility
+        isSuspicious = true;
+        reason = 'hiddenIframeCSSHidden';
+      } else if (hasNegativePosition && src) {
+        isSuspicious = true;
+        reason = 'hiddenIframeNegativePos';
+      }
+
+      if (isSuspicious) {
+        // Whitelist check voor bekende tracking pixels
+        const trustedPixels = [
+          'facebook.com/tr',
+          'google-analytics.com',
+          'googletagmanager.com',
+          'doubleclick.net',
+          'bing.com/action',
+          'linkedin.com/px',
+          'twitter.com/i/adsct'
+        ];
+
+        const isTrustedPixel = trustedPixels.some(pixel => src.includes(pixel));
+
+        if (!isTrustedPixel) {
+          results.detected = true;
+          results.count++;
+          if (!results.reasons.includes(reason)) {
+            results.reasons.push(reason);
+          }
+          logDebug(`[SECURITY] Hidden iframe gedetecteerd: ${src.substring(0, 100)} (${reason})`);
+        }
+      }
+    }
+  } catch (error) {
+    handleError(error, 'detectHiddenIframes');
+  }
+
+  return results;
+}
+
+/**
+ * SECURITY: Uitgebreide NRD (Newly Registered Domain) detectie
+ * Domeinen < 30 dagen oud krijgen extra risicopunten.
+ * 70% van phishing domeinen is < 30 dagen oud.
+ *
+ * @param {Date} creationDate - De registratiedatum van het domein
+ * @returns {{isNRD: boolean, ageDays: number, riskLevel: 'critical'|'high'|'medium'|'low'|'none', reason: string|null}}
+ */
+function analyzeNRDRisk(creationDate) {
+  if (!creationDate || !(creationDate instanceof Date) || isNaN(creationDate.getTime())) {
+    return { isNRD: false, ageDays: null, riskLevel: 'none', reason: null };
+  }
+
+  const ageDays = Math.floor((Date.now() - creationDate.getTime()) / (1000 * 60 * 60 * 24));
+
+  // Risico classificatie gebaseerd op domein leeftijd
+  if (ageDays <= 1) {
+    // Domein vandaag of gisteren geregistreerd - KRITIEK
+    return {
+      isNRD: true,
+      ageDays,
+      riskLevel: 'critical',
+      reason: 'nrdCritical' // < 2 dagen
+    };
+  } else if (ageDays <= 7) {
+    // Domein < 1 week oud - HOOG RISICO
+    return {
+      isNRD: true,
+      ageDays,
+      riskLevel: 'high',
+      reason: 'nrdHigh' // < 7 dagen
+    };
+  } else if (ageDays <= 30) {
+    // Domein < 30 dagen oud - MEDIUM RISICO
+    return {
+      isNRD: true,
+      ageDays,
+      riskLevel: 'medium',
+      reason: 'nrdMedium' // < 30 dagen
+    };
+  } else if (ageDays <= 90) {
+    // Domein < 90 dagen oud - LAAG RISICO
+    return {
+      isNRD: true,
+      ageDays,
+      riskLevel: 'low',
+      reason: 'nrdLow' // < 90 dagen
+    };
+  }
+
+  return { isNRD: false, ageDays, riskLevel: 'none', reason: null };
+}
+
+/**
+ * Geeft risicopunten terug gebaseerd op NRD analyse
+ * @param {string} riskLevel - Het risiconiveau van analyzeNRDRisk
+ * @returns {number} - Risicopunten om toe te voegen
+ */
+function getNRDRiskScore(riskLevel) {
+  switch (riskLevel) {
+    case 'critical': return 12; // Bijna zeker phishing
+    case 'high': return 8;      // Zeer verdacht
+    case 'medium': return 5;    // Verdacht
+    case 'low': return 2;       // Licht verhoogd risico
+    default: return 0;
+  }
+}
+
 function isValidURL(string) {
   try {
     // Blokkeer data: URLs expliciet (XSS vector)
@@ -3998,6 +4258,16 @@ async function applyMediumChecks(url, reasons, totalRiskRef) {
     // Deze retourneren al arrays van redenen.
     { func: async () => await hasSuspiciousIframes(), messageKey: 'suspiciousIframes', risk: 3.5 },
     { func: async () => await checkForSuspiciousExternalScripts(), messageKey: 'suspiciousScripts', risk: 4.0 },
+    // Form Action Hijacking - detecteert credential theft via externe form actions
+    { func: async () => {
+      const result = detectFormActionHijacking();
+      return result.detected ? result.reasons : [];
+    }, messageKey: 'formActionHijacking', risk: 8.0 },
+    // Hidden Iframes - detecteert onzichtbare iframes (keyloggers, clickjacking)
+    { func: async () => {
+      const result = detectHiddenIframes();
+      return result.detected ? result.reasons : [];
+    }, messageKey: 'hiddenIframes', risk: 6.0 },
   ];
   for (const { func, messageKey, risk } of mediumChecks) {
     try {

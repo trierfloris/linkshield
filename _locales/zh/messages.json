@@ -784,5 +784,71 @@
   },
   "nullByteInjection": {
     "message": "此链接包含空字节字符（高风险）。这是一种可用于绕过安全检查的黑客技术。"
+  },
+
+  "formActionHijacking": {
+    "message": "此登录表单将您的凭据发送到外部网站（严重风险）。您的用户名和密码可能被盗。"
+  },
+  "formActionExternal": {
+    "message": "登录表单将数据发送到外部域：$DOMAIN$（严重风险）。这是凭据盗窃尝试。",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "evil-site.com"
+      }
+    }
+  },
+  "formActionInvalid": {
+    "message": "登录表单具有无效或可疑的操作URL（高风险）。您的凭据可能无法安全发送。"
+  },
+
+  "hiddenIframeZeroSize": {
+    "message": "检测到零尺寸隐藏iframe（高风险）。这可用于隐形加载恶意内容。"
+  },
+  "hiddenIframeOffScreen": {
+    "message": "检测到屏幕外定位的iframe（高风险）。隐藏内容可能正在跟踪您或窃取数据。"
+  },
+  "hiddenIframeCSSHidden": {
+    "message": "检测到CSS隐藏的iframe（高风险）。隐形框架可以捕获按键或加载恶意软件。"
+  },
+  "hiddenIframeNegativePos": {
+    "message": "检测到负定位iframe（中等风险）。此技术用于向用户隐藏内容。"
+  },
+
+  "nrdCritical": {
+    "message": "严重：域名在$DAYS$天前注册（严重风险）。全新域名极有可能是恶意的。",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "0"
+      }
+    }
+  },
+  "nrdHigh": {
+    "message": "域名仅在$DAYS$天前注册（高风险）。非常新的域名经常用于诈骗。",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "nrdMedium": {
+    "message": "域名在$DAYS$天前注册（中等风险）。30天以内的新域名需要额外谨慎。",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "15"
+      }
+    }
+  },
+  "nrdLow": {
+    "message": "域名在$DAYS$天前注册（低风险）。相对较新的域名，请保持一定谨慎。",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "60"
+      }
+    }
   }
 }

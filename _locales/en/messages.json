@@ -701,5 +701,71 @@
   },
   "reason_nullByteInjection": {
     "message": "Null byte injection detected (high risk). This technique is used to bypass security filters and can indicate a malicious link."
+  },
+
+  "formActionHijacking": {
+    "message": "This login form sends your credentials to an external website (critical risk). Your username and password may be stolen."
+  },
+  "formActionExternal": {
+    "message": "Login form submits data to external domain: $DOMAIN$ (critical risk). This is a credential theft attempt.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "evil-site.com"
+      }
+    }
+  },
+  "formActionInvalid": {
+    "message": "Login form has invalid or suspicious action URL (high risk). Your credentials may not be sent securely."
+  },
+
+  "hiddenIframeZeroSize": {
+    "message": "Hidden iframe with zero size detected (high risk). This can be used to load malicious content invisibly."
+  },
+  "hiddenIframeOffScreen": {
+    "message": "Iframe positioned off-screen detected (high risk). Hidden content may be tracking you or stealing data."
+  },
+  "hiddenIframeCSSHidden": {
+    "message": "CSS-hidden iframe detected (high risk). Invisible frames can capture keystrokes or load malware."
+  },
+  "hiddenIframeNegativePos": {
+    "message": "Iframe with negative positioning detected (medium risk). This technique is used to hide content from users."
+  },
+
+  "nrdCritical": {
+    "message": "CRITICAL: Domain registered $DAYS$ day(s) ago (critical risk). Brand new domains are extremely likely to be malicious.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "0"
+      }
+    }
+  },
+  "nrdHigh": {
+    "message": "Domain registered only $DAYS$ days ago (high risk). Very new domains are frequently used for scams.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "nrdMedium": {
+    "message": "Domain registered $DAYS$ days ago (medium risk). New domains under 30 days warrant extra caution.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "15"
+      }
+    }
+  },
+  "nrdLow": {
+    "message": "Domain registered $DAYS$ days ago (low risk). Relatively new domain, exercise some caution.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "60"
+      }
+    }
   }
 }

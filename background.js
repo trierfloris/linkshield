@@ -2,6 +2,10 @@
 // LINKSHIELD BACKGROUND SERVICE WORKER - PRODUCTIE
 // =================================================================================
 
+// ==== DEBUG: Expose functions to global scope for testing ====
+// VERWIJDER DEZE SECTIE VOOR PRODUCTIE RELEASE
+const DEBUG_EXPOSE_FUNCTIONS = false; // PRODUCTIE: functies niet toegankelijk via console
+
 // ==== Globale Instellingen en Debugging ====
 const IS_PRODUCTION = true; // Zet op 'true' voor productie build.
 const CACHE_TTL = 24 * 60 * 60 * 1000;
@@ -65,6 +69,51 @@ let globalThresholds = {
     DEBUG_MODE: false // Wordt overschreven door opgeslagen config
 };
 
+// ==== License & Trial Constants (vroeg gedefinieerd voor gebruik in startup) ====
+const MS_PER_DAY = 24 * 60 * 60 * 1000;
+const TRIAL_DAYS = 30;
+const LICENSE_GRACE_PERIOD_DAYS = 7;
+const LICENSE_GRACE_PERIOD_MS = LICENSE_GRACE_PERIOD_DAYS * MS_PER_DAY;
+
+/**
+ * Controleert of de licentie grace period is verlopen
+ * VROEG GEDEFINIEERD: Deze functie wordt gebruikt in performStartupLicenseCheck
+ * @returns {Promise<{expired: boolean, daysSinceValidation: number, graceRemaining: number}>}
+ */
+async function checkLicenseGracePeriod() {
+    try {
+        const data = await chrome.storage.sync.get(['licenseValid', 'lastSuccessfulValidation']);
+
+        // Als er geen licentie is, is grace period niet van toepassing
+        if (!data.licenseValid) {
+            return { expired: false, daysSinceValidation: 0, graceRemaining: 0, noLicense: true };
+        }
+
+        // Als er geen lastSuccessfulValidation is, stel deze nu in (voor bestaande installaties)
+        if (!data.lastSuccessfulValidation) {
+            const now = Date.now();
+            await chrome.storage.sync.set({ lastSuccessfulValidation: now });
+            return { expired: false, daysSinceValidation: 0, graceRemaining: LICENSE_GRACE_PERIOD_DAYS, noLicense: false };
+        }
+
+        const now = Date.now();
+        const timeSinceValidation = now - data.lastSuccessfulValidation;
+        const daysSinceValidation = Math.floor(timeSinceValidation / MS_PER_DAY);
+        const graceRemaining = Math.max(0, LICENSE_GRACE_PERIOD_DAYS - daysSinceValidation);
+        const expired = timeSinceValidation > LICENSE_GRACE_PERIOD_MS;
+
+        if (globalThresholds.DEBUG_MODE) {
+            console.log(`[Grace Period] Dagen sinds validatie: ${daysSinceValidation}, Resterend: ${graceRemaining}, Verlopen: ${expired}`);
+        }
+
+        return { expired, daysSinceValidation, graceRemaining, noLicense: false };
+    } catch (error) {
+        console.error("[Grace Period] Error checking grace period:", error);
+        // Bij error, neem aan dat grace nog geldig is om legitieme gebruikers niet te blokkeren
+        return { expired: false, daysSinceValidation: 0, graceRemaining: LICENSE_GRACE_PERIOD_DAYS, error: true };
+    }
+}
+
 /**
  * Laadt de risicodrempels en debug-modus vanuit chrome.storage.sync.
  * Deze functie wordt aangeroepen bij opstarten en bij wijzigingen in de sync storage.
@@ -94,10 +143,44 @@ loadThresholdsFromStorage()
  */
 async function performStartupLicenseCheck() {
   try {
+    const data = await chrome.storage.sync.get(['licenseValid', 'lastSuccessfulValidation']);
+
+    // Als er een licentie is, controleer grace period en forceer revalidatie indien nodig
+    if (data.licenseValid) {
+      const graceStatus = await checkLicenseGracePeriod();
+
+      // Als meer dan 3 dagen sinds laatste validatie, forceer online check
+      // Dit zorgt ervoor dat we niet wachten tot het laatste moment
+      const REVALIDATION_THRESHOLD_DAYS = 3;
+      if (graceStatus.daysSinceValidation >= REVALIDATION_THRESHOLD_DAYS) {
+        if (globalThresholds.DEBUG_MODE) {
+          console.log(`[INIT] ${graceStatus.daysSinceValidation} dagen sinds laatste validatie, forceer revalidatie...`);
+        }
+
+        const result = await revalidateLicense();
+
+        if (!result.revalidated && graceStatus.expired) {
+          // Revalidatie mislukt EN grace period verlopen
+          if (globalThresholds.DEBUG_MODE) {
+            console.log("[INIT] Revalidatie mislukt en grace period verlopen - licentie wordt ongeldig");
+          }
+          await chrome.storage.sync.set({ licenseValid: false });
+          invalidateTrialCache();
+        } else if (result.revalidated && !result.valid) {
+          // Server zegt licentie is ongeldig
+          if (globalThresholds.DEBUG_MODE) {
+            console.log("[INIT] Licentie is niet meer geldig volgens server");
+          }
+          invalidateTrialCache();
+        }
+      }
+    }
+
+    // Check of achtergrondbeveiliging toegestaan is
     const isAllowed = await isBackgroundSecurityAllowed();
 
     if (!isAllowed) {
-      // Trial verlopen zonder licentie - forceer backgroundSecurity uit
+      // Trial verlopen zonder licentie OF grace period verlopen - forceer backgroundSecurity uit
       await chrome.storage.sync.set({ backgroundSecurity: false });
       await clearDynamicRules();
       await manageDNRules();
@@ -857,13 +940,16 @@ async function validateLicenseKey(licenseKey) {
             const customerEmail = data.meta?.customer_email || data.license_key?.customer_email || '';
 
             // SUCCES! Sla de gegevens op
+            const now = Date.now();
             await chrome.storage.sync.set({
                 licenseKey: cleanKey,
                 licenseValid: true,
                 licenseEmail: customerEmail,
-                licenseValidatedAt: Date.now(),
+                licenseValidatedAt: now,
                 // Sla ook instance_id op voor eventuele deactivatie later
-                licenseInstanceId: data.instance?.id || ''
+                licenseInstanceId: data.instance?.id || '',
+                // Grace period: sla laatste succesvolle validatie op
+                lastSuccessfulValidation: now
             });
 
             return { success: true, email: customerEmail };
@@ -915,10 +1001,12 @@ async function revalidateLicense() {
 
             // Lemon Squeezy retourneert valid: true en license_key.status moet 'active' zijn
             if (result.valid === true && result.license_key && result.license_key.status === 'active') {
-                // License still valid - update timestamp
+                // License still valid - update timestamp EN lastSuccessfulValidation
+                const now = Date.now();
                 await chrome.storage.sync.set({
                     licenseValid: true,
-                    licenseValidatedAt: Date.now()
+                    licenseValidatedAt: now,
+                    lastSuccessfulValidation: now // Grace period reset
                 });
                 return { revalidated: true, valid: true };
             }
@@ -927,12 +1015,16 @@ async function revalidateLicense() {
             await chrome.storage.sync.set({
                 licenseValid: false,
                 licenseValidatedAt: Date.now()
+                // Let op: lastSuccessfulValidation wordt NIET bijgewerkt
             });
             return { revalidated: true, valid: false };
 
         } catch (err) {
             console.error('[License] Error revalidating with Lemon Squeezy:', err);
-            // Network error - don't change license status (fail-safe)
+            // SECURITY FIX: Bij netwerk error, update NIET lastSuccessfulValidation
+            // De grace period blijft doorlopen - na 7 dagen zonder succesvolle check
+            // wordt de licentie automatisch ongeldig
+            // Dit voorkomt dat iemand offline blijft om validatie te ontwijken
             return { revalidated: false, reason: 'Network error', networkError: true };
         }
 
@@ -943,10 +1035,7 @@ async function revalidateLicense() {
     }
 }
 
-// ==== Trial Period Management ====
-
-const TRIAL_DAYS = 30;
-const MS_PER_DAY = 24 * 60 * 60 * 1000;
+// ==== Trial Period Management (constants defined earlier in file) ====
 
 // Gecachete trial status voor performance (voorkomt herhaalde storage reads)
 let cachedTrialStatus = null;
@@ -985,9 +1074,29 @@ function invalidateTrialCache() {
  */
 async function isBackgroundSecurityAllowed() {
     const status = await getCachedTrialStatus();
-    const allowed = status.hasLicense || status.isActive;
 
-    return allowed;
+    // Als trial actief is, altijd toegestaan
+    if (status.isActive) {
+        return true;
+    }
+
+    // Als er een licentie is, check de grace period
+    if (status.hasLicense) {
+        const graceStatus = await checkLicenseGracePeriod();
+
+        // Als grace period verlopen is, licentie is niet meer geldig
+        if (graceStatus.expired) {
+            if (globalThresholds.DEBUG_MODE) {
+                console.log("[Security] Licentie grace period verlopen - achtergrondbeveiliging uitgeschakeld");
+            }
+            return false;
+        }
+
+        return true;
+    }
+
+    // Geen trial en geen licentie
+    return false;
 }
 
 /**
@@ -1198,11 +1307,12 @@ chrome.runtime.onInstalled.addListener(async (details) => {
         });
         if (globalThresholds.DEBUG_MODE) console.log("Hourly rule fetch alarm created.");
 
-        // Create daily license check alarm (every 24 hours = 1440 minutes)
-        chrome.alarms.create("daily_license_check", {
-            periodInMinutes: 1440
+        // Create license check alarm (every 12 hours = 720 minutes)
+        // Verhoogde frequentie voor betere beveiliging tegen storage manipulatie
+        chrome.alarms.create("license_revalidation_check", {
+            periodInMinutes: 720
         });
-        if (globalThresholds.DEBUG_MODE) console.log("Daily license check alarm created.");
+        if (globalThresholds.DEBUG_MODE) console.log("License revalidation alarm created (12h interval).");
 
     } catch (error) {
         console.error("Error during extension installation or update:", error);
@@ -1218,11 +1328,33 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
         });
     }
 
-    if (alarm.name === "daily_license_check") {
-        if (globalThresholds.DEBUG_MODE) console.log("Daily license check alarm triggered.");
-        revalidateLicense().catch(error => {
-            console.error("[ERROR] Error revalidating license via alarm:", error.message);
-        });
+    if (alarm.name === "license_revalidation_check") {
+        if (globalThresholds.DEBUG_MODE) console.log("License revalidation alarm triggered (12h interval).");
+
+        // Voer revalidatie uit en check grace period
+        (async () => {
+            try {
+                const result = await revalidateLicense();
+
+                // Als revalidatie mislukt, check of grace period verlopen is
+                if (!result.revalidated || !result.valid) {
+                    const graceStatus = await checkLicenseGracePeriod();
+
+                    if (graceStatus.expired) {
+                        if (globalThresholds.DEBUG_MODE) {
+                            console.log("[Alarm] Grace period verlopen na mislukte revalidatie - licentie wordt ongeldig");
+                        }
+                        await chrome.storage.sync.set({ licenseValid: false });
+                        invalidateTrialCache();
+                        await chrome.storage.sync.set({ backgroundSecurity: false });
+                        await clearDynamicRules();
+                        await manageDNRules();
+                    }
+                }
+            } catch (error) {
+                console.error("[ERROR] Error in license revalidation alarm:", error.message);
+            }
+        })();
     }
 
     // MV3 FIX: Clear alert badge after delay (replaces setInterval animation)
@@ -1307,6 +1439,31 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                     console.error("[checkTrialStatus] Error:", error);
                     sendResponse({ isActive: true, daysRemaining: 30, isExpired: false, hasLicense: false });
                 });
+            return true;
+
+        case 'checkGracePeriod':
+            checkLicenseGracePeriod()
+                .then(status => sendResponse(status))
+                .catch(error => {
+                    console.error("[checkGracePeriod] Error:", error);
+                    sendResponse({ expired: false, daysSinceValidation: 0, graceRemaining: LICENSE_GRACE_PERIOD_DAYS });
+                });
+            return true;
+
+        case 'forceRevalidation':
+            // Forceer een online licentie validatie
+            (async () => {
+                try {
+                    const result = await revalidateLicense();
+                    if (result.revalidated) {
+                        invalidateTrialCache();
+                    }
+                    sendResponse(result);
+                } catch (error) {
+                    console.error("[forceRevalidation] Error:", error);
+                    sendResponse({ revalidated: false, error: error.message });
+                }
+            })();
             return true;
 
         case 'isPremiumActive':
@@ -1681,3 +1838,17 @@ setTimeout(() => {
     console.error("[INIT] Vertraagde licentie check mislukt:", err)
   );
 }, 1000); // 1 seconde vertraging om te zorgen dat alle functies geladen zijn
+
+// ==== DEBUG: Expose functions to global scope for console testing ====
+// VERWIJDER VOOR PRODUCTIE - Dit maakt functies toegankelijk via console
+if (DEBUG_EXPOSE_FUNCTIONS) {
+    self.checkLicenseGracePeriod = checkLicenseGracePeriod;
+    self.checkTrialStatus = checkTrialStatus;
+    self.isBackgroundSecurityAllowed = isBackgroundSecurityAllowed;
+    self.invalidateTrialCache = invalidateTrialCache;
+    self.revalidateLicense = revalidateLicense;
+    self.validateLicenseKey = validateLicenseKey;
+    self.isPremiumActive = isPremiumActive;
+    self.globalThresholds = globalThresholds;
+    console.info("[DEBUG] License functions exposed to global scope for testing");
+}

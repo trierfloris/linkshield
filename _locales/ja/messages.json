@@ -850,5 +850,30 @@
         "example": "60"
       }
     }
+  },
+
+  "licenseErrorNotFound": {
+    "message": "ライセンスキーが見つかりません。入力内容をご確認ください。"
+  },
+  "licenseErrorDisabled": {
+    "message": "このライセンスは無効化されています。"
+  },
+  "licenseErrorExpired": {
+    "message": "このライセンスは期限切れです。"
+  },
+  "licenseErrorActivationLimit": {
+    "message": "アクティベーション上限に達しました。先に他のデバイスを無効化してください。"
+  },
+  "licenseErrorInstanceNotFound": {
+    "message": "インストールインスタンスが見つかりません。"
+  },
+  "licenseErrorInvalid": {
+    "message": "無効なライセンスキーです。"
+  },
+  "licenseErrorNetwork": {
+    "message": "ネットワークエラー。接続を確認して再試行してください。"
+  },
+  "licenseErrorUnknown": {
+    "message": "検証中に不明なエラーが発生しました。"
   }
 }

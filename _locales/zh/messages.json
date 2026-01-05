@@ -850,5 +850,30 @@
         "example": "60"
       }
     }
+  },
+
+  "licenseErrorNotFound": {
+    "message": "未找到许可证密钥。请检查您的输入。"
+  },
+  "licenseErrorDisabled": {
+    "message": "此许可证已被禁用。"
+  },
+  "licenseErrorExpired": {
+    "message": "此许可证已过期。"
+  },
+  "licenseErrorActivationLimit": {
+    "message": "已达到激活限制。请先停用其他设备。"
+  },
+  "licenseErrorInstanceNotFound": {
+    "message": "未找到安装实例。"
+  },
+  "licenseErrorInvalid": {
+    "message": "无效的许可证密钥。"
+  },
+  "licenseErrorNetwork": {
+    "message": "网络错误。请检查您的连接并重试。"
+  },
+  "licenseErrorUnknown": {
+    "message": "验证过程中发生未知错误。"
   }
 }

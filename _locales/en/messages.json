@@ -767,5 +767,30 @@
         "example": "60"
       }
     }
+  },
+
+  "licenseErrorNotFound": {
+    "message": "License key not found. Please check your input."
+  },
+  "licenseErrorDisabled": {
+    "message": "This license has been disabled."
+  },
+  "licenseErrorExpired": {
+    "message": "This license has expired."
+  },
+  "licenseErrorActivationLimit": {
+    "message": "Activation limit reached. Please deactivate another device first."
+  },
+  "licenseErrorInstanceNotFound": {
+    "message": "Installation instance not found."
+  },
+  "licenseErrorInvalid": {
+    "message": "Invalid license key."
+  },
+  "licenseErrorNetwork": {
+    "message": "Network error. Please check your connection and try again."
+  },
+  "licenseErrorUnknown": {
+    "message": "An unknown error occurred during validation."
   }
 }

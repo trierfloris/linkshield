@@ -821,122 +821,125 @@ async function fetchWithRetry(url, options = {}, maxRetries = 3, retryDelay = 10
 
 // ==== License Validation ====
 
-// Gumroad Product ID's (volledige ID, niet de permalink)
-const LINKSHIELD_ID = 'SGJcxK8Uy2PnPpkgLkso7w==';
-const CLICKMATE_ID = 'zdfmya';
+// Lemon Squeezy Variant ID
+const LEMON_SQUEEZY_VARIANT_ID = '1193408';
 
 /**
- * Valideert een licentiesleutel tegen alle ondersteunde Gumroad producten.
- * Probeert eerst LinkShield, daarna ClickMate.
- * @param {string} licenseKey - De licentiesleutel om te valideren
+ * Valideert en activeert een licentiesleutel via de Lemon Squeezy License API.
+ * Gebruikt het /activate endpoint om de licentie te activeren voor deze extensie-installatie.
+ * @param {string} licenseKey - De licentiesleutel om te valideren en activeren
  * @returns {Promise<{success: boolean, email?: string, error?: string}>}
  */
 async function validateLicenseKey(licenseKey) {
     const cleanKey = licenseKey.trim();
 
-    // We proberen beide ID's, omdat ClickMate-klanten soms ook LinkShield gebruiken
-    const productIds = [LINKSHIELD_ID, CLICKMATE_ID];
+    try {
+        // Lemon Squeezy License Activation API
+        // Docs: https://docs.lemonsqueezy.com/api/license-keys
+        const response = await fetchWithTimeout('https://api.lemonsqueezy.com/v1/licenses/activate', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                license_key: cleanKey,
+                instance_name: 'Chrome_Extension_User'
+            })
+        }, API_TIMEOUT_MS);
 
-    for (const productId of productIds) {
-        try {
-            // SECURITY FIX: Gebruik fetchWithTimeout om hangs te voorkomen
-            const response = await fetchWithTimeout('https://api.gumroad.com/v2/licenses/verify', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({
-                    product_id: productId,
-                    license_key: cleanKey
-                })
-            }, API_TIMEOUT_MS);
+        const data = await response.json();
 
-            const data = await response.json();
+        // Lemon Squeezy retourneert activated: true bij succesvolle activatie
+        // en license_key.status moet 'active' zijn
+        if (data.activated === true && data.license_key && data.license_key.status === 'active') {
+            // Haal email op uit de meta data indien beschikbaar
+            const customerEmail = data.meta?.customer_email || data.license_key?.customer_email || '';
 
-            if (data.success && data.purchase) {
-                // Check op refunds
-                if (data.purchase.refunded || data.purchase.chargebacked) {
-                    continue;
-                }
+            // SUCCES! Sla de gegevens op
+            await chrome.storage.sync.set({
+                licenseKey: cleanKey,
+                licenseValid: true,
+                licenseEmail: customerEmail,
+                licenseValidatedAt: Date.now(),
+                // Sla ook instance_id op voor eventuele deactivatie later
+                licenseInstanceId: data.instance?.id || ''
+            });
 
-                // SUCCES! Sla de gegevens op
-                await chrome.storage.sync.set({
-                    licenseKey: cleanKey,
-                    licenseValid: true,
-                    licenseEmail: data.purchase.email,
-                    licenseValidatedAt: Date.now()
-                });
-
-                return { success: true, email: data.purchase.email };
-            }
-        } catch (error) {
-            console.error(`[License] Fout tijdens aanroep voor ${productId}:`, error);
+            return { success: true, email: customerEmail };
         }
-    }
 
-    // Als beide mislukken
-    return { success: false, error: "Licentie niet gevonden voor LinkShield of ClickMate." };
+        // Check voor specifieke foutmeldingen van Lemon Squeezy
+        if (data.error) {
+            return { success: false, error: data.error };
+        }
+
+        // Als activated false is maar geen error, generieke foutmelding
+        if (data.activated === false) {
+            return { success: false, error: data.error || 'Licentie kon niet worden geactiveerd.' };
+        }
+
+        // Andere onverwachte responses
+        return { success: false, error: 'Onverwachte respons van licentieserver.' };
+
+    } catch (error) {
+        console.error('[License] Fout tijdens Lemon Squeezy activatie:', error);
+        return { success: false, error: 'Netwerkfout tijdens licentievalidatie.' };
+    }
 }
 
-/** Revalidates stored license key in the background - probeert beide producten */
+/** Revalidates stored license key in the background via Lemon Squeezy /validate endpoint */
 async function revalidateLicense() {
     try {
-        const data = await chrome.storage.sync.get(['licenseKey', 'licenseValid']);
+        const data = await chrome.storage.sync.get(['licenseKey', 'licenseValid', 'licenseInstanceId']);
 
         if (!data.licenseKey || !data.licenseValid) {
             return { revalidated: false, reason: 'No valid license to revalidate' };
         }
 
-        // Probeer beide product ID's
-        const productIds = [LINKSHIELD_ID, CLICKMATE_ID];
+        try {
+            // Lemon Squeezy License Validation API
+            const response = await fetchWithTimeout('https://api.lemonsqueezy.com/v1/licenses/validate', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    license_key: data.licenseKey,
+                    instance_id: data.licenseInstanceId || ''
+                })
+            }, API_TIMEOUT_MS);
 
-        for (const productId of productIds) {
-            try {
-                // SECURITY FIX: Gebruik fetchWithTimeout om hangs te voorkomen
-                const response = await fetchWithTimeout('https://api.gumroad.com/v2/licenses/verify', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        product_id: productId,
-                        license_key: data.licenseKey
-                    })
-                }, API_TIMEOUT_MS);
+            const result = await response.json();
 
-                const result = await response.json();
-
-                if (result.success && result.purchase) {
-                    // Check for refunded/chargebacked status
-                    if (result.purchase.refunded || result.purchase.chargebacked || result.purchase.disputed) {
-                        continue; // Probeer volgende product
-                    }
-
-                    // License still valid - update timestamp
-                    await chrome.storage.sync.set({
-                        licenseValid: true,
-                        licenseValidatedAt: Date.now()
-                    });
-                    return { revalidated: true, valid: true };
-                }
-            } catch (err) {
-                console.error(`[License] Error revalidating with ${productId}:`, err);
+            // Lemon Squeezy retourneert valid: true en license_key.status moet 'active' zijn
+            if (result.valid === true && result.license_key && result.license_key.status === 'active') {
+                // License still valid - update timestamp
+                await chrome.storage.sync.set({
+                    licenseValid: true,
+                    licenseValidatedAt: Date.now()
+                });
+                return { revalidated: true, valid: true };
             }
+
+            // Licentie is niet meer geldig (expired, disabled, etc.)
+            await chrome.storage.sync.set({
+                licenseValid: false,
+                licenseValidatedAt: Date.now()
+            });
+            return { revalidated: true, valid: false };
+
+        } catch (err) {
+            console.error('[License] Error revalidating with Lemon Squeezy:', err);
+            // Network error - don't change license status (fail-safe)
+            return { revalidated: false, reason: 'Network error', networkError: true };
         }
 
-        // Beide producten gefaald - markeer als ongeldig
-        await chrome.storage.sync.set({
-            licenseValid: false,
-            licenseValidatedAt: Date.now()
-        });
-        return { revalidated: true, valid: false };
-
     } catch (error) {
-        // Network error - don't change license status (fail-safe)
-        console.error("[License] Revalidation network error:", error);
-        return { revalidated: false, reason: 'Network error', networkError: true };
+        // Storage error - don't change license status (fail-safe)
+        console.error("[License] Revalidation storage error:", error);
+        return { revalidated: false, reason: 'Storage error', storageError: true };
     }
 }
 

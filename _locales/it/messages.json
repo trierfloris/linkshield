@@ -850,5 +850,30 @@
         "example": "60"
       }
     }
+  },
+
+  "licenseErrorNotFound": {
+    "message": "Chiave di licenza non trovata. Verifica il tuo inserimento."
+  },
+  "licenseErrorDisabled": {
+    "message": "Questa licenza è stata disattivata."
+  },
+  "licenseErrorExpired": {
+    "message": "Questa licenza è scaduta."
+  },
+  "licenseErrorActivationLimit": {
+    "message": "Limite di attivazioni raggiunto. Disattiva prima un altro dispositivo."
+  },
+  "licenseErrorInstanceNotFound": {
+    "message": "Istanza di installazione non trovata."
+  },
+  "licenseErrorInvalid": {
+    "message": "Chiave di licenza non valida."
+  },
+  "licenseErrorNetwork": {
+    "message": "Errore di rete. Verifica la connessione e riprova."
+  },
+  "licenseErrorUnknown": {
+    "message": "Si è verificato un errore sconosciuto durante la validazione."
   }
 }

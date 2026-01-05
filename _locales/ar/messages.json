@@ -850,5 +850,30 @@
         "example": "60"
       }
     }
+  },
+
+  "licenseErrorNotFound": {
+    "message": "لم يتم العثور على مفتاح الترخيص. يرجى التحقق من إدخالك."
+  },
+  "licenseErrorDisabled": {
+    "message": "تم تعطيل هذا الترخيص."
+  },
+  "licenseErrorExpired": {
+    "message": "انتهت صلاحية هذا الترخيص."
+  },
+  "licenseErrorActivationLimit": {
+    "message": "تم الوصول إلى حد التفعيل. يرجى إلغاء تفعيل جهاز آخر أولاً."
+  },
+  "licenseErrorInstanceNotFound": {
+    "message": "لم يتم العثور على مثيل التثبيت."
+  },
+  "licenseErrorInvalid": {
+    "message": "مفتاح ترخيص غير صالح."
+  },
+  "licenseErrorNetwork": {
+    "message": "خطأ في الشبكة. يرجى التحقق من اتصالك والمحاولة مرة أخرى."
+  },
+  "licenseErrorUnknown": {
+    "message": "حدث خطأ غير معروف أثناء التحقق."
   }
 }

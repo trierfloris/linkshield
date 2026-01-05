@@ -850,5 +850,30 @@
         "example": "60"
       }
     }
+  },
+
+  "licenseErrorNotFound": {
+    "message": "Лицензионный ключ не найден. Пожалуйста, проверьте введённые данные."
+  },
+  "licenseErrorDisabled": {
+    "message": "Эта лицензия отключена."
+  },
+  "licenseErrorExpired": {
+    "message": "Срок действия этой лицензии истёк."
+  },
+  "licenseErrorActivationLimit": {
+    "message": "Достигнут лимит активаций. Сначала деактивируйте другое устройство."
+  },
+  "licenseErrorInstanceNotFound": {
+    "message": "Экземпляр установки не найден."
+  },
+  "licenseErrorInvalid": {
+    "message": "Недействительный лицензионный ключ."
+  },
+  "licenseErrorNetwork": {
+    "message": "Ошибка сети. Проверьте подключение и повторите попытку."
+  },
+  "licenseErrorUnknown": {
+    "message": "Произошла неизвестная ошибка при проверке."
   }
 }

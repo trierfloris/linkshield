@@ -850,5 +850,30 @@
         "example": "60"
       }
     }
+  },
+
+  "licenseErrorNotFound": {
+    "message": "Lizenzschlüssel nicht gefunden. Bitte überprüfen Sie Ihre Eingabe."
+  },
+  "licenseErrorDisabled": {
+    "message": "Diese Lizenz wurde deaktiviert."
+  },
+  "licenseErrorExpired": {
+    "message": "Diese Lizenz ist abgelaufen."
+  },
+  "licenseErrorActivationLimit": {
+    "message": "Aktivierungslimit erreicht. Bitte deaktivieren Sie zuerst ein anderes Gerät."
+  },
+  "licenseErrorInstanceNotFound": {
+    "message": "Installationsinstanz nicht gefunden."
+  },
+  "licenseErrorInvalid": {
+    "message": "Ungültiger Lizenzschlüssel."
+  },
+  "licenseErrorNetwork": {
+    "message": "Netzwerkfehler. Bitte überprüfen Sie Ihre Verbindung und versuchen Sie es erneut."
+  },
+  "licenseErrorUnknown": {
+    "message": "Ein unbekannter Fehler ist bei der Validierung aufgetreten."
   }
 }

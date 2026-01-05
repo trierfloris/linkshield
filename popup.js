@@ -329,37 +329,39 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // -------------------------------
-    // Gumroad Error Vertaling
+    // Lemon Squeezy Error Vertaling
     // -------------------------------
 
     /**
-     * Vertaalt Gumroad API foutmeldingen via i18n
+     * Vertaalt Lemon Squeezy API foutmeldingen via i18n
      */
-    function translateGumroadError(errorMessage) {
-        if (!errorMessage) return getMessage('gumroadErrorUnknown');
+    function translateLicenseError(errorMessage) {
+        if (!errorMessage) return getMessage('licenseErrorUnknown');
 
-        // Mapping van Gumroad errors naar i18n keys
+        // Mapping van Lemon Squeezy errors naar i18n keys
         const errorKeyMap = {
-            'That license does not exist for the provided product': 'gumroadErrorLicenseNotExistProduct',
-            'That license does not exist': 'gumroadErrorLicenseNotExist',
-            'License key is required': 'gumroadErrorLicenseRequired',
-            'Product not found': 'gumroadErrorProductNotFound',
-            'License has been disabled': 'gumroadErrorLicenseDisabled',
-            'License has been refunded': 'gumroadErrorLicenseRefunded',
-            'License has been refunded or revoked': 'gumroadErrorLicenseRevoked',
-            'Invalid license key': 'gumroadErrorLicenseInvalid',
-            'Network error during validation': 'gumroadErrorNetwork'
+            // Lemon Squeezy specifieke foutmeldingen
+            'license key was not found': 'licenseErrorNotFound',
+            'license key not found': 'licenseErrorNotFound',
+            'has been disabled': 'licenseErrorDisabled',
+            'has expired': 'licenseErrorExpired',
+            'activation limit': 'licenseErrorActivationLimit',
+            'instance not found': 'licenseErrorInstanceNotFound',
+            'invalid': 'licenseErrorInvalid',
+            // Generieke netwerkfouten
+            'network': 'licenseErrorNetwork',
+            'timeout': 'licenseErrorNetwork',
+            'fetch': 'licenseErrorNetwork'
         };
 
-        // Zoek exacte match
-        if (errorKeyMap[errorMessage]) {
-            return getMessage(errorKeyMap[errorMessage]);
-        }
+        const lowerError = errorMessage.toLowerCase();
 
-        // Zoek gedeeltelijke match
-        for (const [eng, key] of Object.entries(errorKeyMap)) {
-            if (errorMessage.toLowerCase().includes(eng.toLowerCase())) {
-                return getMessage(key);
+        // Zoek gedeeltelijke match (case-insensitive)
+        for (const [pattern, key] of Object.entries(errorKeyMap)) {
+            if (lowerError.includes(pattern.toLowerCase())) {
+                const translated = getMessage(key);
+                // Als i18n key niet bestaat, gebruik fallback
+                return translated !== key ? translated : errorMessage;
             }
         }
 
@@ -405,7 +407,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 if (!response || !response.success) {
                     if (licenseErrorMsg) {
-                        licenseErrorMsg.textContent = translateGumroadError(response?.error);
+                        licenseErrorMsg.textContent = translateLicenseError(response?.error);
                         licenseErrorMsg.style.display = 'block';
                     }
                 } else {

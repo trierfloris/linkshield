@@ -865,5 +865,30 @@
         "example": "60"
       }
     }
+  },
+
+  "licenseErrorNotFound": {
+    "message": "Licentiesleutel niet gevonden. Controleer je invoer."
+  },
+  "licenseErrorDisabled": {
+    "message": "Deze licentie is uitgeschakeld."
+  },
+  "licenseErrorExpired": {
+    "message": "Deze licentie is verlopen."
+  },
+  "licenseErrorActivationLimit": {
+    "message": "Activeringslimiet bereikt. Deactiveer eerst een ander apparaat."
+  },
+  "licenseErrorInstanceNotFound": {
+    "message": "Installatie-instantie niet gevonden."
+  },
+  "licenseErrorInvalid": {
+    "message": "Ongeldige licentiesleutel."
+  },
+  "licenseErrorNetwork": {
+    "message": "Netwerkfout. Controleer je verbinding en probeer opnieuw."
+  },
+  "licenseErrorUnknown": {
+    "message": "Er is een onbekende fout opgetreden tijdens de validatie."
   }
 }

@@ -850,5 +850,30 @@
         "example": "60"
       }
     }
+  },
+
+  "licenseErrorNotFound": {
+    "message": "लाइसेंस कुंजी नहीं मिली। कृपया अपना इनपुट जांचें।"
+  },
+  "licenseErrorDisabled": {
+    "message": "यह लाइसेंस अक्षम कर दिया गया है।"
+  },
+  "licenseErrorExpired": {
+    "message": "यह लाइसेंस समाप्त हो गया है।"
+  },
+  "licenseErrorActivationLimit": {
+    "message": "सक्रियण सीमा पूरी हो गई। कृपया पहले किसी अन्य डिवाइस को निष्क्रिय करें।"
+  },
+  "licenseErrorInstanceNotFound": {
+    "message": "इंस्टॉलेशन इंस्टेंस नहीं मिला।"
+  },
+  "licenseErrorInvalid": {
+    "message": "अमान्य लाइसेंस कुंजी।"
+  },
+  "licenseErrorNetwork": {
+    "message": "नेटवर्क त्रुटि। कृपया अपना कनेक्शन जांचें और पुनः प्रयास करें।"
+  },
+  "licenseErrorUnknown": {
+    "message": "सत्यापन के दौरान एक अज्ञात त्रुटि हुई।"
   }
 }

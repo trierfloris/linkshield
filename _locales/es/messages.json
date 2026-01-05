@@ -850,5 +850,30 @@
         "example": "60"
       }
     }
+  },
+
+  "licenseErrorNotFound": {
+    "message": "Clave de licencia no encontrada. Por favor verifica tu entrada."
+  },
+  "licenseErrorDisabled": {
+    "message": "Esta licencia ha sido desactivada."
+  },
+  "licenseErrorExpired": {
+    "message": "Esta licencia ha expirado."
+  },
+  "licenseErrorActivationLimit": {
+    "message": "Límite de activaciones alcanzado. Por favor desactiva otro dispositivo primero."
+  },
+  "licenseErrorInstanceNotFound": {
+    "message": "Instancia de instalación no encontrada."
+  },
+  "licenseErrorInvalid": {
+    "message": "Clave de licencia inválida."
+  },
+  "licenseErrorNetwork": {
+    "message": "Error de red. Por favor verifica tu conexión e inténtalo de nuevo."
+  },
+  "licenseErrorUnknown": {
+    "message": "Ocurrió un error desconocido durante la validación."
   }
 }

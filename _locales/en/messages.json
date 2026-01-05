@@ -792,5 +792,115 @@
   },
   "licenseErrorUnknown": {
     "message": "An unknown error occurred during validation."
+  },
+
+  "invalidUrlFormat": {
+    "message": "Invalid URL format. The web address could not be parsed correctly."
+  },
+  "invalidDomain": {
+    "message": "Invalid domain. The website address is malformed or incomplete."
+  },
+  "trustedDomain": {
+    "message": "This is a trusted domain that has been verified as safe."
+  },
+  "errorCalculatingRisk": {
+    "message": "Error calculating risk score. Please try again."
+  },
+  "punycodeDecodingError": {
+    "message": "Error decoding international characters in the domain name."
+  },
+  "fileProtocol": {
+    "message": "This link uses the file:// protocol which accesses local files."
+  },
+  "invalidHostname": {
+    "message": "Invalid hostname. The domain name format is incorrect."
+  },
+  "urlTooLong": {
+    "message": "This URL is unusually long (medium risk). Very long URLs can be used to hide malicious content."
+  },
+  "nonAscii": {
+    "message": "This URL contains non-ASCII characters that may be used for deception."
+  },
+  "typosquattingPattern": {
+    "message": "This domain matches a typosquatting pattern (high risk). It appears to be impersonating a legitimate website."
+  },
+  "suspiciousIframes": {
+    "message": "Suspicious iframe elements detected on this page."
+  },
+  "suspiciousScripts": {
+    "message": "Suspicious scripts detected on this page."
+  },
+  "hiddenIframes": {
+    "message": "Hidden iframe elements detected on this page that may be used for malicious purposes."
+  },
+  "unifiedCheckError": {
+    "message": "Error during security check. Some checks may not have completed."
+  },
+  "initializationError": {
+    "message": "Error initializing security scanner. Please reload the page."
+  },
+  "checkCurrentUrlError": {
+    "message": "Error checking current URL security."
+  },
+  "ocrDangerTitle": {
+    "message": "Dangerous Link Detected in Image"
+  },
+  "ocrCautionTitle": {
+    "message": "Suspicious Link Detected in Image"
+  },
+  "suspiciousDomainDetected": {
+    "message": "Suspicious domain detected"
+  },
+  "extractedText": {
+    "message": "Extracted text"
+  },
+  "reasons": {
+    "message": "Reasons"
+  },
+  "asciiQrDangerTitle": {
+    "message": "Dangerous Link in ASCII QR Code"
+  },
+  "asciiQrCautionTitle": {
+    "message": "Suspicious Link in ASCII QR Code"
+  },
+  "hiddenUrl": {
+    "message": "Hidden URL"
+  },
+  "qrDangerTitle": {
+    "message": "Dangerous QR Code Detected"
+  },
+  "qrCautionTitle": {
+    "message": "Suspicious QR Code Detected"
+  },
+  "fullUrl": {
+    "message": "Full URL"
+  },
+  "neutralIconTitle": {
+    "message": "LinkShield - Protection Active"
+  },
+  "installNotificationTitle": {
+    "message": "LinkShield Installed"
+  },
+  "installNotificationMessage": {
+    "message": "You are now protected against phishing and malicious websites."
+  },
+  "not_eligible": {
+    "message": "Not eligible for this feature"
+  },
+  "trial_expired": {
+    "message": "Your trial period has expired"
+  },
+  "Error": {
+    "message": "Error"
+  },
+
+  "siteSafeTitle": {
+    "message": "Site appears safe"
+  },
+  "siteCautionTitle": {
+    "message": "Proceed with caution"
+  },
+  "siteAlertTitle": {
+    "message": "Warning: Potential threat detected"
   }
 }

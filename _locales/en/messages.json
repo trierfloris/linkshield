@@ -902,5 +902,48 @@
   },
   "siteAlertTitle": {
     "message": "Warning: Potential threat detected"
+  },
+
+  "clipboardHijackingCryptoTitle": {
+    "message": "Crypto Address Hijacking Detected!"
+  },
+  "clipboardHijackingTitle": {
+    "message": "Clipboard Manipulation Detected!"
+  },
+  "clipboardHijackingMessage": {
+    "message": "This page is attempting to modify your clipboard. Be careful when pasting wallet addresses or sensitive data."
+  },
+  "reason_clipboardHijackingCrypto": {
+    "message": "CRITICAL: This page hijacks your clipboard with crypto addresses (critical risk). Copied wallet addresses may be replaced with attacker addresses."
+  },
+  "reason_clipboardHijackingDetected": {
+    "message": "This page manipulates your clipboard content (high risk). Pasted content may differ from what you copied."
+  },
+
+  "brandSubdomainPhishing": {
+    "message": "Brand keyword detected on free hosting platform (high risk). Legitimate companies don't use free hosting for official services."
+  },
+  "reason_brandSubdomainPhishing": {
+    "message": "Brand keyword detected on free hosting platform (high risk). Legitimate companies don't use free hosting for official services."
+  },
+
+  "nrdTelCombo": {
+    "message": "Phone number on newly registered domain with phishing keywords (medium risk). This may be a vishing (voice phishing) attempt."
+  },
+  "reason_nrdTelCombo": {
+    "message": "Phone number on newly registered domain with phishing keywords (medium risk). This may be a vishing (voice phishing) attempt."
+  },
+
+  "reason_opaqueRedirectChain": {
+    "message": "Opaque redirect detected (low risk). The redirect destination could not be fully traced."
+  },
+  "reason_opaqueRedirectToIP": {
+    "message": "Opaque redirect to IP address (high risk). The hidden redirect leads to a raw IP address instead of a domain."
+  },
+  "reason_opaqueRedirectSuspiciousTLD": {
+    "message": "Opaque redirect to suspicious domain extension (medium risk). The hidden redirect leads to a risky TLD."
+  },
+  "reason_opaqueRedirectNRD": {
+    "message": "Opaque redirect to newly registered domain (high risk). The hidden redirect leads to a very new domain."
   }
 }

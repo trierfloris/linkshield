@@ -905,5 +905,22 @@
   "reason_atSymbolPhishing": { "message": "KRITISCH: Credential-URL-Angriff erkannt. Die sichtbare Domain ist gefälscht - Sie werden zu einer anderen Website weitergeleitet." },
   "reason_doubleEncoding": { "message": "Doppelte URL-Kodierung erkannt (hohes Risiko). Diese Verschleierungstechnik wird verwendet, um schädliche Inhalte zu verbergen." },
   "reason_fullwidthCharacters": { "message": "Vollbreite Unicode-Zeichen erkannt (hohes Risiko). Diese speziellen Zeichen imitieren normale Buchstaben, um Benutzer zu täuschen." },
-  "reason_nullByteInjection": { "message": "Null-Byte-Injektion erkannt (hohes Risiko). Diese Technik wird verwendet, um Sicherheitsfilter zu umgehen und kann auf einen bösartigen Link hinweisen." }
+  "reason_nullByteInjection": { "message": "Null-Byte-Injektion erkannt (hohes Risiko). Diese Technik wird verwendet, um Sicherheitsfilter zu umgehen und kann auf einen bösartigen Link hinweisen." },
+
+  "clipboardHijackingCryptoTitle": { "message": "Krypto-Adress-Hijacking erkannt!" },
+  "clipboardHijackingTitle": { "message": "Zwischenablage-Manipulation erkannt!" },
+  "clipboardHijackingMessage": { "message": "Diese Seite versucht, Ihre Zwischenablage zu ändern. Seien Sie vorsichtig beim Einfügen von Wallet-Adressen oder sensiblen Daten." },
+  "reason_clipboardHijackingCrypto": { "message": "KRITISCH: Diese Seite kapert Ihre Zwischenablage mit Krypto-Adressen (kritisches Risiko). Kopierte Wallet-Adressen können durch Angreifer-Adressen ersetzt werden." },
+  "reason_clipboardHijackingDetected": { "message": "Diese Seite manipuliert Ihren Zwischenablageinhalt (hohes Risiko). Eingefügte Inhalte können von dem abweichen, was Sie kopiert haben." },
+
+  "brandSubdomainPhishing": { "message": "Markenname auf kostenloser Hosting-Plattform erkannt (hohes Risiko). Legitime Unternehmen nutzen kein kostenloses Hosting für offizielle Dienste." },
+  "reason_brandSubdomainPhishing": { "message": "Markenname auf kostenloser Hosting-Plattform erkannt (hohes Risiko). Legitime Unternehmen nutzen kein kostenloses Hosting für offizielle Dienste." },
+
+  "nrdTelCombo": { "message": "Telefonnummer auf neu registrierter Domain mit Phishing-Schlüsselwörtern (mittleres Risiko). Dies könnte ein Vishing (Voice-Phishing) Versuch sein." },
+  "reason_nrdTelCombo": { "message": "Telefonnummer auf neu registrierter Domain mit Phishing-Schlüsselwörtern (mittleres Risiko). Dies könnte ein Vishing (Voice-Phishing) Versuch sein." },
+
+  "reason_opaqueRedirectChain": { "message": "Undurchsichtige Weiterleitung erkannt (niedriges Risiko). Das Weiterleitungsziel konnte nicht vollständig zurückverfolgt werden." },
+  "reason_opaqueRedirectToIP": { "message": "Undurchsichtige Weiterleitung zu IP-Adresse (hohes Risiko). Die versteckte Weiterleitung führt zu einer rohen IP-Adresse statt einer Domain." },
+  "reason_opaqueRedirectSuspiciousTLD": { "message": "Undurchsichtige Weiterleitung zu verdächtiger Domain-Endung (mittleres Risiko). Die versteckte Weiterleitung führt zu einer riskanten TLD." },
+  "reason_opaqueRedirectNRD": { "message": "Undurchsichtige Weiterleitung zu neu registrierter Domain (hohes Risiko). Die versteckte Weiterleitung führt zu einer sehr neuen Domain." }
 }

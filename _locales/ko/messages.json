@@ -905,5 +905,22 @@
   "reason_atSymbolPhishing": { "message": "심각: 자격 증명 URL 공격이 감지되었습니다. 표시된 도메인은 가짜입니다 - 다른 웹사이트로 리디렉션됩니다." },
   "reason_doubleEncoding": { "message": "이중 URL 인코딩 감지됨 (높은 위험). 이 난독화 기술은 악성 콘텐츠를 숨기는 데 사용됩니다." },
   "reason_fullwidthCharacters": { "message": "전각 유니코드 문자 감지됨 (높은 위험). 이러한 특수 문자는 사용자를 속이기 위해 일반 문자를 모방합니다." },
-  "reason_nullByteInjection": { "message": "널 바이트 인젝션 감지됨 (높은 위험). 이 기술은 보안 필터를 우회하는 데 사용됩니다." }
+  "reason_nullByteInjection": { "message": "널 바이트 인젝션 감지됨 (높은 위험). 이 기술은 보안 필터를 우회하는 데 사용됩니다." },
+
+  "clipboardHijackingCryptoTitle": { "message": "암호화폐 주소 하이재킹 감지!" },
+  "clipboardHijackingTitle": { "message": "클립보드 조작 감지!" },
+  "clipboardHijackingMessage": { "message": "이 페이지가 클립보드를 수정하려고 합니다. 지갑 주소나 민감한 데이터를 붙여넣을 때 주의하세요." },
+  "reason_clipboardHijackingCrypto": { "message": "심각: 이 페이지가 암호화폐 주소로 클립보드를 하이재킹합니다 (심각한 위험). 복사한 지갑 주소가 공격자 주소로 대체될 수 있습니다." },
+  "reason_clipboardHijackingDetected": { "message": "이 페이지가 클립보드 내용을 조작합니다 (높은 위험). 붙여넣은 내용이 복사한 내용과 다를 수 있습니다." },
+
+  "brandSubdomainPhishing": { "message": "무료 호스팅 플랫폼에서 브랜드 이름 감지됨 (높은 위험). 합법적인 회사는 공식 서비스에 무료 호스팅을 사용하지 않습니다." },
+  "reason_brandSubdomainPhishing": { "message": "무료 호스팅 플랫폼에서 브랜드 이름 감지됨 (높은 위험). 합법적인 회사는 공식 서비스에 무료 호스팅을 사용하지 않습니다." },
+
+  "nrdTelCombo": { "message": "피싱 키워드가 있는 신규 등록 도메인에 전화번호 (중간 위험). 비싱(음성 피싱) 시도일 수 있습니다." },
+  "reason_nrdTelCombo": { "message": "피싱 키워드가 있는 신규 등록 도메인에 전화번호 (중간 위험). 비싱(음성 피싱) 시도일 수 있습니다." },
+
+  "reason_opaqueRedirectChain": { "message": "불투명한 리다이렉트 감지됨 (낮은 위험). 리다이렉트 대상을 완전히 추적할 수 없습니다." },
+  "reason_opaqueRedirectToIP": { "message": "IP 주소로의 불투명한 리다이렉트 (높은 위험). 숨겨진 리다이렉트가 도메인 대신 원시 IP 주소로 연결됩니다." },
+  "reason_opaqueRedirectSuspiciousTLD": { "message": "의심스러운 도메인 확장자로의 불투명한 리다이렉트 (중간 위험). 숨겨진 리다이렉트가 위험한 TLD로 연결됩니다." },
+  "reason_opaqueRedirectNRD": { "message": "신규 등록 도메인으로의 불투명한 리다이렉트 (높은 위험). 숨겨진 리다이렉트가 매우 새로운 도메인으로 연결됩니다." }
 }

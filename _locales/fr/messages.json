@@ -905,5 +905,22 @@
   "reason_atSymbolPhishing": { "message": "CRITIQUE: Attaque d'URL de credentials détectée. Le domaine visible est faux - vous serez redirigé vers un autre site web." },
   "reason_doubleEncoding": { "message": "Double encodage d'URL détecté (risque élevé). Cette technique d'obfuscation est utilisée pour cacher du contenu malveillant." },
   "reason_fullwidthCharacters": { "message": "Caractères Unicode pleine largeur détectés (risque élevé). Ces caractères spéciaux imitent des lettres normales pour tromper les utilisateurs." },
-  "reason_nullByteInjection": { "message": "Injection de byte nul détectée (risque élevé). Cette technique est utilisée pour contourner les filtres de sécurité et peut indiquer un lien malveillant." }
+  "reason_nullByteInjection": { "message": "Injection de byte nul détectée (risque élevé). Cette technique est utilisée pour contourner les filtres de sécurité et peut indiquer un lien malveillant." },
+
+  "clipboardHijackingCryptoTitle": { "message": "Détournement d'adresse crypto détecté !" },
+  "clipboardHijackingTitle": { "message": "Manipulation du presse-papiers détectée !" },
+  "clipboardHijackingMessage": { "message": "Cette page tente de modifier votre presse-papiers. Soyez prudent lors du collage d'adresses de portefeuille ou de données sensibles." },
+  "reason_clipboardHijackingCrypto": { "message": "CRITIQUE : Cette page détourne votre presse-papiers avec des adresses crypto (risque critique). Les adresses de portefeuille copiées peuvent être remplacées par des adresses d'attaquants." },
+  "reason_clipboardHijackingDetected": { "message": "Cette page manipule le contenu de votre presse-papiers (risque élevé). Le contenu collé peut différer de ce que vous avez copié." },
+
+  "brandSubdomainPhishing": { "message": "Nom de marque détecté sur une plateforme d'hébergement gratuit (risque élevé). Les entreprises légitimes n'utilisent pas l'hébergement gratuit pour les services officiels." },
+  "reason_brandSubdomainPhishing": { "message": "Nom de marque détecté sur une plateforme d'hébergement gratuit (risque élevé). Les entreprises légitimes n'utilisent pas l'hébergement gratuit pour les services officiels." },
+
+  "nrdTelCombo": { "message": "Numéro de téléphone sur un domaine nouvellement enregistré avec des mots-clés de phishing (risque moyen). Cela peut être une tentative de vishing (hameçonnage vocal)." },
+  "reason_nrdTelCombo": { "message": "Numéro de téléphone sur un domaine nouvellement enregistré avec des mots-clés de phishing (risque moyen). Cela peut être une tentative de vishing (hameçonnage vocal)." },
+
+  "reason_opaqueRedirectChain": { "message": "Redirection opaque détectée (risque faible). La destination de la redirection n'a pas pu être entièrement tracée." },
+  "reason_opaqueRedirectToIP": { "message": "Redirection opaque vers une adresse IP (risque élevé). La redirection cachée mène à une adresse IP brute au lieu d'un domaine." },
+  "reason_opaqueRedirectSuspiciousTLD": { "message": "Redirection opaque vers une extension de domaine suspecte (risque moyen). La redirection cachée mène à une TLD risquée." },
+  "reason_opaqueRedirectNRD": { "message": "Redirection opaque vers un domaine nouvellement enregistré (risque élevé). La redirection cachée mène à un domaine très récent." }
 }

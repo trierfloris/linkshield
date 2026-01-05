@@ -250,6 +250,46 @@ SUSPICIOUS_URL_PATTERNS: [
         'whatsapp', 'linkedin', 'twitter', 'postnl', 'dhl', 'ups'
     ],
 
+    // Legitieme merkdomeinen (whitelist voor brand subdomain check)
+    LEGITIMATE_BRAND_DOMAINS: [
+        // Nederlandse banken
+        'ing.nl', 'ing.com', 'ingwb.com',
+        'rabobank.nl', 'rabobank.com',
+        'abnamro.nl', 'abnamro.com',
+        'sns.nl', 'snsbank.nl',
+        'bunq.com',
+        'triodos.nl', 'triodos.com',
+        'knab.nl',
+        // Overheid
+        'digid.nl', 'mijnoverheid.nl',
+        'belastingdienst.nl',
+        // Internationale merken
+        'paypal.com', 'paypal.nl',
+        'amazon.com', 'amazon.nl', 'amazon.de',
+        'google.com', 'google.nl',
+        'microsoft.com',
+        'apple.com',
+        'facebook.com',
+        'netflix.com',
+        'instagram.com',
+        'whatsapp.com',
+        'linkedin.com',
+        'twitter.com', 'x.com',
+        // Bezorging
+        'postnl.nl', 'postnl.com',
+        'dhl.nl', 'dhl.com',
+        'ups.com', 'ups.nl'
+    ],
+
+    // Crypto wallet address patterns voor clipboard hijacking detectie
+    CRYPTO_ADDRESS_PATTERNS: {
+        bitcoin: /^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,39}$/,
+        ethereum: /^0x[a-fA-F0-9]{40}$/,
+        solana: /^[1-9A-HJ-NP-Za-km-z]{32,44}$/,
+        // Generieke pattern voor detectie in clipboard content
+        any: /(bc1|0x[a-fA-F0-9]{40}|[13][a-zA-HJ-NP-Z0-9]{25,39}|[1-9A-HJ-NP-Za-km-z]{32,44})/
+    },
+
     COMPOUND_TLDS: [
         'co.uk', 'org.uk', 'gov.uk', 'ac.uk', 'com.au', 'org.au', 'co.nz'
     ],

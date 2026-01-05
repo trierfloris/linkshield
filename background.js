@@ -811,6 +811,7 @@ async function traceRedirectChain(url, timeout = 3000) {
 
 /**
  * Analyseert de redirect chain op verdachte patronen
+ * Inclusief Smart Redirect scoring voor opaque redirects
  */
 function analyzeRedirectChainThreats(chain, visitedDomains, redirectCount, threats) {
     // 1. Excessive redirects (>5 is verdacht)
@@ -837,12 +838,14 @@ function analyzeRedirectChainThreats(chain, visitedDomains, redirectCount, threa
     }
 
     // 4. Verdachte TLD aan het einde
+    let hasSuspiciousFinalTLD = false;
     if (chain.length > 0) {
         const finalUrl = chain[chain.length - 1];
         try {
             const finalDomain = new URL(finalUrl).hostname.toLowerCase();
             if (/\.(xyz|top|club|tk|ml|ga|cf|gq|buzz|rest|icu|cyou|cfd)$/i.test(finalDomain)) {
                 threats.push('suspiciousFinalTLD');
+                hasSuspiciousFinalTLD = true;
             }
         } catch (e) {
             // URL parsing error
@@ -850,17 +853,71 @@ function analyzeRedirectChainThreats(chain, visitedDomains, redirectCount, threa
     }
 
     // 5. Redirect naar IP adres
+    let redirectsToIP = false;
     for (const url of chain.slice(1)) { // Skip eerste URL
         try {
             const host = new URL(url).hostname;
             if (/^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/.test(host)) {
                 threats.push('redirectToIP');
+                redirectsToIP = true;
                 break;
             }
         } catch (e) {
             // URL parsing error
         }
     }
+
+    // 6. Smart Opaque Redirect Scoring
+    // Verhoog de ernst van opaqueRedirectChain op basis van context
+    if (threats.includes('opaqueRedirectChain')) {
+        // Verwijder de basis threat en voeg de juiste variant toe
+        const opaqueIndex = threats.indexOf('opaqueRedirectChain');
+        if (opaqueIndex > -1) {
+            threats.splice(opaqueIndex, 1);
+        }
+
+        // Bepaal de ernst op basis van combinaties
+        if (redirectsToIP) {
+            // Opaque + redirect naar IP = hoogste risico (+10)
+            threats.push('opaqueRedirectToIP');
+        } else if (hasSuspiciousFinalTLD) {
+            // Opaque + verdachte TLD = hoog risico (+6)
+            threats.push('opaqueRedirectSuspiciousTLD');
+        } else {
+            // Standaard opaque redirect (+3)
+            threats.push('opaqueRedirectChain');
+        }
+    }
+}
+
+/**
+ * Berekent de risicoscore voor redirect chain threats
+ * @param {string[]} threats - Array van threat identifiers
+ * @returns {number} - Totale risicoscore
+ */
+function calculateRedirectChainScore(threats) {
+    let score = 0;
+    const scoreMap = {
+        'excessiveRedirects': 5,
+        'domainHopping': 4,
+        'chainedShorteners': 4,
+        'suspiciousFinalTLD': 5,
+        'redirectToIP': 6,
+        'circularRedirect': 4,
+        'redirectTimeout': 3,
+        'invalidRedirectUrl': 3,
+        // Smart Opaque Redirect scores
+        'opaqueRedirectChain': 3,        // Basis
+        'opaqueRedirectSuspiciousTLD': 6, // Opaque + verdachte TLD
+        'opaqueRedirectToIP': 10,         // Opaque + IP redirect
+        'opaqueRedirectNRD': 8            // Opaque + nieuw domein (indien gecombineerd)
+    };
+
+    for (const threat of threats) {
+        score += scoreMap[threat] || 0;
+    }
+
+    return score;
 }
 
 /**

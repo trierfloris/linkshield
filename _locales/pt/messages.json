@@ -905,5 +905,22 @@
   "reason_atSymbolPhishing": { "message": "CRÍTICO: Ataque de URL de credenciais detectado. O domínio visível é falso - você será redirecionado para outro site." },
   "reason_doubleEncoding": { "message": "Codificação dupla de URL detectada (alto risco). Esta técnica de ofuscação é usada para ocultar conteúdo malicioso." },
   "reason_fullwidthCharacters": { "message": "Caracteres Unicode de largura total detectados (alto risco). Estes caracteres especiais imitam letras normais para enganar usuários." },
-  "reason_nullByteInjection": { "message": "Injeção de byte nulo detectada (alto risco). Esta técnica é usada para contornar filtros de segurança e pode indicar um link malicioso." }
+  "reason_nullByteInjection": { "message": "Injeção de byte nulo detectada (alto risco). Esta técnica é usada para contornar filtros de segurança e pode indicar um link malicioso." },
+
+  "clipboardHijackingCryptoTitle": { "message": "Sequestro de endereço cripto detectado!" },
+  "clipboardHijackingTitle": { "message": "Manipulação da área de transferência detectada!" },
+  "clipboardHijackingMessage": { "message": "Esta página está tentando modificar sua área de transferência. Tenha cuidado ao colar endereços de carteira ou dados sensíveis." },
+  "reason_clipboardHijackingCrypto": { "message": "CRÍTICO: Esta página sequestra sua área de transferência com endereços cripto (risco crítico). Endereços de carteira copiados podem ser substituídos por endereços de invasores." },
+  "reason_clipboardHijackingDetected": { "message": "Esta página manipula o conteúdo da sua área de transferência (alto risco). O conteúdo colado pode diferir do que você copiou." },
+
+  "brandSubdomainPhishing": { "message": "Nome de marca detectado em plataforma de hospedagem gratuita (alto risco). Empresas legítimas não usam hospedagem gratuita para serviços oficiais." },
+  "reason_brandSubdomainPhishing": { "message": "Nome de marca detectado em plataforma de hospedagem gratuita (alto risco). Empresas legítimas não usam hospedagem gratuita para serviços oficiais." },
+
+  "nrdTelCombo": { "message": "Número de telefone em domínio recém-registrado com palavras-chave de phishing (risco médio). Pode ser uma tentativa de vishing (phishing por voz)." },
+  "reason_nrdTelCombo": { "message": "Número de telefone em domínio recém-registrado com palavras-chave de phishing (risco médio). Pode ser uma tentativa de vishing (phishing por voz)." },
+
+  "reason_opaqueRedirectChain": { "message": "Redirecionamento opaco detectado (baixo risco). O destino do redirecionamento não pôde ser totalmente rastreado." },
+  "reason_opaqueRedirectToIP": { "message": "Redirecionamento opaco para endereço IP (alto risco). O redirecionamento oculto leva a um endereço IP bruto em vez de um domínio." },
+  "reason_opaqueRedirectSuspiciousTLD": { "message": "Redirecionamento opaco para extensão de domínio suspeita (risco médio). O redirecionamento oculto leva a um TLD arriscado." },
+  "reason_opaqueRedirectNRD": { "message": "Redirecionamento opaco para domínio recém-registrado (alto risco). O redirecionamento oculto leva a um domínio muito novo." }
 }

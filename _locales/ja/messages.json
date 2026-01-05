@@ -905,5 +905,22 @@
   "reason_atSymbolPhishing": { "message": "重大: 認証情報URLアタックを検出しました。表示されているドメインは偽物です - 別のウェブサイトにリダイレクトされます。" },
   "reason_doubleEncoding": { "message": "二重URLエンコーディングを検出しました（高リスク）。この難読化技術は悪意のあるコンテンツを隠すために使用されます。" },
   "reason_fullwidthCharacters": { "message": "全角Unicode文字を検出しました（高リスク）。これらの特殊文字はユーザーを騙すために通常の文字を模倣します。" },
-  "reason_nullByteInjection": { "message": "ヌルバイトインジェクションを検出しました（高リスク）。この技術はセキュリティフィルターをバイパスするために使用されます。" }
+  "reason_nullByteInjection": { "message": "ヌルバイトインジェクションを検出しました（高リスク）。この技術はセキュリティフィルターをバイパスするために使用されます。" },
+
+  "clipboardHijackingCryptoTitle": { "message": "暗号資産アドレスのハイジャックを検出！" },
+  "clipboardHijackingTitle": { "message": "クリップボードの操作を検出！" },
+  "clipboardHijackingMessage": { "message": "このページはクリップボードを変更しようとしています。ウォレットアドレスや機密データを貼り付ける際は注意してください。" },
+  "reason_clipboardHijackingCrypto": { "message": "重大: このページは暗号資産アドレスでクリップボードをハイジャックしています（重大リスク）。コピーしたウォレットアドレスが攻撃者のアドレスに置き換えられる可能性があります。" },
+  "reason_clipboardHijackingDetected": { "message": "このページはクリップボードの内容を操作しています（高リスク）。貼り付けた内容がコピーした内容と異なる場合があります。" },
+
+  "brandSubdomainPhishing": { "message": "無料ホスティングプラットフォームでブランド名を検出（高リスク）。正規の企業は公式サービスに無料ホスティングを使用しません。" },
+  "reason_brandSubdomainPhishing": { "message": "無料ホスティングプラットフォームでブランド名を検出（高リスク）。正規の企業は公式サービスに無料ホスティングを使用しません。" },
+
+  "nrdTelCombo": { "message": "フィッシングキーワードを含む新規登録ドメインに電話番号（中リスク）。これはビッシング（音声フィッシング）の試みかもしれません。" },
+  "reason_nrdTelCombo": { "message": "フィッシングキーワードを含む新規登録ドメインに電話番号（中リスク）。これはビッシング（音声フィッシング）の試みかもしれません。" },
+
+  "reason_opaqueRedirectChain": { "message": "不透明なリダイレクトを検出（低リスク）。リダイレクト先を完全に追跡できませんでした。" },
+  "reason_opaqueRedirectToIP": { "message": "IPアドレスへの不透明なリダイレクト（高リスク）。隠されたリダイレクトはドメインではなく生のIPアドレスに向かいます。" },
+  "reason_opaqueRedirectSuspiciousTLD": { "message": "疑わしいドメイン拡張子への不透明なリダイレクト（中リスク）。隠されたリダイレクトはリスクの高いTLDに向かいます。" },
+  "reason_opaqueRedirectNRD": { "message": "新規登録ドメインへの不透明なリダイレクト（高リスク）。隠されたリダイレクトは非常に新しいドメインに向かいます。" }
 }

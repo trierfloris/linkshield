@@ -905,5 +905,22 @@
   "reason_atSymbolPhishing": { "message": "严重：检测到凭证URL攻击。显示的域名是假的 - 您将被重定向到另一个网站。" },
   "reason_doubleEncoding": { "message": "检测到双重URL编码（高风险）。这种混淆技术用于隐藏恶意内容。" },
   "reason_fullwidthCharacters": { "message": "检测到全角Unicode字符（高风险）。这些特殊字符模仿普通字母来欺骗用户。" },
-  "reason_nullByteInjection": { "message": "检测到空字节注入（高风险）。这种技术用于绕过安全过滤器，可能表示恶意链接。" }
+  "reason_nullByteInjection": { "message": "检测到空字节注入（高风险）。这种技术用于绕过安全过滤器，可能表示恶意链接。" },
+
+  "clipboardHijackingCryptoTitle": { "message": "检测到加密货币地址劫持！" },
+  "clipboardHijackingTitle": { "message": "检测到剪贴板操纵！" },
+  "clipboardHijackingMessage": { "message": "此页面正在尝试修改您的剪贴板。粘贴钱包地址或敏感数据时请小心。" },
+  "reason_clipboardHijackingCrypto": { "message": "严重：此页面用加密货币地址劫持您的剪贴板（严重风险）。复制的钱包地址可能被替换为攻击者地址。" },
+  "reason_clipboardHijackingDetected": { "message": "此页面操纵您的剪贴板内容（高风险）。粘贴的内容可能与您复制的不同。" },
+
+  "brandSubdomainPhishing": { "message": "在免费托管平台上检测到品牌名称（高风险）。合法公司不会使用免费托管来提供官方服务。" },
+  "reason_brandSubdomainPhishing": { "message": "在免费托管平台上检测到品牌名称（高风险）。合法公司不会使用免费托管来提供官方服务。" },
+
+  "nrdTelCombo": { "message": "在包含钓鱼关键词的新注册域名上发现电话号码（中等风险）。这可能是语音钓鱼尝试。" },
+  "reason_nrdTelCombo": { "message": "在包含钓鱼关键词的新注册域名上发现电话号码（中等风险）。这可能是语音钓鱼尝试。" },
+
+  "reason_opaqueRedirectChain": { "message": "检测到不透明重定向（低风险）。无法完全跟踪重定向目标。" },
+  "reason_opaqueRedirectToIP": { "message": "不透明重定向到IP地址（高风险）。隐藏的重定向指向原始IP地址而非域名。" },
+  "reason_opaqueRedirectSuspiciousTLD": { "message": "不透明重定向到可疑域名扩展（中等风险）。隐藏的重定向指向有风险的TLD。" },
+  "reason_opaqueRedirectNRD": { "message": "不透明重定向到新注册域名（高风险）。隐藏的重定向指向非常新的域名。" }
 }

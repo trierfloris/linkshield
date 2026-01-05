@@ -92,6 +92,225 @@ if (!window.linkRiskCache) {
 // Throttle tracking variables (global scope for persistence)
 let lastIframeCheck = 0;
 let lastScriptCheck = 0;
+
+// ============================================================================
+// CLIPBOARD GUARD - Detecteert clipboard hijacking pogingen
+// ============================================================================
+let clipboardGuardInitialized = false;
+let hasRecentUserGesture = false;
+let clipboardHijackingDetected = false;
+
+/**
+ * Initialiseert de Clipboard Guard die clipboard hijacking detecteert.
+ * Detecteert:
+ * 1. Scripts die preventDefault() + setData() gebruiken in copy handlers
+ * 2. navigator.clipboard.writeText() zonder user gesture
+ */
+function initClipboardGuard() {
+    if (clipboardGuardInitialized) return;
+    clipboardGuardInitialized = true;
+
+    // Track user gestures voor writeText detectie
+    ['click', 'keydown', 'touchstart'].forEach(eventType => {
+        document.addEventListener(eventType, () => {
+            hasRecentUserGesture = true;
+            setTimeout(() => { hasRecentUserGesture = false; }, 1000);
+        }, { passive: true, capture: true });
+    });
+
+    // Hook EventTarget.prototype.addEventListener om copy handlers te monitoren
+    const originalAddEventListener = EventTarget.prototype.addEventListener;
+    EventTarget.prototype.addEventListener = function(type, listener, options) {
+        if (type === 'copy' && typeof listener === 'function') {
+            const wrappedListener = function(e) {
+                let preventDefaultCalled = false;
+                let setDataCalled = false;
+                let setDataContent = null;
+
+                // Wrap preventDefault
+                const originalPreventDefault = e.preventDefault.bind(e);
+                e.preventDefault = function() {
+                    preventDefaultCalled = true;
+                    return originalPreventDefault();
+                };
+
+                // Wrap clipboardData.setData
+                if (e.clipboardData && e.clipboardData.setData) {
+                    const originalSetData = e.clipboardData.setData.bind(e.clipboardData);
+                    e.clipboardData.setData = function(format, data) {
+                        setDataCalled = true;
+                        setDataContent = data;
+                        return originalSetData(format, data);
+                    };
+                }
+
+                // Roep originele listener aan
+                try {
+                    listener.call(this, e);
+                } catch (err) {
+                    // Listener error, negeren
+                }
+
+                // Analyseer na listener uitvoering
+                if (preventDefaultCalled && setDataCalled) {
+                    // Check of setData content crypto address bevat
+                    const cryptoPattern = globalConfig?.CRYPTO_ADDRESS_PATTERNS?.any ||
+                        /(bc1|0x[a-fA-F0-9]{40}|[13][a-zA-HJ-NP-Z0-9]{25,39})/;
+
+                    if (setDataContent && cryptoPattern.test(setDataContent)) {
+                        // KRITIEK: Clipboard hijacking met crypto address
+                        reportClipboardHijacking('setDataCrypto', setDataContent);
+                    } else if (preventDefaultCalled) {
+                        // Minder kritiek: preventDefault zonder crypto
+                        reportClipboardHijacking('preventDefaultSetData', setDataContent);
+                    }
+                }
+            };
+            return originalAddEventListener.call(this, type, wrappedListener, options);
+        }
+        return originalAddEventListener.call(this, type, listener, options);
+    };
+
+    // Hook navigator.clipboard.writeText
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        const originalWriteText = navigator.clipboard.writeText.bind(navigator.clipboard);
+        navigator.clipboard.writeText = function(text) {
+            if (!hasRecentUserGesture) {
+                // writeText zonder user gesture is verdacht
+                const cryptoPattern = globalConfig?.CRYPTO_ADDRESS_PATTERNS?.any ||
+                    /(bc1|0x[a-fA-F0-9]{40}|[13][a-zA-HJ-NP-Z0-9]{25,39})/;
+
+                if (cryptoPattern.test(text)) {
+                    reportClipboardHijacking('writeTextCrypto', text);
+                } else {
+                    reportClipboardHijacking('writeTextNoGesture', text);
+                }
+            }
+            return originalWriteText(text);
+        };
+    }
+
+    logDebug('[ClipboardGuard] Initialized');
+}
+
+/**
+ * Rapporteert een gedetecteerde clipboard hijacking poging
+ * @param {string} type - Type detectie
+ * @param {string} content - De verdachte content
+ */
+function reportClipboardHijacking(type, content) {
+    if (clipboardHijackingDetected) return; // Voorkom spam
+    clipboardHijackingDetected = true;
+
+    const hostname = window.location.hostname;
+    let score = 0;
+    let reason = '';
+
+    switch (type) {
+        case 'setDataCrypto':
+            score = 12; // ALERT
+            reason = 'clipboardHijackingCrypto';
+            break;
+        case 'writeTextCrypto':
+            score = 10;
+            reason = 'clipboardHijackingCrypto';
+            break;
+        case 'preventDefaultSetData':
+            score = 8;
+            reason = 'clipboardHijackingDetected';
+            break;
+        case 'writeTextNoGesture':
+            score = 10;
+            reason = 'clipboardHijackingDetected';
+            break;
+        default:
+            score = 8;
+            reason = 'clipboardHijackingDetected';
+    }
+
+    logDebug(`[ClipboardGuard] Hijacking detected: ${type}, score: ${score}`);
+
+    // Stuur naar background voor icon update
+    chrome.runtime.sendMessage({
+        action: 'clipboardHijackingDetected',
+        data: {
+            hostname,
+            type,
+            score,
+            reason,
+            contentPreview: content ? content.substring(0, 50) + '...' : null
+        }
+    }).catch(() => {});
+
+    // Toon waarschuwing aan gebruiker
+    showClipboardWarning(type, score);
+}
+
+/**
+ * Toont een waarschuwing bij clipboard hijacking
+ */
+function showClipboardWarning(type, score) {
+    // Maak waarschuwingsbanner
+    const warning = document.createElement('div');
+    warning.id = 'linkshield-clipboard-warning';
+    warning.style.cssText = `
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+        color: white;
+        padding: 16px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        z-index: 2147483647;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-size: 14px;
+        max-width: 350px;
+        animation: slideIn 0.3s ease-out;
+    `;
+
+    const title = type.includes('Crypto')
+        ? chrome.i18n.getMessage('clipboardHijackingCryptoTitle') || '⚠️ Crypto Address Hijacking Detected!'
+        : chrome.i18n.getMessage('clipboardHijackingTitle') || '⚠️ Clipboard Manipulation Detected!';
+
+    const message = chrome.i18n.getMessage('clipboardHijackingMessage') ||
+        'This page is attempting to modify your clipboard. Be careful when pasting wallet addresses.';
+
+    warning.innerHTML = `
+        <div style="font-weight: bold; margin-bottom: 8px; font-size: 15px;">${title}</div>
+        <div style="opacity: 0.95; line-height: 1.4;">${message}</div>
+        <button id="linkshield-clipboard-close" style="
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            opacity: 0.8;
+        ">×</button>
+    `;
+
+    // Voeg animatie style toe
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+    `;
+    document.head.appendChild(style);
+    document.body.appendChild(warning);
+
+    // Close button
+    document.getElementById('linkshield-clipboard-close')?.addEventListener('click', () => {
+        warning.remove();
+    });
+
+    // Auto-remove na 15 seconden
+    setTimeout(() => warning.remove(), 15000);
+}
 /**
  * Hoofd-functie die alle subsector-helpers aanroept.
  * @param {object} config
@@ -2986,6 +3205,74 @@ function getNRDRiskScore(riskLevel) {
   }
 }
 
+/**
+ * NRD + tel: combo detectie (Vishing Indicator)
+ * Detecteert tel: links op pagina's die:
+ * 1. Een NRD zijn (<7 dagen oud)
+ * 2. Phishing keywords bevatten
+ * Dit is een sterke indicator voor vishing (voice phishing) aanvallen.
+ *
+ * @returns {Promise<{detected: boolean, score: number, reason: string|null}>}
+ */
+async function checkNRDTelCombo() {
+  try {
+    const pageUrl = window.location.href;
+    const pageHostname = window.location.hostname;
+
+    // Haal domein leeftijd op via bestaande RDAP functie
+    const domain = getRegistrableDomain(pageUrl);
+    if (!domain) {
+      return { detected: false, score: 0, reason: null };
+    }
+
+    const created = await fetchDomainCreationDate(domain);
+    if (!created) {
+      return { detected: false, score: 0, reason: null };
+    }
+
+    // Check of domein NRD is (<7 dagen)
+    const nrdAnalysis = analyzeNRDRisk(created);
+    if (!nrdAnalysis.isNRD || nrdAnalysis.ageDays > 7) {
+      return { detected: false, score: 0, reason: null };
+    }
+
+    // Check of pagina phishing keywords bevat
+    const phishingKeywords = globalConfig?.PHISHING_KEYWORDS || new Set([
+      'verify', 'login', 'bank', 'secure', 'account', 'update', 'confirm',
+      'password', 'credential', 'suspend', 'unlock', 'urgent'
+    ]);
+
+    // Check URL en pagina content
+    const urlLower = pageUrl.toLowerCase();
+    const bodyText = document.body?.innerText?.toLowerCase() || '';
+    const titleText = document.title?.toLowerCase() || '';
+
+    let hasPhishingKeyword = false;
+    let foundKeyword = '';
+
+    for (const keyword of phishingKeywords) {
+      if (urlLower.includes(keyword) || bodyText.includes(keyword) || titleText.includes(keyword)) {
+        hasPhishingKeyword = true;
+        foundKeyword = keyword;
+        break;
+      }
+    }
+
+    if (hasPhishingKeyword) {
+      return {
+        detected: true,
+        score: 3,
+        reason: `NRD (${nrdAnalysis.ageDays.toFixed(0)}d) + tel: + keyword "${foundKeyword}"`
+      };
+    }
+
+    return { detected: false, score: 0, reason: null };
+  } catch (error) {
+    logError('[NRDTelCombo] Error:', error);
+    return { detected: false, score: 0, reason: null };
+  }
+}
+
 function isValidURL(string) {
   try {
     // Blokkeer data: URLs expliciet (XSS vector)
@@ -3544,6 +3831,17 @@ async function performSuspiciousChecks(url) {
         logDebug(`⚠️ Verdachte javascript link: ${url}`);
       }
       // anders geen waarschuwing
+    } else if (urlObj.protocol === 'tel:') {
+      // NRD + tel: combo detectie (vishing indicator)
+      // Check of huidige pagina een NRD is met phishing keywords
+      const telComboResult = await checkNRDTelCombo();
+      if (telComboResult.detected) {
+        reasons.add('nrdTelCombo');
+        totalRiskRef.value += telComboResult.score;
+        logDebug(`⚠️ NRD + tel: combo gedetecteerd: ${telComboResult.reason}`);
+      } else {
+        reasons.add('allowedProtocol');
+      }
     } else {
       reasons.add('allowedProtocol');
     }
@@ -4059,6 +4357,15 @@ function checkStaticConditions(url, reasons, totalRiskRef) {
         }
       }
     }
+  }
+
+  // 6) Brand Subdomain Phishing detectie
+  // Detecteert brand keywords op free hosting platforms
+  const brandSubdomainResult = detectBrandSubdomainPhishing(url);
+  if (brandSubdomainResult.detected && !reasons.has('brandSubdomainPhishing')) {
+    logDebug(`Static: brandSubdomainPhishing - ${brandSubdomainResult.brand} on free hosting`);
+    reasons.add('brandSubdomainPhishing');
+    totalRiskRef.value += brandSubdomainResult.score;
   }
 }
 /**
@@ -4840,19 +5147,19 @@ async function isFreeHostingDomain(url) {
     let sld = parts[parts.length - 2];
     // Haal globale lijst op (uit config.js)
     const freeHostingDomains = globalConfig.FREE_HOSTING_DOMAINS || [];
-    // 1) Directe match of suffix-match: “domein” is exact in de lijst, of eindigt op “.entry”
+    // 1) Directe match of suffix-match: "domein" is exact in de lijst, of eindigt op ".entry"
     for (const entry of freeHostingDomains) {
       if (domain === entry || domain.endsWith('.' + entry)) {
         logDebug(`Gratis hosting gedetecteerd via directe suffix-match: ${entry}`);
         return true;
       }
     }
-    // 2) Strip “-<cijfers>” achter SLD (bijv. “weebly-9” → “weebly”) en check opnieuw
-    // Dit dekt gevallen zoals “weebly-9.com” → “weebly.com”
+    // 2) Strip "-<cijfers>" achter SLD (bijv. "weebly-9" → "weebly") en check opnieuw
+    // Dit dekt gevallen zoals "weebly-9.com" → "weebly.com"
     const strippedSld = sld.replace(/-\d+$/, '');
     const reconstructed = strippedSld + '.' + tld;
     if (freeHostingDomains.includes(reconstructed)) {
-      logDebug(`Gratis hosting gedetecteerd via gestript SLD (“${sld}” → “${strippedSld}”): ${reconstructed}`);
+      logDebug(`Gratis hosting gedetecteerd via gestript SLD ("${sld}" → "${strippedSld}"): ${reconstructed}`);
       return true;
     }
     // 3) Verdachte trefwoorden in de volledige hostname (nu uitgebreid met bekende platform-namen)
@@ -4878,6 +5185,73 @@ async function isFreeHostingDomain(url) {
     logError(`Fout bij free hosting-check voor ${url}: ${error.message}`);
     return false;
   }
+}
+
+/**
+ * Detecteert brand keywords in subdomeinen op gratis hosting platforms.
+ * Bijv: ing-secure.firebaseapp.com, rabo-login.herokuapp.com
+ *
+ * @param {string} url - De URL om te controleren
+ * @returns {{detected: boolean, brand: string|null, score: number, reason: string|null}}
+ */
+function detectBrandSubdomainPhishing(url) {
+    try {
+        const parsedUrl = new URL(url);
+        const hostname = parsedUrl.hostname.toLowerCase();
+        const parts = hostname.split('.');
+
+        // Check of dit een legitiem merkdomein is (whitelist)
+        const legitimateDomains = globalConfig?.LEGITIMATE_BRAND_DOMAINS || [];
+        if (legitimateDomains.some(legit => hostname === legit || hostname.endsWith('.' + legit))) {
+            return { detected: false, brand: null, score: 0, reason: null };
+        }
+
+        // Check of dit een gratis hosting domein is
+        const freeHostingDomains = globalConfig?.FREE_HOSTING_DOMAINS || [];
+        let isOnFreeHosting = false;
+        let hostingDomain = null;
+
+        for (const freeHost of freeHostingDomains) {
+            if (hostname.endsWith('.' + freeHost) || hostname === freeHost) {
+                isOnFreeHosting = true;
+                hostingDomain = freeHost;
+                break;
+            }
+        }
+
+        if (!isOnFreeHosting) {
+            return { detected: false, brand: null, score: 0, reason: null };
+        }
+
+        // Check of een brand keyword voorkomt in de subdomeinen
+        const brandKeywords = globalConfig?.BRAND_KEYWORDS || [
+            'ing', 'rabo', 'abnamro', 'abn', 'sns', 'bunq', 'digid', 'belasting',
+            'paypal', 'amazon', 'google', 'microsoft', 'apple', 'facebook'
+        ];
+
+        // Haal de subdomeinen (alles behalve het hosting domein)
+        const hostingParts = hostingDomain.split('.');
+        const subdomainParts = parts.slice(0, parts.length - hostingParts.length);
+        const subdomainStr = subdomainParts.join('.');
+
+        for (const brand of brandKeywords) {
+            // Check of brand voorkomt als substring in subdomeinen
+            if (subdomainStr.includes(brand)) {
+                logDebug(`[BrandSubdomain] Detected: ${brand} in ${hostname}`);
+                return {
+                    detected: true,
+                    brand: brand,
+                    score: 5,
+                    reason: 'brandSubdomainPhishing'
+                };
+            }
+        }
+
+        return { detected: false, brand: null, score: 0, reason: null };
+    } catch (error) {
+        logError(`[BrandSubdomain] Error: ${error.message}`);
+        return { detected: false, brand: null, score: 0, reason: null };
+    }
 }
 
 /**
@@ -5234,6 +5608,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   try {
     logDebug("🚀 Initializing content script...");
     await initContentScript(); // Wacht op configuratie en veilige domeinen
+
+    // Initialiseer Clipboard Guard voor crypto hijacking detectie
+    initClipboardGuard();
     const currentUrl = window.location.href;
     logDebug(`🔍 Checking the current page: ${currentUrl}`);
     // --- 1. Pagina-brede checks ---

@@ -966,5 +966,48 @@
   },
   "siteAlertTitle": {
     "message": "Waarschuwing: Mogelijke bedreiging gedetecteerd"
+  },
+
+  "clipboardHijackingCryptoTitle": {
+    "message": "Crypto-adres kaping gedetecteerd!"
+  },
+  "clipboardHijackingTitle": {
+    "message": "Klembord manipulatie gedetecteerd!"
+  },
+  "clipboardHijackingMessage": {
+    "message": "Deze pagina probeert je klembord te wijzigen. Wees voorzichtig bij het plakken van wallet-adressen of gevoelige gegevens."
+  },
+  "reason_clipboardHijackingCrypto": {
+    "message": "KRITIEK: Deze pagina kaapt je klembord met crypto-adressen (kritiek risico). Gekopieerde wallet-adressen kunnen worden vervangen door adressen van aanvallers."
+  },
+  "reason_clipboardHijackingDetected": {
+    "message": "Deze pagina manipuleert je klembordinhoud (hoog risico). Geplakte inhoud kan afwijken van wat je hebt gekopieerd."
+  },
+
+  "brandSubdomainPhishing": {
+    "message": "Merknaam gedetecteerd op gratis hostingplatform (hoog risico). Legitieme bedrijven gebruiken geen gratis hosting voor officiële diensten."
+  },
+  "reason_brandSubdomainPhishing": {
+    "message": "Merknaam gedetecteerd op gratis hostingplatform (hoog risico). Legitieme bedrijven gebruiken geen gratis hosting voor officiële diensten."
+  },
+
+  "nrdTelCombo": {
+    "message": "Telefoonnummer op nieuw geregistreerd domein met phishing-zoekwoorden (gemiddeld risico). Dit kan een vishing (voice phishing) poging zijn."
+  },
+  "reason_nrdTelCombo": {
+    "message": "Telefoonnummer op nieuw geregistreerd domein met phishing-zoekwoorden (gemiddeld risico). Dit kan een vishing (voice phishing) poging zijn."
+  },
+
+  "reason_opaqueRedirectChain": {
+    "message": "Ondoorzichtige redirect gedetecteerd (laag risico). De redirect-bestemming kon niet volledig worden getraceerd."
+  },
+  "reason_opaqueRedirectToIP": {
+    "message": "Ondoorzichtige redirect naar IP-adres (hoog risico). De verborgen redirect leidt naar een ruw IP-adres in plaats van een domein."
+  },
+  "reason_opaqueRedirectSuspiciousTLD": {
+    "message": "Ondoorzichtige redirect naar verdachte domeinextensie (gemiddeld risico). De verborgen redirect leidt naar een riskante TLD."
+  },
+  "reason_opaqueRedirectNRD": {
+    "message": "Ondoorzichtige redirect naar nieuw geregistreerd domein (hoog risico). De verborgen redirect leidt naar een zeer nieuw domein."
   }
 }

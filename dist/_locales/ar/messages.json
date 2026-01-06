@@ -1,0 +1,879 @@
+{
+  "extName": {
+    "message": "LinkShield (درع الروابط)"
+  },
+  "extDescription": {
+    "message": "يساعدك LinkShield في التعرف على مواقع الويب والروابط غير الآمنة للحفاظ على سلامتك على الإنترنت."
+  },
+  "alertTitle": {
+    "message": "تحذير!"
+  },
+  "alertMessage": {
+    "message": "يحتوي هذا الموقع على رابط إلى:"
+  },
+  "severityLabel": {
+    "message": "الخطورة:"
+  },
+  "reasonLabel": {
+    "message": "السبب:"
+  },
+  "adviceMessage": {
+    "message": "ماذا يمكنك أن تفعل؟"
+  },
+  "adviceCheckUrl": {
+    "message": "افتح هذا الرابط فقط إذا كنت تثق تمامًا في المرسل. عند الشك، لا تنقر. لا تدخل كلمة المرور الخاصة بك أبدًا على موقع لا تثق به."
+  },
+  "noHttps": {
+    "message": "الاتصال بهذا الموقع غير آمن (لا يوجد HTTPS). قد يتمكن الآخرون من رؤية معلوماتك."
+  },
+  "ipAsDomain": {
+    "message": "يستخدم هذا الموقع عنوان IP بدلاً من اسم النطاق. هذا أمر غير معتاد ومحفوف بالمخاطر للغاية."
+  },
+  "tooManySubdomains": {
+    "message": "يحتوي عنوان الويب هذا على العديد من النطاقات الفرعية (مثل part1.part2.site.com). قد يشير هذا إلى موقع غير آمن (خطورة متوسطة)."
+  },
+  "suspiciousKeywords": {
+    "message": "يحتوي الرابط على كلمات ترتبط غالبًا بعمليات الاحتيال (خطورة منخفضة)."
+  },
+  "suspiciousPattern": {
+    "message": "يبدو هيكل عنوان الويب هذا غير معتاد (خطورة متوسطة)."
+  },
+  "shortenedUrl": {
+    "message": "هذا رابط مختصر (مثل bit.ly). الوجهة الفعلية غير مرئية على الفور (خطورة متوسطة)."
+  },
+  "downloadPage": {
+    "message": "يبدو أن هذا الرابط يقوم بتنزيل ملف. افتح فقط الملفات التي تثق بها تمامًا (خطورة متوسطة)."
+  },
+  "freeHosting": {
+    "message": "يستخدم هذا الموقع منصة استضافة مجانية. يستغل المحتالون هذا أحيانًا (خطورة متوسطة)."
+  },
+  "encodedCharacters": {
+    "message": "يحتوي الرابط على أحرف غير عادية (خطورة منخفضة). يمكن استخدام هذا لإخفاء الوجهة الحقيقية."
+  },
+  "homoglyphAttack": {
+    "message": "يستخدم عنوان الويب هذا أحرفًا شبه متطابقة مع موقع ويب معروف (خطورة عالية). هذه خدعة لتضليلك."
+  },
+  "metaRedirect": {
+    "message": "يقوم هذا الموقع بإعادة توجيهك تلقائيًا. قد يؤدي هذا إلى موقع غير آمن (خطورة متوسطة)."
+  },
+  "cryptoPhishing": {
+    "message": "يبدو أن هذا الرابط عملية احتيال للعملات المشفرة (خطورة عالية). كن حذرًا جدًا مع محفظتك وبياناتك."
+  },
+  "externalScripts": {
+    "message": "يقوم هذا الموقع بتحميل كود من مصدر خارجي تم وضع علامة عليه على أنه محفوف بالمخاطر."
+  },
+  "suspiciousParams": {
+    "message": "يحتوي الرابط على معلمات فنية تُستخدم أحيانًا لإجراءات غير آمنة (خطورة منخفضة)."
+  },
+  "mixedContent": {
+    "message": "تقوم هذه الصفحة الآمنة أيضًا بتحميل محتوى غير آمن. هذا خطر أمني (خطورة متوسطة)."
+  },
+  "unusualPort": {
+    "message": "يستخدم هذا الموقع منفذًا فنيًا غير معتاد. قد تكون هذه محاولة لتجاوز الأمان (خطورة متوسطة)."
+  },
+  "javascriptScheme": {
+    "message": "يحاول هذا الرابط تنفيذ التعليمات البرمجية مباشرة في متصفحك (خطورة عالية)."
+  },
+  "urlFragmentTrick": {
+    "message": "يحتوي الرابط على جزء طويل بشكل غير عادي. هذه تقنية تستخدم أحيانًا للتضليل (خطورة منخفضة)."
+  },
+  "suspiciousTLD": {
+    "message": "يستخدم هذا الموقع امتداد نطاق (مثل .zip أو .mov) غالبًا ما يتم استغلاله في عمليات الاحتيال (خطورة عالية)."
+  },
+  "base64OrHex": {
+    "message": "يحتوي هذا الرابط على معلومات مشفرة بشدة. غالبًا ما يستخدم هذا لإخفاء التعليمات البرمجية الضارة (خطورة عالية)."
+  },
+  "similarToLegitimateDomain": {
+    "message": "يشبه هذا الموقع إلى حد كبير موقعًا معروفًا وموثوقًا به. تحقق من العنوان بعناية، فقد يكون نسخة مزيفة."
+  },
+  "youngDomain": {
+    "message": "تم تسجيل هذا النطاق قبل $AGE$ أيام فقط (خطورة عالية). غالبًا ما تُستخدم النطاقات الجديدة في عمليات الاحتيال.",
+    "placeholders": {
+      "AGE": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "insecureLoginPage": {
+    "message": "صفحة تسجيل الدخول هذه غير آمنة (لا يوجد HTTPS). لا تدخل كلمة المرور الخاصة بك هنا أبدًا (خطورة عالية)."
+  },
+  "loginPageNoMX": {
+    "message": "تنتمي صفحة تسجيل الدخول هذه إلى نطاق لا يمكنه تلقي رسائل بريد إلكتروني. هذا محفوف بالمخاطر للغاية (خطورة عالية)."
+  },
+  "malwareExtension": {
+    "message": "يؤدي هذا الرابط إلى ملف قد يكون ضارًا (مثل .exe أو .zip). لا تقم بتنزيله (خطورة عالية)."
+  },
+  "popupTitle": {
+    "message": "LinkShield: حمايتك ضد التصيد الاحتيالي"
+  },
+  "popupSubtitle": {
+    "message": "ابق آمنًا مع التنبيهات والحماية في الوقت الفعلي."
+  },
+  "backgroundAnalysis": {
+    "message": "المسح في الخلفية"
+  },
+  "backgroundAnalysisDescription": {
+    "message": "احظر مواقع الويب الخطيرة حتى قبل زيارتها."
+  },
+  "activationRequired": {
+    "message": "قم بتمكين هذه الميزة لاستخدامها."
+  },
+  "integratedProtection": {
+    "message": "حماية متكاملة"
+  },
+  "integratedProtectionDescription": {
+    "message": "يتحقق مباشرة من مواقع الويب والروابط بحثًا عن الخصائص الخطرة."
+  },
+  "premiumFeaturesActive": {
+    "message": "أنت تستخدم الآن الإصدار المميز!"
+  },
+  "upgradePrompt": {
+    "message": "قم بالترقية إلى الإصدار المميز للحصول على ميزات إضافية."
+  },
+  "saveSettings": {
+    "message": "حفظ الإعدادات"
+  },
+  "settingsSaved": {
+    "message": "تم حفظ الإعدادات!"
+  },
+  "licenseActivate": {
+    "message": "تفعيل الترخيص"
+  },
+  "licenseInputPlaceholder": {
+    "message": "أدخل مفتاح الترخيص الخاص بك"
+  },
+  "licenseCheck": {
+    "message": "التحقق من الترخيص"
+  },
+  "licenseInvalid": {
+    "message": "مفتاح ترخيص غير صالح."
+  },
+  "licenseValid": {
+    "message": "تم تفعيل الترخيص بنجاح!"
+  },
+  "lastRuleUpdate": {
+    "message": "آخر تحديث لقاعدة البيانات: "
+  },
+  "licenseStatus": {
+    "message": "حالة الترخيص:"
+  },
+  "licenseFreemium": {
+    "message": "نسخة مجانية"
+  },
+  "bulkUrlCheck": {
+    "message": "التحقق من روابط متعددة"
+  },
+  "bulkUrlCheckDescription": {
+    "message": "قم بتحميل ملف .txt للتحقق من قائمة الروابط."
+  },
+  "fileChoose": {
+    "message": "اختر ملفًا"
+  },
+  "fileCheck": {
+    "message": "التحقق من الملف"
+  },
+  "fileCheckNoUrls": {
+    "message": "الملف المحدد لا يحتوي على أي روابط."
+  },
+  "fileCheckFailed": {
+    "message": "فشل التحقق من الملف."
+  },
+  "safeDomain": {
+    "message": "هذا موقع ويب معروف وآمن."
+  },
+  "allowedProtocol": {
+    "message": "يستخدم هذا الرابط بروتوكولًا آمنًا (مثل 'mailto:' أو 'tel:')."
+  },
+  "invalidUrl": {
+    "message": "عنوان الويب هذا غير صالح أو به خطأ إملائي."
+  },
+  "loadingMessage": {
+    "message": "جاري تحليل الصفحة..."
+  },
+  "cannotRetrieveSiteStatus": {
+    "message": "لا يمكن استرداد حالة الموقع."
+  },
+  "unknownRisk": {
+    "message": "مخاطرة غير معروفة"
+  },
+  "highRisk": {
+    "message": "خطورة عالية: كن حذرًا جدًا."
+  },
+  "mediumRisk": {
+    "message": "خطورة متوسطة: انتبه جيدًا."
+  },
+  "lowRisk": {
+    "message": "خطورة منخفضة: بعض النقاط المثيرة للقلق."
+  },
+  "noSuspiciousFeatures": {
+    "message": "لم يتم العثور على ميزات خطرة مباشرة."
+  },
+  "siteStatusNotAvailable": {
+    "message": "حالة هذا الموقع غير متوفرة."
+  },
+  "sslValidationFailed": {
+    "message": "شهادة الأمان الخاصة بهذا الموقع غير صالحة."
+  },
+  "shortenedUrlError": {
+    "message": "تعذر التحقق من الوجهة النهائية لهذا الرابط المختصر."
+  },
+  "redirectedShortenedUrl": {
+    "message": "يعيد هذا الرابط المختصر توجيهك إلى موقع ويب آخر."
+  },
+  "cryptoPhishingAd": {
+    "message": "يحتوي هذا الإعلان على خصائص عملية احتيال للعملات المشفرة (خطورة عالية)."
+  },
+  "suspiciousAdStructure": {
+    "message": "يحتوي رابط هذا الإعلان على بنية غير معتادة (خطورة متوسطة)."
+  },
+  "suspiciousAdTLD": {
+    "message": "يستخدم هذا الإعلان امتداد نطاق يتم استغلاله غالبًا (خطورة متوسطة)."
+  },
+  "homoglyphAdAttack": {
+    "message": "يستخدم الإعلان أحرفًا شبه متطابقة مع موقع ويب معروف (خطورة متوسطة)."
+  },
+  "brandMisuse": {
+    "message": "يستخدم الإعلان بشكل غير صحيح اسم علامة تجارية معروفة (خطورة عالية)."
+  },
+  "unknownWarning": {
+    "message": "تم العثور على مخاطرة غير معروفة. كن حذرًا للغاية."
+  },
+  "typosquattingAttack": {
+    "message": "يشبه عنوان الويب هذا موقعًا حقيقيًا، ولكنه مكتوب بشكل خاطئ عن عمد (خطورة عالية). قد يكون هذا إصدارًا مزيفًا."
+  },
+  "downloadKeyword": {
+    "message": "يحتوي الرابط على كلمات متعلقة بالتنزيلات (خطورة منخفضة). افتح فقط الملفات التي تثق بها."
+  },
+  "suspiciousScriptContent": {
+    "message": "يحتوي نص برمجي على هذه الصفحة على تعليمات برمجية محفوفة بالمخاطر. قد يكون غير آمن."
+  },
+  "invalidScriptSrc": {
+    "message": "الرابط إلى نص برمجي على هذه الصفحة غير صحيح."
+  },
+  "mixedScripts": {
+    "message": "يستخدم هذا العنوان مزيجًا من أنظمة الكتابة المختلفة (مثل الأحرف اللاتينية والسيريلية). هذه خدعة تصيد احتيالي معروفة (خطورة عالية)."
+  },
+  "introBannerMessage": {
+    "message": "LinkShield نشط ويميز الروابط الخطرة بـ ⚠️. مرر الماوس فوق الرمز لمعرفة السبب."
+  },
+  "digitHomoglyph": {
+    "message": "يستخدم هذا العنوان أرقامًا تشبه الأحرف لتقليد علامة تجارية معروفة (خطورة متوسطة)."
+  },
+  "trustedTLD": {
+    "message": "يحتوي هذا النطاق على امتداد نطاق قياسي (خطورة منخفضة)."
+  },
+  "trustedTld": {
+    "message": "يحتوي هذا النطاق على امتداد نطاق قياسي (خطورة منخفضة)."
+  },
+  "suspiciousPageText": {
+    "message": "يحتوي النص الموجود على هذه الصفحة على كلمات تُستخدم غالبًا في عمليات الاحتيال (خطورة عالية)."
+  },
+  "urgencyTactic": {
+    "message": "تستخدم هذه الصفحة لغة عاجلة للضغط عليك (خطورة عالية). احذر من عمليات الاحتيال."
+  },
+  "severityMediumRisk": {
+    "message": "خطورة متوسطة: قد يكون هذا الرابط غير آمن. كن حذرًا."
+  },
+  "allowedQueryParam": {
+    "message": "يحتوي الرابط على معلمة فنية آمنة ومسموح بها."
+  },
+  "suspiciousIframeAdComponent": {
+    "message": "تقوم هذه الصفحة بتحميل مكون إعلان من موقع ويب آخر."
+  },
+  "suspiciousIframeTracking": {
+    "message": "تقوم هذه الصفحة بتحميل أداة تتبع يمكنها مراقبة سلوك التصفح الخاص بك."
+  },
+  "suspiciousIframeMalicious": {
+    "message": "تم العثور على مكون يحتمل أن يكون ضارًا على هذه الصفحة (مثل التصيد الاحتيالي)."
+  },
+  "suspiciousIframeHidden": {
+    "message": "تم العثور على عنصر محفوف بالمخاطر وغير مرئي على الصفحة."
+  },
+  "mixedContentIframe": {
+    "message": "تقوم هذه الصفحة الآمنة بتحميل مكون غير آمن. هذا خطر أمني."
+  },
+  "invalidIframeSrc": {
+    "message": "تعذر تحميل مكون على هذه الصفحة بشكل صحيح (مصدر غير صالح)."
+  },
+  "iframeHidden": {
+    "message": "تم العثور على عنصر محفوف بالمخاطر وغير مرئي على الصفحة."
+  },
+  "typosquattingAttack_adobe_com": {
+    "message": "يشبه عنوان الويب هذا adobe.com، ولكنه مكتوب بشكل خاطئ عن عمد (خطورة عالية)."
+  },
+  "typosquattingAttack_alibaba_com": {
+    "message": "يشبه عنوان الويب هذا alibaba.com، ولكنه مكتوب بشكل خاطئ عن عمد (خطورة عالية)."
+  },
+  "typosquattingAttack_amazon_com": {
+    "message": "يشبه عنوان الويب هذا amazon.com، ولكنه مكتوب بشكل خاطئ عن عمد (خطورة عالية)."
+  },
+  "typosquattingAttack_apple_com": {
+    "message": "يشبه عنوان الويب هذا apple.com، ولكنه مكتوب بشكل خاطئ عن عمد (خطورة عالية)."
+  },
+  "typosquattingAttack_facebook_com": {
+    "message": "يشبه عنوان الويب هذا facebook.com، ولكنه مكتوب بشكل خاطئ عن عمد (خطورة عالية)."
+  },
+  "typosquattingAttack_google_com": {
+    "message": "يشبه عنوان الويب هذا google.com، ولكنه مكتوب بشكل خاطئ عن عمد (خطورة عالية)."
+  },
+  "typosquattingAttack_linkedin_com": {
+    "message": "يشبه عنوان الويب هذا linkedin.com، ولكنه مكتوب بشكل خاطئ عن عمد (خطورة عالية)."
+  },
+  "typosquattingAttack_microsoft_com": {
+    "message": "يشبه عنوان الويب هذا microsoft.com، ولكنه مكتوب بشكل خاطئ عن عمد (خطورة عالية)."
+  },
+  "typosquattingAttack_paypal_com": {
+    "message": "يشبه عنوان الويب هذا paypal.com، ولكنه مكتوب بشكل خاطئ عن عمد (خطورة عالية)."
+  },
+  "typosquattingAttack_whatsapp_com": {
+    "message": "يشبه عنوان الويب هذا whatsapp.com، ولكنه مكتوب بشكل خاطئ عن عمد (خطورة عالية)."
+  },
+  "typosquattingAttack_x_com": {
+    "message": "يشبه عنوان الويب هذا x.com، ولكنه مكتوب بشكل خاطئ عن عمد (خطورة عالية)."
+  },
+  "homoglyphAttack_microsoft_com": {
+    "message": "يستخدم هذا العنوان أحرفًا شبه متطابقة مع microsoft.com (خطورة عالية)."
+  },
+  "homoglyphAttack_apple_com": {
+    "message": "يستخدم هذا العنوان أحرفًا شبه متطابقة مع apple.com (خطورة عالية)."
+  },
+  "homoglyphAttack_google_com": {
+    "message": "يستخدم هذا العنوان أحرفًا شبه متطابقة مع google.com (خطورة عالية)."
+  },
+  "homoglyphAttack_linkedin_com": {
+    "message": "يستخدم هذا العنوان أحرفًا شبه متطابقة مع linkedin.com (خطورة عالية)."
+  },
+  "homoglyphAttack_alibaba_com": {
+    "message": "يستخدم هذا العنوان أحرفًا شبه متطابقة مع alibaba.com (خطورة عالية)."
+  },
+  "homoglyphAttack_whatsapp_com": {
+    "message": "يستخدم هذا العنوان أحرفًا شبه متطابقة مع whatsapp.com (خطورة عالية)."
+  },
+  "homoglyphAttack_amazon_com": {
+    "message": "يستخدم هذا العنوان أحرفًا شبه متطابقة مع amazon.com (خطورة عالية)."
+  },
+  "homoglyphAttack_x_com": {
+    "message": "يستخدم هذا العنوان أحرفًا شبه متطابقة مع x.com (خطورة عالية)."
+  },
+  "homoglyphAttack_facebook_com": {
+    "message": "يستخدم هذا العنوان أحرفًا شبه متطابقة مع facebook.com (خطورة عالية)."
+  },
+  "homoglyphAttack_adobe_com": {
+    "message": "يستخدم هذا العنوان أحرفًا شبه متطابقة مع adobe.com (خطورة عالية)."
+  },
+  "homoglyphAttack_paypal_com": {
+    "message": "يستخدم هذا العنوان أحرفًا شبه متطابقة مع paypal.com (خطورة عالية)."
+  },
+  "typosquatting_microsoft_com": {
+    "message": "يشبه هذا العنوان إلى حد كبير microsoft.com (خطورة عالية). قد تكون صفحة مزيفة."
+  },
+  "typosquatting_apple_com": {
+    "message": "يشبه هذا العنوان إلى حد كبير apple.com (خطورة عالية). قد تكون صفحة مزيفة."
+  },
+  "typosquatting_google_com": {
+    "message": "يشبه هذا العنوان إلى حد كبير google.com (خطورة عالية). قد تكون صفحة مزيفة."
+  },
+  "typosquatting_linkedin_com": {
+    "message": "يشبه هذا العنوان إلى حد كبير linkedin.com (خطورة عالية). قد تكون صفحة مزيفة."
+  },
+  "typosquatting_alibaba_com": {
+    "message": "يشبه هذا العنوان إلى حد كبير alibaba.com (خطورة عالية). قد تكون صفحة مزيفة."
+  },
+  "typosquatting_whatsapp_com": {
+    "message": "يشبه هذا العنوان إلى حد كبير whatsapp.com (خطورة عالية). قد تكون صفحة مزيفة."
+  },
+  "typosquatting_amazon_com": {
+    "message": "يشبه هذا العنوان إلى حد كبير amazon.com (خطورة عالية). قد تكون صفحة مزيفة."
+  },
+  "typosquatting_x_com": {
+    "message": "يشبه هذا العنوان إلى حد كبير x.com (خطورة عالية). قد تكون صفحة مزيفة."
+  },
+  "typosquatting_facebook_com": {
+    "message": "يشبه هذا العنوان إلى حد كبير facebook.com (خطورة عالية). قد تكون صفحة مزيفة."
+  },
+  "typosquatting_adobe_com": {
+    "message": "يشبه هذا العنوان إلى حد كبير adobe.com (خطورة عالية). قد تكون صفحة مزيفة."
+  },
+  "typosquatting_paypal_com": {
+    "message": "يشبه هذا العنوان إلى حد كبير paypal.com (خطورة عالية). قد تكون صفحة مزيفة."
+  },
+  "similarToLegitimateDomain_microsoft_com": {
+    "message": "يشبه هذا الموقع microsoft.com، تحقق من العنوان بعناية."
+  },
+  "similarToLegitimateDomain_apple_com": {
+    "message": "يشبه هذا الموقع apple.com، تحقق من العنوان بعناية."
+  },
+  "similarToLegitimateDomain_google_com": {
+    "message": "يشبه هذا الموقع google.com، تحقق من العنوان بعناية."
+  },
+  "similarToLegitimateDomain_linkedin_com": {
+    "message": "يشبه هذا الموقع linkedin.com، تحقق من العنوان بعناية."
+  },
+  "similarToLegitimateDomain_alibaba_com": {
+    "message": "يشبه هذا الموقع alibaba.com، تحقق من العنوان بعناية."
+  },
+  "similarToLegitimateDomain_whatsapp_com": {
+    "message": "يشبه هذا الموقع whatsapp.com، تحقق من العنوان بعناية."
+  },
+  "similarToLegitimateDomain_amazon_com": {
+    "message": "يشبه هذا الموقع amazon.com، تحقق من العنوان بعناية."
+  },
+  "similarToLegitimateDomain_x_com": {
+    "message": "يشبه هذا الموقع x.com، تحقق من العنوان بعناية."
+  },
+  "similarToLegitimateDomain_facebook_com": {
+    "message": "يشبه هذا الموقع facebook.com، تحقق من العنوان بعناية."
+  },
+  "similarToLegitimateDomain_adobe_com": {
+    "message": "يشبه هذا الموقع adobe.com، تحقق من العنوان بعناية."
+  },
+  "similarToLegitimateDomain_paypal_com": {
+    "message": "يشبه هذا الموقع paypal.com، تحقق من العنوان بعناية."
+  },
+  "suspiciousPunycodeDecoding_microsoft_com": {
+    "message": "يستخدم هذا الرابط أحرفًا غير عادية ليبدو مثل microsoft.com (خطورة عالية)."
+  },
+  "suspiciousPunycodeDecoding_apple_com": {
+    "message": "يستخدم هذا الرابط أحرفًا غير عادية ليبدو مثل apple.com (خطورة عالية)."
+  },
+  "suspiciousPunycodeDecoding_google_com": {
+    "message": "يستخدم هذا الرابط أحرفًا غير عادية ليبدو مثل google.com (خطورة عالية)."
+  },
+  "suspiciousPunycodeDecoding_linkedin_com": {
+    "message": "يستخدم هذا الرابط أحرفًا غير عادية ليبدو مثل linkedin.com (خطورة عالية)."
+  },
+  "suspiciousPunycodeDecoding_alibaba_com": {
+    "message": "يستخدم هذا الرابط أحرفًا غير عادية ليبدو مثل alibaba.com (خطورة عالية)."
+  },
+  "suspiciousPunycodeDecoding_whatsapp_com": {
+    "message": "يستخدم هذا الرابط أحرفًا غير عادية ليبدو مثل whatsapp.com (خطورة عالية)."
+  },
+  "suspiciousPunycodeDecoding_amazon_com": {
+    "message": "يستخدم هذا الرابط أحرفًا غير عادية ليبدو مثل amazon.com (خطورة عالية)."
+  },
+  "suspiciousPunycodeDecoding_x_com": {
+    "message": "يستخدم هذا الرابط أحرفًا غير عادية ليبدو مثل x.com (خطورة عالية)."
+  },
+  "suspiciousPunycodeDecoding_facebook_com": {
+    "message": "يستخدم هذا الرابط أحرفًا غير عادية ليبدو مثل facebook.com (خطورة عالية)."
+  },
+  "suspiciousPunycodeDecoding_adobe_com": {
+    "message": "يستخدم هذا الرابط أحرفًا غير عادية ليبدو مثل adobe.com (خطورة عالية)."
+  },
+  "suspiciousPunycodeDecoding_paypal_com": {
+    "message": "يستخدم هذا الرابط أحرفًا غير عادية ليبدو مثل paypal.com (خطورة عالية)."
+  },
+
+  "reason_nonAscii": {
+    "message": "تم اكتشاف أحرف مشبوهة (متشابهة الشكل)"
+  },
+  "reason_brandKeywordHomoglyph": {
+    "message": "تم اكتشاف تقليد للعلامة التجارية"
+  },
+  "reason_noHttps": {
+    "message": "لا يوجد اتصال آمن (HTTPS)"
+  },
+  "reason_suspiciousTLD": {
+    "message": "امتداد نطاق مشبوه"
+  },
+  "reason_ipAsDomain": {
+    "message": "عنوان IP كاسم نطاق"
+  },
+  "reason_tooManySubdomains": {
+    "message": "عدد كبير جدًا من النطاقات الفرعية"
+  },
+  "reason_shortenedUrl": {
+    "message": "تم اكتشاف رابط مختصر"
+  },
+  "reason_suspiciousKeywords": {
+    "message": "كلمات رئيسية مشبوهة في الرابط"
+  },
+  "reason_malwareExtension": {
+    "message": "امتداد ملف قد يكون ضارًا"
+  },
+  "reason_urlTooLong": {
+    "message": "رابط طويل بشكل غير عادي"
+  },
+  "reason_encodedCharacters": {
+    "message": "أحرف مشفرة في الرابط"
+  },
+  "reason_homoglyphAttack": {
+    "message": "تم اكتشاف هجوم بأحرف متشابهة"
+  },
+  "reason_typosquatting": {
+    "message": "تم اكتشاف احتلال الأخطاء الإملائية"
+  },
+  "reason_suspiciousBrandPattern": {
+    "message": "نمط علامة تجارية مشبوه"
+  },
+  "reason_unusualPort": {
+    "message": "منفذ غير عادي"
+  },
+  "reason_punycode": {
+    "message": "تم اكتشاف نطاق Punycode"
+  },
+  "reason_loginPageNoMX": {
+    "message": "صفحة تسجيل دخول بدون خادم بريد"
+  },
+  "reason_insecureLoginPage": {
+    "message": "صفحة تسجيل دخول غير آمنة"
+  },
+  "reason_sslValidationFailed": {
+    "message": "فشل التحقق من SSL"
+  },
+  "reason_similarToLegitimateDomain": {
+    "message": "مشابه لنطاق شرعي"
+  },
+
+  "qrDangerTitle": {
+    "message": "خطر: رمز QR للتصيد الاحتيالي!"
+  },
+  "qrCautionTitle": {
+    "message": "تحذير: رمز QR مشبوه"
+  },
+  "ocrDangerTitle": {
+    "message": "خطر: تم اكتشاف تصيد احتيالي في الصورة!"
+  },
+  "ocrCautionTitle": {
+    "message": "تحذير: نص مشبوه في الصورة"
+  },
+  "asciiQrDangerTitle": {
+    "message": "خطر: رمز ASCII QR للتصيد الاحتيالي!"
+  },
+  "asciiQrCautionTitle": {
+    "message": "تحذير: رمز ASCII QR مشبوه"
+  },
+  "suspiciousDomainDetected": {
+    "message": "تم اكتشاف نطاق مشبوه"
+  },
+  "hiddenUrl": {
+    "message": "رابط مخفي"
+  },
+  "fullUrl": {
+    "message": "الرابط الكامل"
+  },
+  "reasons": {
+    "message": "الأسباب"
+  },
+  "extractedText": {
+    "message": "النص المستخرج"
+  },
+
+  "trialPeriodActive": {
+    "message": "فترة التجربة نشطة"
+  },
+  "trialDaysRemaining": {
+    "message": "$DAYS$ أيام متبقية في فترة التجربة",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "14"
+      }
+    }
+  },
+  "trialExpired": {
+    "message": "انتهت فترة التجربة"
+  },
+  "trialExpiredMessage": {
+    "message": "انتهت فترة التجربة المجانية لمدة 30 يومًا. قم بتفعيل الترخيص للاستمرار في استخدام جميع الميزات."
+  },
+  "upgradeNow": {
+    "message": "الترقية الآن"
+  },
+
+  "popupPageTitle": {
+    "message": "لوحة تحكم LinkShield"
+  },
+  "extNameFull": {
+    "message": "LinkShield: سلاحك ضد التصيد الاحتيالي"
+  },
+  "extDescriptionFull": {
+    "message": "عزز أمانك على الإنترنت من خلال التنبيهات الفورية والحماية المتقدمة."
+  },
+
+  "licenseTrialTitle": {
+    "message": "فترة التجربة: $DAYS$ أيام متبقية",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "licenseTrialSubtitle": {
+    "message": "جميع ميزات Premium نشطة خلال فترة التجربة"
+  },
+  "licenseUpgradeLink": {
+    "message": "الترقية إلى Premium ←"
+  },
+  "licenseExpiredTitle": {
+    "message": "انتهت فترة التجربة"
+  },
+  "licenseExpiredSubtitle": {
+    "message": "قم بتفعيل Premium للحماية الكاملة"
+  },
+  "licenseBenefitsLabel": {
+    "message": "يتضمن Premium:"
+  },
+  "licenseBenefitsText": {
+    "message": "تحليلات في الخلفية، مسح رموز QR، حماية مستمرة"
+  },
+  "licenseKeyPlaceholder": {
+    "message": "أدخل رمز الترخيص الخاص بك"
+  },
+  "licenseActivateButton": {
+    "message": "تفعيل Premium"
+  },
+  "licenseBuyLink": {
+    "message": "ليس لديك ترخيص؟ اشترِ من هنا ←"
+  },
+  "licensePremiumTitle": {
+    "message": "Premium نشط"
+  },
+  "licensePremiumSubtitle": {
+    "message": "الحماية الكاملة مفعلة"
+  },
+
+  "sectionSecuritySettings": {
+    "message": "إعدادات الأمان"
+  },
+  "backgroundAnalysisTitle": {
+    "message": "إعدادات الأمان"
+  },
+  "backgroundAnalysisFeature": {
+    "message": "التحليلات في الخلفية"
+  },
+  "premiumBadge": {
+    "message": "PREMIUM"
+  },
+  "integratedProtectionFeature": {
+    "message": "حماية متكاملة ضد البرامج الضارة والتصيد الاحتيالي"
+  },
+  "integratedProtectionDescription": {
+    "message": "يجمع بين خدمات أمنية متعددة لتوفير حماية شاملة."
+  },
+  "confirmationMessage": {
+    "message": "تم حفظ الإعدادات بنجاح!"
+  },
+  "lastRuleUpdateNone": {
+    "message": "لم يتم تحديث قاعدة البيانات بعد"
+  },
+  "errorOccurred": {
+    "message": "حدث خطأ"
+  },
+
+  "gumroadErrorUnknown": {
+    "message": "خطأ غير معروف"
+  },
+  "gumroadErrorLicenseNotExistProduct": {
+    "message": "مفتاح الترخيص هذا غير موجود لهذا المنتج"
+  },
+  "gumroadErrorLicenseNotExist": {
+    "message": "مفتاح الترخيص هذا غير موجود"
+  },
+  "gumroadErrorLicenseRequired": {
+    "message": "يرجى إدخال مفتاح الترخيص"
+  },
+  "gumroadErrorProductNotFound": {
+    "message": "المنتج غير موجود"
+  },
+  "gumroadErrorLicenseDisabled": {
+    "message": "هذا الترخيص معطل"
+  },
+  "gumroadErrorLicenseRefunded": {
+    "message": "تم استرداد هذا الترخيص"
+  },
+  "gumroadErrorLicenseRevoked": {
+    "message": "تم استرداد أو إلغاء هذا الترخيص"
+  },
+  "gumroadErrorLicenseInvalid": {
+    "message": "مفتاح ترخيص غير صالح"
+  },
+  "gumroadErrorNetwork": {
+    "message": "خطأ في الشبكة أثناء التحقق. تحقق من اتصالك بالإنترنت."
+  },
+
+  "licenseEmptyError": {
+    "message": "يرجى إدخال رمز الترخيص"
+  },
+  "licenseActivating": {
+    "message": "جارِ التفعيل..."
+  },
+  "licenseActivatedSuccess": {
+    "message": "تم تفعيل Premium بنجاح!"
+  },
+  "licenseConnectionError": {
+    "message": "خطأ في الاتصال. حاول مرة أخرى."
+  },
+
+  "debugModeTitle": {
+    "message": "وضع التصحيح"
+  },
+  "debugTrial30": {
+    "message": "تجربة (30 يوم)"
+  },
+  "debugTrial3": {
+    "message": "تجربة (3 أيام)"
+  },
+  "debugExpired": {
+    "message": "منتهي"
+  },
+  "debugPremium": {
+    "message": "Premium"
+  },
+  "debugReset": {
+    "message": "إعادة تعيين"
+  },
+  "debugTrialSimulated": {
+    "message": "✓ تمت محاكاة التجربة ($DAYS$ أيام)",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "debugExpiredSimulated": {
+    "message": "✓ تمت محاكاة التجربة المنتهية"
+  },
+  "debugPremiumSimulated": {
+    "message": "✓ تمت محاكاة Premium"
+  },
+  "debugStorageReset": {
+    "message": "✓ تم إعادة تعيين التخزين - أعد تحميل الإضافة"
+  },
+  "debugError": {
+    "message": "✗ خطأ: $ERROR$",
+    "placeholders": {
+      "ERROR": {
+        "content": "$1",
+        "example": "Unknown error"
+      }
+    }
+  },
+  "reason_redirectChain": {
+    "message": "تم اكتشاف سلسلة إعادة توجيه مشبوهة. يمر الرابط عبر عدة خوادم قبل الوصول إلى وجهته."
+  },
+  "reason_excessiveRedirects": {
+    "message": "عدد كبير جدًا من عمليات إعادة التوجيه في السلسلة (خطر عالٍ). يعيد هذا الرابط التوجيه أكثر من 5 مرات، وهو ما يُستخدم غالبًا لإخفاء الوجهة الحقيقية."
+  },
+  "reason_domainHopping": {
+    "message": "تغييرات متعددة في النطاق في سلسلة إعادة التوجيه (خطر عالٍ). ينتقل الرابط بين العديد من المواقع المختلفة."
+  },
+  "reason_chainedShorteners": {
+    "message": "خدمات متعددة لتقصير الروابط متسلسلة (خطر متوسط). نادرًا ما تستخدم الروابط الشرعية خدمات تقصير متعددة."
+  },
+  "reason_suspiciousFinalTLD": {
+    "message": "الوجهة النهائية لها امتداد نطاق مشبوه (خطر عالٍ). تستخدم نقطة النهاية الفعلية امتدادًا خطيرًا."
+  },
+  "reason_redirectToIP": {
+    "message": "إعادة التوجيه تؤدي إلى عنوان IP (خطر عالٍ). الوجهة النهائية هي عنوان IP خام بدلاً من اسم نطاق."
+  },
+  "reason_redirectTimeout": {
+    "message": "انتهت مهلة تحليل إعادة التوجيه (خطر متوسط). تعذر تتبع سلسلة إعادة التوجيه بالكامل ضمن الحد الزمني."
+  },
+  "atSymbolPhishing": {
+    "message": "حرج: يستخدم هذا الرابط رمز @ لإخفاء الوجهة الحقيقية (خطر عالٍ). العنوان قبل @ مزيف - ستتم إعادة توجيهك إلى موقع ويب مختلف."
+  },
+  "doubleEncoding": {
+    "message": "يستخدم هذا الرابط ترميز URL مزدوج لإخفاء محتواه الحقيقي (خطر عالٍ). هذه تقنية شائعة لتجاوز فلاتر الأمان."
+  },
+  "fullwidthCharacters": {
+    "message": "يستخدم هذا الرابط أحرف Unicode كاملة العرض تبدو مثل الحروف العادية (خطر عالٍ). هذه خدعة لجعل المواقع المزيفة تبدو شرعية."
+  },
+  "nullByteInjection": {
+    "message": "يحتوي هذا الرابط على حرف null byte (خطر عالٍ). هذه تقنية اختراق يمكن استخدامها لتجاوز فحوصات الأمان."
+  },
+
+  "formActionHijacking": {
+    "message": "يرسل نموذج تسجيل الدخول هذا بيانات اعتمادك إلى موقع ويب خارجي (خطر حرج). قد تتم سرقة اسم المستخدم وكلمة المرور."
+  },
+  "formActionExternal": {
+    "message": "نموذج تسجيل الدخول يرسل البيانات إلى نطاق خارجي: $DOMAIN$ (خطر حرج). هذه محاولة لسرقة بيانات الاعتماد.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "evil-site.com"
+      }
+    }
+  },
+  "formActionInvalid": {
+    "message": "نموذج تسجيل الدخول يحتوي على URL إجراء غير صالح أو مشبوه (خطر عالٍ). قد لا يتم إرسال بيانات اعتمادك بشكل آمن."
+  },
+
+  "hiddenIframeZeroSize": {
+    "message": "تم اكتشاف iframe مخفي بحجم صفر (خطر عالٍ). يمكن استخدام هذا لتحميل محتوى ضار بشكل غير مرئي."
+  },
+  "hiddenIframeOffScreen": {
+    "message": "تم اكتشاف iframe موضوع خارج الشاشة (خطر عالٍ). قد يتتبعك المحتوى المخفي أو يسرق البيانات."
+  },
+  "hiddenIframeCSSHidden": {
+    "message": "تم اكتشاف iframe مخفي بواسطة CSS (خطر عالٍ). يمكن للإطارات غير المرئية التقاط ضغطات المفاتيح أو تحميل البرامج الضارة."
+  },
+  "hiddenIframeNegativePos": {
+    "message": "تم اكتشاف iframe بموضع سلبي (خطر متوسط). تُستخدم هذه التقنية لإخفاء المحتوى عن المستخدمين."
+  },
+
+  "nrdCritical": {
+    "message": "حرج: تم تسجيل النطاق قبل $DAYS$ يوم/أيام (خطر حرج). النطاقات الجديدة تمامًا من المرجح جدًا أن تكون ضارة.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "0"
+      }
+    }
+  },
+  "nrdHigh": {
+    "message": "تم تسجيل النطاق قبل $DAYS$ يومًا فقط (خطر عالٍ). النطاقات الجديدة جدًا تُستخدم بشكل متكرر في الاحتيال.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "nrdMedium": {
+    "message": "تم تسجيل النطاق قبل $DAYS$ يومًا (خطر متوسط). النطاقات الجديدة أقل من 30 يومًا تتطلب حذرًا إضافيًا.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "15"
+      }
+    }
+  },
+  "nrdLow": {
+    "message": "تم تسجيل النطاق قبل $DAYS$ يومًا (خطر منخفض). نطاق جديد نسبيًا، كن حذرًا بعض الشيء.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "60"
+      }
+    }
+  },
+
+  "licenseErrorNotFound": {
+    "message": "لم يتم العثور على مفتاح الترخيص. يرجى التحقق من إدخالك."
+  },
+  "licenseErrorDisabled": {
+    "message": "تم تعطيل هذا الترخيص."
+  },
+  "licenseErrorExpired": {
+    "message": "انتهت صلاحية هذا الترخيص."
+  },
+  "licenseErrorActivationLimit": {
+    "message": "تم الوصول إلى حد التفعيل. يرجى إلغاء تفعيل جهاز آخر أولاً."
+  },
+  "licenseErrorInstanceNotFound": {
+    "message": "لم يتم العثور على مثيل التثبيت."
+  },
+  "licenseErrorInvalid": {
+    "message": "مفتاح ترخيص غير صالح."
+  },
+  "licenseErrorNetwork": {
+    "message": "خطأ في الشبكة. يرجى التحقق من اتصالك والمحاولة مرة أخرى."
+  },
+  "licenseErrorUnknown": {
+    "message": "حدث خطأ غير معروف أثناء التحقق."
+  }
+}

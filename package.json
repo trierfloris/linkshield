@@ -1,6 +1,6 @@
 {
   "name": "linkshield",
-  "version": "7.6.0",
+  "version": "7.7.0",
   "description": "LinkShield Chrome Extension - Phishing and malware protection",
   "scripts": {
     "test": "jest",

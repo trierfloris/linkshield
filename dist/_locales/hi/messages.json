@@ -1,0 +1,879 @@
+{
+  "extName": {
+    "message": "LinkShield"
+  },
+  "extDescription": {
+    "message": "LinkShield आपको असुरक्षित वेबसाइटों और लिंक की पहचान करने में मदद करता है ताकि आप ऑनलाइन सुरक्षित रह सकें।"
+  },
+  "alertTitle": {
+    "message": "चेतावनी!"
+  },
+  "alertMessage": {
+    "message": "इस वेबसाइट में एक लिंक है:"
+  },
+  "severityLabel": {
+    "message": "जोखिम:"
+  },
+  "reasonLabel": {
+    "message": "कारण:"
+  },
+  "adviceMessage": {
+    "message": "आप क्या कर सकते हैं?"
+  },
+  "adviceCheckUrl": {
+    "message": "यह लिंक केवल तभी खोलें जब आप भेजने वाले पर पूरी तरह से भरोसा करते हों। संदेह होने पर, क्लिक न करें। किसी ऐसी साइट पर कभी भी अपना पासवर्ड दर्ज न करें जिस पर आप भरोसा नहीं करते।"
+  },
+  "noHttps": {
+    "message": "इस वेबसाइट से कनेक्शन सुरक्षित नहीं है (कोई HTTPS नहीं)। अन्य लोग आपकी जानकारी देख सकते हैं।"
+  },
+  "ipAsDomain": {
+    "message": "यह वेबसाइट डोमेन नाम के बजाय एक आईपी पते का उपयोग करती है। यह असामान्य और बहुत जोखिम भरा है।"
+  },
+  "tooManySubdomains": {
+    "message": "इस वेब पते में बहुत सारे सबडोमेन हैं (जैसे part1.part2.site.com)। यह एक असुरक्षित साइट का संकेत हो सकता है (मध्यम जोखिम)।"
+  },
+  "suspiciousKeywords": {
+    "message": "लिंक में ऐसे शब्द हैं जो अक्सर घोटालों से जुड़े होते हैं (कम जोखिम)।"
+  },
+  "suspiciousPattern": {
+    "message": "इस वेब पते की संरचना असामान्य लगती है (मध्यम जोखिम)।"
+  },
+  "shortenedUrl": {
+    "message": "यह एक छोटा किया गया लिंक है (जैसे bit.ly)। वास्तविक गंतव्य तुरंत दिखाई नहीं देता है (मध्यम जोखिम)।"
+  },
+  "downloadPage": {
+    "message": "यह लिंक एक फ़ाइल डाउनलोड करता प्रतीत होता है। केवल उन्हीं फ़ाइलों को खोलें जिन पर आप पूरी तरह से भरोसा करते हैं (मध्यम जोखिम)।"
+  },
+  "freeHosting": {
+    "message": "यह वेबसाइट एक मुफ्त होस्टिंग प्लेटफॉर्म का उपयोग करती है। धोखेबाज कभी-कभी इसका फायदा उठाते हैं (मध्यम जोखिम)।"
+  },
+  "encodedCharacters": {
+    "message": "लिंक में असामान्य वर्ण हैं (कम जोखिम)। इसका उपयोग वास्तविक गंतव्य को छिपाने के लिए किया जा सकता है।"
+  },
+  "homoglyphAttack": {
+    "message": "यह वेब पता ऐसे वर्णों का उपयोग करता है जो एक जानी-मानी वेबसाइट के समान हैं (उच्च जोखिम)। यह आपको गुमराह करने की एक चाल है।"
+  },
+  "metaRedirect": {
+    "message": "यह वेबसाइट आपको स्वचालित रूप से पुनर्निर्देशित करती है। यह एक असुरक्षित साइट पर ले जा सकता है (मध्यम जोखिम)।"
+  },
+  "cryptoPhishing": {
+    "message": "यह लिंक एक क्रिप्टो घोटाले जैसा लगता है (उच्च जोखिम)। अपने वॉलेट और क्रेडेंशियल्स से अतिरिक्त सावधान रहें।"
+  },
+  "externalScripts": {
+    "message": "यह साइट एक बाहरी स्रोत से कोड लोड करती है जिसे जोखिम भरा के रूप में चिह्नित किया गया है।"
+  },
+  "suspiciousParams": {
+    "message": "लिंक में तकनीकी पैरामीटर हैं जो कभी-कभी असुरक्षित कार्यों के लिए उपयोग किए जाते हैं (कम जोखिम)।"
+  },
+  "mixedContent": {
+    "message": "यह सुरक्षित पृष्ठ असुरक्षित सामग्री भी लोड कर रहा है। यह एक सुरक्षा जोखिम है (मध्यम जोखिम)।"
+  },
+  "unusualPort": {
+    "message": "यह साइट एक असामान्य तकनीकी पोर्ट का उपयोग करती है। यह सुरक्षा को बायपास करने का एक प्रयास हो सकता है (मध्यम जोखिम)।"
+  },
+  "javascriptScheme": {
+    "message": "यह लिंक सीधे आपके ब्राउज़र में कोड निष्पादित करने का प्रयास करता है (उच्च जोखिम)।"
+  },
+  "urlFragmentTrick": {
+    "message": "लिंक में एक असामान्य रूप से लंबा टुकड़ा है। यह एक तकनीक है जिसे कभी-कभी गुमराह करने के लिए उपयोग किया जाता है (कम जोखिम)।"
+  },
+  "suspiciousTLD": {
+    "message": "यह वेबसाइट एक डोमेन एक्सटेंशन (जैसे .zip या .mov) का उपयोग करती है जिसका अक्सर घोटालों के लिए दुरुपयोग किया जाता है (उच्च जोखिम)।"
+  },
+  "base64OrHex": {
+    "message": "इस लिंक में भारी एन्कोडेड जानकारी है। इसका उपयोग अक्सर दुर्भावनापूर्ण कोड को छिपाने के लिए किया जाता है (उच्च जोखिम)।"
+  },
+  "similarToLegitimateDomain": {
+    "message": "यह साइट एक प्रसिद्ध, विश्वसनीय साइट के समान दिखती है। पते की सावधानीपूर्वक जांच करें, यह एक नकली प्रति हो सकती है।"
+  },
+  "youngDomain": {
+    "message": "यह डोमेन केवल $AGE$ दिन पहले पंजीकृत किया गया था (उच्च जोखिम)। नए डोमेन अक्सर घोटालों के लिए उपयोग किए जाते हैं।",
+    "placeholders": {
+      "AGE": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "insecureLoginPage": {
+    "message": "यह लॉगिन पृष्ठ सुरक्षित नहीं है (कोई HTTPS नहीं)। यहां कभी भी अपना पासवर्ड दर्ज न करें (उच्च जोखिम)।"
+  },
+  "loginPageNoMX": {
+    "message": "यह लॉगिन पृष्ठ एक ऐसे डोमेन से संबंधित है जो ईमेल प्राप्त नहीं कर सकता है। यह बहुत जोखिम भरा है (उच्च जोखिम)।"
+  },
+  "malwareExtension": {
+    "message": "यह लिंक एक ऐसी फ़ाइल की ओर ले जाता है जो हानिकारक हो सकती है (जैसे .exe या .zip)। इसे डाउनलोड न करें (उच्च जोखिम)।"
+  },
+  "popupTitle": {
+    "message": "LinkShield: फ़िशिंग के विरुद्ध आपकी सुरक्षा"
+  },
+  "popupSubtitle": {
+    "message": "वास्तविक समय की चेतावनियों और सुरक्षा के साथ सुरक्षित रहें।"
+  },
+  "backgroundAnalysis": {
+    "message": "पृष्ठभूमि स्कैनिंग"
+  },
+  "backgroundAnalysisDescription": {
+    "message": "खतरनाक वेबसाइटों को आपके द्वारा देखे जाने से पहले ही ब्लॉक करें।"
+  },
+  "activationRequired": {
+    "message": "इसका उपयोग करने के लिए इस सुविधा को सक्षम करें।"
+  },
+  "integratedProtection": {
+    "message": "एकीकृत सुरक्षा"
+  },
+  "integratedProtectionDescription": {
+    "message": "जोखिम भरी विशेषताओं के लिए सीधे वेबसाइटों और लिंक की जांच करता है।"
+  },
+  "premiumFeaturesActive": {
+    "message": "अब आप प्रीमियम संस्करण का उपयोग कर रहे हैं!"
+  },
+  "upgradePrompt": {
+    "message": "अतिरिक्त सुविधाओं के लिए प्रीमियम में अपग्रेड करें।"
+  },
+  "saveSettings": {
+    "message": "सेटिंग्स सहेजें"
+  },
+  "settingsSaved": {
+    "message": "सेटिंग्स सहेजी गईं!"
+  },
+  "licenseActivate": {
+    "message": "लाइसेंस सक्रिय करें"
+  },
+  "licenseInputPlaceholder": {
+    "message": "अपनी लाइसेंस कुंजी दर्ज करें"
+  },
+  "licenseCheck": {
+    "message": "लाइसेंस जांचें"
+  },
+  "licenseInvalid": {
+    "message": "अमान्य लाइसेंस कुंजी।"
+  },
+  "licenseValid": {
+    "message": "लाइसेंस सफलतापूर्वक सक्रिय हो गया!"
+  },
+  "lastRuleUpdate": {
+    "message": "अंतिम डेटाबेस अपडेट: "
+  },
+  "licenseStatus": {
+    "message": "लाइसेंस स्थिति:"
+  },
+  "licenseFreemium": {
+    "message": "मुफ्त संस्करण"
+  },
+  "bulkUrlCheck": {
+    "message": "एकाधिक लिंक जांचें"
+  },
+  "bulkUrlCheckDescription": {
+    "message": "लिंक की सूची की जांच के लिए एक .txt फ़ाइल अपलोड करें।"
+  },
+  "fileChoose": {
+    "message": "एक फ़ाइल चुनें"
+  },
+  "fileCheck": {
+    "message": "फ़ाइल जांचें"
+  },
+  "fileCheckNoUrls": {
+    "message": "चयनित फ़ाइल में कोई लिंक नहीं है।"
+  },
+  "fileCheckFailed": {
+    "message": "फ़ाइल जांच विफल रही।"
+  },
+  "safeDomain": {
+    "message": "यह एक ज्ञात, सुरक्षित वेबसाइट है।"
+  },
+  "allowedProtocol": {
+    "message": "यह लिंक एक सुरक्षित प्रोटोकॉल का उपयोग करता है (जैसे 'mailto:' या 'tel:')।"
+  },
+  "invalidUrl": {
+    "message": "यह वेब पता अमान्य है या गलत वर्तनी में है।"
+  },
+  "loadingMessage": {
+    "message": "पृष्ठ का विश्लेषण किया जा रहा है..."
+  },
+  "cannotRetrieveSiteStatus": {
+    "message": "साइट की स्थिति प्राप्त नहीं की जा सकती।"
+  },
+  "unknownRisk": {
+    "message": "अज्ञात जोखिम"
+  },
+  "highRisk": {
+    "message": "उच्च जोखिम: बहुत सावधान रहें।"
+  },
+  "mediumRisk": {
+    "message": "मध्यम जोखिम: ध्यान दें।"
+  },
+  "lowRisk": {
+    "message": "कम जोखिम: चिंता के कुछ बिंदु।"
+  },
+  "noSuspiciousFeatures": {
+    "message": "कोई सीधी जोखिम भरी विशेषताएं नहीं मिलीं।"
+  },
+  "siteStatusNotAvailable": {
+    "message": "इस साइट की स्थिति उपलब्ध नहीं है।"
+  },
+  "sslValidationFailed": {
+    "message": "इस वेबसाइट का सुरक्षा प्रमाणपत्र अमान्य है।"
+  },
+  "shortenedUrlError": {
+    "message": "इस छोटे किए गए लिंक के अंतिम गंतव्य की जांच नहीं की जा सकी।"
+  },
+  "redirectedShortenedUrl": {
+    "message": "यह छोटा किया गया लिंक आपको किसी अन्य वेबसाइट पर पुनर्निर्देशित करता है।"
+  },
+  "cryptoPhishingAd": {
+    "message": "इस विज्ञापन में क्रिप्टो घोटाले की विशेषताएं हैं (उच्च जोखिम)।"
+  },
+  "suspiciousAdStructure": {
+    "message": "इस विज्ञापन के लिंक की संरचना असामान्य है (मध्यम जोखिम)।"
+  },
+  "suspiciousAdTLD": {
+    "message": "यह विज्ञापन एक ऐसे डोमेन एक्सटेंशन का उपयोग करता है जिसका अक्सर दुरुपयोग किया जाता है (मध्यम जोखिम)।"
+  },
+  "homoglyphAdAttack": {
+    "message": "विज्ञापन ऐसे वर्णों का उपयोग करता है जो एक जानी-मानी वेबसाइट के समान हैं (मध्यम जोखिम)।"
+  },
+  "brandMisuse": {
+    "message": "विज्ञापन गलत तरीके से एक प्रसिद्ध ब्रांड नाम का उपयोग कर रहा है (उच्च जोखिम)।"
+  },
+  "unknownWarning": {
+    "message": "एक अज्ञात जोखिम पाया गया है। अतिरिक्त सतर्क रहें।"
+  },
+  "typosquattingAttack": {
+    "message": "यह वेब पता एक वास्तविक वेबसाइट जैसा दिखता है, लेकिन जानबूझकर गलत वर्तनी में लिखा गया है (उच्च जोखिम)। यह एक नकली संस्करण हो सकता है।"
+  },
+  "downloadKeyword": {
+    "message": "लिंक में डाउनलोड से संबंधित शब्द हैं (कम जोखिम)। केवल उन्हीं फ़ाइलों को खोलें जिन पर आप भरोसा करते हैं।"
+  },
+  "suspiciousScriptContent": {
+    "message": "इस पृष्ठ पर एक स्क्रिप्ट में जोखिम भरा कोड है। यह असुरक्षित हो सकता है।"
+  },
+  "invalidScriptSrc": {
+    "message": "इस पृष्ठ पर एक स्क्रिप्ट का लिंक गलत है।"
+  },
+  "mixedScripts": {
+    "message": "यह पता विभिन्न लेखन प्रणालियों (जैसे लैटिन और सिरिलिक अक्षर) का मिश्रण उपयोग करता है। यह एक ज्ञात फ़िशिंग चाल है (उच्च जोखिम)।"
+  },
+  "introBannerMessage": {
+    "message": "LinkShield सक्रिय है और जोखिम भरे लिंक को ⚠️ से चिह्नित करता है। कारण देखने के लिए आइकन पर होवर करें।"
+  },
+  "digitHomoglyph": {
+    "message": "यह पता एक प्रसिद्ध ब्रांड की नकल करने के लिए अक्षरों जैसे दिखने वाले नंबरों का उपयोग करता है (मध्यम जोखिम)।"
+  },
+  "trustedTLD": {
+    "message": "इस डोमेन में एक मानक डोमेन एक्सटेंशन है (कम जोखिम)।"
+  },
+  "trustedTld": {
+    "message": "इस डोमेन में एक मानक डोमेन एक्सटेंशन है (कम जोखिम)।"
+  },
+  "suspiciousPageText": {
+    "message": "इस पृष्ठ के पाठ में ऐसे शब्द हैं जो अक्सर घोटालों में उपयोग किए जाते हैं (उच्च जोखिम)।"
+  },
+  "urgencyTactic": {
+    "message": "यह पृष्ठ आप पर दबाव डालने के लिए अत्यावश्यक भाषा का उपयोग करता है (उच्च जोखिम)। घोटालों से सावधान रहें।"
+  },
+  "severityMediumRisk": {
+    "message": "मध्यम जोखिम: यह लिंक असुरक्षित हो सकता है। सावधान रहें।"
+  },
+  "allowedQueryParam": {
+    "message": "लिंक में एक सुरक्षित, अनुमत तकनीकी पैरामीटर है।"
+  },
+  "suspiciousIframeAdComponent": {
+    "message": "यह पृष्ठ किसी अन्य वेबसाइट से एक विज्ञापन घटक लोड करता है।"
+  },
+  "suspiciousIframeTracking": {
+    "message": "यह पृष्ठ एक ट्रैकर लोड करता है जो आपके ब्राउज़िंग व्यवहार की निगरानी कर सकता है।"
+  },
+  "suspiciousIframeMalicious": {
+    "message": "इस पृष्ठ पर एक संभावित हानिकारक घटक पाया गया है (जैसे फ़िशिंग)।"
+  },
+  "suspiciousIframeHidden": {
+    "message": "पृष्ठ पर एक जोखिम भरा, अदृश्य तत्व पाया गया है।"
+  },
+  "mixedContentIframe": {
+    "message": "यह सुरक्षित पृष्ठ एक असुरक्षित घटक लोड कर रहा है। यह एक सुरक्षा जोखिम है।"
+  },
+  "invalidIframeSrc": {
+    "message": "इस पृष्ठ पर एक घटक सही ढंग से लोड नहीं किया जा सका (अमान्य स्रोत)।"
+  },
+  "iframeHidden": {
+    "message": "पृष्ठ पर एक जोखिम भरा, अदृश्य तत्व पाया गया है।"
+  },
+  "typosquattingAttack_adobe_com": {
+    "message": "यह वेब पता adobe.com जैसा दिखता है, लेकिन जानबूझकर गलत वर्तनी में लिखा गया है (उच्च जोखिम)।"
+  },
+  "typosquattingAttack_alibaba_com": {
+    "message": "यह वेब पता alibaba.com जैसा दिखता है, लेकिन जानबूझकर गलत वर्तनी में लिखा गया है (उच्च जोखिम)।"
+  },
+  "typosquattingAttack_amazon_com": {
+    "message": "यह वेब पता amazon.com जैसा दिखता है, लेकिन जानबूझकर गलत वर्तनी में लिखा गया है (उच्च जोखिम)।"
+  },
+  "typosquattingAttack_apple_com": {
+    "message": "यह वेब पता apple.com जैसा दिखता है, लेकिन जानबूझकर गलत वर्तनी में लिखा गया है (उच्च जोखिम)।"
+  },
+  "typosquattingAttack_facebook_com": {
+    "message": "यह वेब पता facebook.com जैसा दिखता है, लेकिन जानबूझकर गलत वर्तनी में लिखा गया है (उच्च जोखिम)।"
+  },
+  "typosquattingAttack_google_com": {
+    "message": "यह वेब पता google.com जैसा दिखता है, लेकिन जानबूझकर गलत वर्तनी में लिखा गया है (उच्च जोखिम)।"
+  },
+  "typosquattingAttack_linkedin_com": {
+    "message": "यह वेब पता linkedin.com जैसा दिखता है, लेकिन जानबूझकर गलत वर्तनी में लिखा गया है (उच्च जोखिम)।"
+  },
+  "typosquattingAttack_microsoft_com": {
+    "message": "यह वेब पता microsoft.com जैसा दिखता है, लेकिन जानबूझकर गलत वर्तनी में लिखा गया है (उच्च जोखिम)।"
+  },
+  "typosquattingAttack_paypal_com": {
+    "message": "यह वेब पता paypal.com जैसा दिखता है, लेकिन जानबूझकर गलत वर्तनी में लिखा गया है (उच्च जोखिम)।"
+  },
+  "typosquattingAttack_whatsapp_com": {
+    "message": "यह वेब पता whatsapp.com जैसा दिखता है, लेकिन जानबूझकर गलत वर्तनी में लिखा गया है (उच्च जोखिम)।"
+  },
+  "typosquattingAttack_x_com": {
+    "message": "यह वेब पता x.com जैसा दिखता है, लेकिन जानबूझकर गलत वर्तनी में लिखा गया है (उच्च जोखिम)।"
+  },
+  "homoglyphAttack_microsoft_com": {
+    "message": "यह पता ऐसे वर्णों का उपयोग करता है जो microsoft.com के समान हैं (उच्च जोखिम)।"
+  },
+  "homoglyphAttack_apple_com": {
+    "message": "यह पता ऐसे वर्णों का उपयोग करता है जो apple.com के समान हैं (उच्च जोखिम)।"
+  },
+  "homoglyphAttack_google_com": {
+    "message": "यह पता ऐसे वर्णों का उपयोग करता है जो google.com के समान हैं (उच्च जोखिम)।"
+  },
+  "homoglyphAttack_linkedin_com": {
+    "message": "यह पता ऐसे वर्णों का उपयोग करता है जो linkedin.com के समान हैं (उच्च जोखिम)।"
+  },
+  "homoglyphAttack_alibaba_com": {
+    "message": "यह पता ऐसे वर्णों का उपयोग करता है जो alibaba.com के समान हैं (उच्च जोखिम)।"
+  },
+  "homoglyphAttack_whatsapp_com": {
+    "message": "यह पता ऐसे वर्णों का उपयोग करता है जो whatsapp.com के समान हैं (उच्च जोखिम)।"
+  },
+  "homoglyphAttack_amazon_com": {
+    "message": "यह पता ऐसे वर्णों का उपयोग करता है जो amazon.com के समान हैं (उच्च जोखिम)।"
+  },
+  "homoglyphAttack_x_com": {
+    "message": "यह पता ऐसे वर्णों का उपयोग करता है जो x.com के समान हैं (उच्च जोखिम)।"
+  },
+  "homoglyphAttack_facebook_com": {
+    "message": "यह पता ऐसे वर्णों का उपयोग करता है जो facebook.com के समान हैं (उच्च जोखिम)।"
+  },
+  "homoglyphAttack_adobe_com": {
+    "message": "यह पता ऐसे वर्णों का उपयोग करता है जो adobe.com के समान हैं (उच्च जोखिम)।"
+  },
+  "homoglyphAttack_paypal_com": {
+    "message": "यह पता ऐसे वर्णों का उपयोग करता है जो paypal.com के समान हैं (उच्च जोखिम)।"
+  },
+  "typosquatting_microsoft_com": {
+    "message": "यह पता microsoft.com के बहुत समान है (उच्च जोखिम)। यह एक नकली पृष्ठ हो सकता है।"
+  },
+  "typosquatting_apple_com": {
+    "message": "यह पता apple.com के बहुत समान है (उच्च जोखिम)। यह एक नकली पृष्ठ हो सकता है।"
+  },
+  "typosquatting_google_com": {
+    "message": "यह पता google.com के बहुत समान है (उच्च जोखिम)। यह एक नकली पृष्ठ हो सकता है।"
+  },
+  "typosquatting_linkedin_com": {
+    "message": "यह पता linkedin.com के बहुत समान है (उच्च जोखिम)। यह एक नकली पृष्ठ हो सकता है।"
+  },
+  "typosquatting_alibaba_com": {
+    "message": "यह पता alibaba.com के बहुत समान है (उच्च जोखिम)। यह एक नकली पृष्ठ हो सकता है।"
+  },
+  "typosquatting_whatsapp_com": {
+    "message": "यह पता whatsapp.com के बहुत समान है (उच्च जोखिम)। यह एक नकली पृष्ठ हो सकता है।"
+  },
+  "typosquatting_amazon_com": {
+    "message": "यह पता amazon.com के बहुत समान है (उच्च जोखिम)। यह एक नकली पृष्ठ हो सकता है।"
+  },
+  "typosquatting_x_com": {
+    "message": "यह पता x.com के बहुत समान है (उच्च जोखिम)। यह एक नकली पृष्ठ हो सकता है।"
+  },
+  "typosquatting_facebook_com": {
+    "message": "यह पता facebook.com के बहुत समान है (उच्च जोखिम)। यह एक नकली पृष्ठ हो सकता है।"
+  },
+  "typosquatting_adobe_com": {
+    "message": "यह पता adobe.com के बहुत समान है (उच्च जोखिम)। यह एक नकली पृष्ठ हो सकता है।"
+  },
+  "typosquatting_paypal_com": {
+    "message": "यह पता paypal.com के बहुत समान है (उच्च जोखिम)। यह एक नकली पृष्ठ हो सकता है।"
+  },
+  "similarToLegitimateDomain_microsoft_com": {
+    "message": "यह साइट microsoft.com जैसी दिखती है, पते की सावधानीपूर्वक जांच करें।"
+  },
+  "similarToLegitimateDomain_apple_com": {
+    "message": "यह साइट apple.com जैसी दिखती है, पते की सावधानीपूर्वक जांच करें।"
+  },
+  "similarToLegitimateDomain_google_com": {
+    "message": "यह साइट google.com जैसी दिखती है, पते की सावधानीपूर्वक जांच करें।"
+  },
+  "similarToLegitimateDomain_linkedin_com": {
+    "message": "यह साइट linkedin.com जैसी दिखती है, पते की सावधानीपूर्वक जांच करें।"
+  },
+  "similarToLegitimateDomain_alibaba_com": {
+    "message": "यह साइट alibaba.com जैसी दिखती है, पते की सावधानीपूर्वक जांच करें।"
+  },
+  "similarToLegitimateDomain_whatsapp_com": {
+    "message": "यह साइट whatsapp.com जैसी दिखती है, पते की सावधानीपूर्वक जांच करें।"
+  },
+  "similarToLegitimateDomain_amazon_com": {
+    "message": "यह साइट amazon.com जैसी दिखती है, पते की सावधानीपूर्वक जांच करें।"
+  },
+  "similarToLegitimateDomain_x_com": {
+    "message": "यह साइट x.com जैसी दिखती है, पते की सावधानीपूर्वक जांच करें।"
+  },
+  "similarToLegitimateDomain_facebook_com": {
+    "message": "यह साइट facebook.com जैसी दिखती है, पते की सावधानीपूर्वक जांच करें।"
+  },
+  "similarToLegitimateDomain_adobe_com": {
+    "message": "यह साइट adobe.com जैसी दिखती है, पते की सावधानीपूर्वक जांच करें।"
+  },
+  "similarToLegitimateDomain_paypal_com": {
+    "message": "यह साइट paypal.com जैसी दिखती है, पते की सावधानीपूर्वक जांच करें।"
+  },
+  "suspiciousPunycodeDecoding_microsoft_com": {
+    "message": "यह लिंक microsoft.com जैसा दिखने के लिए असामान्य वर्णों का उपयोग करता है (उच्च जोखिम)।"
+  },
+  "suspiciousPunycodeDecoding_apple_com": {
+    "message": "यह लिंक apple.com जैसा दिखने के लिए असामान्य वर्णों का उपयोग करता है (उच्च जोखिम)।"
+  },
+  "suspiciousPunycodeDecoding_google_com": {
+    "message": "यह लिंक google.com जैसा दिखने के लिए असामान्य वर्णों का उपयोग करता है (उच्च जोखिम)।"
+  },
+  "suspiciousPunycodeDecoding_linkedin_com": {
+    "message": "यह लिंक linkedin.com जैसा दिखने के लिए असामान्य वर्णों का उपयोग करता है (उच्च जोखिम)।"
+  },
+  "suspiciousPunycodeDecoding_alibaba_com": {
+    "message": "यह लिंक alibaba.com जैसा दिखने के लिए असामान्य वर्णों का उपयोग करता है (उच्च जोखिम)।"
+  },
+  "suspiciousPunycodeDecoding_whatsapp_com": {
+    "message": "यह लिंक whatsapp.com जैसा दिखने के लिए असामान्य वर्णों का उपयोग करता है (उच्च जोखिम)।"
+  },
+  "suspiciousPunycodeDecoding_amazon_com": {
+    "message": "यह लिंक amazon.com जैसा दिखने के लिए असामान्य वर्णों का उपयोग करता है (उच्च जोखिम)।"
+  },
+  "suspiciousPunycodeDecoding_x_com": {
+    "message": "यह लिंक x.com जैसा दिखने के लिए असामान्य वर्णों का उपयोग करता है (उच्च जोखिम)।"
+  },
+  "suspiciousPunycodeDecoding_facebook_com": {
+    "message": "यह लिंक facebook.com जैसा दिखने के लिए असामान्य वर्णों का उपयोग करता है (उच्च जोखिम)।"
+  },
+  "suspiciousPunycodeDecoding_adobe_com": {
+    "message": "यह लिंक adobe.com जैसा दिखने के लिए असामान्य वर्णों का उपयोग करता है (उच्च जोखिम)।"
+  },
+  "suspiciousPunycodeDecoding_paypal_com": {
+    "message": "यह लिंक paypal.com जैसा दिखने के लिए असामान्य वर्णों का उपयोग करता है (उच्च जोखिम)।"
+  },
+
+  "reason_nonAscii": {
+    "message": "संदिग्ध वर्ण पाए गए (होमोग्लिफ्स)"
+  },
+  "reason_brandKeywordHomoglyph": {
+    "message": "ब्रांड नकल का पता चला"
+  },
+  "reason_noHttps": {
+    "message": "कोई सुरक्षित कनेक्शन नहीं (HTTPS)"
+  },
+  "reason_suspiciousTLD": {
+    "message": "संदिग्ध डोमेन एक्सटेंशन"
+  },
+  "reason_ipAsDomain": {
+    "message": "डोमेन नाम के रूप में IP पता"
+  },
+  "reason_tooManySubdomains": {
+    "message": "बहुत अधिक सबडोमेन"
+  },
+  "reason_shortenedUrl": {
+    "message": "छोटा किया गया URL पाया गया"
+  },
+  "reason_suspiciousKeywords": {
+    "message": "URL में संदिग्ध कीवर्ड"
+  },
+  "reason_malwareExtension": {
+    "message": "संभावित खतरनाक फ़ाइल एक्सटेंशन"
+  },
+  "reason_urlTooLong": {
+    "message": "असामान्य रूप से लंबा URL"
+  },
+  "reason_encodedCharacters": {
+    "message": "URL में एन्कोडेड वर्ण"
+  },
+  "reason_homoglyphAttack": {
+    "message": "होमोग्लिफ हमले का पता चला"
+  },
+  "reason_typosquatting": {
+    "message": "टाइपोस्क्वाटिंग का पता चला"
+  },
+  "reason_suspiciousBrandPattern": {
+    "message": "संदिग्ध ब्रांड पैटर्न"
+  },
+  "reason_unusualPort": {
+    "message": "असामान्य पोर्ट"
+  },
+  "reason_punycode": {
+    "message": "Punycode डोमेन का पता चला"
+  },
+  "reason_loginPageNoMX": {
+    "message": "मेल सर्वर के बिना लॉगिन पेज"
+  },
+  "reason_insecureLoginPage": {
+    "message": "असुरक्षित लॉगिन पेज"
+  },
+  "reason_sslValidationFailed": {
+    "message": "SSL सत्यापन विफल"
+  },
+  "reason_similarToLegitimateDomain": {
+    "message": "वैध डोमेन के समान"
+  },
+
+  "qrDangerTitle": {
+    "message": "खतरा: फ़िशिंग QR कोड!"
+  },
+  "qrCautionTitle": {
+    "message": "सावधान: संदिग्ध QR कोड"
+  },
+  "ocrDangerTitle": {
+    "message": "खतरा: छवि में फ़िशिंग पाई गई!"
+  },
+  "ocrCautionTitle": {
+    "message": "सावधान: छवि में संदिग्ध टेक्स्ट"
+  },
+  "asciiQrDangerTitle": {
+    "message": "खतरा: फ़िशिंग ASCII QR!"
+  },
+  "asciiQrCautionTitle": {
+    "message": "सावधान: संदिग्ध ASCII QR"
+  },
+  "suspiciousDomainDetected": {
+    "message": "संदिग्ध डोमेन पाया गया"
+  },
+  "hiddenUrl": {
+    "message": "छिपा हुआ URL"
+  },
+  "fullUrl": {
+    "message": "पूरा URL"
+  },
+  "reasons": {
+    "message": "कारण"
+  },
+  "extractedText": {
+    "message": "निकाला गया टेक्स्ट"
+  },
+
+  "trialPeriodActive": {
+    "message": "परीक्षण अवधि सक्रिय"
+  },
+  "trialDaysRemaining": {
+    "message": "परीक्षण अवधि में $DAYS$ दिन शेष",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "14"
+      }
+    }
+  },
+  "trialExpired": {
+    "message": "परीक्षण अवधि समाप्त"
+  },
+  "trialExpiredMessage": {
+    "message": "आपकी 30 दिन की परीक्षण अवधि समाप्त हो गई है। सभी सुविधाओं का उपयोग जारी रखने के लिए लाइसेंस सक्रिय करें।"
+  },
+  "upgradeNow": {
+    "message": "अभी अपग्रेड करें"
+  },
+
+  "popupPageTitle": {
+    "message": "LinkShield डैशबोर्ड"
+  },
+  "extNameFull": {
+    "message": "LinkShield: फ़िशिंग के खिलाफ आपका हथियार"
+  },
+  "extDescriptionFull": {
+    "message": "तत्काल अलर्ट और उन्नत सुरक्षा के साथ अपनी ऑनलाइन सुरक्षा बढ़ाएं।"
+  },
+
+  "licenseTrialTitle": {
+    "message": "परीक्षण अवधि: $DAYS$ दिन शेष",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "licenseTrialSubtitle": {
+    "message": "परीक्षण अवधि के दौरान सभी प्रीमियम सुविधाएं सक्रिय हैं"
+  },
+  "licenseUpgradeLink": {
+    "message": "प्रीमियम में अपग्रेड करें →"
+  },
+  "licenseExpiredTitle": {
+    "message": "परीक्षण अवधि समाप्त"
+  },
+  "licenseExpiredSubtitle": {
+    "message": "पूर्ण सुरक्षा के लिए प्रीमियम सक्रिय करें"
+  },
+  "licenseBenefitsLabel": {
+    "message": "प्रीमियम में शामिल:"
+  },
+  "licenseBenefitsText": {
+    "message": "पृष्ठभूमि विश्लेषण, QR कोड स्कैनिंग, निरंतर सुरक्षा"
+  },
+  "licenseKeyPlaceholder": {
+    "message": "अपना लाइसेंस कोड दर्ज करें"
+  },
+  "licenseActivateButton": {
+    "message": "प्रीमियम सक्रिय करें"
+  },
+  "licenseBuyLink": {
+    "message": "लाइसेंस नहीं है? यहां खरीदें →"
+  },
+  "licensePremiumTitle": {
+    "message": "प्रीमियम सक्रिय"
+  },
+  "licensePremiumSubtitle": {
+    "message": "पूर्ण सुरक्षा सक्षम"
+  },
+
+  "sectionSecuritySettings": {
+    "message": "सुरक्षा सेटिंग्स"
+  },
+  "backgroundAnalysisTitle": {
+    "message": "सुरक्षा सेटिंग्स"
+  },
+  "backgroundAnalysisFeature": {
+    "message": "पृष्ठभूमि विश्लेषण"
+  },
+  "premiumBadge": {
+    "message": "प्रीमियम"
+  },
+  "integratedProtectionFeature": {
+    "message": "एकीकृत मैलवेयर और फ़िशिंग सुरक्षा"
+  },
+  "integratedProtectionDescription": {
+    "message": "व्यापक सुरक्षा के लिए कई सुरक्षा सेवाओं को जोड़ता है।"
+  },
+  "confirmationMessage": {
+    "message": "सेटिंग्स सफलतापूर्वक सहेजी गईं!"
+  },
+  "lastRuleUpdateNone": {
+    "message": "अभी तक कोई डेटाबेस अपडेट नहीं किया गया"
+  },
+  "errorOccurred": {
+    "message": "एक त्रुटि हुई"
+  },
+
+  "gumroadErrorUnknown": {
+    "message": "अज्ञात त्रुटि"
+  },
+  "gumroadErrorLicenseNotExistProduct": {
+    "message": "इस उत्पाद के लिए यह लाइसेंस कुंजी मौजूद नहीं है"
+  },
+  "gumroadErrorLicenseNotExist": {
+    "message": "यह लाइसेंस कुंजी मौजूद नहीं है"
+  },
+  "gumroadErrorLicenseRequired": {
+    "message": "कृपया लाइसेंस कुंजी दर्ज करें"
+  },
+  "gumroadErrorProductNotFound": {
+    "message": "उत्पाद नहीं मिला"
+  },
+  "gumroadErrorLicenseDisabled": {
+    "message": "यह लाइसेंस अक्षम है"
+  },
+  "gumroadErrorLicenseRefunded": {
+    "message": "यह लाइसेंस वापस कर दिया गया है"
+  },
+  "gumroadErrorLicenseRevoked": {
+    "message": "यह लाइसेंस वापस या रद्द कर दिया गया है"
+  },
+  "gumroadErrorLicenseInvalid": {
+    "message": "अमान्य लाइसेंस कुंजी"
+  },
+  "gumroadErrorNetwork": {
+    "message": "सत्यापन के दौरान नेटवर्क त्रुटि। अपना इंटरनेट कनेक्शन जांचें।"
+  },
+
+  "licenseEmptyError": {
+    "message": "कृपया लाइसेंस कोड दर्ज करें"
+  },
+  "licenseActivating": {
+    "message": "सक्रिय हो रहा है..."
+  },
+  "licenseActivatedSuccess": {
+    "message": "प्रीमियम सफलतापूर्वक सक्रिय!"
+  },
+  "licenseConnectionError": {
+    "message": "कनेक्शन त्रुटि। पुनः प्रयास करें।"
+  },
+
+  "debugModeTitle": {
+    "message": "डीबग मोड"
+  },
+  "debugTrial30": {
+    "message": "परीक्षण (30 दिन)"
+  },
+  "debugTrial3": {
+    "message": "परीक्षण (3 दिन)"
+  },
+  "debugExpired": {
+    "message": "समाप्त"
+  },
+  "debugPremium": {
+    "message": "प्रीमियम"
+  },
+  "debugReset": {
+    "message": "रीसेट"
+  },
+  "debugTrialSimulated": {
+    "message": "✓ परीक्षण ($DAYS$ दिन) सिमुलेट किया गया",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "debugExpiredSimulated": {
+    "message": "✓ समाप्त परीक्षण सिमुलेट किया गया"
+  },
+  "debugPremiumSimulated": {
+    "message": "✓ प्रीमियम सिमुलेट किया गया"
+  },
+  "debugStorageReset": {
+    "message": "✓ स्टोरेज रीसेट - एक्सटेंशन पुनः लोड करें"
+  },
+  "debugError": {
+    "message": "✗ त्रुटि: $ERROR$",
+    "placeholders": {
+      "ERROR": {
+        "content": "$1",
+        "example": "Unknown error"
+      }
+    }
+  },
+  "reason_redirectChain": {
+    "message": "संदिग्ध रीडायरेक्ट चेन का पता चला। लिंक अपने गंतव्य तक पहुंचने से पहले कई सर्वरों से होकर गुजरता है।"
+  },
+  "reason_excessiveRedirects": {
+    "message": "चेन में बहुत अधिक रीडायरेक्ट (उच्च जोखिम)। यह लिंक 5 से अधिक बार रीडायरेक्ट करता है, जो अक्सर असली गंतव्य छिपाने के लिए उपयोग किया जाता है।"
+  },
+  "reason_domainHopping": {
+    "message": "रीडायरेक्ट चेन में कई डोमेन परिवर्तन (उच्च जोखिम)। लिंक कई अलग-अलग वेबसाइटों के बीच कूदता है।"
+  },
+  "reason_chainedShorteners": {
+    "message": "कई URL शॉर्टनर एक साथ जुड़े हुए (मध्यम जोखिम)। वैध लिंक शायद ही कभी कई शॉर्टनिंग सेवाओं का उपयोग करते हैं।"
+  },
+  "reason_suspiciousFinalTLD": {
+    "message": "अंतिम गंतव्य में संदिग्ध डोमेन एक्सटेंशन है (उच्च जोखिम)। वास्तविक एंडपॉइंट जोखिम भरे TLD का उपयोग करता है।"
+  },
+  "reason_redirectToIP": {
+    "message": "रीडायरेक्ट IP पते पर जाता है (उच्च जोखिम)। अंतिम गंतव्य डोमेन नाम के बजाय कच्चा IP पता है।"
+  },
+  "reason_redirectTimeout": {
+    "message": "रीडायरेक्ट विश्लेषण समय समाप्त (मध्यम जोखिम)। समय सीमा के भीतर रीडायरेक्ट चेन को पूरी तरह से ट्रेस नहीं किया जा सका।"
+  },
+  "atSymbolPhishing": {
+    "message": "गंभीर: यह लिंक वास्तविक गंतव्य को छिपाने के लिए @ चिह्न का उपयोग करता है (उच्च जोखिम)। @ से पहले का पता नकली है - आपको वास्तव में एक अलग वेबसाइट पर रीडायरेक्ट किया जाएगा।"
+  },
+  "doubleEncoding": {
+    "message": "यह लिंक अपनी वास्तविक सामग्री को छिपाने के लिए डबल URL एन्कोडिंग का उपयोग करता है (उच्च जोखिम)। यह सुरक्षा फ़िल्टर को बायपास करने की एक सामान्य तकनीक है।"
+  },
+  "fullwidthCharacters": {
+    "message": "यह लिंक पूर्ण-चौड़ाई यूनिकोड वर्णों का उपयोग करता है जो सामान्य अक्षरों की तरह दिखते हैं (उच्च जोखिम)। यह नकली वेबसाइटों को वैध दिखाने की एक चाल है।"
+  },
+  "nullByteInjection": {
+    "message": "इस लिंक में एक null byte वर्ण है (उच्च जोखिम)। यह एक हैकिंग तकनीक है जिसका उपयोग सुरक्षा जांच को बायपास करने के लिए किया जा सकता है।"
+  },
+
+  "formActionHijacking": {
+    "message": "यह लॉगिन फॉर्म आपकी क्रेडेंशियल्स को बाहरी वेबसाइट पर भेजता है (गंभीर जोखिम)। आपका उपयोगकर्ता नाम और पासवर्ड चुराया जा सकता है।"
+  },
+  "formActionExternal": {
+    "message": "लॉगिन फॉर्म बाहरी डोमेन पर डेटा भेजता है: $DOMAIN$ (गंभीर जोखिम)। यह क्रेडेंशियल चोरी का प्रयास है।",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "evil-site.com"
+      }
+    }
+  },
+  "formActionInvalid": {
+    "message": "लॉगिन फॉर्म में अमान्य या संदिग्ध एक्शन URL है (उच्च जोखिम)। आपकी क्रेडेंशियल्स सुरक्षित रूप से नहीं भेजी जा सकतीं।"
+  },
+
+  "hiddenIframeZeroSize": {
+    "message": "शून्य आकार वाला छिपा हुआ iframe पाया गया (उच्च जोखिम)। इसका उपयोग अदृश्य रूप से दुर्भावनापूर्ण सामग्री लोड करने के लिए किया जा सकता है।"
+  },
+  "hiddenIframeOffScreen": {
+    "message": "स्क्रीन से बाहर स्थित iframe पाया गया (उच्च जोखिम)। छिपी हुई सामग्री आपको ट्रैक कर सकती है या डेटा चुरा सकती है।"
+  },
+  "hiddenIframeCSSHidden": {
+    "message": "CSS से छिपा हुआ iframe पाया गया (उच्च जोखिम)। अदृश्य फ्रेम कीस्ट्रोक्स कैप्चर कर सकते हैं या मैलवेयर लोड कर सकते हैं।"
+  },
+  "hiddenIframeNegativePos": {
+    "message": "नकारात्मक स्थिति वाला iframe पाया गया (मध्यम जोखिम)। इस तकनीक का उपयोग उपयोगकर्ताओं से सामग्री छिपाने के लिए किया जाता है।"
+  },
+
+  "nrdCritical": {
+    "message": "गंभीर: डोमेन $DAYS$ दिन पहले पंजीकृत हुआ (गंभीर जोखिम)। बिल्कुल नए डोमेन के दुर्भावनापूर्ण होने की अत्यधिक संभावना है।",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "0"
+      }
+    }
+  },
+  "nrdHigh": {
+    "message": "डोमेन केवल $DAYS$ दिन पहले पंजीकृत हुआ (उच्च जोखिम)। बहुत नए डोमेन अक्सर धोखाधड़ी के लिए उपयोग किए जाते हैं।",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "nrdMedium": {
+    "message": "डोमेन $DAYS$ दिन पहले पंजीकृत हुआ (मध्यम जोखिम)। 30 दिनों से कम के नए डोमेन के लिए अतिरिक्त सावधानी बरतें।",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "15"
+      }
+    }
+  },
+  "nrdLow": {
+    "message": "डोमेन $DAYS$ दिन पहले पंजीकृत हुआ (कम जोखिम)। अपेक्षाकृत नया डोमेन, कुछ सावधानी बरतें।",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "60"
+      }
+    }
+  },
+
+  "licenseErrorNotFound": {
+    "message": "लाइसेंस कुंजी नहीं मिली। कृपया अपना इनपुट जांचें।"
+  },
+  "licenseErrorDisabled": {
+    "message": "यह लाइसेंस अक्षम कर दिया गया है।"
+  },
+  "licenseErrorExpired": {
+    "message": "यह लाइसेंस समाप्त हो गया है।"
+  },
+  "licenseErrorActivationLimit": {
+    "message": "सक्रियण सीमा पूरी हो गई। कृपया पहले किसी अन्य डिवाइस को निष्क्रिय करें।"
+  },
+  "licenseErrorInstanceNotFound": {
+    "message": "इंस्टॉलेशन इंस्टेंस नहीं मिला।"
+  },
+  "licenseErrorInvalid": {
+    "message": "अमान्य लाइसेंस कुंजी।"
+  },
+  "licenseErrorNetwork": {
+    "message": "नेटवर्क त्रुटि। कृपया अपना कनेक्शन जांचें और पुनः प्रयास करें।"
+  },
+  "licenseErrorUnknown": {
+    "message": "सत्यापन के दौरान एक अज्ञात त्रुटि हुई।"
+  }
+}

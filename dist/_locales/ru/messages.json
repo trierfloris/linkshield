@@ -1,0 +1,879 @@
+{
+  "extName": {
+    "message": "LinkShield"
+  },
+  "extDescription": {
+    "message": "LinkShield помогает вам определять небезопасные веб-сайты и ссылки, чтобы обеспечить вашу безопасность в Интернете."
+  },
+  "alertTitle": {
+    "message": "Внимание!"
+  },
+  "alertMessage": {
+    "message": "Этот веб-сайт содержит ссылку на:"
+  },
+  "severityLabel": {
+    "message": "Риск:"
+  },
+  "reasonLabel": {
+    "message": "Причина:"
+  },
+  "adviceMessage": {
+    "message": "Что вы можете сделать?"
+  },
+  "adviceCheckUrl": {
+    "message": "Открывайте эту ссылку, только если вы полностью доверяете отправителю. В случае сомнений, не нажимайте. Никогда не вводите свой пароль на сайте, которому вы не доверяете."
+  },
+  "noHttps": {
+    "message": "Соединение с этим сайтом не защищено (нет HTTPS). Другие могут видеть вашу информацию."
+  },
+  "ipAsDomain": {
+    "message": "Этот сайт использует IP-адрес вместо доменного имени. Это необычно и очень рискованно."
+  },
+  "tooManySubdomains": {
+    "message": "У этого веб-адреса много поддоменов (например, part1.part2.site.com). Это может указывать на небезопасный сайт (средний риск)."
+  },
+  "suspiciousKeywords": {
+    "message": "Ссылка содержит слова, часто связанные с мошенничеством (низкий риск)."
+  },
+  "suspiciousPattern": {
+    "message": "Структура этого веб-адреса кажется необычной (средний риск)."
+  },
+  "shortenedUrl": {
+    "message": "Это сокращенная ссылка (например, bit.ly). Фактическое место назначения не видно сразу (средний риск)."
+  },
+  "downloadPage": {
+    "message": "Эта ссылка, по-видимому, загружает файл. Открывайте только те файлы, которым вы полностью доверяете (средний риск)."
+  },
+  "freeHosting": {
+    "message": "Этот сайт использует бесплатную хостинговую платформу. Мошенники иногда пользуются этим (средний риск)."
+  },
+  "encodedCharacters": {
+    "message": "Ссылка содержит необычные символы (низкий риск). Это может использоваться для скрытия реального места назначения."
+  },
+  "homoglyphAttack": {
+    "message": "Этот веб-адрес использует символы, почти идентичные известному веб-сайту (высокий риск). Это уловка, чтобы ввести вас в заблуждение."
+  },
+  "metaRedirect": {
+    "message": "Этот сайт автоматически перенаправляет вас. Это может привести на небезопасный сайт (средний риск)."
+  },
+  "cryptoPhishing": {
+    "message": "Эта ссылка похожа на крипто-мошенничество (высокий риск). Будьте особенно осторожны со своим кошельком и учетными данными."
+  },
+  "externalScripts": {
+    "message": "Этот сайт загружает код из внешнего источника, который был помечен как рискованный."
+  },
+  "suspiciousParams": {
+    "message": "Ссылка содержит технические параметры, которые иногда используются для небезопасных действий (низкий риск)."
+  },
+  "mixedContent": {
+    "message": "Эта защищенная страница также загружает незащищенное содержимое. Это риск для безопасности (средний риск)."
+  },
+  "unusualPort": {
+    "message": "Этот сайт использует необычный технический порт. Это может быть попыткой обойти защиту (средний риск)."
+  },
+  "javascriptScheme": {
+    "message": "Эта ссылка пытается выполнить код прямо в вашем браузере (высокий риск)."
+  },
+  "urlFragmentTrick": {
+    "message": "Ссылка содержит необычно длинный фрагмент. Это техника, которая иногда используется для введения в заблуждение (низкий риск)."
+  },
+  "suspiciousTLD": {
+    "message": "Этот сайт использует доменное расширение (например, .zip или .mov), которое часто используется для мошенничества (высокий риск)."
+  },
+  "base64OrHex": {
+    "message": "Эта ссылка содержит сильно зашифрованную информацию. Это часто используется для сокрытия вредоносного кода (высокий риск)."
+  },
+  "similarToLegitimateDomain": {
+    "message": "Этот сайт очень похож на известный, надежный сайт. Внимательно проверьте адрес, это может быть поддельная копия."
+  },
+  "youngDomain": {
+    "message": "Этот домен был зарегистрирован всего $AGE$ дней назад (высокий риск). Новые домены чаще используются для мошенничества.",
+    "placeholders": {
+      "AGE": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "insecureLoginPage": {
+    "message": "Эта страница входа не защищена (нет HTTPS). Никогда не вводите здесь свой пароль (высокий риск)."
+  },
+  "loginPageNoMX": {
+    "message": "Эта страница входа принадлежит домену, который не может получать электронную почту. Это очень рискованно (высокий риск)."
+  },
+  "malwareExtension": {
+    "message": "Эта ссылка ведет на файл, который может быть вредоносным (например, .exe или .zip). Не загружайте его (высокий риск)."
+  },
+  "popupTitle": {
+    "message": "LinkShield: Ваша защита от фишинга"
+  },
+  "popupSubtitle": {
+    "message": "Оставайтесь в безопасности с оповещениями и защитой в реальном времени."
+  },
+  "backgroundAnalysis": {
+    "message": "Фоновое сканирование"
+  },
+  "backgroundAnalysisDescription": {
+    "message": "Блокируйте опасные сайты еще до их посещения."
+  },
+  "activationRequired": {
+    "message": "Включите эту функцию, чтобы использовать ее."
+  },
+  "integratedProtection": {
+    "message": "Встроенная защита"
+  },
+  "integratedProtectionDescription": {
+    "message": "Напрямую проверяет веб-сайты и ссылки на наличие рискованных характеристик."
+  },
+  "premiumFeaturesActive": {
+    "message": "Вы используете премиум-версию!"
+  },
+  "upgradePrompt": {
+    "message": "Обновитесь до премиум-версии для получения дополнительных функций."
+  },
+  "saveSettings": {
+    "message": "Сохранить настройки"
+  },
+  "settingsSaved": {
+    "message": "Настройки сохранены!"
+  },
+  "licenseActivate": {
+    "message": "Активировать лицензию"
+  },
+  "licenseInputPlaceholder": {
+    "message": "Введите ваш лицензионный ключ"
+  },
+  "licenseCheck": {
+    "message": "Проверить лицензию"
+  },
+  "licenseInvalid": {
+    "message": "Неверный лицензионный ключ."
+  },
+  "licenseValid": {
+    "message": "Лицензия успешно активирована!"
+  },
+  "lastRuleUpdate": {
+    "message": "Последнее обновление базы данных: "
+  },
+  "licenseStatus": {
+    "message": "Статус лицензии:"
+  },
+  "licenseFreemium": {
+    "message": "Бесплатная версия"
+  },
+  "bulkUrlCheck": {
+    "message": "Проверить несколько ссылок"
+  },
+  "bulkUrlCheckDescription": {
+    "message": "Загрузите файл .txt, чтобы проверить список ссылок."
+  },
+  "fileChoose": {
+    "message": "Выберите файл"
+  },
+  "fileCheck": {
+    "message": "Проверить файл"
+  },
+  "fileCheckNoUrls": {
+    "message": "Выбранный файл не содержит ссылок."
+  },
+  "fileCheckFailed": {
+    "message": "Проверка файла не удалась."
+  },
+  "safeDomain": {
+    "message": "Это известный, безопасный сайт."
+  },
+  "allowedProtocol": {
+    "message": "Эта ссылка использует безопасный протокол (например, 'mailto:' или 'tel:')."
+  },
+  "invalidUrl": {
+    "message": "Этот веб-адрес недействителен или написан с ошибкой."
+  },
+  "loadingMessage": {
+    "message": "Анализ страницы..."
+  },
+  "cannotRetrieveSiteStatus": {
+    "message": "Не удалось получить статус сайта."
+  },
+  "unknownRisk": {
+    "message": "Неизвестный риск"
+  },
+  "highRisk": {
+    "message": "Высокий риск: будьте очень осторожны."
+  },
+  "mediumRisk": {
+    "message": "Средний риск: будьте внимательны."
+  },
+  "lowRisk": {
+    "message": "Низкий риск: есть некоторые моменты, вызывающие озабоченность."
+  },
+  "noSuspiciousFeatures": {
+    "message": "Прямых рискованных признаков не обнаружено."
+  },
+  "siteStatusNotAvailable": {
+    "message": "Статус этого сайта недоступен."
+  },
+  "sslValidationFailed": {
+    "message": "Сертификат безопасности этого сайта недействителен."
+  },
+  "shortenedUrlError": {
+    "message": "Не удалось проверить конечный пункт назначения этой сокращенной ссылки."
+  },
+  "redirectedShortenedUrl": {
+    "message": "Эта сокращенная ссылка перенаправляет вас на другой сайт."
+  },
+  "cryptoPhishingAd": {
+    "message": "Это объявление имеет признаки крипто-мошенничества (высокий риск)."
+  },
+  "suspiciousAdStructure": {
+    "message": "Ссылка этого объявления имеет необычную структуру (средний риск)."
+  },
+  "suspiciousAdTLD": {
+    "message": "Это объявление использует доменное расширение, которое часто используется не по назначению (средний риск)."
+  },
+  "homoglyphAdAttack": {
+    "message": "В объявлении используются символы, почти идентичные известному веб-сайту (средний риск)."
+  },
+  "brandMisuse": {
+    "message": "В объявлении неправомерно используется известный бренд (высокий риск)."
+  },
+  "unknownWarning": {
+    "message": "Обнаружен неизвестный риск. Будьте особенно осторожны."
+  },
+  "typosquattingAttack": {
+    "message": "Этот веб-адрес похож на настоящий сайт, но намеренно написан с ошибкой (высокий риск). Это может быть поддельная версия."
+  },
+  "downloadKeyword": {
+    "message": "Ссылка содержит слова, связанные с загрузками (низкий риск). Открывайте только те файлы, которым вы доверяете."
+  },
+  "suspiciousScriptContent": {
+    "message": "Скрипт на этой странице содержит рискованный код. Это может быть небезопасно."
+  },
+  "invalidScriptSrc": {
+    "message": "Ссылка на скрипт на этой странице неверна."
+  },
+  "mixedScripts": {
+    "message": "Этот адрес использует смесь различных систем письма (например, латинские и кириллические буквы). Это известный прием фишинга (высокий риск)."
+  },
+  "introBannerMessage": {
+    "message": "LinkShield активен и помечает рискованные ссылки значком ⚠️. Наведите курсор на значок, чтобы узнать причину."
+  },
+  "digitHomoglyph": {
+    "message": "Этот адрес использует цифры, похожие на буквы, чтобы имитировать известный бренд (средний риск)."
+  },
+  "trustedTLD": {
+    "message": "Этот домен имеет стандартное доменное расширение (низкий риск)."
+  },
+  "trustedTld": {
+    "message": "Этот домен имеет стандартное доменное расширение (низкий риск)."
+  },
+  "suspiciousPageText": {
+    "message": "Текст на этой странице содержит слова, часто используемые в мошенничестве (высокий риск)."
+  },
+  "urgencyTactic": {
+    "message": "Эта страница использует срочный тон, чтобы оказать на вас давление (высокий риск). Остерегайтесь мошенничества."
+  },
+  "severityMediumRisk": {
+    "message": "Средний риск: эта ссылка может быть небезопасной. Будьте осторожны."
+  },
+  "allowedQueryParam": {
+    "message": "Ссылка содержит безопасный, разрешенный технический параметр."
+  },
+  "suspiciousIframeAdComponent": {
+    "message": "Эта страница загружает рекламный компонент с другого сайта."
+  },
+  "suspiciousIframeTracking": {
+    "message": "Эта страница загружает трекер, который может отслеживать ваше поведение в браузере."
+  },
+  "suspiciousIframeMalicious": {
+    "message": "На этой странице был найден потенциально вредоносный компонент (например, фишинг)."
+  },
+  "suspiciousIframeHidden": {
+    "message": "На странице найден рискованный, невидимый элемент."
+  },
+  "mixedContentIframe": {
+    "message": "Эта защищенная страница загружает незащищенный компонент. Это риск для безопасности."
+  },
+  "invalidIframeSrc": {
+    "message": "Компонент на этой странице не удалось загрузить корректно (неверный источник)."
+  },
+  "iframeHidden": {
+    "message": "На странице найден рискованный, невидимый элемент."
+  },
+  "typosquattingAttack_adobe_com": {
+    "message": "Этот веб-адрес похож на adobe.com, но намеренно написан с ошибкой (высокий риск)."
+  },
+  "typosquattingAttack_alibaba_com": {
+    "message": "Этот веб-адрес похож на alibaba.com, но намеренно написан с ошибкой (высокий риск)."
+  },
+  "typosquattingAttack_amazon_com": {
+    "message": "Этот веб-адрес похож на amazon.com, но намеренно написан с ошибкой (высокий риск)."
+  },
+  "typosquattingAttack_apple_com": {
+    "message": "Этот веб-адрес похож на apple.com, но намеренно написан с ошибкой (высокий риск)."
+  },
+  "typosquattingAttack_facebook_com": {
+    "message": "Этот веб-адрес похож на facebook.com, но намеренно написан с ошибкой (высокий риск)."
+  },
+  "typosquattingAttack_google_com": {
+    "message": "Этот веб-адрес похож на google.com, но намеренно написан с ошибкой (высокий риск)."
+  },
+  "typosquattingAttack_linkedin_com": {
+    "message": "Этот веб-адрес похож на linkedin.com, но намеренно написан с ошибкой (высокий риск)."
+  },
+  "typosquattingAttack_microsoft_com": {
+    "message": "Этот веб-адрес похож на microsoft.com, но намеренно написан с ошибкой (высокий риск)."
+  },
+  "typosquattingAttack_paypal_com": {
+    "message": "Этот веб-адрес похож на paypal.com, но намеренно написан с ошибкой (высокий риск)."
+  },
+  "typosquattingAttack_whatsapp_com": {
+    "message": "Этот веб-адрес похож на whatsapp.com, но намеренно написан с ошибкой (высокий риск)."
+  },
+  "typosquattingAttack_x_com": {
+    "message": "Этот веб-адрес похож на x.com, но намеренно написан с ошибкой (высокий риск)."
+  },
+  "homoglyphAttack_microsoft_com": {
+    "message": "Этот адрес использует символы, почти идентичные microsoft.com (высокий риск)."
+  },
+  "homoglyphAttack_apple_com": {
+    "message": "Этот адрес использует символы, почти идентичные apple.com (высокий риск)."
+  },
+  "homoglyphAttack_google_com": {
+    "message": "Этот адрес использует символы, почти идентичные google.com (высокий риск)."
+  },
+  "homoglyphAttack_linkedin_com": {
+    "message": "Этот адрес использует символы, почти идентичные linkedin.com (высокий риск)."
+  },
+  "homoglyphAttack_alibaba_com": {
+    "message": "Этот адрес использует символы, почти идентичные alibaba.com (высокий риск)."
+  },
+  "homoglyphAttack_whatsapp_com": {
+    "message": "Этот адрес использует символы, почти идентичные whatsapp.com (высокий риск)."
+  },
+  "homoglyphAttack_amazon_com": {
+    "message": "Этот адрес использует символы, почти идентичные amazon.com (высокий риск)."
+  },
+  "homoglyphAttack_x_com": {
+    "message": "Этот адрес использует символы, почти идентичные x.com (высокий риск)."
+  },
+  "homoglyphAttack_facebook_com": {
+    "message": "Этот адрес использует символы, почти идентичные facebook.com (высокий риск)."
+  },
+  "homoglyphAttack_adobe_com": {
+    "message": "Этот адрес использует символы, почти идентичные adobe.com (высокий риск)."
+  },
+  "homoglyphAttack_paypal_com": {
+    "message": "Этот адрес использует символы, почти идентичные paypal.com (высокий риск)."
+  },
+  "typosquatting_microsoft_com": {
+    "message": "Этот адрес очень похож на microsoft.com (высокий риск). Это может быть поддельная страница."
+  },
+  "typosquatting_apple_com": {
+    "message": "Этот адрес очень похож на apple.com (высокий риск). Это может быть поддельная страница."
+  },
+  "typosquatting_google_com": {
+    "message": "Этот адрес очень похож на google.com (высокий риск). Это может быть поддельная страница."
+  },
+  "typosquatting_linkedin_com": {
+    "message": "Этот адрес очень похож на linkedin.com (высокий риск). Это может быть поддельная страница."
+  },
+  "typosquatting_alibaba_com": {
+    "message": "Этот адрес очень похож на alibaba.com (высокий риск). Это может быть поддельная страница."
+  },
+  "typosquatting_whatsapp_com": {
+    "message": "Этот адрес очень похож на whatsapp.com (высокий риск). Это может быть поддельная страница."
+  },
+  "typosquatting_amazon_com": {
+    "message": "Этот адрес очень похож на amazon.com (высокий риск). Это может быть поддельная страница."
+  },
+  "typosquatting_x_com": {
+    "message": "Этот адрес очень похож на x.com (высокий риск). Это может быть поддельная страница."
+  },
+  "typosquatting_facebook_com": {
+    "message": "Этот адрес очень похож на facebook.com (высокий риск). Это может быть поддельная страница."
+  },
+  "typosquatting_adobe_com": {
+    "message": "Этот адрес очень похож на adobe.com (высокий риск). Это может быть поддельная страница."
+  },
+  "typosquatting_paypal_com": {
+    "message": "Этот адрес очень похож на paypal.com (высокий риск). Это может быть поддельная страница."
+  },
+  "similarToLegitimateDomain_microsoft_com": {
+    "message": "Этот сайт похож на microsoft.com, внимательно проверьте адрес."
+  },
+  "similarToLegitimateDomain_apple_com": {
+    "message": "Этот сайт похож на apple.com, внимательно проверьте адрес."
+  },
+  "similarToLegitimateDomain_google_com": {
+    "message": "Этот сайт похож на google.com, внимательно проверьте адрес."
+  },
+  "similarToLegitimateDomain_linkedin_com": {
+    "message": "Этот сайт похож на linkedin.com, внимательно проверьте адрес."
+  },
+  "similarToLegitimateDomain_alibaba_com": {
+    "message": "Этот сайт похож на alibaba.com, внимательно проверьте адрес."
+  },
+  "similarToLegitimateDomain_whatsapp_com": {
+    "message": "Этот сайт похож на whatsapp.com, внимательно проверьте адрес."
+  },
+  "similarToLegitimateDomain_amazon_com": {
+    "message": "Этот сайт похож на amazon.com, внимательно проверьте адрес."
+  },
+  "similarToLegitimateDomain_x_com": {
+    "message": "Этот сайт похож на x.com, внимательно проверьте адрес."
+  },
+  "similarToLegitimateDomain_facebook_com": {
+    "message": "Этот сайт похож на facebook.com, внимательно проверьте адрес."
+  },
+  "similarToLegitimateDomain_adobe_com": {
+    "message": "Этот сайт похож на adobe.com, внимательно проверьте адрес."
+  },
+  "similarToLegitimateDomain_paypal_com": {
+    "message": "Этот сайт похож на paypal.com, внимательно проверьте адрес."
+  },
+  "suspiciousPunycodeDecoding_microsoft_com": {
+    "message": "Эта ссылка использует необычные символы, чтобы выглядеть как microsoft.com (высокий риск)."
+  },
+  "suspiciousPunycodeDecoding_apple_com": {
+    "message": "Эта ссылка использует необычные символы, чтобы выглядеть как apple.com (высокий риск)."
+  },
+  "suspiciousPunycodeDecoding_google_com": {
+    "message": "Эта ссылка использует необычные символы, чтобы выглядеть как google.com (высокий риск)."
+  },
+  "suspiciousPunycodeDecoding_linkedin_com": {
+    "message": "Эта ссылка использует необычные символы, чтобы выглядеть как linkedin.com (высокий риск)."
+  },
+  "suspiciousPunycodeDecoding_alibaba_com": {
+    "message": "Эта ссылка использует необычные символы, чтобы выглядеть как alibaba.com (высокий риск)."
+  },
+  "suspiciousPunycodeDecoding_whatsapp_com": {
+    "message": "Эта ссылка использует необычные символы, чтобы выглядеть как whatsapp.com (высокий риск)."
+  },
+  "suspiciousPunycodeDecoding_amazon_com": {
+    "message": "Эта ссылка использует необычные символы, чтобы выглядеть как amazon.com (высокий риск)."
+  },
+  "suspiciousPunycodeDecoding_x_com": {
+    "message": "Эта ссылка использует необычные символы, чтобы выглядеть как x.com (высокий риск)."
+  },
+  "suspiciousPunycodeDecoding_facebook_com": {
+    "message": "Эта ссылка использует необычные символы, чтобы выглядеть как facebook.com (высокий риск)."
+  },
+  "suspiciousPunycodeDecoding_adobe_com": {
+    "message": "Эта ссылка использует необычные символы, чтобы выглядеть как adobe.com (высокий риск)."
+  },
+  "suspiciousPunycodeDecoding_paypal_com": {
+    "message": "Эта ссылка использует необычные символы, чтобы выглядеть как paypal.com (высокий риск)."
+  },
+
+  "reason_nonAscii": {
+    "message": "Обнаружены подозрительные символы (омоглифы)"
+  },
+  "reason_brandKeywordHomoglyph": {
+    "message": "Обнаружена имитация бренда"
+  },
+  "reason_noHttps": {
+    "message": "Нет защищенного соединения (HTTPS)"
+  },
+  "reason_suspiciousTLD": {
+    "message": "Подозрительное доменное расширение"
+  },
+  "reason_ipAsDomain": {
+    "message": "IP-адрес в качестве доменного имени"
+  },
+  "reason_tooManySubdomains": {
+    "message": "Слишком много поддоменов"
+  },
+  "reason_shortenedUrl": {
+    "message": "Обнаружена сокращенная ссылка"
+  },
+  "reason_suspiciousKeywords": {
+    "message": "Подозрительные ключевые слова в URL"
+  },
+  "reason_malwareExtension": {
+    "message": "Потенциально опасное расширение файла"
+  },
+  "reason_urlTooLong": {
+    "message": "Необычно длинный URL"
+  },
+  "reason_encodedCharacters": {
+    "message": "Закодированные символы в URL"
+  },
+  "reason_homoglyphAttack": {
+    "message": "Обнаружена атака с использованием омоглифов"
+  },
+  "reason_typosquatting": {
+    "message": "Обнаружен тайпсквоттинг"
+  },
+  "reason_suspiciousBrandPattern": {
+    "message": "Подозрительный паттерн бренда"
+  },
+  "reason_unusualPort": {
+    "message": "Необычный порт"
+  },
+  "reason_punycode": {
+    "message": "Обнаружен Punycode-домен"
+  },
+  "reason_loginPageNoMX": {
+    "message": "Страница входа без почтового сервера"
+  },
+  "reason_insecureLoginPage": {
+    "message": "Небезопасная страница входа"
+  },
+  "reason_sslValidationFailed": {
+    "message": "Ошибка проверки SSL"
+  },
+  "reason_similarToLegitimateDomain": {
+    "message": "Похож на легитимный домен"
+  },
+
+  "qrDangerTitle": {
+    "message": "ОПАСНОСТЬ: Фишинговый QR-код!"
+  },
+  "qrCautionTitle": {
+    "message": "Внимание: Подозрительный QR-код"
+  },
+  "ocrDangerTitle": {
+    "message": "ОПАСНОСТЬ: Обнаружен фишинг в изображении!"
+  },
+  "ocrCautionTitle": {
+    "message": "Внимание: Подозрительный текст в изображении"
+  },
+  "asciiQrDangerTitle": {
+    "message": "ОПАСНОСТЬ: Фишинговый ASCII QR!"
+  },
+  "asciiQrCautionTitle": {
+    "message": "Внимание: Подозрительный ASCII QR"
+  },
+  "suspiciousDomainDetected": {
+    "message": "Обнаружен подозрительный домен"
+  },
+  "hiddenUrl": {
+    "message": "Скрытый URL"
+  },
+  "fullUrl": {
+    "message": "Полный URL"
+  },
+  "reasons": {
+    "message": "Причины"
+  },
+  "extractedText": {
+    "message": "Извлеченный текст"
+  },
+
+  "trialPeriodActive": {
+    "message": "Пробный период активен"
+  },
+  "trialDaysRemaining": {
+    "message": "Осталось $DAYS$ дней пробного периода",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "14"
+      }
+    }
+  },
+  "trialExpired": {
+    "message": "Пробный период истек"
+  },
+  "trialExpiredMessage": {
+    "message": "Ваш 30-дневный пробный период истек. Активируйте лицензию, чтобы продолжить использовать все функции."
+  },
+  "upgradeNow": {
+    "message": "Обновить сейчас"
+  },
+
+  "popupPageTitle": {
+    "message": "Панель управления LinkShield"
+  },
+  "extNameFull": {
+    "message": "LinkShield: ваше оружие против фишинга"
+  },
+  "extDescriptionFull": {
+    "message": "Повысьте свою онлайн-безопасность с мгновенными оповещениями и расширенной защитой."
+  },
+
+  "licenseTrialTitle": {
+    "message": "Пробный период: осталось $DAYS$ дней",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "licenseTrialSubtitle": {
+    "message": "Все премиум-функции активны в течение пробного периода"
+  },
+  "licenseUpgradeLink": {
+    "message": "Перейти на Premium →"
+  },
+  "licenseExpiredTitle": {
+    "message": "Пробный период истек"
+  },
+  "licenseExpiredSubtitle": {
+    "message": "Активируйте Premium для полной защиты"
+  },
+  "licenseBenefitsLabel": {
+    "message": "Premium включает:"
+  },
+  "licenseBenefitsText": {
+    "message": "Фоновый анализ, сканирование QR-кодов, непрерывная защита"
+  },
+  "licenseKeyPlaceholder": {
+    "message": "Введите ваш лицензионный код"
+  },
+  "licenseActivateButton": {
+    "message": "Активировать Premium"
+  },
+  "licenseBuyLink": {
+    "message": "Нет лицензии? Купить здесь →"
+  },
+  "licensePremiumTitle": {
+    "message": "Premium активен"
+  },
+  "licensePremiumSubtitle": {
+    "message": "Полная защита включена"
+  },
+
+  "sectionSecuritySettings": {
+    "message": "Настройки безопасности"
+  },
+  "backgroundAnalysisTitle": {
+    "message": "Настройки безопасности"
+  },
+  "backgroundAnalysisFeature": {
+    "message": "Фоновый анализ"
+  },
+  "premiumBadge": {
+    "message": "PREMIUM"
+  },
+  "integratedProtectionFeature": {
+    "message": "Интегрированная защита от вредоносного ПО и фишинга"
+  },
+  "integratedProtectionDescription": {
+    "message": "Объединяет несколько служб безопасности для комплексной защиты."
+  },
+  "confirmationMessage": {
+    "message": "Настройки успешно сохранены!"
+  },
+  "lastRuleUpdateNone": {
+    "message": "Обновление базы данных еще не выполнено"
+  },
+  "errorOccurred": {
+    "message": "Произошла ошибка"
+  },
+
+  "gumroadErrorUnknown": {
+    "message": "Неизвестная ошибка"
+  },
+  "gumroadErrorLicenseNotExistProduct": {
+    "message": "Этот лицензионный ключ не существует для данного продукта"
+  },
+  "gumroadErrorLicenseNotExist": {
+    "message": "Этот лицензионный ключ не существует"
+  },
+  "gumroadErrorLicenseRequired": {
+    "message": "Пожалуйста, введите лицензионный ключ"
+  },
+  "gumroadErrorProductNotFound": {
+    "message": "Продукт не найден"
+  },
+  "gumroadErrorLicenseDisabled": {
+    "message": "Эта лицензия отключена"
+  },
+  "gumroadErrorLicenseRefunded": {
+    "message": "Эта лицензия была возвращена"
+  },
+  "gumroadErrorLicenseRevoked": {
+    "message": "Эта лицензия была возвращена или отозвана"
+  },
+  "gumroadErrorLicenseInvalid": {
+    "message": "Недействительный лицензионный ключ"
+  },
+  "gumroadErrorNetwork": {
+    "message": "Ошибка сети при проверке. Проверьте ваше интернет-соединение."
+  },
+
+  "licenseEmptyError": {
+    "message": "Пожалуйста, введите лицензионный код"
+  },
+  "licenseActivating": {
+    "message": "Активация..."
+  },
+  "licenseActivatedSuccess": {
+    "message": "Premium успешно активирован!"
+  },
+  "licenseConnectionError": {
+    "message": "Ошибка соединения. Попробуйте снова."
+  },
+
+  "debugModeTitle": {
+    "message": "Режим отладки"
+  },
+  "debugTrial30": {
+    "message": "Пробный (30 дн.)"
+  },
+  "debugTrial3": {
+    "message": "Пробный (3 дн.)"
+  },
+  "debugExpired": {
+    "message": "Истек"
+  },
+  "debugPremium": {
+    "message": "Premium"
+  },
+  "debugReset": {
+    "message": "Сброс"
+  },
+  "debugTrialSimulated": {
+    "message": "✓ Пробный период ($DAYS$ дн.) смоделирован",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "debugExpiredSimulated": {
+    "message": "✓ Истекший пробный период смоделирован"
+  },
+  "debugPremiumSimulated": {
+    "message": "✓ Premium смоделирован"
+  },
+  "debugStorageReset": {
+    "message": "✓ Хранилище сброшено - перезагрузите расширение"
+  },
+  "debugError": {
+    "message": "✗ Ошибка: $ERROR$",
+    "placeholders": {
+      "ERROR": {
+        "content": "$1",
+        "example": "Unknown error"
+      }
+    }
+  },
+  "reason_redirectChain": {
+    "message": "Обнаружена подозрительная цепочка перенаправлений. Ссылка проходит через несколько серверов перед достижением пункта назначения."
+  },
+  "reason_excessiveRedirects": {
+    "message": "Слишком много перенаправлений в цепочке (высокий риск). Эта ссылка перенаправляет более 5 раз, что часто используется для сокрытия истинного назначения."
+  },
+  "reason_domainHopping": {
+    "message": "Множественные смены домена в цепочке перенаправлений (высокий риск). Ссылка переходит между многими различными сайтами."
+  },
+  "reason_chainedShorteners": {
+    "message": "Несколько сервисов сокращения URL связаны в цепочку (средний риск). Легитимные ссылки редко используют несколько сервисов сокращения."
+  },
+  "reason_suspiciousFinalTLD": {
+    "message": "Конечный пункт назначения имеет подозрительное расширение домена (высокий риск). Фактическая конечная точка использует рискованный TLD."
+  },
+  "reason_redirectToIP": {
+    "message": "Перенаправление ведёт на IP-адрес (высокий риск). Конечный пункт назначения — это необработанный IP-адрес вместо доменного имени."
+  },
+  "reason_redirectTimeout": {
+    "message": "Тайм-аут анализа перенаправлений (средний риск). Не удалось полностью отследить цепочку перенаправлений в установленное время."
+  },
+  "atSymbolPhishing": {
+    "message": "КРИТИЧНО: Эта ссылка использует символ @ для скрытия реального назначения (высокий риск). Адрес перед @ — поддельный, вы будете перенаправлены на другой сайт."
+  },
+  "doubleEncoding": {
+    "message": "Эта ссылка использует двойную URL-кодировку для скрытия истинного содержимого (высокий риск). Это распространённый метод обхода фильтров безопасности."
+  },
+  "fullwidthCharacters": {
+    "message": "Эта ссылка использует полноширинные Unicode-символы, похожие на обычные буквы (высокий риск). Это уловка для придания поддельным сайтам легитимного вида."
+  },
+  "nullByteInjection": {
+    "message": "Эта ссылка содержит символ null byte (высокий риск). Это хакерская техника, которая может использоваться для обхода проверок безопасности."
+  },
+
+  "formActionHijacking": {
+    "message": "Эта форма входа отправляет ваши учётные данные на внешний сайт (критический риск). Ваше имя пользователя и пароль могут быть украдены."
+  },
+  "formActionExternal": {
+    "message": "Форма входа отправляет данные на внешний домен: $DOMAIN$ (критический риск). Это попытка кражи учётных данных.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "evil-site.com"
+      }
+    }
+  },
+  "formActionInvalid": {
+    "message": "Форма входа имеет недействительный или подозрительный URL действия (высокий риск). Ваши учётные данные могут быть отправлены небезопасно."
+  },
+
+  "hiddenIframeZeroSize": {
+    "message": "Обнаружен скрытый iframe нулевого размера (высокий риск). Это может использоваться для невидимой загрузки вредоносного контента."
+  },
+  "hiddenIframeOffScreen": {
+    "message": "Обнаружен iframe за пределами экрана (высокий риск). Скрытый контент может отслеживать вас или красть данные."
+  },
+  "hiddenIframeCSSHidden": {
+    "message": "Обнаружен iframe, скрытый через CSS (высокий риск). Невидимые фреймы могут перехватывать нажатия клавиш или загружать вредоносное ПО."
+  },
+  "hiddenIframeNegativePos": {
+    "message": "Обнаружен iframe с отрицательным позиционированием (средний риск). Эта техника используется для скрытия контента от пользователей."
+  },
+
+  "nrdCritical": {
+    "message": "КРИТИЧНО: Домен зарегистрирован $DAYS$ дней назад (критический риск). Совершенно новые домены с высокой вероятностью являются вредоносными.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "0"
+      }
+    }
+  },
+  "nrdHigh": {
+    "message": "Домен зарегистрирован всего $DAYS$ дней назад (высокий риск). Очень новые домены часто используются для мошенничества.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "nrdMedium": {
+    "message": "Домен зарегистрирован $DAYS$ дней назад (средний риск). Новые домены младше 30 дней требуют дополнительной осторожности.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "15"
+      }
+    }
+  },
+  "nrdLow": {
+    "message": "Домен зарегистрирован $DAYS$ дней назад (низкий риск). Относительно новый домен, проявите некоторую осторожность.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "60"
+      }
+    }
+  },
+
+  "licenseErrorNotFound": {
+    "message": "Лицензионный ключ не найден. Пожалуйста, проверьте введённые данные."
+  },
+  "licenseErrorDisabled": {
+    "message": "Эта лицензия отключена."
+  },
+  "licenseErrorExpired": {
+    "message": "Срок действия этой лицензии истёк."
+  },
+  "licenseErrorActivationLimit": {
+    "message": "Достигнут лимит активаций. Сначала деактивируйте другое устройство."
+  },
+  "licenseErrorInstanceNotFound": {
+    "message": "Экземпляр установки не найден."
+  },
+  "licenseErrorInvalid": {
+    "message": "Недействительный лицензионный ключ."
+  },
+  "licenseErrorNetwork": {
+    "message": "Ошибка сети. Проверьте подключение и повторите попытку."
+  },
+  "licenseErrorUnknown": {
+    "message": "Произошла неизвестная ошибка при проверке."
+  }
+}

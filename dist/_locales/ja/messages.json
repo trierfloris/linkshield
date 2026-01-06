@@ -1,0 +1,879 @@
+{
+  "extName": {
+    "message": "LinkShield"
+  },
+  "extDescription": {
+    "message": "LinkShieldは、安全でないウェブサイトやリンクを特定し、オンラインでの安全を確保するのに役立ちます。"
+  },
+  "alertTitle": {
+    "message": "警告！"
+  },
+  "alertMessage": {
+    "message": "このウェブサイトには、次のリンクが含まれています："
+  },
+  "severityLabel": {
+    "message": "リスク："
+  },
+  "reasonLabel": {
+    "message": "理由："
+  },
+  "adviceMessage": {
+    "message": "対処法は？"
+  },
+  "adviceCheckUrl": {
+    "message": "送信者を完全に信頼している場合にのみ、このリンクを開いてください。疑わしい場合はクリックしないでください。信頼できないサイトにパスワードを入力しないでください。"
+  },
+  "noHttps": {
+    "message": "このウェブサイトへの接続は安全ではありません（HTTPSではありません）。第三者があなたの情報を閲覧できる可能性があります。"
+  },
+  "ipAsDomain": {
+    "message": "このウェブサイトはドメイン名の代わりにIPアドレスを使用しています。これは珍しく、非常に危険です。"
+  },
+  "tooManySubdomains": {
+    "message": "このウェブアドレスには多くのサブドメインがあります（例：part1.part2.site.com）。これは安全でないサイトを示している可能性があります（中リスク）。"
+  },
+  "suspiciousKeywords": {
+    "message": "リンクには詐欺に頻繁に関連付けられる単語が含まれています（低リスク）。"
+  },
+  "suspiciousPattern": {
+    "message": "このウェブアドレスの構造は珍しいようです（中リスク）。"
+  },
+  "shortenedUrl": {
+    "message": "これは短縮リンクです（bit.lyなど）。実際のリンク先はすぐには見えません（中リスク）。"
+  },
+  "downloadPage": {
+    "message": "このリンクはファイルをダウンロードするようです。完全に信頼できるファイルのみを開いてください（中リスク）。"
+  },
+  "freeHosting": {
+    "message": "このウェブサイトは無料のホスティングプラットフォームを使用しています。詐欺師がこれを利用することがあります（中リスク）。"
+  },
+  "encodedCharacters": {
+    "message": "リンクには珍しい文字が含まれています（低リスク）。これは実際のリンク先を隠すために使用されることがあります。"
+  },
+  "homoglyphAttack": {
+    "message": "このウェブアドレスは、既知のウェブサイトと酷似した文字を使用しています（高リスク）。これはあなたを騙すための手口です。"
+  },
+  "metaRedirect": {
+    "message": "このウェブサイトは自動的にリダイレクトします。安全でないサイトにつながる可能性があります（中リスク）。"
+  },
+  "cryptoPhishing": {
+    "message": "このリンクは暗号通貨詐欺のようです（高リスク）。ウォレットや認証情報には特に注意してください。"
+  },
+  "externalScripts": {
+    "message": "このサイトは、危険とマークされた外部ソースからコードを読み込んでいます。"
+  },
+  "suspiciousParams": {
+    "message": "リンクには、安全でないアクションに使用されることがある技術的なパラメータが含まれています（低リスク）。"
+  },
+  "mixedContent": {
+    "message": "この安全なページは、安全でないコンテンツも読み込んでいます。これはセキュリティリスクです（中リスク）。"
+  },
+  "unusualPort": {
+    "message": "このサイトは珍しい技術ポートを使用しています。これはセキュリティを回避する試みである可能性があります（中リスク）。"
+  },
+  "javascriptScheme": {
+    "message": "このリンクはブラウザで直接コードを実行しようとします（高リスク）。"
+  },
+  "urlFragmentTrick": {
+    "message": "リンクには異常に長いフラグメントが含まれています。これは時に人を騙すために使用されるテクニックです（低リスク）。"
+  },
+  "suspiciousTLD": {
+    "message": "このウェブサイトは、詐欺に頻繁に悪用されるドメイン拡張子（.zipや.movなど）を使用しています（高リスク）。"
+  },
+  "base64OrHex": {
+    "message": "このリンクには高度にエンコードされた情報が含まれています。これは悪意のあるコードを隠すためによく使用されます（高リスク）。"
+  },
+  "similarToLegitimateDomain": {
+    "message": "このサイトは既知の信頼できるサイトによく似ています。アドレスを注意深く確認してください。偽のコピーである可能性があります。"
+  },
+  "youngDomain": {
+    "message": "このドメインはわずか$AGE$日前に登録されました（高リスク）。新しいドメインは詐欺によく使用されます。",
+    "placeholders": {
+      "AGE": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "insecureLoginPage": {
+    "message": "このログインページは安全ではありません（HTTPSではありません）。ここにパスワードを入力しないでください（高リスク）。"
+  },
+  "loginPageNoMX": {
+    "message": "このログインページは、メールを受信できないドメインに属しています。これは非常に危険です（高リスク）。"
+  },
+  "malwareExtension": {
+    "message": "このリンクは有害な可能性のあるファイル（.exeや.zipなど）につながります。ダウンロードしないでください（高リスク）。"
+  },
+  "popupTitle": {
+    "message": "LinkShield：フィッシングからの保護"
+  },
+  "popupSubtitle": {
+    "message": "リアルタイムのアラートと保護で安全を確保しましょう。"
+  },
+  "backgroundAnalysis": {
+    "message": "バックグラウンドスキャン"
+  },
+  "backgroundAnalysisDescription": {
+    "message": "危険なウェブサイトにアクセスする前にブロックします。"
+  },
+  "activationRequired": {
+    "message": "この機能を使用するには有効にしてください。"
+  },
+  "integratedProtection": {
+    "message": "統合保護"
+  },
+  "integratedProtectionDescription": {
+    "message": "ウェブサイトやリンクに危険な特徴がないか直接チェックします。"
+  },
+  "premiumFeaturesActive": {
+    "message": "現在、プレミアムバージョンを使用しています！"
+  },
+  "upgradePrompt": {
+    "message": "追加機能を利用するにはプレミアムにアップグレードしてください。"
+  },
+  "saveSettings": {
+    "message": "設定を保存"
+  },
+  "settingsSaved": {
+    "message": "設定が保存されました！"
+  },
+  "licenseActivate": {
+    "message": "ライセンスを有効化"
+  },
+  "licenseInputPlaceholder": {
+    "message": "ライセンスキーを入力してください"
+  },
+  "licenseCheck": {
+    "message": "ライセンスを確認"
+  },
+  "licenseInvalid": {
+    "message": "無効なライセンスキーです。"
+  },
+  "licenseValid": {
+    "message": "ライセンスが正常に有効化されました！"
+  },
+  "lastRuleUpdate": {
+    "message": "最終データベース更新日： "
+  },
+  "licenseStatus": {
+    "message": "ライセンスステータス："
+  },
+  "licenseFreemium": {
+    "message": "無料版"
+  },
+  "bulkUrlCheck": {
+    "message": "複数のリンクをチェック"
+  },
+  "bulkUrlCheckDescription": {
+    "message": "リンクのリストをチェックするために.txtファイルをアップロードしてください。"
+  },
+  "fileChoose": {
+    "message": "ファイルを選択"
+  },
+  "fileCheck": {
+    "message": "ファイルをチェック"
+  },
+  "fileCheckNoUrls": {
+    "message": "選択されたファイルにはリンクが含まれていません。"
+  },
+  "fileCheckFailed": {
+    "message": "ファイルのチェックに失敗しました。"
+  },
+  "safeDomain": {
+    "message": "これは既知の安全なウェブサイトです。"
+  },
+  "allowedProtocol": {
+    "message": "このリンクは安全なプロトコル（'mailto:'や'tel:'など）を使用しています。"
+  },
+  "invalidUrl": {
+    "message": "このウェブアドレスは無効か、スペルが間違っています。"
+  },
+  "loadingMessage": {
+    "message": "ページを分析中..."
+  },
+  "cannotRetrieveSiteStatus": {
+    "message": "サイトのステータスを取得できません。"
+  },
+  "unknownRisk": {
+    "message": "不明なリスク"
+  },
+  "highRisk": {
+    "message": "高リスク：十分に注意してください。"
+  },
+  "mediumRisk": {
+    "message": "中リスク：注意を払ってください。"
+  },
+  "lowRisk": {
+    "message": "低リスク：いくつかの懸念事項があります。"
+  },
+  "noSuspiciousFeatures": {
+    "message": "直接的な危険な特徴は見つかりませんでした。"
+  },
+  "siteStatusNotAvailable": {
+    "message": "このサイトのステータスは利用できません。"
+  },
+  "sslValidationFailed": {
+    "message": "このウェブサイトのセキュリティ証明書は無効です。"
+  },
+  "shortenedUrlError": {
+    "message": "この短縮リンクの最終的なリンク先を確認できませんでした。"
+  },
+  "redirectedShortenedUrl": {
+    "message": "この短縮リンクは別のウェブサイトにリダイレクトします。"
+  },
+  "cryptoPhishingAd": {
+    "message": "この広告には暗号通貨詐欺の特徴があります（高リスク）。"
+  },
+  "suspiciousAdStructure": {
+    "message": "この広告のリンクの構造は珍しいです（中リスク）。"
+  },
+  "suspiciousAdTLD": {
+    "message": "この広告は、頻繁に悪用されるドメイン拡張子を使用しています（中リスク）。"
+  },
+  "homoglyphAdAttack": {
+    "message": "広告は、既知のウェブサイトと酷似した文字を使用しています（中リスク）。"
+  },
+  "brandMisuse": {
+    "message": "広告が既知のブランド名を不正に使用しています（高リスク）。"
+  },
+  "unknownWarning": {
+    "message": "不明なリスクが検出されました。特に注意してください。"
+  },
+  "typosquattingAttack": {
+    "message": "このウェブアドレスは実際のウェブサイトに似ていますが、意図的にスペルが間違っています（高リスク）。偽のバージョンである可能性があります。"
+  },
+  "downloadKeyword": {
+    "message": "リンクにはダウンロードに関連する単語が含まれています（低リスク）。信頼できるファイルのみを開いてください。"
+  },
+  "suspiciousScriptContent": {
+    "message": "このページのスクリプトには危険なコードが含まれています。安全でない可能性があります。"
+  },
+  "invalidScriptSrc": {
+    "message": "このページのスクリプトへのリンクが正しくありません。"
+  },
+  "mixedScripts": {
+    "message": "このアドレスは、異なる文字体系（ラテン文字とキリル文字など）を混在させて使用しています。これは既知のフィッシング手口です（高リスク）。"
+  },
+  "introBannerMessage": {
+    "message": "LinkShieldが有効で、危険なリンクを⚠️でマークします。アイコンにカーソルを合わせると理由が表示されます。"
+  },
+  "digitHomoglyph": {
+    "message": "このアドレスは、既知のブランドを模倣するために文字に似た数字を使用しています（中リスク）。"
+  },
+  "trustedTLD": {
+    "message": "このドメインは標準的なドメイン拡張子を持っています（低リスク）。"
+  },
+  "trustedTld": {
+    "message": "このドメインは標準的なドメイン拡張子を持っています（低リスク）。"
+  },
+  "suspiciousPageText": {
+    "message": "このページのテキストには、詐欺でよく使われる単語が含まれています（高リスク）。"
+  },
+  "urgencyTactic": {
+    "message": "このページは、あなたに圧力をかけるために緊急性を煽る言葉を使用しています（高リスク）。詐欺にご注意ください。"
+  },
+  "severityMediumRisk": {
+    "message": "中リスク：このリンクは安全でない可能性があります。注意してください。"
+  },
+  "allowedQueryParam": {
+    "message": "リンクには安全で許可された技術的なパラメータが含まれています。"
+  },
+  "suspiciousIframeAdComponent": {
+    "message": "このページは別のウェブサイトから広告コンポーネントを読み込んでいます。"
+  },
+  "suspiciousIframeTracking": {
+    "message": "このページは、あなたの閲覧行動を監視できるトラッカーを読み込んでいます。"
+  },
+  "suspiciousIframeMalicious": {
+    "message": "このページで潜在的に有害なコンポーネント（フィッシングなど）が見つかりました。"
+  },
+  "suspiciousIframeHidden": {
+    "message": "ページ上で危険な非表示要素が見つかりました。"
+  },
+  "mixedContentIframe": {
+    "message": "この安全なページは、安全でないコンポーネントを読み込んでいます。これはセキュリティリスクです。"
+  },
+  "invalidIframeSrc": {
+    "message": "このページのコンポーネントが正しく読み込めませんでした（無効なソース）。"
+  },
+  "iframeHidden": {
+    "message": "ページ上で危険な非表示要素が見つかりました。"
+  },
+  "typosquattingAttack_adobe_com": {
+    "message": "このウェブアドレスはadobe.comに似ていますが、意図的にスペルが間違っています（高リスク）。"
+  },
+  "typosquattingAttack_alibaba_com": {
+    "message": "このウェブアドレスはalibaba.comに似ていますが、意図的にスペルが間違っています（高リスク）。"
+  },
+  "typosquattingAttack_amazon_com": {
+    "message": "このウェブアドレスはamazon.comに似ていますが、意図的にスペルが間違っています（高リスク）。"
+  },
+  "typosquattingAttack_apple_com": {
+    "message": "このウェブアドレスはapple.comに似ていますが、意図的にスペルが間違っています（高リスク）。"
+  },
+  "typosquattingAttack_facebook_com": {
+    "message": "このウェブアドレスはfacebook.comに似ていますが、意図的にスペルが間違っています（高リスク）。"
+  },
+  "typosquattingAttack_google_com": {
+    "message": "このウェブアドレスはgoogle.comに似ていますが、意図的にスペルが間違っています（高リスク）。"
+  },
+  "typosquattingAttack_linkedin_com": {
+    "message": "このウェブアドレスはlinkedin.comに似ていますが、意図的にスペルが間違っています（高リスク）。"
+  },
+  "typosquattingAttack_microsoft_com": {
+    "message": "このウェブアドレスはmicrosoft.comに似ていますが、意図的にスペルが間違っています（高リスク）。"
+  },
+  "typosquattingAttack_paypal_com": {
+    "message": "このウェブアドレスはpaypal.comに似ていますが、意図的にスペルが間違っています（高リスク）。"
+  },
+  "typosquattingAttack_whatsapp_com": {
+    "message": "このウェブアドレスはwhatsapp.comに似ていますが、意図的にスペルが間違っています（高リスク）。"
+  },
+  "typosquattingAttack_x_com": {
+    "message": "このウェブアドレスはx.comに似ていますが、意図的にスペルが間違っています（高リスク）。"
+  },
+  "homoglyphAttack_microsoft_com": {
+    "message": "このアドレスはmicrosoft.comと酷似した文字を使用しています（高リスク）。"
+  },
+  "homoglyphAttack_apple_com": {
+    "message": "このアドレスはapple.comと酷似した文字を使用しています（高リスク）。"
+  },
+  "homoglyphAttack_google_com": {
+    "message": "このアドレスはgoogle.comと酷似した文字を使用しています（高リスク）。"
+  },
+  "homoglyphAttack_linkedin_com": {
+    "message": "このアドレスはlinkedin.comと酷似した文字を使用しています（高リスク）。"
+  },
+  "homoglyphAttack_alibaba_com": {
+    "message": "このアドレスはalibaba.comと酷似した文字を使用しています（高リスク）。"
+  },
+  "homoglyphAttack_whatsapp_com": {
+    "message": "このアドレスはwhatsapp.comと酷似した文字を使用しています（高リスク）。"
+  },
+  "homoglyphAttack_amazon_com": {
+    "message": "このアドレスはamazon.comと酷似した文字を使用しています（高リスク）。"
+  },
+  "homoglyphAttack_x_com": {
+    "message": "このアドレスはx.comと酷似した文字を使用しています（高リスク）。"
+  },
+  "homoglyphAttack_facebook_com": {
+    "message": "このアドレスはfacebook.comと酷似した文字を使用しています（高リスク）。"
+  },
+  "homoglyphAttack_adobe_com": {
+    "message": "このアドレスはadobe.comと酷似した文字を使用しています（高リスク）。"
+  },
+  "homoglyphAttack_paypal_com": {
+    "message": "このアドレスはpaypal.comと酷似した文字を使用しています（高リスク）。"
+  },
+  "typosquatting_microsoft_com": {
+    "message": "このアドレスはmicrosoft.comによく似ています（高リスク）。偽のページである可能性があります。"
+  },
+  "typosquatting_apple_com": {
+    "message": "このアドレスはapple.comによく似ています（高リスク）。偽のページである可能性があります。"
+  },
+  "typosquatting_google_com": {
+    "message": "このアドレスはgoogle.comによく似ています（高リスク）。偽のページである可能性があります。"
+  },
+  "typosquatting_linkedin_com": {
+    "message": "このアドレスはlinkedin.comによく似ています（高リスク）。偽のページである可能性があります。"
+  },
+  "typosquatting_alibaba_com": {
+    "message": "このアドレスはalibaba.comによく似ています（高リスク）。偽のページである可能性があります。"
+  },
+  "typosquatting_whatsapp_com": {
+    "message": "このアドレスはwhatsapp.comによく似ています（高リスク）。偽のページである可能性があります。"
+  },
+  "typosquatting_amazon_com": {
+    "message": "このアドレスはamazon.comによく似ています（高リスク）。偽のページである可能性があります。"
+  },
+  "typosquatting_x_com": {
+    "message": "このアドレスはx.comによく似ています（高リスク）。偽のページである可能性があります。"
+  },
+  "typosquatting_facebook_com": {
+    "message": "このアドレスはfacebook.comによく似ています（高リスク）。偽のページである可能性があります。"
+  },
+  "typosquatting_adobe_com": {
+    "message": "このアドレスはadobe.comによく似ています（高リスク）。偽のページである可能性があります。"
+  },
+  "typosquatting_paypal_com": {
+    "message": "このアドレスはpaypal.comによく似ています（高リスク）。偽のページである可能性があります。"
+  },
+  "similarToLegitimateDomain_microsoft_com": {
+    "message": "このサイトはmicrosoft.comに似ています、アドレスを注意深く確認してください。"
+  },
+  "similarToLegitimateDomain_apple_com": {
+    "message": "このサイトはapple.comに似ています、アドレスを注意深く確認してください。"
+  },
+  "similarToLegitimateDomain_google_com": {
+    "message": "このサイトはgoogle.comに似ています、アドレスを注意深く確認してください。"
+  },
+  "similarToLegitimateDomain_linkedin_com": {
+    "message": "このサイトはlinkedin.comに似ています、アドレスを注意深く確認してください。"
+  },
+  "similarToLegitimateDomain_alibaba_com": {
+    "message": "このサイトはalibaba.comに似ています、アドレスを注意深く確認してください。"
+  },
+  "similarToLegitimateDomain_whatsapp_com": {
+    "message": "このサイトはwhatsapp.comに似ています、アドレスを注意深く確認してください。"
+  },
+  "similarToLegitimateDomain_amazon_com": {
+    "message": "このサイトはamazon.comに似ています、アドレスを注意深く確認してください。"
+  },
+  "similarToLegitimateDomain_x_com": {
+    "message": "このサイトはx.comに似ています、アドレスを注意深く確認してください。"
+  },
+  "similarToLegitimateDomain_facebook_com": {
+    "message": "このサイトはfacebook.comに似ています、アドレスを注意深く確認してください。"
+  },
+  "similarToLegitimateDomain_adobe_com": {
+    "message": "このサイトはadobe.comに似ています、アドレスを注意深く確認してください。"
+  },
+  "similarToLegitimateDomain_paypal_com": {
+    "message": "このサイトはpaypal.comに似ています、アドレスを注意深く確認してください。"
+  },
+  "suspiciousPunycodeDecoding_microsoft_com": {
+    "message": "このリンクは、microsoft.comに見せかけるために珍しい文字を使用しています（高リスク）。"
+  },
+  "suspiciousPunycodeDecoding_apple_com": {
+    "message": "このリンクは、apple.comに見せかけるために珍しい文字を使用しています（高リスク）。"
+  },
+  "suspiciousPunycodeDecoding_google_com": {
+    "message": "このリンクは、google.comに見せかけるために珍しい文字を使用しています（高リスク）。"
+  },
+  "suspiciousPunycodeDecoding_linkedin_com": {
+    "message": "このリンクは、linkedin.comに見せかけるために珍しい文字を使用しています（高リスク）。"
+  },
+  "suspiciousPunycodeDecoding_alibaba_com": {
+    "message": "このリンクは、alibaba.comに見せかけるために珍しい文字を使用しています（高リスク）。"
+  },
+  "suspiciousPunycodeDecoding_whatsapp_com": {
+    "message": "このリンクは、whatsapp.comに見せかけるために珍しい文字を使用しています（高リスク）。"
+  },
+  "suspiciousPunycodeDecoding_amazon_com": {
+    "message": "このリンクは、amazon.comに見せかけるために珍しい文字を使用しています（高リスク）。"
+  },
+  "suspiciousPunycodeDecoding_x_com": {
+    "message": "このリンクは、x.comに見せかけるために珍しい文字を使用しています（高リスク）。"
+  },
+  "suspiciousPunycodeDecoding_facebook_com": {
+    "message": "このリンクは、facebook.comに見せかけるために珍しい文字を使用しています（高リスク）。"
+  },
+  "suspiciousPunycodeDecoding_adobe_com": {
+    "message": "このリンクは、adobe.comに見せかけるために珍しい文字を使用しています（高リスク）。"
+  },
+  "suspiciousPunycodeDecoding_paypal_com": {
+    "message": "このリンクは、paypal.comに見せかけるために珍しい文字を使用しています（高リスク）。"
+  },
+
+  "reason_nonAscii": {
+    "message": "疑わしい文字を検出（同形異字）"
+  },
+  "reason_brandKeywordHomoglyph": {
+    "message": "ブランド模倣を検出"
+  },
+  "reason_noHttps": {
+    "message": "安全な接続なし（HTTPS）"
+  },
+  "reason_suspiciousTLD": {
+    "message": "疑わしいドメイン拡張子"
+  },
+  "reason_ipAsDomain": {
+    "message": "ドメイン名としてのIPアドレス"
+  },
+  "reason_tooManySubdomains": {
+    "message": "サブドメインが多すぎます"
+  },
+  "reason_shortenedUrl": {
+    "message": "短縮URLを検出"
+  },
+  "reason_suspiciousKeywords": {
+    "message": "URLに疑わしいキーワード"
+  },
+  "reason_malwareExtension": {
+    "message": "潜在的に危険なファイル拡張子"
+  },
+  "reason_urlTooLong": {
+    "message": "異常に長いURL"
+  },
+  "reason_encodedCharacters": {
+    "message": "URLにエンコードされた文字"
+  },
+  "reason_homoglyphAttack": {
+    "message": "同形異字攻撃を検出"
+  },
+  "reason_typosquatting": {
+    "message": "タイポスクワッティングを検出"
+  },
+  "reason_suspiciousBrandPattern": {
+    "message": "疑わしいブランドパターン"
+  },
+  "reason_unusualPort": {
+    "message": "異常なポート"
+  },
+  "reason_punycode": {
+    "message": "Punycodeドメインを検出"
+  },
+  "reason_loginPageNoMX": {
+    "message": "メールサーバーのないログインページ"
+  },
+  "reason_insecureLoginPage": {
+    "message": "安全でないログインページ"
+  },
+  "reason_sslValidationFailed": {
+    "message": "SSL検証に失敗"
+  },
+  "reason_similarToLegitimateDomain": {
+    "message": "正規ドメインに類似"
+  },
+
+  "qrDangerTitle": {
+    "message": "危険：フィッシングQRコード！"
+  },
+  "qrCautionTitle": {
+    "message": "注意：疑わしいQRコード"
+  },
+  "ocrDangerTitle": {
+    "message": "危険：画像内にフィッシングを検出！"
+  },
+  "ocrCautionTitle": {
+    "message": "注意：画像内に疑わしいテキスト"
+  },
+  "asciiQrDangerTitle": {
+    "message": "危険：フィッシングASCII QR！"
+  },
+  "asciiQrCautionTitle": {
+    "message": "注意：疑わしいASCII QR"
+  },
+  "suspiciousDomainDetected": {
+    "message": "疑わしいドメインを検出"
+  },
+  "hiddenUrl": {
+    "message": "隠されたURL"
+  },
+  "fullUrl": {
+    "message": "完全なURL"
+  },
+  "reasons": {
+    "message": "理由"
+  },
+  "extractedText": {
+    "message": "抽出されたテキスト"
+  },
+
+  "trialPeriodActive": {
+    "message": "試用期間有効"
+  },
+  "trialDaysRemaining": {
+    "message": "試用期間残り $DAYS$ 日",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "14"
+      }
+    }
+  },
+  "trialExpired": {
+    "message": "試用期間終了"
+  },
+  "trialExpiredMessage": {
+    "message": "30日間の試用期間が終了しました。すべての機能を引き続き使用するには、ライセンスを有効化してください。"
+  },
+  "upgradeNow": {
+    "message": "今すぐアップグレード"
+  },
+
+  "popupPageTitle": {
+    "message": "LinkShield ダッシュボード"
+  },
+  "extNameFull": {
+    "message": "LinkShield：フィッシング対策の武器"
+  },
+  "extDescriptionFull": {
+    "message": "即時アラートと高度な保護でオンラインセキュリティを強化します。"
+  },
+
+  "licenseTrialTitle": {
+    "message": "試用期間：残り $DAYS$ 日",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "licenseTrialSubtitle": {
+    "message": "試用期間中はすべてのプレミアム機能が有効です"
+  },
+  "licenseUpgradeLink": {
+    "message": "プレミアムにアップグレード →"
+  },
+  "licenseExpiredTitle": {
+    "message": "試用期間終了"
+  },
+  "licenseExpiredSubtitle": {
+    "message": "完全な保護のためにプレミアムを有効化"
+  },
+  "licenseBenefitsLabel": {
+    "message": "プレミアムに含まれる機能："
+  },
+  "licenseBenefitsText": {
+    "message": "バックグラウンド分析、QRコードスキャン、継続的な保護"
+  },
+  "licenseKeyPlaceholder": {
+    "message": "ライセンスキーを入力してください"
+  },
+  "licenseActivateButton": {
+    "message": "プレミアムを有効化"
+  },
+  "licenseBuyLink": {
+    "message": "ライセンスをお持ちでない方はこちら →"
+  },
+  "licensePremiumTitle": {
+    "message": "プレミアム有効"
+  },
+  "licensePremiumSubtitle": {
+    "message": "完全な保護が有効化されました"
+  },
+
+  "sectionSecuritySettings": {
+    "message": "セキュリティ設定"
+  },
+  "backgroundAnalysisTitle": {
+    "message": "セキュリティ設定"
+  },
+  "backgroundAnalysisFeature": {
+    "message": "バックグラウンド分析"
+  },
+  "premiumBadge": {
+    "message": "プレミアム"
+  },
+  "integratedProtectionFeature": {
+    "message": "統合マルウェア・フィッシング保護"
+  },
+  "integratedProtectionDescription": {
+    "message": "複数のセキュリティサービスを組み合わせて包括的な保護を提供します。"
+  },
+  "confirmationMessage": {
+    "message": "設定が正常に保存されました！"
+  },
+  "lastRuleUpdateNone": {
+    "message": "データベース更新はまだ実行されていません"
+  },
+  "errorOccurred": {
+    "message": "エラーが発生しました"
+  },
+
+  "gumroadErrorUnknown": {
+    "message": "不明なエラー"
+  },
+  "gumroadErrorLicenseNotExistProduct": {
+    "message": "この製品にはこのライセンスキーは存在しません"
+  },
+  "gumroadErrorLicenseNotExist": {
+    "message": "このライセンスキーは存在しません"
+  },
+  "gumroadErrorLicenseRequired": {
+    "message": "ライセンスキーを入力してください"
+  },
+  "gumroadErrorProductNotFound": {
+    "message": "製品が見つかりません"
+  },
+  "gumroadErrorLicenseDisabled": {
+    "message": "このライセンスは無効化されています"
+  },
+  "gumroadErrorLicenseRefunded": {
+    "message": "このライセンスは返金されました"
+  },
+  "gumroadErrorLicenseRevoked": {
+    "message": "このライセンスは返金または取り消されました"
+  },
+  "gumroadErrorLicenseInvalid": {
+    "message": "無効なライセンスキー"
+  },
+  "gumroadErrorNetwork": {
+    "message": "検証中にネットワークエラーが発生しました。インターネット接続を確認してください。"
+  },
+
+  "licenseEmptyError": {
+    "message": "ライセンスキーを入力してください"
+  },
+  "licenseActivating": {
+    "message": "有効化中..."
+  },
+  "licenseActivatedSuccess": {
+    "message": "プレミアムが正常に有効化されました！"
+  },
+  "licenseConnectionError": {
+    "message": "接続エラー。もう一度お試しください。"
+  },
+
+  "debugModeTitle": {
+    "message": "デバッグモード"
+  },
+  "debugTrial30": {
+    "message": "試用 (30日)"
+  },
+  "debugTrial3": {
+    "message": "試用 (3日)"
+  },
+  "debugExpired": {
+    "message": "期限切れ"
+  },
+  "debugPremium": {
+    "message": "プレミアム"
+  },
+  "debugReset": {
+    "message": "リセット"
+  },
+  "debugTrialSimulated": {
+    "message": "✓ 試用（$DAYS$ 日）をシミュレート",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "debugExpiredSimulated": {
+    "message": "✓ 期限切れ試用をシミュレート"
+  },
+  "debugPremiumSimulated": {
+    "message": "✓ プレミアムをシミュレート"
+  },
+  "debugStorageReset": {
+    "message": "✓ ストレージをリセット - 拡張機能を再読み込みしてください"
+  },
+  "debugError": {
+    "message": "✗ エラー：$ERROR$",
+    "placeholders": {
+      "ERROR": {
+        "content": "$1",
+        "example": "Unknown error"
+      }
+    }
+  },
+  "reason_redirectChain": {
+    "message": "疑わしいリダイレクトチェーンが検出されました。リンクは目的地に到達する前に複数のサーバーを経由します。"
+  },
+  "reason_excessiveRedirects": {
+    "message": "チェーン内のリダイレクトが多すぎます（高リスク）。このリンクは5回以上リダイレクトされており、真の目的地を隠すためによく使用されます。"
+  },
+  "reason_domainHopping": {
+    "message": "リダイレクトチェーン内で複数のドメイン変更（高リスク）。リンクは多くの異なるウェブサイト間を跳び回っています。"
+  },
+  "reason_chainedShorteners": {
+    "message": "複数のURL短縮サービスが連鎖（中リスク）。正当なリンクが複数の短縮サービスを使用することは稀です。"
+  },
+  "reason_suspiciousFinalTLD": {
+    "message": "最終目的地に疑わしいドメイン拡張子があります（高リスク）。実際のエンドポイントはリスクの高いTLDを使用しています。"
+  },
+  "reason_redirectToIP": {
+    "message": "リダイレクト先がIPアドレス（高リスク）。最終目的地はドメイン名ではなく生のIPアドレスです。"
+  },
+  "reason_redirectTimeout": {
+    "message": "リダイレクト分析がタイムアウト（中リスク）。時間制限内にリダイレクトチェーンを完全に追跡できませんでした。"
+  },
+  "atSymbolPhishing": {
+    "message": "重大：このリンクは@記号を使用して実際の目的地を隠しています（高リスク）。@の前のアドレスは偽物です—実際には別のウェブサイトにリダイレクトされます。"
+  },
+  "doubleEncoding": {
+    "message": "このリンクは二重URLエンコーディングを使用して真の内容を隠しています（高リスク）。これはセキュリティフィルターをバイパスする一般的な技術です。"
+  },
+  "fullwidthCharacters": {
+    "message": "このリンクは通常の文字に見える全角Unicode文字を使用しています（高リスク）。これは偽のウェブサイトを正規に見せるトリックです。"
+  },
+  "nullByteInjection": {
+    "message": "このリンクにはnullバイト文字が含まれています（高リスク）。これはセキュリティチェックをバイパスするために使用できるハッキング技術です。"
+  },
+
+  "formActionHijacking": {
+    "message": "このログインフォームは資格情報を外部サイトに送信しています（重大リスク）。ユーザー名とパスワードが盗まれる可能性があります。"
+  },
+  "formActionExternal": {
+    "message": "ログインフォームが外部ドメインにデータを送信：$DOMAIN$（重大リスク）。これは資格情報盗難の試みです。",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "evil-site.com"
+      }
+    }
+  },
+  "formActionInvalid": {
+    "message": "ログインフォームに無効または疑わしいアクションURLがあります（高リスク）。資格情報が安全に送信されない可能性があります。"
+  },
+
+  "hiddenIframeZeroSize": {
+    "message": "サイズゼロの隠しiframeが検出されました（高リスク）。これは目に見えない形で悪意のあるコンテンツを読み込むために使用される可能性があります。"
+  },
+  "hiddenIframeOffScreen": {
+    "message": "画面外に配置されたiframeが検出されました（高リスク）。隠されたコンテンツがあなたを追跡したりデータを盗んだりしている可能性があります。"
+  },
+  "hiddenIframeCSSHidden": {
+    "message": "CSSで隠されたiframeが検出されました（高リスク）。不可視のフレームはキーストロークをキャプチャしたりマルウェアを読み込んだりできます。"
+  },
+  "hiddenIframeNegativePos": {
+    "message": "負の位置指定のiframeが検出されました（中リスク）。この技術はユーザーからコンテンツを隠すために使用されます。"
+  },
+
+  "nrdCritical": {
+    "message": "重大：ドメインは$DAYS$日前に登録されました（重大リスク）。新規ドメインは悪意のある可能性が非常に高いです。",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "0"
+      }
+    }
+  },
+  "nrdHigh": {
+    "message": "ドメインはわずか$DAYS$日前に登録されました（高リスク）。非常に新しいドメインは詐欺によく使用されます。",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "nrdMedium": {
+    "message": "ドメインは$DAYS$日前に登録されました（中リスク）。30日未満の新しいドメインには特に注意が必要です。",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "15"
+      }
+    }
+  },
+  "nrdLow": {
+    "message": "ドメインは$DAYS$日前に登録されました（低リスク）。比較的新しいドメインです、多少の注意を払ってください。",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "60"
+      }
+    }
+  },
+
+  "licenseErrorNotFound": {
+    "message": "ライセンスキーが見つかりません。入力内容をご確認ください。"
+  },
+  "licenseErrorDisabled": {
+    "message": "このライセンスは無効化されています。"
+  },
+  "licenseErrorExpired": {
+    "message": "このライセンスは期限切れです。"
+  },
+  "licenseErrorActivationLimit": {
+    "message": "アクティベーション上限に達しました。先に他のデバイスを無効化してください。"
+  },
+  "licenseErrorInstanceNotFound": {
+    "message": "インストールインスタンスが見つかりません。"
+  },
+  "licenseErrorInvalid": {
+    "message": "無効なライセンスキーです。"
+  },
+  "licenseErrorNetwork": {
+    "message": "ネットワークエラー。接続を確認して再試行してください。"
+  },
+  "licenseErrorUnknown": {
+    "message": "検証中に不明なエラーが発生しました。"
+  }
+}

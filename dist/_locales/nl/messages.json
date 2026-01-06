@@ -1,0 +1,894 @@
+{
+  "extName": {
+    "message": "LinkShield"
+  },
+  "extDescription": {
+    "message": "LinkShield helpt je om onveilige websites en links te herkennen. Zo blijf je veiliger online."
+  },
+  "alertTitle": {
+    "message": "Let op!"
+  },
+  "alertMessage": {
+    "message": "Deze website bevat een link naar:"
+  },
+  "severityLabel": {
+    "message": "Risico:"
+  },
+  "reasonLabel": {
+    "message": "Reden:"
+  },
+  "adviceMessage": {
+    "message": "Wat kun je doen?"
+  },
+  "adviceCheckUrl": {
+    "message": "Open deze link alleen als je de afzender volledig vertrouwt. Bij twijfel niet klikken. Voer nooit je wachtwoord in op een site die je niet vertrouwt."
+  },
+  "noHttps": {
+    "message": "De verbinding met deze website is niet beveiligd (geen HTTPS). Anderen kunnen mogelijk meelezen."
+  },
+  "ipAsDomain": {
+    "message": "Deze website gebruikt een IP-adres in plaats van een domeinnaam. Dit is ongebruikelijk en zeer risicovol."
+  },
+  "tooManySubdomains": {
+    "message": "Dit webadres heeft veel subdomeinen (bijv. deel1.deel2.site.com). Dit kan wijzen op een onveilige site (gemiddeld risico)."
+  },
+  "suspiciousKeywords": {
+    "message": "De link bevat woorden die vaak met oplichting worden geassocieerd (laag risico)."
+  },
+  "suspiciousPattern": {
+    "message": "De opbouw van dit webadres lijkt ongebruikelijk (gemiddeld risico)."
+  },
+  "shortenedUrl": {
+    "message": "Dit is een verkorte link (zoals bit.ly). De echte bestemming is niet direct zichtbaar (gemiddeld risico)."
+  },
+  "downloadPage": {
+    "message": "Deze link lijkt een bestand te downloaden. Open alleen bestanden die je volledig vertrouwt (gemiddeld risico)."
+  },
+  "freeHosting": {
+    "message": "Deze website gebruikt een gratis platform. Oplichters maken hier soms gebruik van (gemiddeld risico)."
+  },
+  "encodedCharacters": {
+    "message": "De link bevat ongebruikelijke tekens (laag risico). Dit kan worden gebruikt om de echte bestemming te verhullen."
+  },
+  "homoglyphAttack": {
+    "message": "Dit webadres gebruikt tekens die bijna identiek zijn aan een bekende website (hoog risico). Dit is een truc om je te misleiden."
+  },
+  "metaRedirect": {
+    "message": "Deze website stuurt je automatisch door. Dit kan leiden naar een onveilige site (gemiddeld risico)."
+  },
+  "cryptoPhishing": {
+    "message": "Deze link lijkt op een crypto-oplichting (hoog risico). Wees extra voorzichtig met je wallet en gegevens."
+  },
+  "externalScripts": {
+    "message": "Deze site laadt code van een externe bron die als risicovol is gemarkeerd."
+  },
+  "suspiciousParams": {
+    "message": "De link bevat technische parameters die soms voor onveilige acties worden gebruikt (laag risico)."
+  },
+  "mixedContent": {
+    "message": "Deze beveiligde pagina laadt ook onbeveiligde inhoud. Dit is een veiligheidsrisico (gemiddeld risico)."
+  },
+  "unusualPort": {
+    "message": "Deze site gebruikt een ongebruikelijke technische poort. Dit kan een poging zijn om beveiliging te omzeilen (gemiddeld risico)."
+  },
+  "javascriptScheme": {
+    "message": "Deze link probeert direct code uit te voeren in je browser (hoog risico)."
+  },
+  "urlFragmentTrick": {
+    "message": "De link bevat een ongewoon lang fragment. Dit is een techniek die soms wordt gebruikt om te misleiden (laag risico)."
+  },
+  "suspiciousTLD": {
+    "message": "Deze website gebruikt een domeinextensie (zoals .zip of .mov) die vaak voor oplichting wordt misbruikt (hoog risico)."
+  },
+  "base64OrHex": {
+    "message": "Deze link bevat sterk versleutelde informatie. Dit wordt vaak gebruikt om schadelijke code te verbergen (hoog risico)."
+  },
+  "similarToLegitimateDomain": {
+    "message": "Deze site lijkt sterk op een bekende, betrouwbare site. Controleer het adres zorgvuldig, het kan een nepkopie zijn."
+  },
+  "youngDomain": {
+    "message": "Dit domein is pas $AGE$ dagen geleden geregistreerd (hoog risico). Nieuwe domeinen worden vaker voor oplichting gebruikt.",
+    "placeholders": {
+      "AGE": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "insecureLoginPage": {
+    "message": "Deze inlogpagina is niet beveiligd (geen HTTPS). Voer hier nooit je wachtwoord in (hoog risico)."
+  },
+  "loginPageNoMX": {
+    "message": "Deze inlogpagina hoort bij een domein dat geen e-mail kan ontvangen. Dit is zeer risicovol (hoog risico)."
+  },
+  "malwareExtension": {
+    "message": "Deze link leidt naar een bestand dat schadelijk kan zijn (zoals .exe of .zip). Download dit niet (hoog risico)."
+  },
+  "popupTitle": {
+    "message": "LinkShield: Jouw bescherming tegen phishing"
+  },
+  "popupSubtitle": {
+    "message": "Blijf veilig met real-time waarschuwingen en bescherming."
+  },
+  "backgroundAnalysis": {
+    "message": "Achtergrondcontrole"
+  },
+  "backgroundAnalysisDescription": {
+    "message": "Blokkeer gevaarlijke websites nog voordat je ze bezoekt."
+  },
+  "activationRequired": {
+    "message": "Schakel deze functie in om deze te gebruiken."
+  },
+  "integratedProtection": {
+    "message": "Ingebouwde bescherming"
+  },
+  "integratedProtectionDescription": {
+    "message": "Controleert websites en links direct op risicovolle kenmerken."
+  },
+  "premiumFeaturesActive": {
+    "message": "Je gebruikt nu de premiumversie!"
+  },
+  "upgradePrompt": {
+    "message": "Upgrade naar premium voor extra functies."
+  },
+  "saveSettings": {
+    "message": "Instellingen opslaan"
+  },
+  "settingsSaved": {
+    "message": "Instellingen opgeslagen!"
+  },
+  "licenseActivate": {
+    "message": "Licentie activeren"
+  },
+  "licenseInputPlaceholder": {
+    "message": "Voer je licentiesleutel in"
+  },
+  "licenseCheck": {
+    "message": "Controleer licentie"
+  },
+  "licenseInvalid": {
+    "message": "Ongeldige licentiesleutel."
+  },
+  "licenseValid": {
+    "message": "Licentie succesvol geactiveerd!"
+  },
+  "lastRuleUpdate": {
+    "message": "Laatste database-update: "
+  },
+  "licenseStatus": {
+    "message": "Licentiestatus:"
+  },
+  "licenseFreemium": {
+    "message": "Gratis versie"
+  },
+  "bulkUrlCheck": {
+    "message": "Controleer meerdere links"
+  },
+  "bulkUrlCheckDescription": {
+    "message": "Upload een .txt-bestand om een lijst met links te controleren."
+  },
+  "fileChoose": {
+    "message": "Kies een bestand"
+  },
+  "fileCheck": {
+    "message": "Bestand controleren"
+  },
+  "fileCheckNoUrls": {
+    "message": "Het geselecteerde bestand bevat geen links."
+  },
+  "fileCheckFailed": {
+    "message": "De controle van het bestand is mislukt."
+  },
+  "safeDomain": {
+    "message": "Dit is een bekende, veilige website."
+  },
+  "allowedProtocol": {
+    "message": "Deze link gebruikt een veilig protocol (zoals 'mailto:' of 'tel:')."
+  },
+  "invalidUrl": {
+    "message": "Dit webadres is ongeldig of verkeerd gespeld."
+  },
+  "loadingMessage": {
+    "message": "Pagina wordt geanalyseerd..."
+  },
+  "cannotRetrieveSiteStatus": {
+    "message": "Kan de status van de site niet ophalen."
+  },
+  "unknownRisk": {
+    "message": "Onbekend risico"
+  },
+  "highRisk": {
+    "message": "Hoog risico: wees zeer voorzichtig."
+  },
+  "mediumRisk": {
+    "message": "Gemiddeld risico: let goed op."
+  },
+  "lowRisk": {
+    "message": "Laag risico: enkele aandachtspunten."
+  },
+  "noSuspiciousFeatures": {
+    "message": "Geen directe risicovolle kenmerken gevonden."
+  },
+  "siteStatusNotAvailable": {
+    "message": "De status van deze site is niet beschikbaar."
+  },
+  "sslValidationFailed": {
+    "message": "Het veiligheidscertificaat van deze website is ongeldig."
+  },
+  "shortenedUrlError": {
+    "message": "Kon de eindbestemming van deze verkorte link niet controleren."
+  },
+  "redirectedShortenedUrl": {
+    "message": "Deze verkorte link stuurt je door naar een andere website."
+  },
+  "cryptoPhishingAd": {
+    "message": "Deze advertentie heeft kenmerken van crypto-oplichting (hoog risico)."
+  },
+  "suspiciousAdStructure": {
+    "message": "De link van deze advertentie heeft een ongebruikelijke opbouw (gemiddeld risico)."
+  },
+  "suspiciousAdTLD": {
+    "message": "Deze advertentie gebruikt een domeinextensie die vaak wordt misbruikt (gemiddeld risico)."
+  },
+  "homoglyphAdAttack": {
+    "message": "De advertentie gebruikt tekens die bijna identiek zijn aan een bekende website (gemiddeld risico)."
+  },
+  "brandMisuse": {
+    "message": "De advertentie gebruikt onterecht een bekende merknaam (hoog risico)."
+  },
+  "unknownWarning": {
+    "message": "Er is een onbekend risico gevonden. Wees extra voorzichtig."
+  },
+  "typosquattingAttack": {
+    "message": "Dit webadres lijkt op een echte website, maar is bewust verkeerd gespeld (hoog risico). Dit kan een nepversie zijn."
+  },
+  "downloadKeyword": {
+    "message": "De link bevat woorden gerelateerd aan downloads (laag risico). Open alleen bestanden die je vertrouwt."
+  },
+  "suspiciousScriptContent": {
+    "message": "Een script op deze pagina bevat risicovolle code. Dit kan onveilig zijn."
+  },
+  "invalidScriptSrc": {
+    "message": "De link naar een script op deze pagina is onjuist."
+  },
+  "mixedScripts": {
+    "message": "Dit adres gebruikt een mix van verschillende schriftsystemen (bijv. Latijnse en Cyrillische letters). Dit is een bekende phishing-truc (hoog risico)."
+  },
+  "introBannerMessage": {
+    "message": "LinkShield is actief en markeert risicovolle links met ⚠️. Beweeg de muis over het icoon om te zien waarom."
+  },
+  "digitHomoglyph": {
+    "message": "Dit adres gebruikt cijfers die lijken op letters om een bekend merk na te bootsen (gemiddeld risico)."
+  },
+  "trustedTLD": {
+    "message": "Dit domein heeft een standaard domeinextensie (laag risico)."
+  },
+  "trustedTld": {
+    "message": "Dit domein heeft een standaard domeinextensie (laag risico)."
+  },
+  "suspiciousPageText": {
+    "message": "De tekst op deze pagina bevat woorden die vaak bij oplichting worden gebruikt (hoog risico)."
+  },
+  "urgencyTactic": {
+    "message": "Deze pagina gebruikt urgente taal om je onder druk te zetten (hoog risico). Let op oplichting."
+  },
+  "severityMediumRisk": {
+    "message": "Gemiddeld risico: deze link kan onveilig zijn. Wees voorzichtig."
+  },
+  "allowedQueryParam": {
+    "message": "De link bevat een veilige, toegestane technische parameter."
+  },
+  "suspiciousIframeAdComponent": {
+    "message": "Deze pagina laadt een advertentie-onderdeel van een andere website."
+  },
+  "suspiciousIframeTracking": {
+    "message": "Deze pagina laadt een tracker die je surfgedrag kan volgen."
+  },
+  "suspiciousIframeMalicious": {
+    "message": "Er is een mogelijk schadelijk onderdeel gevonden op deze pagina (zoals phishing)."
+  },
+  "suspiciousIframeHidden": {
+    "message": "Er is een risicovol, onzichtbaar element op de pagina gevonden."
+  },
+  "mixedContentIframe": {
+    "message": "Deze beveiligde pagina laadt een onbeveiligd onderdeel. Dit is een veiligheidsrisico."
+  },
+  "invalidIframeSrc": {
+    "message": "Een onderdeel op deze pagina kon niet correct worden geladen (ongeldige bron)."
+  },
+  "iframeHidden": {
+    "message": "Er is een risicovol, onzichtbaar element op de pagina gevonden."
+  },
+  "typosquattingAttack_adobe_com": {
+    "message": "Dit webadres lijkt op adobe.com, maar is bewust verkeerd gespeld (hoog risico)."
+  },
+  "typosquattingAttack_alibaba_com": {
+    "message": "Dit webadres lijkt op alibaba.com, maar is bewust verkeerd gespeld (hoog risico)."
+  },
+  "typosquattingAttack_amazon_com": {
+    "message": "Dit webadres lijkt op amazon.com, maar is bewust verkeerd gespeld (hoog risico)."
+  },
+  "typosquattingAttack_apple_com": {
+    "message": "Dit webadres lijkt op apple.com, maar is bewust verkeerd gespeld (hoog risico)."
+  },
+  "typosquattingAttack_facebook_com": {
+    "message": "Dit webadres lijkt op facebook.com, maar is bewust verkeerd gespeld (hoog risico)."
+  },
+  "typosquattingAttack_google_com": {
+    "message": "Dit webadres lijkt op google.com, maar is bewust verkeerd gespeld (hoog risico)."
+  },
+  "typosquattingAttack_linkedin_com": {
+    "message": "Dit webadres lijkt op linkedin.com, maar is bewust verkeerd gespeld (hoog risico)."
+  },
+  "typosquattingAttack_microsoft_com": {
+    "message": "Dit webadres lijkt op microsoft.com, maar is bewust verkeerd gespeld (hoog risico)."
+  },
+  "typosquattingAttack_paypal_com": {
+    "message": "Dit webadres lijkt op paypal.com, maar is bewust verkeerd gespeld (hoog risico)."
+  },
+  "typosquattingAttack_whatsapp_com": {
+    "message": "Dit webadres lijkt op whatsapp.com, maar is bewust verkeerd gespeld (hoog risico)."
+  },
+  "typosquattingAttack_x_com": {
+    "message": "Dit webadres lijkt op x.com, maar is bewust verkeerd gespeld (hoog risico)."
+  },
+  "homoglyphAttack_microsoft_com": {
+    "message": "Dit adres gebruikt tekens die bijna identiek zijn aan microsoft.com (hoog risico)."
+  },
+  "homoglyphAttack_apple_com": {
+    "message": "Dit adres gebruikt tekens die bijna identiek zijn aan apple.com (hoog risico)."
+  },
+  "homoglyphAttack_google_com": {
+    "message": "Dit adres gebruikt tekens die bijna identiek zijn aan google.com (hoog risico)."
+  },
+  "homoglyphAttack_linkedin_com": {
+    "message": "Dit adres gebruikt tekens die bijna identiek zijn aan linkedin.com (hoog risico)."
+  },
+  "homoglyphAttack_alibaba_com": {
+    "message": "Dit adres gebruikt tekens die bijna identiek zijn aan alibaba.com (hoog risico)."
+  },
+  "homoglyphAttack_whatsapp_com": {
+    "message": "Dit adres gebruikt tekens die bijna identiek zijn aan whatsapp.com (hoog risico)."
+  },
+  "homoglyphAttack_amazon_com": {
+    "message": "Dit adres gebruikt tekens die bijna identiek zijn aan amazon.com (hoog risico)."
+  },
+  "homoglyphAttack_x_com": {
+    "message": "Dit adres gebruikt tekens die bijna identiek zijn aan x.com (hoog risico)."
+  },
+  "homoglyphAttack_facebook_com": {
+    "message": "Dit adres gebruikt tekens die bijna identiek zijn aan facebook.com (hoog risico)."
+  },
+  "homoglyphAttack_adobe_com": {
+    "message": "Dit adres gebruikt tekens die bijna identiek zijn aan adobe.com (hoog risico)."
+  },
+  "homoglyphAttack_paypal_com": {
+    "message": "Dit adres gebruikt tekens die bijna identiek zijn aan paypal.com (hoog risico)."
+  },
+  "typosquatting_microsoft_com": {
+    "message": "Dit adres lijkt sterk op microsoft.com (hoog risico). Het kan een nep-pagina zijn."
+  },
+  "typosquatting_apple_com": {
+    "message": "Dit adres lijkt sterk op apple.com (hoog risico). Het kan een nep-pagina zijn."
+  },
+  "typosquatting_google_com": {
+    "message": "Dit adres lijkt sterk op google.com (hoog risico). Het kan een nep-pagina zijn."
+  },
+  "typosquatting_linkedin_com": {
+    "message": "Dit adres lijkt sterk op linkedin.com (hoog risico). Het kan een nep-pagina zijn."
+  },
+  "typosquatting_alibaba_com": {
+    "message": "Dit adres lijkt sterk op alibaba.com (hoog risico). Het kan een nep-pagina zijn."
+  },
+  "typosquatting_whatsapp_com": {
+    "message": "Dit adres lijkt sterk op whatsapp.com (hoog risico). Het kan een nep-pagina zijn."
+  },
+  "typosquatting_amazon_com": {
+    "message": "Dit adres lijkt sterk op amazon.com (hoog risico). Het kan een nep-pagina zijn."
+  },
+  "typosquatting_x_com": {
+    "message": "Dit adres lijkt sterk op x.com (hoog risico). Het kan een nep-pagina zijn."
+  },
+  "typosquatting_facebook_com": {
+    "message": "Dit adres lijkt sterk op facebook.com (hoog risico). Het kan een nep-pagina zijn."
+  },
+  "typosquatting_adobe_com": {
+    "message": "Dit adres lijkt sterk op adobe.com (hoog risico). Het kan een nep-pagina zijn."
+  },
+  "typosquatting_paypal_com": {
+    "message": "Dit adres lijkt sterk op paypal.com (hoog risico). Het kan een nep-pagina zijn."
+  },
+  "similarToLegitimateDomain_microsoft_com": {
+    "message": "Deze site lijkt op microsoft.com, controleer het adres zorgvuldig."
+  },
+  "similarToLegitimateDomain_apple_com": {
+    "message": "Deze site lijkt op apple.com, controleer het adres zorgvuldig."
+  },
+  "similarToLegitimateDomain_google_com": {
+    "message": "Deze site lijkt op google.com, controleer het adres zorgvuldig."
+  },
+  "similarToLegitimateDomain_linkedin_com": {
+    "message": "Deze site lijkt op linkedin.com, controleer het adres zorgvuldig."
+  },
+  "similarToLegitimateDomain_alibaba_com": {
+    "message": "Deze site lijkt op alibaba.com, controleer het adres zorgvuldig."
+  },
+  "similarToLegitimateDomain_whatsapp_com": {
+    "message": "Deze site lijkt op whatsapp.com, controleer het adres zorgvuldig."
+  },
+  "similarToLegitimateDomain_amazon_com": {
+    "message": "Deze site lijkt op amazon.com, controleer het adres zorgvuldig."
+  },
+  "similarToLegitimateDomain_x_com": {
+    "message": "Deze site lijkt op x.com, controleer het adres zorgvuldig."
+  },
+  "similarToLegitimateDomain_facebook_com": {
+    "message": "Deze site lijkt op facebook.com, controleer het adres zorgvuldig."
+  },
+  "similarToLegitimateDomain_adobe_com": {
+    "message": "Deze site lijkt op adobe.com, controleer het adres zorgvuldig."
+  },
+  "similarToLegitimateDomain_paypal_com": {
+    "message": "Deze site lijkt op paypal.com, controleer het adres zorgvuldig."
+  },
+  "suspiciousPunycodeDecoding_microsoft_com": {
+    "message": "Deze link gebruikt ongebruikelijke tekens om op microsoft.com te lijken (hoog risico)."
+  },
+  "suspiciousPunycodeDecoding_apple_com": {
+    "message": "Deze link gebruikt ongebruikelijke tekens om op apple.com te lijken (hoog risico)."
+  },
+  "suspiciousPunycodeDecoding_google_com": {
+    "message": "Deze link gebruikt ongebruikelijke tekens om op google.com te lijken (hoog risico)."
+  },
+  "suspiciousPunycodeDecoding_linkedin_com": {
+    "message": "Deze link gebruikt ongebruikelijke tekens om op linkedin.com te lijken (hoog risico)."
+  },
+  "suspiciousPunycodeDecoding_alibaba_com": {
+    "message": "Deze link gebruikt ongebruikelijke tekens om op alibaba.com te lijken (hoog risico)."
+  },
+  "suspiciousPunycodeDecoding_whatsapp_com": {
+    "message": "Deze link gebruikt ongebruikelijke tekens om op whatsapp.com te lijken (hoog risico)."
+  },
+  "suspiciousPunycodeDecoding_amazon_com": {
+    "message": "Deze link gebruikt ongebruikelijke tekens om op amazon.com te lijken (hoog risico)."
+  },
+  "suspiciousPunycodeDecoding_x_com": {
+    "message": "Deze link gebruikt ongebruikelijke tekens om op x.com te lijken (hoog risico)."
+  },
+  "suspiciousPunycodeDecoding_facebook_com": {
+    "message": "Deze link gebruikt ongebruikelijke tekens om op facebook.com te lijken (hoog risico)."
+  },
+  "suspiciousPunycodeDecoding_adobe_com": {
+    "message": "Deze link gebruikt ongebruikelijke tekens om op adobe.com te lijken (hoog risico)."
+  },
+  "suspiciousPunycodeDecoding_paypal_com": {
+    "message": "Deze link gebruikt ongebruikelijke tekens om op paypal.com te lijken (hoog risico)."
+  },
+
+  "reason_nonAscii": {
+    "message": "Verdachte tekens gedetecteerd (homoglyphs)"
+  },
+  "reason_brandKeywordHomoglyph": {
+    "message": "Imitatie van een bekend merk gedetecteerd"
+  },
+  "reason_noHttps": {
+    "message": "Geen beveiligde verbinding (HTTPS)"
+  },
+  "reason_suspiciousTLD": {
+    "message": "Verdachte domeinextensie"
+  },
+  "reason_ipAsDomain": {
+    "message": "IP-adres als domeinnaam"
+  },
+  "reason_tooManySubdomains": {
+    "message": "Te veel subdomeinen"
+  },
+  "reason_shortenedUrl": {
+    "message": "Verkorte URL gedetecteerd"
+  },
+  "reason_suspiciousKeywords": {
+    "message": "Verdachte trefwoorden in URL"
+  },
+  "reason_malwareExtension": {
+    "message": "Potentieel schadelijke bestandsextensie"
+  },
+  "reason_urlTooLong": {
+    "message": "Ongewoon lange URL"
+  },
+  "reason_encodedCharacters": {
+    "message": "Gecodeerde tekens in URL"
+  },
+  "reason_homoglyphAttack": {
+    "message": "Homoglyph-aanval gedetecteerd"
+  },
+  "reason_typosquatting": {
+    "message": "Typosquatting gedetecteerd"
+  },
+  "reason_suspiciousBrandPattern": {
+    "message": "Verdacht merkpatroon"
+  },
+  "reason_unusualPort": {
+    "message": "Ongebruikelijke poort"
+  },
+  "reason_punycode": {
+    "message": "Punycode domein gedetecteerd"
+  },
+  "reason_loginPageNoMX": {
+    "message": "Inlogpagina zonder e-mailserver"
+  },
+  "reason_insecureLoginPage": {
+    "message": "Onveilige inlogpagina"
+  },
+  "reason_sslValidationFailed": {
+    "message": "SSL-validatie mislukt"
+  },
+  "reason_similarToLegitimateDomain": {
+    "message": "Lijkt op legitiem domein"
+  },
+
+  "qrDangerTitle": {
+    "message": "GEVAAR: Phishing QR-code!"
+  },
+  "qrCautionTitle": {
+    "message": "Let op: Verdachte QR-code"
+  },
+  "ocrDangerTitle": {
+    "message": "GEVAAR: Phishing gedetecteerd in afbeelding!"
+  },
+  "ocrCautionTitle": {
+    "message": "Let op: Verdachte tekst in afbeelding"
+  },
+  "asciiQrDangerTitle": {
+    "message": "GEVAAR: Phishing ASCII QR!"
+  },
+  "asciiQrCautionTitle": {
+    "message": "Let op: Verdachte ASCII QR"
+  },
+  "suspiciousDomainDetected": {
+    "message": "Verdacht domein gedetecteerd"
+  },
+  "hiddenUrl": {
+    "message": "Verborgen URL"
+  },
+  "fullUrl": {
+    "message": "Volledige URL"
+  },
+  "reasons": {
+    "message": "Redenen"
+  },
+  "extractedText": {
+    "message": "Geëxtraheerde tekst"
+  },
+
+  "trialPeriodActive": {
+    "message": "Proefperiode actief"
+  },
+  "trialDaysRemaining": {
+    "message": "$DAYS$ dagen resterend in proefperiode",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "14"
+      }
+    }
+  },
+  "trialExpired": {
+    "message": "Proefperiode verlopen"
+  },
+  "trialExpiredMessage": {
+    "message": "Je proefperiode van 30 dagen is verlopen. Activeer een licentie om alle functies te blijven gebruiken."
+  },
+  "upgradeNow": {
+    "message": "Nu upgraden"
+  },
+
+  "popupPageTitle": {
+    "message": "LinkShield Dashboard"
+  },
+  "extNameFull": {
+    "message": "LinkShield: jouw wapen tegen phishing"
+  },
+  "extDescriptionFull": {
+    "message": "Verhoog jouw veiligheid met directe alerts en geavanceerde bescherming tegen online bedreigingen."
+  },
+
+  "licenseTrialTitle": {
+    "message": "Proefperiode: $DAYS$ dagen resterend",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "licenseTrialSubtitle": {
+    "message": "Alle premium functies zijn actief tijdens je proefperiode"
+  },
+  "licenseUpgradeLink": {
+    "message": "Upgrade naar Premium →"
+  },
+  "licenseExpiredTitle": {
+    "message": "Proefperiode verlopen"
+  },
+  "licenseExpiredSubtitle": {
+    "message": "Activeer Premium voor volledige bescherming"
+  },
+  "licenseBenefitsLabel": {
+    "message": "Premium bevat:"
+  },
+  "licenseBenefitsText": {
+    "message": "Achtergrondanalyses, QR-code scanning, continue bescherming"
+  },
+  "licenseKeyPlaceholder": {
+    "message": "Voer je licentiecode in"
+  },
+  "licenseActivateButton": {
+    "message": "Activeer Premium"
+  },
+  "licenseBuyLink": {
+    "message": "Nog geen licentie? Koop hier →"
+  },
+  "licensePremiumTitle": {
+    "message": "Premium Actief"
+  },
+  "licensePremiumSubtitle": {
+    "message": "Volledige bescherming ingeschakeld"
+  },
+
+  "sectionSecuritySettings": {
+    "message": "Beveiligingsinstellingen"
+  },
+  "backgroundAnalysisTitle": {
+    "message": "Beveiligingsinstellingen"
+  },
+  "backgroundAnalysisFeature": {
+    "message": "Achtergrondanalyses"
+  },
+  "premiumBadge": {
+    "message": "PREMIUM"
+  },
+  "integratedProtectionFeature": {
+    "message": "Geïntegreerde Malware- en Phishingbescherming"
+  },
+  "integratedProtectionDescription": {
+    "message": "Combineert meerdere beveiligingsdiensten voor uitgebreide bescherming."
+  },
+  "confirmationMessage": {
+    "message": "Instellingen succesvol opgeslagen!"
+  },
+  "lastRuleUpdateNone": {
+    "message": "Nog geen database-update uitgevoerd"
+  },
+  "errorOccurred": {
+    "message": "Er is een fout opgetreden"
+  },
+
+  "gumroadErrorUnknown": {
+    "message": "Onbekende fout"
+  },
+  "gumroadErrorLicenseNotExistProduct": {
+    "message": "Deze licentiesleutel bestaat niet voor dit product"
+  },
+  "gumroadErrorLicenseNotExist": {
+    "message": "Deze licentiesleutel bestaat niet"
+  },
+  "gumroadErrorLicenseRequired": {
+    "message": "Voer een licentiesleutel in"
+  },
+  "gumroadErrorProductNotFound": {
+    "message": "Product niet gevonden"
+  },
+  "gumroadErrorLicenseDisabled": {
+    "message": "Deze licentie is uitgeschakeld"
+  },
+  "gumroadErrorLicenseRefunded": {
+    "message": "Deze licentie is terugbetaald"
+  },
+  "gumroadErrorLicenseRevoked": {
+    "message": "Deze licentie is terugbetaald of ingetrokken"
+  },
+  "gumroadErrorLicenseInvalid": {
+    "message": "Ongeldige licentiesleutel"
+  },
+  "gumroadErrorNetwork": {
+    "message": "Netwerkfout tijdens validatie. Controleer je internetverbinding."
+  },
+
+  "licenseEmptyError": {
+    "message": "Voer een licentiecode in"
+  },
+  "licenseActivating": {
+    "message": "Bezig met activeren..."
+  },
+  "licenseActivatedSuccess": {
+    "message": "Premium succesvol geactiveerd!"
+  },
+  "licenseConnectionError": {
+    "message": "Verbindingsfout. Probeer het opnieuw."
+  },
+
+  "debugModeTitle": {
+    "message": "Debug Mode"
+  },
+  "debugTrial30": {
+    "message": "Trial (30d)"
+  },
+  "debugTrial3": {
+    "message": "Trial (3d)"
+  },
+  "debugExpired": {
+    "message": "Verlopen"
+  },
+  "debugPremium": {
+    "message": "Premium"
+  },
+  "debugReset": {
+    "message": "Reset"
+  },
+  "debugTrialSimulated": {
+    "message": "✓ Trial ($DAYS$ dagen) gesimuleerd",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "debugExpiredSimulated": {
+    "message": "✓ Verlopen trial gesimuleerd"
+  },
+  "debugPremiumSimulated": {
+    "message": "✓ Premium gesimuleerd"
+  },
+  "debugStorageReset": {
+    "message": "✓ Storage gereset - herlaad extensie"
+  },
+  "debugError": {
+    "message": "✗ Fout: $ERROR$",
+    "placeholders": {
+      "ERROR": {
+        "content": "$1",
+        "example": "Unknown error"
+      }
+    }
+  },
+  "reason_redirectChain": {
+    "message": "Verdachte redirect-keten gedetecteerd. De link passeert meerdere servers voordat de bestemming wordt bereikt."
+  },
+  "reason_excessiveRedirects": {
+    "message": "Te veel redirects in keten (hoog risico). Deze link redirectt meer dan 5 keer, wat vaak wordt gebruikt om de echte bestemming te verbergen."
+  },
+  "reason_domainHopping": {
+    "message": "Meerdere domeinwisselingen in redirect-keten (hoog risico). De link springt tussen veel verschillende websites."
+  },
+  "reason_chainedShorteners": {
+    "message": "Meerdere URL-verkorters achter elkaar (gemiddeld risico). Legitieme links gebruiken zelden meerdere verkortingsservices."
+  },
+  "reason_suspiciousFinalTLD": {
+    "message": "Einddoel heeft verdachte domeinextensie (hoog risico). Het daadwerkelijke eindpunt gebruikt een risicovolle TLD."
+  },
+  "reason_redirectToIP": {
+    "message": "Redirect leidt naar IP-adres (hoog risico). De uiteindelijke bestemming is een ruw IP-adres in plaats van een domeinnaam."
+  },
+  "reason_redirectTimeout": {
+    "message": "Redirect-analyse time-out (gemiddeld risico). Kon de redirect-keten niet volledig traceren binnen de tijdslimiet."
+  },
+  "atSymbolPhishing": {
+    "message": "KRITIEK: Deze link gebruikt een @-symbool om de werkelijke bestemming te verbergen (hoog risico). Het adres voor de @ is nep - je gaat eigenlijk naar een andere website."
+  },
+  "atSymbolInPath": {
+    "message": "De link bevat een @-symbool in het pad dat mogelijk wordt gebruikt voor verhulling (gemiddeld risico)."
+  },
+  "doubleEncoding": {
+    "message": "Deze link gebruikt dubbele URL-codering om de ware inhoud te verbergen (hoog risico). Dit is een veelgebruikte techniek om beveiligingsfilters te omzeilen."
+  },
+  "fullwidthCharacters": {
+    "message": "Deze link gebruikt volledige-breedte Unicode-tekens die op normale letters lijken (hoog risico). Dit is een truc om nepwebsites er legitiem uit te laten zien."
+  },
+  "nullByteInjection": {
+    "message": "Deze link bevat een null-byte karakter (hoog risico). Dit is een hacktechniek die kan worden gebruikt om beveiligingscontroles te omzeilen."
+  },
+  "reason_atSymbolPhishing": {
+    "message": "KRITIEK: Credential URL-aanval gedetecteerd. Het zichtbare domein is nep - je wordt doorgestuurd naar een andere website."
+  },
+  "reason_doubleEncoding": {
+    "message": "Dubbele URL-codering gedetecteerd (hoog risico). Deze verhullingstechniek wordt gebruikt om kwaadaardige inhoud te verbergen."
+  },
+  "reason_fullwidthCharacters": {
+    "message": "Volledige-breedte Unicode-tekens gedetecteerd (hoog risico). Deze speciale tekens imiteren normale letters om gebruikers te misleiden."
+  },
+  "reason_nullByteInjection": {
+    "message": "Null-byte injectie gedetecteerd (hoog risico). Deze techniek wordt gebruikt om beveiligingsfilters te omzeilen en kan wijzen op een kwaadaardige link."
+  },
+
+  "formActionHijacking": {
+    "message": "Dit inlogformulier stuurt je gegevens naar een externe website (kritiek risico). Je gebruikersnaam en wachtwoord kunnen worden gestolen."
+  },
+  "formActionExternal": {
+    "message": "Inlogformulier stuurt gegevens naar extern domein: $DOMAIN$ (kritiek risico). Dit is een poging tot credential diefstal.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "evil-site.com"
+      }
+    }
+  },
+  "formActionInvalid": {
+    "message": "Inlogformulier heeft een ongeldige of verdachte actie-URL (hoog risico). Je gegevens worden mogelijk niet veilig verzonden."
+  },
+
+  "hiddenIframeZeroSize": {
+    "message": "Verborgen iframe met nul-grootte gedetecteerd (hoog risico). Dit kan worden gebruikt om onzichtbaar kwaadaardige inhoud te laden."
+  },
+  "hiddenIframeOffScreen": {
+    "message": "Iframe buiten het scherm gedetecteerd (hoog risico). Verborgen inhoud kan je volgen of gegevens stelen."
+  },
+  "hiddenIframeCSSHidden": {
+    "message": "CSS-verborgen iframe gedetecteerd (hoog risico). Onzichtbare frames kunnen toetsaanslagen vastleggen of malware laden."
+  },
+  "hiddenIframeNegativePos": {
+    "message": "Iframe met negatieve positionering gedetecteerd (gemiddeld risico). Deze techniek wordt gebruikt om inhoud voor gebruikers te verbergen."
+  },
+
+  "nrdCritical": {
+    "message": "KRITIEK: Domein $DAYS$ dag(en) geleden geregistreerd (kritiek risico). Gloednieuwe domeinen zijn zeer waarschijnlijk kwaadaardig.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "0"
+      }
+    }
+  },
+  "nrdHigh": {
+    "message": "Domein slechts $DAYS$ dagen geleden geregistreerd (hoog risico). Zeer nieuwe domeinen worden vaak voor oplichting gebruikt.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "nrdMedium": {
+    "message": "Domein $DAYS$ dagen geleden geregistreerd (gemiddeld risico). Nieuwe domeinen onder 30 dagen vereisen extra voorzichtigheid.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "15"
+      }
+    }
+  },
+  "nrdLow": {
+    "message": "Domein $DAYS$ dagen geleden geregistreerd (laag risico). Relatief nieuw domein, wees enigszins voorzichtig.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "60"
+      }
+    }
+  },
+
+  "licenseErrorNotFound": {
+    "message": "Licentiesleutel niet gevonden. Controleer je invoer."
+  },
+  "licenseErrorDisabled": {
+    "message": "Deze licentie is uitgeschakeld."
+  },
+  "licenseErrorExpired": {
+    "message": "Deze licentie is verlopen."
+  },
+  "licenseErrorActivationLimit": {
+    "message": "Activeringslimiet bereikt. Deactiveer eerst een ander apparaat."
+  },
+  "licenseErrorInstanceNotFound": {
+    "message": "Installatie-instantie niet gevonden."
+  },
+  "licenseErrorInvalid": {
+    "message": "Ongeldige licentiesleutel."
+  },
+  "licenseErrorNetwork": {
+    "message": "Netwerkfout. Controleer je verbinding en probeer opnieuw."
+  },
+  "licenseErrorUnknown": {
+    "message": "Er is een onbekende fout opgetreden tijdens de validatie."
+  }
+}

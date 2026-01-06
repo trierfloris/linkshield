@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">LinkShield Dashboard</title>
+        <style>
+        /* Reset and General Styling */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #e9ecef;
+            color: #495057;
+            line-height: 1.5;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: auto;
+        }
+
+        /* Container */
+        .container {
+            width: 100%;
+            max-width: 600px;
+	    min-width: 250px;
+            background: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            padding: 15px;
+        }
+
+        /* Header */
+        h2 {
+            font-size: 18px;
+            color: #1a73e8;
+            margin-bottom: 10px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* Subtitle */
+        .subtitle {
+            text-align: center;
+            color: #6c757d;
+            margin-bottom: 15px;
+            font-size: 14px;
+            font-style: italic;
+        }
+
+        /* Section titles */
+        .section-title {
+            color: #1a73e8;
+            font-size: 16px;
+            margin-top: 15px;
+            font-weight: 600;
+        }
+
+        /* Visual separator under title */
+        .section-title:after {
+            content: "";
+            display: block;
+            height: 1px;
+            width: 100%;
+            background-color: #ddd;
+            margin-top: 5px;
+        }
+
+        /* Toggle sections */
+        .toggle-section {
+            max-height: none;
+            overflow: visible;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 3px;
+            margin-top: 5px;
+        }
+
+        /* Checkbox label styling */
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+            font-size: 13px;
+            padding: 5px;
+            border-radius: 3px;
+            background-color: #ffffff;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .checkbox-label:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* Checkbox styling */
+        input[type="checkbox"] {
+            margin-right: 5px;
+        }
+
+        /* Feature info */
+        .feature-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .feature-title {
+            font-weight: 600;
+            color: #343a40;
+            font-size: 14px;
+        }
+
+        .feature-description {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 2px;
+        }
+
+        .risk-level {
+            font-weight: bold;
+            color: #28a745;
+            font-size: 12px;
+        }
+
+        /* Button styling */
+        .button {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: 500;
+            margin-top: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            filter: brightness(95%);
+        }
+
+        .button.blue {
+            background-color: #1a73e8;
+            color: white;
+        }
+
+        .button.gray {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .button.green {
+            background-color: #28a745;
+            color: white;
+        }
+
+        /* Confirmation message */
+        #confirmationMessage {
+            color: #28a745;
+            text-align: center;
+            font-size: 14px;
+            margin-top: 10px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        /* License Status Box */
+        .license-status-box {
+            margin: 15px 0;
+            padding: 14px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .license-status-box.trial {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 1px solid #f59e0b;
+        }
+
+        .license-status-box.expired {
+            background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
+            border: 1px solid #ef4444;
+        }
+
+        .license-status-box.premium {
+            background: linear-gradient(135deg, #ecfdf5 0%, #a7f3d0 100%);
+            border: 1px solid #10b981;
+        }
+
+        .license-status-icon {
+            font-size: 24px;
+            margin-bottom: 6px;
+        }
+
+        .license-status-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .license-status-box.trial .license-status-title { color: #b45309; }
+        .license-status-box.expired .license-status-title { color: #dc2626; }
+        .license-status-box.premium .license-status-title { color: #059669; }
+
+        .license-status-subtitle {
+            font-size: 12px;
+            color: #6b7280;
+            margin-bottom: 10px;
+        }
+
+        .license-input-group {
+            margin-top: 12px;
+        }
+
+        .license-input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 4px;
+            font-size: 13px;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .license-input-group input:focus {
+            outline: none;
+            border-color: #1a73e8;
+            box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+        }
+
+        .license-upgrade-link {
+            display: inline-block;
+            margin-top: 8px;
+            font-size: 12px;
+            color: #1a73e8;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .license-upgrade-link:hover {
+            text-decoration: underline;
+        }
+
+        .license-error {
+            color: #dc2626;
+            font-size: 11px;
+            margin-top: 6px;
+        }
+
+        .license-benefits {
+            font-size: 11px;
+            color: #6b7280;
+            margin-top: 8px;
+            line-height: 1.4;
+        }
+
+        .license-benefits strong {
+            color: #374151;
+        }
+
+        #lastRuleUpdateDisplay {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #6c757d;
+            text-align: center;
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Debug panel */
+        .debug-panel {
+            margin-top: 15px;
+            padding: 10px;
+            background: #1f2937;
+            border-radius: 6px;
+        }
+
+        .debug-title {
+            color: #9ca3af;
+            font-size: 11px;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .debug-buttons {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .debug-btn {
+            padding: 6px 10px;
+            font-size: 11px;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .debug-btn[data-state="trial"] { background: #f59e0b; }
+        .debug-btn[data-state="trial-low"] { background: #f97316; }
+        .debug-btn[data-state="expired"] { background: #ef4444; }
+        .debug-btn[data-state="premium"] { background: #10b981; }
+        .debug-btn[data-state="reset"] { background: #6b7280; }
+
+        #debugStatus {
+            color: #9ca3af;
+            font-size: 10px;
+            margin-top: 8px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 id="extName"></h2>
+        <p id="extDescription" class="subtitle"></p>
+
+        <!-- License Status Box -->
+        <div id="licenseStatusBox" class="license-status-box trial">
+            <!-- Trial view -->
+            <div id="licenseTrialView">
+                <div class="license-status-icon">🛡️</div>
+                <div class="license-status-title" id="licenseTrialTitle"></div>
+                <div class="license-status-subtitle" id="licenseTrialSubtitle"></div>
+                <a href="https://linkshield.lemonsqueezy.com/checkout/buy/f01a396f-933f-4458-8241-14d9b3a8ef12" target="_blank" class="license-upgrade-link" id="licenseUpgradeLink"></a>
+            </div>
+
+            <!-- Expired view -->
+            <div id="licenseExpiredView" style="display: none;">
+                <div class="license-status-icon">⚠️</div>
+                <div class="license-status-title" id="licenseExpiredTitle"></div>
+                <div class="license-status-subtitle" id="licenseExpiredSubtitle"></div>
+                <div class="license-benefits">
+                    <strong id="licenseBenefitsLabel"></strong> <span id="licenseBenefitsText"></span>
+                </div>
+                <div class="license-input-group">
+                    <input type="text" id="licenseKeyInput" placeholder="">
+                    <button id="activateLicenseBtn" class="button blue"></button>
+                </div>
+                <a href="https://linkshield.lemonsqueezy.com/checkout/buy/f01a396f-933f-4458-8241-14d9b3a8ef12" target="_blank" class="license-upgrade-link" id="licenseBuyLink"></a>
+                <div id="licenseErrorMsg" class="license-error" style="display: none;"></div>
+            </div>
+
+            <!-- Premium view -->
+            <div id="licensePremiumView" style="display: none;">
+                <div class="license-status-icon">✅</div>
+                <div class="license-status-title" id="licensePremiumTitle"></div>
+                <div class="license-status-subtitle" id="premiumEmail"></div>
+            </div>
+        </div>
+
+        <div class="section-title" id="backgroundAnalysisTitle"></div>
+
+        <div class="toggle-section">
+            <label class="checkbox-label">
+                <input type="checkbox" id="backgroundSecurity" disabled>
+                <div>
+                    <div class="feature-info">
+                        <span class="feature-title" id="backgroundAnalysisFeature"></span>
+                        <span id="premiumBadge" class="risk-level" style="display: none;"></span>
+                    </div>
+                    <div class="feature-description" id="backgroundAnalysisDescription"></div>
+                </div>
+            </label>
+        </div>
+
+        <div class="toggle-section">
+            <label class="checkbox-label">
+                <input type="checkbox" id="integratedProtection">
+                <div>
+                    <div class="feature-info">
+                        <span class="feature-title" id="integratedProtectionFeature"></span>
+                    </div>
+                    <div class="feature-description" id="integratedProtectionDescription"></div>
+                </div>
+            </label>
+        </div>
+
+        <button class="button green" id="saveSettings"></button>
+
+        <div id="confirmationMessage" style="display: none;"></div>
+
+        <div id="lastRuleUpdateDisplay"></div>
+
+        <!-- SECURITY: Debug Panel verwijderd voor productie -->
+        <!-- Debug functionaliteit is alleen beschikbaar in development builds -->
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>

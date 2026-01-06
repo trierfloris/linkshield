@@ -4,177 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title id="pageTitle">LinkShield Dashboard</title>
-        <style>
-        /* Reset and General Styling */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+    <link rel="stylesheet" href="shared.css">
+    <style>
+        /* Popup-specific background */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #e9ecef;
-            color: #495057;
-            line-height: 1.5;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            height: auto;
+            background-color: var(--color-background);
         }
 
-        /* Container */
-        .container {
-            width: 100%;
-            max-width: 600px;
-	    min-width: 250px;
-            background: #fff;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            padding: 15px;
-        }
-
-        /* Header */
-        h2 {
-            font-size: 18px;
-            color: #1a73e8;
-            margin-bottom: 10px;
-            text-align: center;
-            font-weight: 600;
-        }
-
-        /* Subtitle */
-        .subtitle {
-            text-align: center;
-            color: #6c757d;
-            margin-bottom: 15px;
-            font-size: 14px;
-            font-style: italic;
-        }
-
-        /* Section titles */
-        .section-title {
-            color: #1a73e8;
-            font-size: 16px;
-            margin-top: 15px;
-            font-weight: 600;
-        }
-
-        /* Visual separator under title */
-        .section-title:after {
-            content: "";
-            display: block;
-            height: 1px;
-            width: 100%;
-            background-color: #ddd;
-            margin-top: 5px;
-        }
-
-        /* Toggle sections */
-        .toggle-section {
-            max-height: none;
-            overflow: visible;
-            padding: 10px;
-            background-color: #f8f9fa;
-            border-radius: 3px;
-            margin-top: 5px;
-        }
-
-        /* Checkbox label styling */
-        .checkbox-label {
-            display: flex;
-            align-items: center;
-            margin-bottom: 5px;
-            font-size: 13px;
-            padding: 5px;
-            border-radius: 3px;
-            background-color: #ffffff;
-            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
-            transition: background-color 0.3s ease;
-            cursor: pointer;
-        }
-
-        .checkbox-label:hover {
-            background-color: #f0f0f0;
-        }
-
-        /* Checkbox styling */
-        input[type="checkbox"] {
-            margin-right: 5px;
-        }
-
-        /* Feature info */
-        .feature-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-        }
-
-        .feature-title {
-            font-weight: 600;
-            color: #343a40;
-            font-size: 14px;
-        }
-
-        .feature-description {
-            font-size: 12px;
-            color: #6c757d;
-            margin-top: 2px;
-        }
-
-        .risk-level {
-            font-weight: bold;
-            color: #28a745;
-            font-size: 12px;
-        }
-
-        /* Button styling */
-        .button {
-            width: 100%;
-            padding: 10px;
-            font-size: 14px;
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
-            font-weight: 500;
-            margin-top: 5px;
-            transition: background-color 0.3s;
-        }
-
-        .button:hover {
-            filter: brightness(95%);
-        }
-
-        .button.blue {
-            background-color: #1a73e8;
-            color: white;
-        }
-
-        .button.gray {
-            background-color: #6c757d;
-            color: white;
-        }
-
-        .button.green {
-            background-color: #28a745;
-            color: white;
-        }
-
-        /* Confirmation message */
-        #confirmationMessage {
-            color: #28a745;
-            text-align: center;
-            font-size: 14px;
-            margin-top: 10px;
-            animation: fadeIn 1s ease-in-out;
+        /* Page title */
+        h1 {
+            color: var(--color-primary);
         }
 
         /* License Status Box */
         .license-status-box {
-            margin: 15px 0;
-            padding: 14px;
-            border-radius: 6px;
+            margin: var(--gap-lg) 0;
+            padding: var(--padding-section);
+            border-radius: var(--radius-md);
             text-align: center;
         }
 
@@ -194,12 +40,18 @@
         }
 
         .license-status-icon {
-            font-size: 24px;
-            margin-bottom: 6px;
+            display: flex;
+            justify-content: center;
+            margin-bottom: var(--gap-sm);
+        }
+
+        .license-status-icon svg {
+            width: 32px;
+            height: 32px;
         }
 
         .license-status-title {
-            font-size: 14px;
+            font-size: var(--font-size-base);
             font-weight: 600;
             margin-bottom: 4px;
         }
@@ -209,36 +61,36 @@
         .license-status-box.premium .license-status-title { color: #059669; }
 
         .license-status-subtitle {
-            font-size: 12px;
-            color: #6b7280;
+            font-size: var(--font-size-xs);
+            color: var(--color-text-secondary);
             margin-bottom: 10px;
         }
 
         .license-input-group {
-            margin-top: 12px;
+            margin-top: var(--gap-md);
         }
 
         .license-input-group input {
             width: 100%;
             padding: 10px;
             border: 1px solid #d1d5db;
-            border-radius: 4px;
-            font-size: 13px;
-            margin-bottom: 8px;
+            border-radius: var(--radius-sm);
+            font-size: var(--font-size-sm);
+            margin-bottom: var(--gap-sm);
             text-align: center;
         }
 
         .license-input-group input:focus {
             outline: none;
-            border-color: #1a73e8;
+            border-color: var(--color-primary);
             box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
         }
 
         .license-upgrade-link {
             display: inline-block;
-            margin-top: 8px;
-            font-size: 12px;
-            color: #1a73e8;
+            margin-top: var(--gap-sm);
+            font-size: var(--font-size-xs);
+            color: var(--color-primary);
             text-decoration: none;
             font-weight: 500;
         }
@@ -248,90 +100,58 @@
         }
 
         .license-error {
-            color: #dc2626;
-            font-size: 11px;
-            margin-top: 6px;
+            color: var(--color-danger);
+            font-size: var(--font-size-xs);
+            margin-top: var(--gap-sm);
         }
 
         .license-benefits {
-            font-size: 11px;
-            color: #6b7280;
-            margin-top: 8px;
+            font-size: var(--font-size-xs);
+            color: var(--color-text-secondary);
+            margin-top: var(--gap-sm);
             line-height: 1.4;
         }
 
         .license-benefits strong {
-            color: #374151;
+            color: var(--color-text-primary);
+        }
+
+        .risk-level {
+            font-weight: bold;
+            color: var(--color-success);
+            font-size: var(--font-size-xs);
         }
 
         #lastRuleUpdateDisplay {
             margin-top: 10px;
-            font-size: 12px;
-            color: #6c757d;
-            text-align: center;
-        }
-
-        /* Animation */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        /* Debug panel */
-        .debug-panel {
-            margin-top: 15px;
-            padding: 10px;
-            background: #1f2937;
-            border-radius: 6px;
-        }
-
-        .debug-title {
-            color: #9ca3af;
-            font-size: 11px;
-            margin-bottom: 8px;
-            text-align: center;
-        }
-
-        .debug-buttons {
-            display: flex;
-            gap: 5px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .debug-btn {
-            padding: 6px 10px;
-            font-size: 11px;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .debug-btn[data-state="trial"] { background: #f59e0b; }
-        .debug-btn[data-state="trial-low"] { background: #f97316; }
-        .debug-btn[data-state="expired"] { background: #ef4444; }
-        .debug-btn[data-state="premium"] { background: #10b981; }
-        .debug-btn[data-state="reset"] { background: #6b7280; }
-
-        #debugStatus {
-            color: #9ca3af;
-            font-size: 10px;
-            margin-top: 8px;
+            font-size: var(--font-size-xs);
+            color: var(--color-text-secondary);
             text-align: center;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2 id="extName"></h2>
+        <!-- Branded Header -->
+        <div class="brand-header">
+            <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            <span class="brand-text">LinkShield Security</span>
+        </div>
+
+        <h1 id="extName"></h1>
         <p id="extDescription" class="subtitle"></p>
 
         <!-- License Status Box -->
         <div id="licenseStatusBox" class="license-status-box trial">
             <!-- Trial view -->
             <div id="licenseTrialView">
-                <div class="license-status-icon">🛡️</div>
+                <div class="license-status-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#b45309" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                </div>
                 <div class="license-status-title" id="licenseTrialTitle"></div>
                 <div class="license-status-subtitle" id="licenseTrialSubtitle"></div>
                 <a href="https://linkshield.lemonsqueezy.com/checkout/buy/f01a396f-933f-4458-8241-14d9b3a8ef12" target="_blank" class="license-upgrade-link" id="licenseUpgradeLink"></a>
@@ -339,7 +159,13 @@
 
             <!-- Expired view -->
             <div id="licenseExpiredView" style="display: none;">
-                <div class="license-status-icon">⚠️</div>
+                <div class="license-status-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                        <line x1="12" y1="9" x2="12" y2="13"/>
+                        <line x1="12" y1="17" x2="12.01" y2="17"/>
+                    </svg>
+                </div>
                 <div class="license-status-title" id="licenseExpiredTitle"></div>
                 <div class="license-status-subtitle" id="licenseExpiredSubtitle"></div>
                 <div class="license-benefits">
@@ -355,7 +181,12 @@
 
             <!-- Premium view -->
             <div id="licensePremiumView" style="display: none;">
-                <div class="license-status-icon">✅</div>
+                <div class="license-status-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                        <polyline points="22 4 12 14.01 9 11.01"/>
+                    </svg>
+                </div>
                 <div class="license-status-title" id="licensePremiumTitle"></div>
                 <div class="license-status-subtitle" id="premiumEmail"></div>
             </div>
@@ -393,9 +224,6 @@
         <div id="confirmationMessage" style="display: none;"></div>
 
         <div id="lastRuleUpdateDisplay"></div>
-
-        <!-- SECURITY: Debug Panel verwijderd voor productie -->
-        <!-- Debug functionaliteit is alleen beschikbaar in development builds -->
     </div>
 
     <script src="popup.js"></script>

@@ -11,6 +11,14 @@ const IS_PRODUCTION = true; // Zet op 'true' voor productie build.
 const CACHE_TTL = 24 * 60 * 60 * 1000;
 const API_TIMEOUT_MS = 10000; // 10 seconden timeout voor API calls
 
+// ==== SSL Labs Rate Limiting & Caching ====
+const SSL_LABS_MIN_INTERVAL_MS = 10000; // Minimaal 10 seconden tussen requests
+const SSL_LABS_CACHE_TTL = 24 * 60 * 60 * 1000; // 24 uur cache
+const SSL_LABS_ERROR_CACHE_TTL = 30 * 60 * 1000; // 30 minuten cache voor errors (voorkomt spam bij 529)
+let sslLabsLastRequestTime = 0;
+const sslLabsRequestQueue = []; // Queue voor pending requests
+let sslLabsQueueProcessing = false;
+
 // Overschrijf console-functies voor productieomgeving
 if (IS_PRODUCTION) {
     console.log = function() {};
@@ -1225,97 +1233,199 @@ async function isPremiumActive() {
 
 const sslCache = new Map();
 
-/** Checks SSL/TLS configuration using SSL Labs API */
-async function checkSslLabs(domain) {
-    if (globalThresholds.DEBUG_MODE) console.log(`[checkSslLabs] Starting for ${domain}`);
+/**
+ * Laadt SSL cache uit chrome.storage.local voor persistentie tussen sessies
+ */
+async function loadSslCacheFromStorage() {
     try {
-        const cachedSsl = sslCache.get(domain);
-        if (cachedSsl && Date.now() - cachedSsl.timestamp < 24 * 60 * 60 * 1000) {
-            if (globalThresholds.DEBUG_MODE) console.log(`[checkSslLabs] Cache hit voor ${domain}`);
-            return cachedSsl.result;
+        const { sslLabsCache } = await chrome.storage.local.get('sslLabsCache');
+        if (sslLabsCache && typeof sslLabsCache === 'object') {
+            const now = Date.now();
+            let loadedCount = 0;
+            for (const [domain, data] of Object.entries(sslLabsCache)) {
+                // Alleen laden als cache nog geldig is
+                const ttl = data.isError ? SSL_LABS_ERROR_CACHE_TTL : SSL_LABS_CACHE_TTL;
+                if (now - data.timestamp < ttl) {
+                    sslCache.set(domain, data);
+                    loadedCount++;
+                }
+            }
+            if (globalThresholds.DEBUG_MODE) {
+                console.log(`[SSL Cache] ${loadedCount} entries geladen uit storage`);
+            }
         }
+    } catch (error) {
+        console.error('[SSL Cache] Fout bij laden cache:', error);
+    }
+}
 
-        if (globalThresholds.DEBUG_MODE) console.log(`[checkSslLabs] Fetching SSL data for ${domain}`);
-        const response = await fetchWithRetry(
-            `https://api.ssllabs.com/api/v3/analyze?host=${domain}&maxAge=86400`, { mode: 'cors' }
+/**
+ * Slaat SSL cache op in chrome.storage.local voor persistentie
+ */
+async function saveSslCacheToStorage() {
+    try {
+        const cacheObj = {};
+        for (const [domain, data] of sslCache) {
+            cacheObj[domain] = data;
+        }
+        await chrome.storage.local.set({ sslLabsCache: cacheObj });
+    } catch (error) {
+        console.error('[SSL Cache] Fout bij opslaan cache:', error);
+    }
+}
+
+/**
+ * Rate-limited SSL Labs API call
+ * Wacht tot het veilig is om een request te doen
+ * @param {string} domain - Het domein om te checken
+ * @returns {Promise<{isValid: boolean, reason: string}>}
+ */
+async function checkSslLabsWithRateLimit(domain) {
+    const now = Date.now();
+    const timeSinceLastRequest = now - sslLabsLastRequestTime;
+
+    // Als we te snel zijn, wacht
+    if (timeSinceLastRequest < SSL_LABS_MIN_INTERVAL_MS) {
+        const waitTime = SSL_LABS_MIN_INTERVAL_MS - timeSinceLastRequest;
+        if (globalThresholds.DEBUG_MODE) {
+            console.log(`[SSL Labs] Rate limit: wacht ${waitTime}ms voor ${domain}`);
+        }
+        await new Promise(resolve => setTimeout(resolve, waitTime));
+    }
+
+    // Update timestamp VOOR de request
+    sslLabsLastRequestTime = Date.now();
+
+    try {
+        const response = await fetchWithTimeout(
+            `https://api.ssllabs.com/api/v3/analyze?host=${domain}&fromCache=on&maxAge=86400`,
+            { mode: 'cors' },
+            API_TIMEOUT_MS
         );
 
-        if (globalThresholds.DEBUG_MODE) console.log(`[checkSslLabs] Response status for ${domain}: ${response.status}`);
-        if (response.status === 429) {
-            if (globalThresholds.DEBUG_MODE) console.warn(`[checkSslLabs] Rate limit bereikt voor ${domain}`);
-            // Bij rate limit, retourneer een 'onbekend' maar niet-foutief resultaat
-            const result = { isValid: true, reason: "Rate limit, SSL-check overgeslagen" };
-            sslCache.set(domain, { result, timestamp: Date.now() });
+        // Handle rate limit responses (429 en 529)
+        if (response.status === 429 || response.status === 529) {
+            if (globalThresholds.DEBUG_MODE) {
+                console.warn(`[SSL Labs] Rate limit (${response.status}) voor ${domain}`);
+            }
+            const result = {
+                isValid: true,
+                reason: "SSL Labs overbelast, check overgeslagen",
+                isError: true
+            };
+            sslCache.set(domain, { result, timestamp: Date.now(), isError: true });
             return result;
         }
 
         if (!response.ok) {
-            throw new Error(`HTTP-fout: ${response.status}`);
+            throw new Error(`HTTP ${response.status}`);
         }
 
         const data = await response.json();
-        if (globalThresholds.DEBUG_MODE) console.log(`[checkSslLabs] Full response data for ${domain}:`, data);
 
         if (data.status === "READY" && data.endpoints && data.endpoints.length > 0) {
             const allEndpointsFailed = data.endpoints.every(endpoint =>
                 endpoint.statusMessage === "Unable to connect to the server"
             );
             if (allEndpointsFailed) {
-                if (globalThresholds.DEBUG_MODE) console.log(`[checkSslLabs] Alle endpoints onbereikbaar voor ${domain}`);
                 const result = { isValid: false, reason: "Server onbereikbaar voor SSL-analyse" };
                 sslCache.set(domain, { result, timestamp: Date.now() });
                 return result;
             }
             const grade = data.endpoints[0].grade || "Unknown";
-            // Beschouw A en A+ als geldig, of pas dit aan naar jouw veiligheidsstandaard
-            const isValid = ["A", "A+", "B", "C"].includes(grade); // Flexibelere validatie
+            const isValid = ["A", "A+", "B", "C"].includes(grade);
             const result = {
                 isValid,
                 reason: isValid ? `Geldig certificaat (Grade: ${grade})` : `Onveilige SSL (Grade: ${grade})`
             };
             sslCache.set(domain, { result, timestamp: Date.now() });
-            if (globalThresholds.DEBUG_MODE) console.log(`[checkSslLabs] Resultaat voor ${domain}: ${grade}`);
+            if (globalThresholds.DEBUG_MODE) {
+                console.log(`[SSL Labs] Resultaat voor ${domain}: ${grade}`);
+            }
             return result;
         } else if (data.status === "ERROR") {
-            if (globalThresholds.DEBUG_MODE) console.warn(`[checkSslLabs] SSL Labs fout voor ${domain}: ${data.statusMessage}`);
-            const result = { isValid: false, reason: `SSL Labs fout: ${data.statusMessage || "Onbekende fout"}` };
-            sslCache.set(domain, { result, timestamp: Date.now() });
+            const result = {
+                isValid: false,
+                reason: `SSL Labs fout: ${data.statusMessage || "Onbekende fout"}`,
+                isError: true
+            };
+            sslCache.set(domain, { result, timestamp: Date.now(), isError: true });
             return result;
-        } else if (data.status === "IN_PROGRESS") {
-            // Als de scan nog bezig is, geef aan dat het onzeker is, maar blokkeer niet direct
-            if (globalThresholds.DEBUG_MODE) console.log(`[checkSslLabs] SSL-scan in uitvoering voor ${domain}`);
-            const result = { isValid: true, reason: "SSL-scan in uitvoering, nog geen resultaat" };
-            // Cache dit resultaat ook, maar met een kortere TTL als je snel wilt herchecken
-            sslCache.set(domain, { result, timestamp: Date.now() });
+        } else if (data.status === "IN_PROGRESS" || data.status === "DNS") {
+            const result = { isValid: true, reason: "SSL-scan in uitvoering" };
+            // Korte cache voor in-progress scans
+            sslCache.set(domain, { result, timestamp: Date.now(), isError: true });
             return result;
         } else {
-            if (globalThresholds.DEBUG_MODE) console.warn(`[checkSslLabs] Onverwachte responsstatus voor ${domain}: ${data.status}`);
-            const result = { isValid: false, reason: "Onverwachte SSL Labs respons" };
+            const result = { isValid: true, reason: "SSL-status onbekend" };
             sslCache.set(domain, { result, timestamp: Date.now() });
             return result;
         }
     } catch (error) {
-        console.error(`[checkSslLabs] Fout bij SSL-check voor ${domain}:`, error);
-        // Bij netwerkfouten, rate limits of timeouts, beschouw het als tijdelijk onbereikbaar
-        if (error.message.includes("network") || error.message.includes("fetch") || error.message.includes("429") || error.message.includes("timeout")) {
-            const result = { isValid: true, reason: "Netwerkfout of rate limit, SSL-check overgeslagen" };
-            sslCache.set(domain, { result, timestamp: Date.now() });
-            return result;
+        if (globalThresholds.DEBUG_MODE) {
+            console.error(`[SSL Labs] Fout voor ${domain}:`, error.message);
         }
-        return { isValid: false, reason: `SSL-check mislukt: ${error.message}` };
+        const result = {
+            isValid: true,
+            reason: "SSL-check kon niet worden uitgevoerd",
+            isError: true
+        };
+        sslCache.set(domain, { result, timestamp: Date.now(), isError: true });
+        return result;
     }
 }
 
-// Cache-schoonmaak voor sslCache (elke 24 uur)
+/** Checks SSL/TLS configuration using SSL Labs API with rate limiting */
+async function checkSslLabs(domain) {
+    if (globalThresholds.DEBUG_MODE) {
+        console.log(`[checkSslLabs] Starting for ${domain}`);
+    }
+
+    // Check cache eerst
+    const cached = sslCache.get(domain);
+    if (cached) {
+        const ttl = cached.isError ? SSL_LABS_ERROR_CACHE_TTL : SSL_LABS_CACHE_TTL;
+        if (Date.now() - cached.timestamp < ttl) {
+            if (globalThresholds.DEBUG_MODE) {
+                console.log(`[checkSslLabs] Cache hit voor ${domain}`);
+            }
+            return cached.result;
+        }
+        // Cache verlopen, verwijder
+        sslCache.delete(domain);
+    }
+
+    // Rate-limited API call
+    const result = await checkSslLabsWithRateLimit(domain);
+
+    // Periodiek cache opslaan (niet bij elke call)
+    if (Math.random() < 0.1) { // 10% kans om op te slaan
+        saveSslCacheToStorage();
+    }
+
+    return result;
+}
+
+// Laad cache bij startup
+loadSslCacheFromStorage();
+
+// Cache-schoonmaak en opslag (elke 30 minuten)
 setInterval(() => {
     const now = Date.now();
-    for (const [domain, { timestamp }] of sslCache) {
-        if (now - timestamp >= 24 * 60 * 60 * 1000) {
+    let cleanedCount = 0;
+    for (const [domain, data] of sslCache) {
+        const ttl = data.isError ? SSL_LABS_ERROR_CACHE_TTL : SSL_LABS_CACHE_TTL;
+        if (now - data.timestamp >= ttl) {
             sslCache.delete(domain);
-            if (globalThresholds.DEBUG_MODE) console.log(`[DEBUG] Verwijderd verlopen SSL-cache voor ${domain}`);
+            cleanedCount++;
         }
     }
-}, 24 * 60 * 60 * 1000);
+    if (cleanedCount > 0 && globalThresholds.DEBUG_MODE) {
+        console.log(`[SSL Cache] ${cleanedCount} verlopen entries verwijderd`);
+    }
+    // Sla cache op
+    saveSslCacheToStorage();
+}, 30 * 60 * 1000);
 
 
 // ==== Installation and Alarms ====
@@ -1680,63 +1790,17 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         case 'checkSslLabs': {
             const domain = request.domain;
 
-            // 1. Controleer eerst de cache
-            const cached = sslCache.get(domain);
-            if (cached && (Date.now() - cached.timestamp < CACHE_TTL)) {
-                if (globalThresholds.DEBUG_MODE) {
-                    console.log(`[Cache HIT] SSL-status voor ${domain} uit cache gehaald.`);
-                }
-                sendResponse(cached.result);
-                return; // synchroon
-            }
-
-            if (globalThresholds.DEBUG_MODE) {
-                console.log(`[API Call] SSL-status voor ${domain} opvragen...`);
-            }
-
-            fetch(`https://api.ssllabs.com/api/v3/analyze?host=${domain}&all=done&fromCache=on&maxAge=24`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`API status was ${response.status}, niet 200. Check wordt overgeslagen.`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.status === 'ERROR') {
-                        throw new Error(`API retourneerde een foutstatus voor domein ${domain}`);
-                    }
-
-                    const endpoint = data.endpoints && data.endpoints.length > 0 ? data.endpoints[0] : null;
-                    const grade = endpoint?.grade;
-                    
-                    let result;
-                    if (grade) {
-                        const isActuallyInvalid = ['F', 'T', 'M'].includes(grade);
-                        result = {
-                            isValid: !isActuallyInvalid,
-                            reason: isActuallyInvalid
-                                ? `Ongeldig certificaat gedetecteerd (Grade: ${grade})`
-                                : `Geldig certificaat (Grade: ${grade})`
-                        };
-                    } else {
-                        result = {
-                            isValid: true,
-                            reason: 'Certificaatstatus kon niet worden bepaald, aangenomen als OK.'
-                        };
-                    }
-                    
-                    sslCache.set(domain, { timestamp: Date.now(), result });
+            // Gebruik de centrale rate-limited checkSslLabs functie
+            checkSslLabs(domain)
+                .then(result => {
                     sendResponse(result);
                 })
                 .catch(error => {
-                    console.error(`SSL Labs check voor ${domain} is definitief mislukt:`, error.message);
-                    const safeFallback = {
+                    console.error(`[checkSslLabs message] Fout voor ${domain}:`, error.message);
+                    sendResponse({
                         isValid: true,
-                        reason: 'De certificaat-check kon niet worden uitgevoerd.'
-                    };
-                    
-                    sslCache.set(domain, { timestamp: Date.now(), result: safeFallback });
-                    sendResponse(safeFallback);
+                        reason: 'SSL-check kon niet worden uitgevoerd'
+                    });
                 });
 
             return true; // houd port open voor async

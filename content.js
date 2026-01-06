@@ -82,7 +82,75 @@ let globalHomoglyphReverseMap = {};
 const CHECK_INTERVAL_MS = 5000; // 5 seconds between checks
 const CACHE_DURATION_MS = 3600 * 1000; // 1 hour cache expiration
 const MAX_CACHE_SIZE = 1000;
+const MUTATION_DEBOUNCE_MS = 500; // Increased from 250ms for heavy SPA sites
 const warnedDomainsInline = new Set()
+
+// ============================================================================
+// CACHE MANAGEMENT - Prevent memory exhaustion in long-running sessions
+// ============================================================================
+const activeIntervals = []; // Track all setInterval IDs for cleanup
+
+/**
+ * Enforces cache size limit using LRU-style eviction (oldest entries first)
+ * @param {Map} cache - The cache Map to limit
+ * @param {number} maxSize - Maximum number of entries (default: MAX_CACHE_SIZE)
+ */
+function enforceCacheLimit(cache, maxSize = MAX_CACHE_SIZE) {
+  if (cache.size <= maxSize) return;
+  // Remove oldest entries (first entries in Map iteration order)
+  const entriesToRemove = cache.size - maxSize;
+  let removed = 0;
+  for (const key of cache.keys()) {
+    if (removed >= entriesToRemove) break;
+    cache.delete(key);
+    removed++;
+  }
+  logDebug(`🗑️ Cache eviction: removed ${removed} entries, size now ${cache.size}`);
+}
+
+/**
+ * Safe cache set with automatic size limiting
+ * @param {Map} cache - The cache Map
+ * @param {string} key - Cache key
+ * @param {any} value - Value to cache
+ */
+function safeSetCache(cache, key, value) {
+  cache.set(key, value);
+  enforceCacheLimit(cache);
+}
+
+/**
+ * Wrapper for setInterval that tracks interval IDs for cleanup
+ * @param {Function} callback - The callback function
+ * @param {number} delay - The interval delay in ms
+ * @returns {number} - The interval ID
+ */
+function trackedSetInterval(callback, delay) {
+  const id = setInterval(callback, delay);
+  activeIntervals.push(id);
+  return id;
+}
+
+/**
+ * Cleanup function to be called on page unload
+ * Clears all tracked intervals and caches to prevent memory leaks
+ */
+function cleanupOnUnload() {
+  // Clear all tracked intervals
+  activeIntervals.forEach(id => clearInterval(id));
+  activeIntervals.length = 0;
+
+  // Clear all caches
+  if (window.linkSafetyCache) window.linkSafetyCache.clear();
+  if (window.linkRiskCache) window.linkRiskCache.clear();
+
+  logDebug('🧹 LinkShield cleanup complete on page unload');
+}
+
+// Register cleanup on page unload/beforeunload
+window.addEventListener('beforeunload', cleanupOnUnload);
+window.addEventListener('pagehide', cleanupOnUnload);
+
 if (!window.linkSafetyCache) {
   window.linkSafetyCache = new Map();
 }
@@ -2961,6 +3029,56 @@ function hasNullByteInjection(urlString) {
 }
 
 /**
+ * SECURITY: Detecteert URL credential/userinfo attack (@-symbol obfuscation)
+ * Attackers use URLs like: https://google.com@evil.com/phishing
+ * The browser navigates to evil.com, but users see google.com
+ *
+ * @param {string} urlString - De URL om te controleren
+ * @returns {{detected: boolean, reason: string|null, realHost: string|null}}
+ */
+function hasUrlCredentialsAttack(urlString) {
+  try {
+    // Check for @ symbol in the URL (before query string)
+    const urlWithoutQuery = urlString.split('?')[0];
+    const urlWithoutFragment = urlWithoutQuery.split('#')[0];
+
+    // Pattern: protocol://[userinfo@]host
+    // Legitimate: ftp://user:pass@ftp.example.com (rare but valid)
+    // Malicious: https://google.com@evil.com/page
+
+    const match = urlWithoutFragment.match(/^(https?:\/\/)([^\/]+)@([^\/]+)/i);
+    if (match) {
+      const fakeHost = match[2]; // What user sees (e.g., google.com)
+      const realHost = match[3]; // Where browser actually goes (e.g., evil.com)
+
+      // Check if the "userinfo" part looks like a domain (deceptive)
+      const looksLikeDomain = /^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z]{2,})+$/i.test(fakeHost);
+
+      if (looksLikeDomain) {
+        logDebug(`🚨 URL Credentials Attack detected: ${fakeHost}@${realHost}`);
+        return {
+          detected: true,
+          reason: 'urlCredentialsAttack',
+          fakeHost: fakeHost,
+          realHost: realHost
+        };
+      }
+    }
+
+    // Also check for encoded @ symbol (%40)
+    if (urlWithoutFragment.includes('%40')) {
+      const decoded = decodeURIComponent(urlWithoutFragment);
+      return hasUrlCredentialsAttack(decoded);
+    }
+
+    return { detected: false, reason: null, realHost: null };
+  } catch (e) {
+    handleError(e, 'hasUrlCredentialsAttack');
+    return { detected: false, reason: null, realHost: null };
+  }
+}
+
+/**
  * SECURITY: Detecteert Form Action Hijacking
  * Waarschuwt wanneer een login/password formulier data naar een ANDER domein stuurt.
  * Dit is een klassieke credential theft techniek.
@@ -4351,6 +4469,12 @@ function checkStaticConditions(url, reasons, totalRiskRef) {
       condition: hasNullByteInjection(url),
       weight: 10,
       reason: 'nullByteInjection'
+    },
+    // URL credentials/@ attack detection (e.g., https://google.com@evil.com)
+    {
+      condition: hasUrlCredentialsAttack(url).detected,
+      weight: 15, // Very high risk - this is a classic phishing technique
+      reason: 'urlCredentialsAttack'
     }
   ];
   for (const { condition, weight, reason } of staticChecks) {
@@ -6004,10 +6128,30 @@ const observer = new MutationObserver(debounce(async (mutations) => {
   let iframesAdded = false;
   let linksAdded = false;
   let passwordFieldAdded = false;
+
+  // INFINITE LOOP PREVENTION: Skip mutations caused by our own DOM modifications
+  const isOwnModification = (node) => {
+    if (!node || !node.classList) return false;
+    // Check if this is a LinkShield-created element
+    if (node.id?.startsWith('linkshield-')) return true;
+    if (node.classList.contains('linkshield-warning')) return true;
+    if (node.classList.contains('linkshield-detected')) return true;
+    if (node.classList.contains('linkshield-overlay')) return true;
+    // Check parent for our modifications
+    if (node.closest?.('[id^="linkshield-"]')) return true;
+    return false;
+  };
+
   mutations.forEach(mutation => {
     mutation.addedNodes.forEach(node => {
       // Alleen element-nodes zijn relevant
       if (node.nodeType !== Node.ELEMENT_NODE) return;
+
+      // INFINITE LOOP PREVENTION: Skip our own DOM modifications
+      if (isOwnModification(node)) {
+        return;
+      }
+
       // Detecteer toegevoegde scripts en iframes
       if (node.tagName === "SCRIPT" && node.src) {
         scriptsAdded = true;
@@ -6028,7 +6172,7 @@ const observer = new MutationObserver(debounce(async (mutations) => {
       if (node.tagName === "A" && isValidURL(node.href)) {
         linksAdded = true;
         classifyAndCheckLink(node); // Controleer direct de nieuwe link
-      } else {
+      } else if (node.querySelectorAll) {
         // Links binnen nieuw toegevoegde elementen (bijv. een nieuwe div met links erin)
         node.querySelectorAll('a').forEach(link => {
           if (isValidURL(link.href)) {
@@ -6582,7 +6726,11 @@ function translateReason(reasonKey) {
       'reason_chainedShorteners': 'Meerdere URL-verkorters achter elkaar',
       'reason_suspiciousFinalTLD': 'Einddoel heeft verdachte domeinextensie',
       'reason_redirectToIP': 'Redirect naar IP-adres',
-      'reason_redirectTimeout': 'Redirect-analyse time-out'
+      'reason_redirectTimeout': 'Redirect-analyse time-out',
+      'nullByteInjection': 'Null byte injectie gedetecteerd (hoog risico)',
+      'urlCredentialsAttack': 'URL misleiding gedetecteerd (@-symbool aanval)',
+      'fullwidthCharacters': 'Fullwidth Unicode karakters gedetecteerd',
+      'doubleEncoding': 'Dubbele URL-codering gedetecteerd'
     };
     translated = fallbackMap[baseKey] || fallbackMap[reasonKey] || baseKey;
   }

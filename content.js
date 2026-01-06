@@ -1848,6 +1848,21 @@ async function checkForPhishingAds(link) {
       } else {
         level = 'safe'; // Kan ook 'safe' zijn als de score te laag is voor een waarschuwing
       }
+      // Local Network Calibration: lokale IP's krijgen maximaal 'caution', nooit 'alert'
+      const isLocalNetwork = (host) => {
+        return (
+          /^127\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(host) ||
+          /^192\.168\.\d{1,3}\.\d{1,3}$/.test(host) ||
+          /^10\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(host) ||
+          /^172\.(1[6-9]|2[0-9]|3[0-1])\.\d{1,3}\.\d{1,3}$/.test(host) ||
+          host === 'localhost' ||
+          host.endsWith('.local')
+        );
+      };
+      if (level === 'alert' && isLocalNetwork(urlObj.hostname)) {
+        level = 'caution';
+        logDebug(`📍 Local network calibration: ${urlObj.hostname} beperkt tot 'caution' (was 'alert')`);
+      }
       // Roep de nieuwe, universele waarschuwingsfunctie aan
       warnLinkByLevel(link, { level: level, risk: totalRiskScore, reasons: Array.from(specificReasons) });
       logDebug(`[checkForPhishingAds] Advertentie link ${url} gemarkeerd: Level=${level}, Risk=${totalRiskScore}, Redenen=${Array.from(specificReasons).join(', ')}`);
@@ -3902,22 +3917,52 @@ async function performSuspiciousChecks(url) {
   // 10) Fase 2: middelzware, async checks
   await checkDynamicConditionsPhase2(url, reasons, totalRiskRef);
   // 11) Fase 3: diepe checks (domain-age, MX, login HTTPS)
-  if (totalRiskRef.value >= globalConfig.DOMAIN_AGE_MIN_RISK) {
+  // Helper: check of hostname een lokaal/privé IP-adres is (vroege definitie voor domain-age skip)
+  const isLocalHost = (host) => {
+    return (
+      /^127\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(host) ||
+      /^192\.168\.\d{1,3}\.\d{1,3}$/.test(host) ||
+      /^10\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(host) ||
+      /^172\.(1[6-9]|2[0-9]|3[0-1])\.\d{1,3}\.\d{1,3}$/.test(host) ||
+      host === 'localhost' ||
+      host.endsWith('.local')
+    );
+  };
+  // Skip domain-age check voor lokale IP's (voorkomt rdap.org 404 errors)
+  if (totalRiskRef.value >= globalConfig.DOMAIN_AGE_MIN_RISK && !isLocalHost(urlObj.hostname)) {
     await checkDomainAgeDynamic(url, { totalRiskRef, reasons });
+  } else if (isLocalHost(urlObj.hostname)) {
+    logDebug(`⏭️ Domain-age check overgeslagen voor lokaal adres: ${urlObj.hostname}`);
   }
   if (detectLoginPage(url)) {
-    try {
-      let dom = urlObj.hostname.toLowerCase();
-      if (dom.startsWith('xn--') && typeof punycode !== 'undefined') {
-        dom = punycode.toUnicode(dom);
+    // Helper: check of hostname een intern/privé IP-adres is
+    const isInternalIpAddress = (host) => {
+      return (
+        /^127\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(host) ||
+        /^192\.168\.\d{1,3}\.\d{1,3}$/.test(host) ||
+        /^10\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(host) ||
+        /^172\.(1[6-9]|2[0-9]|3[0-1])\.\d{1,3}\.\d{1,3}$/.test(host) ||
+        host === 'localhost' ||
+        host.endsWith('.local')
+      );
+    };
+    // MX-check alleen uitvoeren voor publieke domeinen, niet voor interne IP-adressen
+    if (!isInternalIpAddress(urlObj.hostname)) {
+      try {
+        let dom = urlObj.hostname.toLowerCase();
+        if (dom.startsWith('xn--') && typeof punycode !== 'undefined') {
+          dom = punycode.toUnicode(dom);
+        }
+        const mx = await queueMxCheck(dom);
+        if (mx.length === 0) {
+          reasons.add('loginPageNoMX');
+          totalRiskRef.value += 12;
+        }
+      } catch (e) {
+        handleError(e, 'performSuspiciousChecks MX');
       }
-      const mx = await queueMxCheck(dom);
-      if (mx.length === 0) {
-        reasons.add('loginPageNoMX');
-        totalRiskRef.value += 12;
-      }
-    } catch (e) {
-      handleError(e, 'performSuspiciousChecks MX');
+    } else {
+      logDebug(`⏭️ MX-check overgeslagen voor intern IP-adres: ${urlObj.hostname}`);
     }
     if (urlObj.hostname === window.location.hostname && urlObj.protocol !== 'https:') {
       reasons.add('insecureLoginPage');
@@ -3926,9 +3971,26 @@ async function performSuspiciousChecks(url) {
     }
   }
   // 12) Bepaal final level en cache
-  const finalLevel = totalRiskRef.value >= globalConfig.HIGH_THRESHOLD
+  // Helper: check of hostname een intern/privé IP-adres is (voor level calibratie)
+  const isLocalNetwork = (host) => {
+    return (
+      /^127\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(host) ||
+      /^192\.168\.\d{1,3}\.\d{1,3}$/.test(host) ||
+      /^10\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(host) ||
+      /^172\.(1[6-9]|2[0-9]|3[0-1])\.\d{1,3}\.\d{1,3}$/.test(host) ||
+      host === 'localhost' ||
+      host.endsWith('.local')
+    );
+  };
+  let finalLevel = totalRiskRef.value >= globalConfig.HIGH_THRESHOLD
     ? 'alert'
     : (totalRiskRef.value >= globalConfig.LOW_THRESHOLD ? 'caution' : 'safe');
+  // Local Network Calibration: lokale IP's krijgen maximaal 'caution', nooit 'alert'
+  // Dit voorkomt user fatigue bij thuisgebruikers met lokale servers/routers
+  if (finalLevel === 'alert' && isLocalNetwork(urlObj.hostname)) {
+    finalLevel = 'caution';
+    logDebug(`📍 Local network calibration: ${urlObj.hostname} beperkt tot 'caution' (was 'alert')`);
+  }
   const finalResult = {
     level: finalLevel,
     risk: Number(totalRiskRef.value.toFixed(1)),
@@ -5652,22 +5714,38 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 1d. Loginpagina-checks
     if (detectLoginPage(currentUrl)) {
       logDebug(`🔐 Loginpagina gedetecteerd: ${currentUrl}`);
-      try {
-        const u = new URL(currentUrl);
-        let dom = u.hostname.toLowerCase();
-        if (dom.startsWith('xn--') && typeof punycode !== 'undefined') {
-          dom = punycode.toUnicode(dom);
+      const u = new URL(currentUrl);
+      // Helper: check of hostname een intern/privé IP-adres is
+      const isInternalIpAddress = (host) => {
+        return (
+          /^127\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(host) ||
+          /^192\.168\.\d{1,3}\.\d{1,3}$/.test(host) ||
+          /^10\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(host) ||
+          /^172\.(1[6-9]|2[0-9]|3[0-1])\.\d{1,3}\.\d{1,3}$/.test(host) ||
+          host === 'localhost' ||
+          host.endsWith('.local')
+        );
+      };
+      // MX-check alleen uitvoeren voor publieke domeinen, niet voor interne IP-adressen
+      if (!isInternalIpAddress(u.hostname)) {
+        try {
+          let dom = u.hostname.toLowerCase();
+          if (dom.startsWith('xn--') && typeof punycode !== 'undefined') {
+            dom = punycode.toUnicode(dom);
+          }
+          const mx = await queueMxCheck(dom);
+          if (!mx.length) {
+            reasonsForPage.add('loginPageNoMX');
+            pageRisk += 12;
+            logDebug(`⚠️ Geen MX-records voor loginpagina: ${dom}`);
+          }
+        } catch (e) {
+          handleError(e, 'Loginpagina MX-check mislukt');
         }
-        const mx = await queueMxCheck(dom);
-        if (!mx.length) {
-          reasonsForPage.add('loginPageNoMX');
-          pageRisk += 12;
-          logDebug(`⚠️ Geen MX-records voor loginpagina: ${dom}`);
-        }
-      } catch (e) {
-        handleError(e, 'Loginpagina MX-check mislukt');
+      } else {
+        logDebug(`⏭️ MX-check overgeslagen voor intern IP-adres: ${u.hostname}`);
       }
-      if (new URL(currentUrl).protocol !== 'https:') {
+      if (u.protocol !== 'https:') {
         reasonsForPage.add('insecureLoginPage');
         pageRisk += 15;
         logDebug(`⚠️ Loginpagina niet via HTTPS: ${currentUrl}`);
@@ -5697,6 +5775,22 @@ document.addEventListener('DOMContentLoaded', async () => {
       finalLevel = 'caution';
     } else {
       finalLevel = 'safe';
+    }
+    // Local Network Calibration: lokale IP's krijgen maximaal 'caution', nooit 'alert'
+    const currentHostname = new URL(currentUrl).hostname;
+    const isLocalNetwork = (host) => {
+      return (
+        /^127\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(host) ||
+        /^192\.168\.\d{1,3}\.\d{1,3}$/.test(host) ||
+        /^10\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(host) ||
+        /^172\.(1[6-9]|2[0-9]|3[0-1])\.\d{1,3}\.\d{1,3}$/.test(host) ||
+        host === 'localhost' ||
+        host.endsWith('.local')
+      );
+    };
+    if (finalLevel === 'alert' && isLocalNetwork(currentHostname)) {
+      finalLevel = 'caution';
+      logDebug(`📍 Local network calibration: ${currentHostname} beperkt tot 'caution' (was 'alert')`);
     }
     // --- 5. ÉÉN bericht sturen naar background.js ---
     chrome.runtime.sendMessage({
@@ -5909,6 +6003,7 @@ const observer = new MutationObserver(debounce(async (mutations) => {
   let scriptsAdded = false;
   let iframesAdded = false;
   let linksAdded = false;
+  let passwordFieldAdded = false;
   mutations.forEach(mutation => {
     mutation.addedNodes.forEach(node => {
       // Alleen element-nodes zijn relevant
@@ -5918,6 +6013,15 @@ const observer = new MutationObserver(debounce(async (mutations) => {
         scriptsAdded = true;
       } else if (node.tagName === "IFRAME" && node.src) {
         iframesAdded = true;
+      }
+      // Detecteer password velden die dynamisch worden toegevoegd (voor SPA's)
+      if (node.tagName === "INPUT" && node.type === "password") {
+        passwordFieldAdded = true;
+      } else if (node.querySelectorAll) {
+        // Check ook binnen nieuw toegevoegde elementen
+        if (node.querySelectorAll('input[type="password"]').length > 0) {
+          passwordFieldAdded = true;
+        }
       }
       // Detecteer links die zijn toegevoegd
       // Directe <a> tags
@@ -5935,6 +6039,35 @@ const observer = new MutationObserver(debounce(async (mutations) => {
       }
     });
   });
+  // Als er een password veld is toegevoegd, invalideer de login cache en hercontroleer
+  if (passwordFieldAdded) {
+    const currentUrl = window.location.href;
+    logDebug("🔐 Password veld dynamisch gedetecteerd. Cache invalideren en hercontrole starten.");
+    // Invalideer de login page cache voor deze URL
+    loginPageCache.delete(currentUrl);
+    // Invalideer ook de algemene link risk cache
+    if (window.linkRiskCache) {
+      window.linkRiskCache.delete(currentUrl);
+    }
+    // Trigger volledige hercontrole van de pagina
+    try {
+      const result = await performSuspiciousChecks(currentUrl);
+      const level = result.level || 'caution';
+      const risk = result.risk || 0;
+      const reasons = result.reasons || [];
+      chrome.runtime.sendMessage({
+        action: 'checkResult',
+        url: currentUrl,
+        level: level,
+        isSafe: level === 'safe',
+        risk: risk,
+        reasons: reasons
+      });
+      logDebug(`✅ Hercontrole na password veld: level=${level}, risk=${risk}, reasons=${reasons.join(', ')}`);
+    } catch (e) {
+      handleError(e, 'MutationObserver password field recheck');
+    }
+  }
   // Als er scripts of iframes zijn toegevoegd, hercontroleer de paginabrede status.
   // We roepen de paginabrede logica die al in DOMContentLoaded staat opnieuw aan.
   if (scriptsAdded || iframesAdded) {

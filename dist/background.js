@@ -992,7 +992,7 @@ async function validateLicenseKey(licenseKey) {
             },
             body: JSON.stringify({
                 license_key: cleanKey,
-                instance_name: 'Chrome_Extension_User'
+                instance_name: 'Browser_Extension_User'
             })
         }, API_TIMEOUT_MS);
 

@@ -570,8 +570,8 @@ describe('4. Popup, Dynamic Flow & i18n', () => {
       'nrdVishingCombo'
     ];
 
-    test('All 19 locales should be present', () => {
-      expect(Object.keys(localeData).length).toBe(19);
+    test('All 24 locales should be present', () => {
+      expect(Object.keys(localeData).length).toBe(24);
     });
 
     requiredKeys.forEach(key => {

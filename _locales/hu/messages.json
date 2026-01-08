@@ -1,0 +1,1130 @@
+{
+  "extName": {
+    "message": "LinkShield"
+  },
+  "extDescription": {
+    "message": "A LinkShield segít azonosítani a nem biztonságos weboldalakat és linkeket, hogy biztonságban maradjon az interneten."
+  },
+  "alertTitle": {
+    "message": "Figyelmeztetés!"
+  },
+  "alertMessage": {
+    "message": "Ez a weboldal egy linket tartalmaz:"
+  },
+  "severityLabel": {
+    "message": "Kockázat:"
+  },
+  "reasonLabel": {
+    "message": "Ok:"
+  },
+  "adviceMessage": {
+    "message": "Mit tehetsz?"
+  },
+  "adviceCheckUrl": {
+    "message": "Csak akkor nyisd meg ezt a linket, ha teljes mértékben megbízol a feladóban. Ha bizonytalan vagy, ne kattints. Soha ne add meg jelszavad olyan oldalon, amelyben nem bízol meg."
+  },
+  "noHttps": {
+    "message": "A kapcsolat ezzel a weboldallal nem biztonságos (nincs HTTPS). Mások láthatják az adataidat."
+  },
+  "ipAsDomain": {
+    "message": "Ez a weboldal IP-címet használ domain név helyett. Ez szokatlan és nagyon kockázatos."
+  },
+  "tooManySubdomains": {
+    "message": "Ez a webcím sok aldomaint tartalmaz (pl. resz1.resz2.oldal.com). Ez nem biztonságos oldalt jelezhet (közepes kockázat)."
+  },
+  "suspiciousKeywords": {
+    "message": "A link gyakran csalásokhoz kapcsolódó szavakat tartalmaz (alacsony kockázat)."
+  },
+  "suspiciousPattern": {
+    "message": "Ennek a webcímnek a szerkezete szokatlannak tűnik (közepes kockázat)."
+  },
+  "shortenedUrl": {
+    "message": "Ez egy rövidített link (mint a bit.ly). A tényleges céloldal nem azonnal látható (közepes kockázat)."
+  },
+  "downloadPage": {
+    "message": "Ez a link úgy tűnik, hogy fájlt tölt le. Csak olyan fájlokat nyiss meg, amelyekben teljes mértékben megbízol (közepes kockázat)."
+  },
+  "freeHosting": {
+    "message": "Ez a weboldal ingyenes tárhelyszolgáltatót használ. A csalók néha kihasználják ezt (közepes kockázat)."
+  },
+  "encodedCharacters": {
+    "message": "A link szokatlan karaktereket tartalmaz (alacsony kockázat). Ezzel el lehet rejteni a valódi célt."
+  },
+  "homoglyphAttack": {
+    "message": "Ez a webcím egy ismert weboldalhoz majdnem azonos karaktereket használ (magas kockázat). Ez egy trükk a megtévesztésre."
+  },
+  "metaRedirect": {
+    "message": "Ez a weboldal automatikusan átirányít. Ez nem biztonságos oldalra vezethet (közepes kockázat)."
+  },
+  "cryptoPhishing": {
+    "message": "Ez a link kriptovaluta-csalásnak tűnik (magas kockázat). Légy nagyon óvatos a pénztárcáddal és hitelesítő adataiddal."
+  },
+  "externalScripts": {
+    "message": "Ez az oldal kockázatosnak jelölt külső forrásból tölt be kódot."
+  },
+  "suspiciousParams": {
+    "message": "A link olyan technikai paramétereket tartalmaz, amelyeket néha nem biztonságos műveletekhez használnak (alacsony kockázat)."
+  },
+  "mixedContent": {
+    "message": "Ez a biztonságos oldal nem biztonságos tartalmat is tölt be. Ez biztonsági kockázat (közepes kockázat)."
+  },
+  "unusualPort": {
+    "message": "Ez az oldal szokatlan technikai portot használ. Ez lehet a biztonság megkerülésére tett kísérlet (közepes kockázat)."
+  },
+  "javascriptScheme": {
+    "message": "Ez a link megpróbál kódot futtatni közvetlenül a böngésződben (magas kockázat)."
+  },
+  "urlFragmentTrick": {
+    "message": "A link szokatlanul hosszú töredéket tartalmaz. Ezt a technikát néha megtévesztésre használják (alacsony kockázat)."
+  },
+  "suspiciousTLD": {
+    "message": "Ez a weboldal olyan domainvégződést használ (mint .zip vagy .mov), amelyet gyakran kihasználnak csalásokra (magas kockázat)."
+  },
+  "base64OrHex": {
+    "message": "Ez a link erősen kódolt információkat tartalmaz. Ezt gyakran használják rosszindulatú kód elrejtésére (magas kockázat)."
+  },
+  "similarToLegitimateDomain": {
+    "message": "Ez az oldal nagyon hasonlít egy jól ismert, megbízható oldalra. Ellenőrizd figyelmesen a címet, lehet, hogy hamis másolat."
+  },
+  "youngDomain": {
+    "message": "Ez a domain csak $AGE$ napja lett regisztrálva (magas kockázat). Az új domaineket gyakrabban használják csalásokra.",
+    "placeholders": {
+      "AGE": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "insecureLoginPage": {
+    "message": "Ez a bejelentkezési oldal nem biztonságos (nincs HTTPS). Soha ne add meg itt a jelszavad (magas kockázat)."
+  },
+  "loginPageNoMX": {
+    "message": "Ez a bejelentkezési oldal olyan domainhez tartozik, amely nem tud e-mailt fogadni. Ez nagyon kockázatos (magas kockázat)."
+  },
+  "malwareExtension": {
+    "message": "Ez a link olyan fájlra mutat, amely ártalmas lehet (mint .exe vagy .zip). Ne töltsd le (magas kockázat)."
+  },
+  "popupTitle": {
+    "message": "LinkShield: A te védelmed az adathalászat ellen"
+  },
+  "popupSubtitle": {
+    "message": "Maradj biztonságban valós idejű figyelmeztetésekkel és védelemmel."
+  },
+  "backgroundAnalysis": {
+    "message": "Háttérvizsgálat"
+  },
+  "backgroundAnalysisDescription": {
+    "message": "Valós idejű védelem. Óránként frissül. Világszerte lefedettség."
+  },
+  "activationRequired": {
+    "message": "Engedélyezd ezt a funkciót a használatához."
+  },
+  "integratedProtection": {
+    "message": "Integrált védelem"
+  },
+  "integratedProtectionDescription": {
+    "message": "Közvetlenül ellenőrzi a weboldalakat és linkeket kockázatos jellemzők tekintetében."
+  },
+  "premiumFeaturesActive": {
+    "message": "Most a prémium verziót használod!"
+  },
+  "upgradePrompt": {
+    "message": "Frissíts prémiumra további funkciókért."
+  },
+  "saveSettings": {
+    "message": "Beállítások mentése"
+  },
+  "settingsSaved": {
+    "message": "Beállítások mentve!"
+  },
+  "licenseActivate": {
+    "message": "Licenc aktiválása"
+  },
+  "licenseInputPlaceholder": {
+    "message": "Add meg a licenckulcsodat"
+  },
+  "licenseCheck": {
+    "message": "Licenc ellenőrzése"
+  },
+  "licenseInvalid": {
+    "message": "Érvénytelen licenckulcs."
+  },
+  "licenseValid": {
+    "message": "Licenc sikeresen aktiválva!"
+  },
+  "lastRuleUpdate": {
+    "message": "Utolsó adatbázis-frissítés: "
+  },
+  "licenseStatus": {
+    "message": "Licenc állapota:"
+  },
+  "licenseFreemium": {
+    "message": "Ingyenes verzió"
+  },
+  "bulkUrlCheck": {
+    "message": "Több link ellenőrzése"
+  },
+  "bulkUrlCheckDescription": {
+    "message": "Tölts fel egy .txt fájlt a linkek listájának ellenőrzéséhez."
+  },
+  "fileChoose": {
+    "message": "Válassz egy fájlt"
+  },
+  "fileCheck": {
+    "message": "Fájl ellenőrzése"
+  },
+  "fileCheckNoUrls": {
+    "message": "A kiválasztott fájl nem tartalmaz linkeket."
+  },
+  "fileCheckFailed": {
+    "message": "A fájl ellenőrzése sikertelen."
+  },
+  "safeDomain": {
+    "message": "Ez egy ismert, biztonságos weboldal."
+  },
+  "allowedProtocol": {
+    "message": "Ez a link biztonságos protokollt használ (mint 'mailto:' vagy 'tel:')."
+  },
+  "invalidUrl": {
+    "message": "Ez a webcím érvénytelen vagy helytelenül van írva."
+  },
+  "loadingMessage": {
+    "message": "Oldal elemzése..."
+  },
+  "cannotRetrieveSiteStatus": {
+    "message": "Nem sikerült lekérni az oldal állapotát."
+  },
+  "unknownRisk": {
+    "message": "Ismeretlen kockázat"
+  },
+  "highRisk": {
+    "message": "Magas kockázat: légy nagyon óvatos."
+  },
+  "mediumRisk": {
+    "message": "Közepes kockázat: figyelj oda."
+  },
+  "lowRisk": {
+    "message": "Alacsony kockázat: néhány aggályos pont."
+  },
+  "noSuspiciousFeatures": {
+    "message": "Nem találtunk közvetlen kockázatos jellemzőket."
+  },
+  "siteStatusNotAvailable": {
+    "message": "Az oldal állapota nem elérhető."
+  },
+  "sslValidationFailed": {
+    "message": "Ennek a weboldalnak a biztonsági tanúsítványa érvénytelen."
+  },
+  "shortenedUrlError": {
+    "message": "Nem sikerült ellenőrizni a rövidített link végső célját."
+  },
+  "redirectedShortenedUrl": {
+    "message": "Ez a rövidített link egy másik weboldalra irányít át."
+  },
+  "cryptoPhishingAd": {
+    "message": "Ez a hirdetés kriptovaluta-csalás jellemzőit mutatja (magas kockázat)."
+  },
+  "suspiciousAdStructure": {
+    "message": "A hirdetés linkjének szokatlan a szerkezete (közepes kockázat)."
+  },
+  "suspiciousAdTLD": {
+    "message": "Ez a hirdetés gyakran kihasznált domainvégződést használ (közepes kockázat)."
+  },
+  "homoglyphAdAttack": {
+    "message": "A hirdetés egy ismert weboldalhoz majdnem azonos karaktereket használ (közepes kockázat)."
+  },
+  "brandMisuse": {
+    "message": "A hirdetés jogosulatlanul használ egy ismert márkanevet (magas kockázat)."
+  },
+  "unknownWarning": {
+    "message": "Ismeretlen kockázatot találtunk. Légy extra óvatos."
+  },
+  "typosquattingAttack": {
+    "message": "Ez a webcím úgy néz ki, mint egy valódi weboldal, de szándékosan el van írva (magas kockázat). Ez lehet egy hamis verzió."
+  },
+  "downloadKeyword": {
+    "message": "A link letöltéssel kapcsolatos szavakat tartalmaz (alacsony kockázat). Csak megbízható fájlokat nyiss meg."
+  },
+  "suspiciousScriptContent": {
+    "message": "Egy szkript ezen az oldalon kockázatos kódot tartalmaz. Ez nem biztonságos lehet."
+  },
+  "invalidScriptSrc": {
+    "message": "Az oldalon található szkript linkje hibás."
+  },
+  "mixedScripts": {
+    "message": "Ez a cím különböző írásrendszerek keverékét használja (pl. latin és cirill betűk). Ez egy ismert adathalász trükk (magas kockázat)."
+  },
+  "introBannerMessage": {
+    "message": "A LinkShield aktív és ⚠️ jellel jelöli a kockázatos linkeket. Vidd az egeret az ikon fölé, hogy megnézd miért."
+  },
+  "digitHomoglyph": {
+    "message": "Ez a cím betűknek látszó számokat használ egy ismert márka utánzására (közepes kockázat)."
+  },
+  "trustedTLD": {
+    "message": "Ez a domain szabványos domainvégződéssel rendelkezik (alacsony kockázat)."
+  },
+  "trustedTld": {
+    "message": "Ez a domain szabványos domainvégződéssel rendelkezik (alacsony kockázat)."
+  },
+  "suspiciousPageText": {
+    "message": "Az oldalon található szöveg gyakran csalásokban használt szavakat tartalmaz (magas kockázat)."
+  },
+  "urgencyTactic": {
+    "message": "Ez az oldal sürgető nyelvezetet használ a nyomásgyakorlásra (magas kockázat). Vigyázz a csalásokkal."
+  },
+  "severityMediumRisk": {
+    "message": "Közepes kockázat: ez a link nem biztonságos lehet. Légy óvatos."
+  },
+  "allowedQueryParam": {
+    "message": "A link biztonságos, engedélyezett technikai paramétert tartalmaz."
+  },
+  "suspiciousIframeAdComponent": {
+    "message": "Ez az oldal hirdetési összetevőt tölt be egy másik weboldalról."
+  },
+  "suspiciousIframeTracking": {
+    "message": "Ez az oldal egy nyomkövetőt tölt be, amely figyelheti a böngészési viselkedésedet."
+  },
+  "suspiciousIframeMalicious": {
+    "message": "Potenciálisan káros összetevőt találtunk ezen az oldalon (mint adathalászat)."
+  },
+  "suspiciousIframeHidden": {
+    "message": "Kockázatos, láthatatlan elemet találtunk az oldalon."
+  },
+  "mixedContentIframe": {
+    "message": "Ez a biztonságos oldal nem biztonságos összetevőt tölt be. Ez biztonsági kockázat."
+  },
+  "invalidIframeSrc": {
+    "message": "Az oldalon található összetevő nem tudott megfelelően betöltődni (érvénytelen forrás)."
+  },
+  "iframeHidden": {
+    "message": "Kockázatos, láthatatlan elemet találtunk az oldalon."
+  },
+  "typosquattingAttack_adobe_com": {
+    "message": "Ez a webcím úgy néz ki, mint az adobe.com, de szándékosan el van írva (magas kockázat)."
+  },
+  "typosquattingAttack_alibaba_com": {
+    "message": "Ez a webcím úgy néz ki, mint az alibaba.com, de szándékosan el van írva (magas kockázat)."
+  },
+  "typosquattingAttack_amazon_com": {
+    "message": "Ez a webcím úgy néz ki, mint az amazon.com, de szándékosan el van írva (magas kockázat)."
+  },
+  "typosquattingAttack_apple_com": {
+    "message": "Ez a webcím úgy néz ki, mint az apple.com, de szándékosan el van írva (magas kockázat)."
+  },
+  "typosquattingAttack_facebook_com": {
+    "message": "Ez a webcím úgy néz ki, mint a facebook.com, de szándékosan el van írva (magas kockázat)."
+  },
+  "typosquattingAttack_google_com": {
+    "message": "Ez a webcím úgy néz ki, mint a google.com, de szándékosan el van írva (magas kockázat)."
+  },
+  "typosquattingAttack_linkedin_com": {
+    "message": "Ez a webcím úgy néz ki, mint a linkedin.com, de szándékosan el van írva (magas kockázat)."
+  },
+  "typosquattingAttack_microsoft_com": {
+    "message": "Ez a webcím úgy néz ki, mint a microsoft.com, de szándékosan el van írva (magas kockázat)."
+  },
+  "typosquattingAttack_paypal_com": {
+    "message": "Ez a webcím úgy néz ki, mint a paypal.com, de szándékosan el van írva (magas kockázat)."
+  },
+  "typosquattingAttack_whatsapp_com": {
+    "message": "Ez a webcím úgy néz ki, mint a whatsapp.com, de szándékosan el van írva (magas kockázat)."
+  },
+  "typosquattingAttack_x_com": {
+    "message": "Ez a webcím úgy néz ki, mint az x.com, de szándékosan el van írva (magas kockázat)."
+  },
+  "homoglyphAttack_microsoft_com": {
+    "message": "Ez a cím a microsoft.com-hoz majdnem azonos karaktereket használ (magas kockázat)."
+  },
+  "homoglyphAttack_apple_com": {
+    "message": "Ez a cím az apple.com-hoz majdnem azonos karaktereket használ (magas kockázat)."
+  },
+  "homoglyphAttack_google_com": {
+    "message": "Ez a cím a google.com-hoz majdnem azonos karaktereket használ (magas kockázat)."
+  },
+  "homoglyphAttack_linkedin_com": {
+    "message": "Ez a cím a linkedin.com-hoz majdnem azonos karaktereket használ (magas kockázat)."
+  },
+  "homoglyphAttack_alibaba_com": {
+    "message": "Ez a cím az alibaba.com-hoz majdnem azonos karaktereket használ (magas kockázat)."
+  },
+  "homoglyphAttack_whatsapp_com": {
+    "message": "Ez a cím a whatsapp.com-hoz majdnem azonos karaktereket használ (magas kockázat)."
+  },
+  "homoglyphAttack_amazon_com": {
+    "message": "Ez a cím az amazon.com-hoz majdnem azonos karaktereket használ (magas kockázat)."
+  },
+  "homoglyphAttack_x_com": {
+    "message": "Ez a cím az x.com-hoz majdnem azonos karaktereket használ (magas kockázat)."
+  },
+  "homoglyphAttack_facebook_com": {
+    "message": "Ez a cím a facebook.com-hoz majdnem azonos karaktereket használ (magas kockázat)."
+  },
+  "homoglyphAttack_adobe_com": {
+    "message": "Ez a cím az adobe.com-hoz majdnem azonos karaktereket használ (magas kockázat)."
+  },
+  "homoglyphAttack_paypal_com": {
+    "message": "Ez a cím a paypal.com-hoz majdnem azonos karaktereket használ (magas kockázat)."
+  },
+  "typosquatting_microsoft_com": {
+    "message": "Ez a cím nagyon hasonlít a microsoft.com-ra (magas kockázat). Lehet, hogy hamis oldal."
+  },
+  "typosquatting_apple_com": {
+    "message": "Ez a cím nagyon hasonlít az apple.com-ra (magas kockázat). Lehet, hogy hamis oldal."
+  },
+  "typosquatting_google_com": {
+    "message": "Ez a cím nagyon hasonlít a google.com-ra (magas kockázat). Lehet, hogy hamis oldal."
+  },
+  "typosquatting_linkedin_com": {
+    "message": "Ez a cím nagyon hasonlít a linkedin.com-ra (magas kockázat). Lehet, hogy hamis oldal."
+  },
+  "typosquatting_alibaba_com": {
+    "message": "Ez a cím nagyon hasonlít az alibaba.com-ra (magas kockázat). Lehet, hogy hamis oldal."
+  },
+  "typosquatting_whatsapp_com": {
+    "message": "Ez a cím nagyon hasonlít a whatsapp.com-ra (magas kockázat). Lehet, hogy hamis oldal."
+  },
+  "typosquatting_amazon_com": {
+    "message": "Ez a cím nagyon hasonlít az amazon.com-ra (magas kockázat). Lehet, hogy hamis oldal."
+  },
+  "typosquatting_x_com": {
+    "message": "Ez a cím nagyon hasonlít az x.com-ra (magas kockázat). Lehet, hogy hamis oldal."
+  },
+  "typosquatting_facebook_com": {
+    "message": "Ez a cím nagyon hasonlít a facebook.com-ra (magas kockázat). Lehet, hogy hamis oldal."
+  },
+  "typosquatting_adobe_com": {
+    "message": "Ez a cím nagyon hasonlít az adobe.com-ra (magas kockázat). Lehet, hogy hamis oldal."
+  },
+  "typosquatting_paypal_com": {
+    "message": "Ez a cím nagyon hasonlít a paypal.com-ra (magas kockázat). Lehet, hogy hamis oldal."
+  },
+  "similarToLegitimateDomain_microsoft_com": {
+    "message": "Ez az oldal úgy néz ki, mint a microsoft.com, ellenőrizd figyelmesen a címet."
+  },
+  "similarToLegitimateDomain_apple_com": {
+    "message": "Ez az oldal úgy néz ki, mint az apple.com, ellenőrizd figyelmesen a címet."
+  },
+  "similarToLegitimateDomain_google_com": {
+    "message": "Ez az oldal úgy néz ki, mint a google.com, ellenőrizd figyelmesen a címet."
+  },
+  "similarToLegitimateDomain_linkedin_com": {
+    "message": "Ez az oldal úgy néz ki, mint a linkedin.com, ellenőrizd figyelmesen a címet."
+  },
+  "similarToLegitimateDomain_alibaba_com": {
+    "message": "Ez az oldal úgy néz ki, mint az alibaba.com, ellenőrizd figyelmesen a címet."
+  },
+  "similarToLegitimateDomain_whatsapp_com": {
+    "message": "Ez az oldal úgy néz ki, mint a whatsapp.com, ellenőrizd figyelmesen a címet."
+  },
+  "similarToLegitimateDomain_amazon_com": {
+    "message": "Ez az oldal úgy néz ki, mint az amazon.com, ellenőrizd figyelmesen a címet."
+  },
+  "similarToLegitimateDomain_x_com": {
+    "message": "Ez az oldal úgy néz ki, mint az x.com, ellenőrizd figyelmesen a címet."
+  },
+  "similarToLegitimateDomain_facebook_com": {
+    "message": "Ez az oldal úgy néz ki, mint a facebook.com, ellenőrizd figyelmesen a címet."
+  },
+  "similarToLegitimateDomain_adobe_com": {
+    "message": "Ez az oldal úgy néz ki, mint az adobe.com, ellenőrizd figyelmesen a címet."
+  },
+  "similarToLegitimateDomain_paypal_com": {
+    "message": "Ez az oldal úgy néz ki, mint a paypal.com, ellenőrizd figyelmesen a címet."
+  },
+  "suspiciousPunycodeDecoding_microsoft_com": {
+    "message": "Ez a link szokatlan karaktereket használ, hogy úgy nézzen ki, mint a microsoft.com (magas kockázat)."
+  },
+  "suspiciousPunycodeDecoding_apple_com": {
+    "message": "Ez a link szokatlan karaktereket használ, hogy úgy nézzen ki, mint az apple.com (magas kockázat)."
+  },
+  "suspiciousPunycodeDecoding_google_com": {
+    "message": "Ez a link szokatlan karaktereket használ, hogy úgy nézzen ki, mint a google.com (magas kockázat)."
+  },
+  "suspiciousPunycodeDecoding_linkedin_com": {
+    "message": "Ez a link szokatlan karaktereket használ, hogy úgy nézzen ki, mint a linkedin.com (magas kockázat)."
+  },
+  "suspiciousPunycodeDecoding_alibaba_com": {
+    "message": "Ez a link szokatlan karaktereket használ, hogy úgy nézzen ki, mint az alibaba.com (magas kockázat)."
+  },
+  "suspiciousPunycodeDecoding_whatsapp_com": {
+    "message": "Ez a link szokatlan karaktereket használ, hogy úgy nézzen ki, mint a whatsapp.com (magas kockázat)."
+  },
+  "suspiciousPunycodeDecoding_amazon_com": {
+    "message": "Ez a link szokatlan karaktereket használ, hogy úgy nézzen ki, mint az amazon.com (magas kockázat)."
+  },
+  "suspiciousPunycodeDecoding_x_com": {
+    "message": "Ez a link szokatlan karaktereket használ, hogy úgy nézzen ki, mint az x.com (magas kockázat)."
+  },
+  "suspiciousPunycodeDecoding_facebook_com": {
+    "message": "Ez a link szokatlan karaktereket használ, hogy úgy nézzen ki, mint a facebook.com (magas kockázat)."
+  },
+  "suspiciousPunycodeDecoding_adobe_com": {
+    "message": "Ez a link szokatlan karaktereket használ, hogy úgy nézzen ki, mint az adobe.com (magas kockázat)."
+  },
+  "suspiciousPunycodeDecoding_paypal_com": {
+    "message": "Ez a link szokatlan karaktereket használ, hogy úgy nézzen ki, mint a paypal.com (magas kockázat)."
+  },
+
+  "popupPageTitle": {
+    "message": "LinkShield Vezérlőpult"
+  },
+  "extNameFull": {
+    "message": "LinkShield: A te fegyvered az adathalászat ellen"
+  },
+  "extDescriptionFull": {
+    "message": "Növeld biztonságodat közvetlen figyelmeztetésekkel és fejlett védelemmel az online fenyegetések ellen."
+  },
+
+  "licenseTrialTitle": {
+    "message": "Próbaidő: $DAYS$ nap hátra",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "licenseTrialSubtitle": {
+    "message": "Minden prémium funkció aktív a próbaidő alatt"
+  },
+  "licenseUpgradeLink": {
+    "message": "Váltás Prémiumra →"
+  },
+  "licenseExpiredTitle": {
+    "message": "Próbaidő lejárt"
+  },
+  "licenseExpiredSubtitle": {
+    "message": "Aktiváld a Prémiumot a teljes védelemért"
+  },
+  "licenseBenefitsLabel": {
+    "message": "A Prémium tartalmazza:"
+  },
+  "licenseBenefitsText": {
+    "message": "Háttérelemzés, QR-kód szkennelés, folyamatos védelem"
+  },
+  "licenseKeyPlaceholder": {
+    "message": "Add meg a licenckódodat"
+  },
+  "licenseActivateButton": {
+    "message": "Prémium aktiválása"
+  },
+  "licenseBuyLink": {
+    "message": "Nincs még licenced? Vásárolj itt →"
+  },
+  "licensePremiumTitle": {
+    "message": "Prémium aktív"
+  },
+  "licensePremiumSubtitle": {
+    "message": "Teljes védelem engedélyezve"
+  },
+
+  "sectionSecuritySettings": {
+    "message": "Biztonsági beállítások"
+  },
+  "backgroundAnalysisTitle": {
+    "message": "Biztonsági beállítások"
+  },
+  "backgroundAnalysisFeature": {
+    "message": "Háttérelemzés"
+  },
+  "premiumBadge": {
+    "message": "PRÉMIUM"
+  },
+  "integratedProtectionFeature": {
+    "message": "Integrált kártevő és adathalász védelem"
+  },
+  "integratedProtectionDescription": {
+    "message": "Több biztonsági szolgáltatást kombinál az átfogó védelemért."
+  },
+  "confirmationMessage": {
+    "message": "Beállítások sikeresen mentve!"
+  },
+  "lastRuleUpdateNone": {
+    "message": "Még nem történt adatbázis-frissítés"
+  },
+  "errorOccurred": {
+    "message": "Hiba történt"
+  },
+
+  "trialDaysRemaining": {
+    "message": "$DAYS$ nap maradt a próbaidőből",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "14"
+      }
+    }
+  },
+  "trialExpired": {
+    "message": "Próbaidő lejárt"
+  },
+  "trialExpiredMessage": {
+    "message": "A 30 napos próbaidőd lejárt. Aktiválj licencet az összes funkció további használatához."
+  },
+  "upgradeNow": {
+    "message": "Frissítés most"
+  },
+
+  "gumroadErrorUnknown": {
+    "message": "Ismeretlen hiba"
+  },
+  "gumroadErrorLicenseNotExistProduct": {
+    "message": "Ez a licenckulcs nem létezik ehhez a termékhez"
+  },
+  "gumroadErrorLicenseNotExist": {
+    "message": "Ez a licenckulcs nem létezik"
+  },
+  "gumroadErrorLicenseRequired": {
+    "message": "Kérjük, adj meg egy licenckulcsot"
+  },
+  "gumroadErrorProductNotFound": {
+    "message": "Termék nem található"
+  },
+  "gumroadErrorLicenseDisabled": {
+    "message": "Ez a licenc le lett tiltva"
+  },
+  "gumroadErrorLicenseRefunded": {
+    "message": "Ezt a licencet visszatérítették"
+  },
+  "gumroadErrorLicenseRevoked": {
+    "message": "Ezt a licencet visszatérítették vagy visszavonták"
+  },
+  "gumroadErrorLicenseInvalid": {
+    "message": "Érvénytelen licenckulcs"
+  },
+  "gumroadErrorNetwork": {
+    "message": "Hálózati hiba az ellenőrzés során. Ellenőrizd az internetkapcsolatodat."
+  },
+
+  "licenseEmptyError": {
+    "message": "Kérjük, adj meg egy licenckódot"
+  },
+  "licenseActivating": {
+    "message": "Aktiválás..."
+  },
+  "licenseActivatedSuccess": {
+    "message": "Prémium sikeresen aktiválva!"
+  },
+  "licenseConnectionError": {
+    "message": "Kapcsolódási hiba. Kérjük, próbáld újra."
+  },
+
+  "debugModeTitle": {
+    "message": "Hibakeresési mód"
+  },
+  "debugTrial30": {
+    "message": "Próba (30n)"
+  },
+  "debugTrial3": {
+    "message": "Próba (3n)"
+  },
+  "debugExpired": {
+    "message": "Lejárt"
+  },
+  "debugPremium": {
+    "message": "Prémium"
+  },
+  "debugReset": {
+    "message": "Visszaállítás"
+  },
+  "debugTrialSimulated": {
+    "message": "✓ Próba ($DAYS$ nap) szimulálva",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "debugExpiredSimulated": {
+    "message": "✓ Lejárt próba szimulálva"
+  },
+  "debugPremiumSimulated": {
+    "message": "✓ Prémium szimulálva"
+  },
+  "debugStorageReset": {
+    "message": "✓ Tárhely visszaállítva - töltsd újra a bővítményt"
+  },
+  "debugError": {
+    "message": "✗ Hiba: $ERROR$",
+    "placeholders": {
+      "ERROR": {
+        "content": "$1",
+        "example": "Ismeretlen hiba"
+      }
+    }
+  },
+  "reason_redirectChain": {
+    "message": "Gyanús átirányítási lánc észlelve. A link több szerveren halad át a célállomás előtt."
+  },
+  "reason_excessiveRedirects": {
+    "message": "Túl sok átirányítás a láncban (magas kockázat). Ez a link több mint 5-ször irányít át, amit gyakran használnak a valódi cél elrejtésére."
+  },
+  "reason_domainHopping": {
+    "message": "Több domainváltás az átirányítási láncban (magas kockázat). A link sok különböző weboldal között ugrál."
+  },
+  "reason_chainedShorteners": {
+    "message": "Több URL-rövidítő összeláncolva (közepes kockázat). A legitim linkek ritkán használnak több rövidítő szolgáltatást."
+  },
+  "reason_suspiciousFinalTLD": {
+    "message": "A végső célállomás gyanús domainvégződéssel rendelkezik (magas kockázat). A tényleges végpont kockázatos TLD-t használ."
+  },
+  "reason_redirectToIP": {
+    "message": "Az átirányítás IP-címre vezet (magas kockázat). A végső célállomás nyers IP-cím domain név helyett."
+  },
+  "reason_redirectTimeout": {
+    "message": "Az átirányítás elemzése időtúllépésbe futott (közepes kockázat). Az átirányítási láncot nem sikerült teljesen nyomon követni az időkereten belül."
+  },
+  "atSymbolPhishing": {
+    "message": "KRITIKUS: Ez a link @ szimbólumot használ a valódi célállomás elrejtésére (magas kockázat). A @ előtti cím hamis - valójában egy másik weboldalra kerülsz."
+  },
+  "atSymbolInPath": {
+    "message": "A link @ szimbólumot tartalmaz az útvonalban, amelyet álcázásra használhatnak (közepes kockázat)."
+  },
+  "doubleEncoding": {
+    "message": "Ez a link dupla URL-kódolást használ a valódi tartalom elrejtésére (magas kockázat). Ez egy gyakori technika a biztonsági szűrők megkerülésére."
+  },
+  "fullwidthCharacters": {
+    "message": "Ez a link teljes szélességű Unicode karaktereket használ, amelyek normál betűknek tűnnek (magas kockázat). Ez egy trükk, hogy a hamis weboldalak legitimnek tűnjenek."
+  },
+  "nullByteInjection": {
+    "message": "Ez a link null bájt karaktert tartalmaz (magas kockázat). Ez egy hackelési technika, amelyet biztonsági ellenőrzések megkerülésére használnak."
+  },
+  "reason_atSymbolPhishing": {
+    "message": "KRITIKUS: Hitelesítő URL támadás észlelve. A látható domain hamis - egy másik weboldalra leszel átirányítva."
+  },
+  "reason_doubleEncoding": {
+    "message": "Dupla URL-kódolás észlelve (magas kockázat). Ezt az álcázási technikát rosszindulatú tartalom elrejtésére használják."
+  },
+  "reason_fullwidthCharacters": {
+    "message": "Teljes szélességű Unicode karakterek észlelve (magas kockázat). Ezek a speciális karakterek normál betűket utánoznak a felhasználók megtévesztésére."
+  },
+  "reason_nullByteInjection": {
+    "message": "Null bájt injekció észlelve (magas kockázat). Ezt a technikát biztonsági szűrők megkerülésére használják és rosszindulatú linkre utalhat."
+  },
+
+  "formActionHijacking": {
+    "message": "Ez a bejelentkezési űrlap külső weboldalra küldi a hitelesítő adataidat (kritikus kockázat). A felhasználónevedet és jelszavadat ellophatják."
+  },
+  "formActionExternal": {
+    "message": "A bejelentkezési űrlap külső domainre küld adatokat: $DOMAIN$ (kritikus kockázat). Ez hitelesítő adatlopási kísérlet.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "rossz-oldal.com"
+      }
+    }
+  },
+  "formActionInvalid": {
+    "message": "A bejelentkezési űrlap érvénytelen vagy gyanús célcímmel rendelkezik (magas kockázat). A hitelesítő adataid nem biztonságosan küldhetők el."
+  },
+
+  "hiddenIframeZeroSize": {
+    "message": "Rejtett, nulla méretű iframe észlelve (magas kockázat). Ezt rosszindulatú tartalom láthatatlan betöltésére használhatják."
+  },
+  "hiddenIframeOffScreen": {
+    "message": "Képernyőn kívülre pozicionált iframe észlelve (magas kockázat). A rejtett tartalom követhet téged vagy adatokat lophat."
+  },
+  "hiddenIframeCSSHidden": {
+    "message": "CSS-sel elrejtett iframe észlelve (magas kockázat). A láthatatlan keretek billentyűleütéseket rögzíthetnek vagy kártevőt tölthetnek be."
+  },
+  "hiddenIframeNegativePos": {
+    "message": "Negatív pozicionálású iframe észlelve (közepes kockázat). Ezt a technikát tartalom elrejtésére használják a felhasználók elől."
+  },
+
+  "nrdCritical": {
+    "message": "KRITIKUS: Domain $DAYS$ napja regisztrálva (kritikus kockázat). A vadonatúj domainek rendkívül valószínű, hogy rosszindulatúak.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "0"
+      }
+    }
+  },
+  "nrdHigh": {
+    "message": "Domain csak $DAYS$ napja regisztrálva (magas kockázat). A nagyon új domaineket gyakran használják csalásokra.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "nrdMedium": {
+    "message": "Domain $DAYS$ napja regisztrálva (közepes kockázat). A 30 napnál újabb domainek extra óvatosságot igényelnek.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "15"
+      }
+    }
+  },
+  "nrdLow": {
+    "message": "Domain $DAYS$ napja regisztrálva (alacsony kockázat). Viszonylag új domain, légy némileg óvatos.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "60"
+      }
+    }
+  },
+
+  "licenseErrorNotFound": {
+    "message": "Licenckulcs nem található. Ellenőrizd a beírt adatokat."
+  },
+  "licenseErrorDisabled": {
+    "message": "Ez a licenc le lett tiltva."
+  },
+  "licenseErrorExpired": {
+    "message": "Ez a licenc lejárt."
+  },
+  "licenseErrorActivationLimit": {
+    "message": "Elérted az aktiválási limitet. Előbb deaktiválj egy másik eszközt."
+  },
+  "licenseErrorInstanceNotFound": {
+    "message": "Telepítési példány nem található."
+  },
+  "licenseErrorInvalid": {
+    "message": "Érvénytelen licenckulcs."
+  },
+  "licenseErrorNetwork": {
+    "message": "Hálózati hiba. Ellenőrizd a kapcsolatot és próbáld újra."
+  },
+  "licenseErrorUnknown": {
+    "message": "Ismeretlen hiba történt az ellenőrzés során."
+  },
+
+  "invalidUrlFormat": {
+    "message": "Érvénytelen URL formátum. A webcímet nem sikerült megfelelően értelmezni."
+  },
+  "invalidDomain": {
+    "message": "Érvénytelen domain. A weboldal címe hibás vagy hiányos."
+  },
+  "trustedDomain": {
+    "message": "Ez egy megbízható domain, amely biztonságosként lett ellenőrizve."
+  },
+  "errorCalculatingRisk": {
+    "message": "Hiba a kockázati pontszám kiszámításakor. Kérjük, próbáld újra."
+  },
+  "punycodeDecodingError": {
+    "message": "Hiba a nemzetközi karakterek dekódolásában a domain névben."
+  },
+  "fileProtocol": {
+    "message": "Ez a link a file:// protokollt használja, amely helyi fájlokat ér el."
+  },
+  "invalidHostname": {
+    "message": "Érvénytelen hosztnév. A domain név formátuma hibás."
+  },
+  "urlTooLong": {
+    "message": "Ez az URL szokatlanul hosszú (közepes kockázat). A nagyon hosszú URL-eket rosszindulatú tartalom elrejtésére használhatják."
+  },
+  "nonAscii": {
+    "message": "Ez az URL nem ASCII karaktereket tartalmaz, amelyeket megtévesztésre használhatnak."
+  },
+  "typosquattingPattern": {
+    "message": "Ez a domain typosquatting mintát mutat (magas kockázat). Úgy tűnik, egy legitim weboldalt utánoz."
+  },
+  "suspiciousIframes": {
+    "message": "Gyanús iframe elemek észlelve ezen az oldalon."
+  },
+  "suspiciousScripts": {
+    "message": "Gyanús szkriptek észlelve ezen az oldalon."
+  },
+  "hiddenIframes": {
+    "message": "Rejtett iframe elemek észlelve ezen az oldalon, amelyeket rosszindulatú célokra használhatnak."
+  },
+  "unifiedCheckError": {
+    "message": "Hiba a biztonsági ellenőrzés során. Egyes ellenőrzések nem fejeződhettek be."
+  },
+  "initializationError": {
+    "message": "Hiba a biztonsági szkenner inicializálásakor. Töltsd újra az oldalt."
+  },
+  "checkCurrentUrlError": {
+    "message": "Hiba a jelenlegi URL biztonságának ellenőrzésekor."
+  },
+  "ocrDangerTitle": {
+    "message": "Veszélyes link észlelve a képben"
+  },
+  "ocrCautionTitle": {
+    "message": "Gyanús link észlelve a képben"
+  },
+  "suspiciousDomainDetected": {
+    "message": "Gyanús domain észlelve"
+  },
+  "extractedText": {
+    "message": "Kinyert szöveg"
+  },
+  "reasons": {
+    "message": "Okok"
+  },
+  "asciiQrDangerTitle": {
+    "message": "Veszélyes link az ASCII QR-kódban"
+  },
+  "asciiQrCautionTitle": {
+    "message": "Gyanús link az ASCII QR-kódban"
+  },
+  "hiddenUrl": {
+    "message": "Rejtett URL"
+  },
+  "qrDangerTitle": {
+    "message": "Veszélyes QR-kód észlelve"
+  },
+  "qrCautionTitle": {
+    "message": "Gyanús QR-kód észlelve"
+  },
+  "fullUrl": {
+    "message": "Teljes URL"
+  },
+  "neutralIconTitle": {
+    "message": "LinkShield - Védelem aktív"
+  },
+  "installNotificationTitle": {
+    "message": "LinkShield telepítve"
+  },
+  "installNotificationMessage": {
+    "message": "Mostantól védve vagy az adathalászat és rosszindulatú weboldalak ellen."
+  },
+  "not_eligible": {
+    "message": "Nem jogosult erre a funkcióra"
+  },
+  "trial_expired": {
+    "message": "A próbaidőszakod lejárt"
+  },
+  "Error": {
+    "message": "Hiba"
+  },
+
+  "siteSafeTitle": {
+    "message": "Az oldal biztonságosnak tűnik"
+  },
+  "siteCautionTitle": {
+    "message": "Óvatosan haladj tovább"
+  },
+  "siteAlertTitle": {
+    "message": "Figyelmeztetés: Potenciális fenyegetés észlelve"
+  },
+
+  "clipboardHijackingCryptoTitle": {
+    "message": "Kripto címeltérítés észlelve!"
+  },
+  "clipboardHijackingTitle": {
+    "message": "Vágólap manipuláció észlelve!"
+  },
+  "clipboardHijackingMessage": {
+    "message": "Ez az oldal megpróbálja módosítani a vágólapodat. Légy óvatos pénztárca címek vagy érzékeny adatok beillesztésekor."
+  },
+  "reason_clipboardHijackingCrypto": {
+    "message": "KRITIKUS: Ez az oldal kripto címekkel eltéríti a vágólapodat (kritikus kockázat). A másolt pénztárca címeket támadó címekre cserélhetik."
+  },
+  "reason_clipboardHijackingDetected": {
+    "message": "Ez az oldal manipulálja a vágólap tartalmát (magas kockázat). A beillesztett tartalom eltérhet attól, amit másoltál."
+  },
+
+  "brandSubdomainPhishing": {
+    "message": "Márka kulcsszó észlelve ingyenes tárhelyen (magas kockázat). A legitim cégek nem használnak ingyenes tárhelyet hivatalos szolgáltatásokhoz."
+  },
+  "reason_brandSubdomainPhishing": {
+    "message": "Márka kulcsszó észlelve ingyenes tárhelyen (magas kockázat). A legitim cégek nem használnak ingyenes tárhelyet hivatalos szolgáltatásokhoz."
+  },
+
+  "nrdTelCombo": {
+    "message": "Telefonszám újonnan regisztrált domainen adathalász kulcsszavakkal (közepes kockázat). Ez vishing (hangalapú adathalász) kísérlet lehet."
+  },
+  "reason_nrdTelCombo": {
+    "message": "Telefonszám újonnan regisztrált domainen adathalász kulcsszavakkal (közepes kockázat). Ez vishing (hangalapú adathalász) kísérlet lehet."
+  },
+
+  "reason_opaqueRedirectChain": {
+    "message": "Átlátszatlan átirányítás észlelve (alacsony kockázat). Az átirányítás célját nem sikerült teljesen nyomon követni."
+  },
+  "reason_opaqueRedirectToIP": {
+    "message": "Átlátszatlan átirányítás IP-címre (magas kockázat). A rejtett átirányítás nyers IP-címre vezet domain helyett."
+  },
+  "reason_opaqueRedirectSuspiciousTLD": {
+    "message": "Átlátszatlan átirányítás gyanús domainvégződésre (közepes kockázat). A rejtett átirányítás kockázatos TLD-re vezet."
+  },
+  "reason_opaqueRedirectNRD": {
+    "message": "Átlátszatlan átirányítás újonnan regisztrált domainre (magas kockázat). A rejtett átirányítás nagyon új domainre vezet."
+  },
+
+  "bitbWarningTitle": {
+    "message": "Hamis bejelentkezési ablak észlelve!"
+  },
+  "bitbWarningMessage": {
+    "message": "Ez az oldal szimulált böngészőablakot jelenít meg, amely egy valódi bejelentkezési felugró ablakot utánoz. Ez egy Browser-in-the-Browser (BitB) támadás, amelyet a hitelesítő adataid ellopására terveztek. A 'felugró ablak' valójában csak HTML/CSS, amely úgy néz ki, mint egy valódi böngészőablak."
+  },
+  "reason_bitbAttackDetected": {
+    "message": "Browser-in-the-Browser támadás észlelve (kritikus kockázat). Ez az oldal hamis böngészőablakot jelenít meg a bejelentkezési adataid ellopására."
+  },
+  "reason_bitbFakeUrlBar": {
+    "message": "Hamis URL-sáv észlelve megbízható domainnel (kritikus kockázat). A megjelenített cím hamis és megtévesztésre tervezték."
+  },
+  "reason_bitbWindowControls": {
+    "message": "Hamis ablakkezelők észlelve (magas kockázat). A bezárás/kicsinyítés gombok szimuláltak, hogy valódi felugró ablaknak tűnjenek."
+  },
+  "reason_bitbLoginFormInOverlay": {
+    "message": "Bejelentkezési űrlap észlelve átfedésben (magas kockázat). A valódi bejelentkezési felugró ablakok külön böngészőablakokban nyílnak meg, nem átfedésekben."
+  },
+  "reason_bitbOAuthBranding": {
+    "message": "OAuth márkajelzés bejelentkezési űrlappal átfedésben (magas kockázat). A 'Bejelentkezés Google-lal/Microsoft-tal' gombok hamis felugró ablakokban hitelesítő adatlopás."
+  },
+  "reason_bitbPadlockIcon": {
+    "message": "Hamis biztonsági lakat ikon észlelve (közepes kockázat). A valódi lakatok a böngésző címsorában jelennek meg, nem az oldal tartalmában."
+  },
+  "reason_bitbWindowChrome": {
+    "message": "Szimulált böngészőablak stílus észlelve (közepes kockázat). Az átfedés úgy van stílusozva, hogy operációs rendszer ablaknak tűnjön."
+  },
+  "reason_bitbIframeInModal": {
+    "message": "Iframe észlelve modális átfedésben (alacsony kockázat). Ezt külső bejelentkezési tartalom betöltésére használhatják."
+  },
+
+  "clickFixPowerShellTitle": {
+    "message": "PowerShell parancs észlelve!"
+  },
+  "clickFixCommandTitle": {
+    "message": "Parancsinjekció észlelve!"
+  },
+  "clickFixMessage": {
+    "message": "Ez az oldal gyanús parancsot tartalmaz, amely károsíthatja a számítógépedet. Ne másold és ne futtasd ezt a parancsot."
+  },
+  "clickFixSubMessage": {
+    "message": "A támadók gyakran álcázzák a rosszindulatú parancsokat 'javításokként' vagy 'ellenőrzési lépésekként'. Soha ne futtass parancsokat nem megbízható forrásokból."
+  },
+  "bitbAttackCriticalTitle": {
+    "message": "Kritikus: Hamis bejelentkezési ablak!"
+  },
+  "bitbAttackWarningTitle": {
+    "message": "Figyelmeztetés: Gyanús bejelentkezési felugró"
+  },
+  "bitbAttackMessage": {
+    "message": "Ez az oldal hamis böngészőablakot jelenít meg a hitelesítő adataid ellopására. A valódi bejelentkezési felugró ablakok külön böngészőablakokban nyílnak meg."
+  },
+  "bitbAttackTip": {
+    "message": "Mindig ellenőrizd a böngésző címsorát a valódi URL-ért, ne az oldalon megjelenített szöveget."
+  },
+  "shadowDomLoginForm": {
+    "message": "Shadow DOM-ban rejtett bejelentkezési űrlap észlelve (magas kockázat). Ezt a technikát biztonsági szkennerek kijátszására használják."
+  },
+  "shadowDomPhishingOverlay": {
+    "message": "Shadow DOM-ban rejtett adathalász átfedés észlelve (kritikus kockázat). A Shadow DOM rosszindulatú tartalom elrejtésére van használva."
+  },
+  "shadowDomIframe": {
+    "message": "Shadow DOM-ban rejtett gyanús iframe észlelve (magas kockázat). A rejtett iframe-eket hitelesítő adatok lopására használhatják."
+  },
+  "urlCredentialsAttack": {
+    "message": "Az URL hitelesítő adatokat tartalmaz támadási formátumban (kritikus kockázat). A látható domain hamis - máshová leszel átirányítva."
+  },
+  "nrdUltraCritical": {
+    "message": "Domain csak órákkal ezelőtt regisztrálva (kritikus kockázat). Ez rendkívül gyanús és gyakran használják adathalászatra."
+  },
+  "nrdVishingCombo": {
+    "message": "Telefonszám újonnan regisztrált domainen adathalász jelzőkkel (magas kockázat). Ez vishing (hangalapú adathalász) kísérlet lehet."
+  },
+  "tableBasedQR": {
+    "message": "HTML táblázatban rejtett QR-kód észlelve (közepes kockázat). Ezt a technikát a képalapú QR-felismerés megkerülésére használják."
+  },
+  "tableQrDangerTitle": {
+    "message": "Veszélyes link rejtett QR-kódban"
+  },
+  "tableQrCautionTitle": {
+    "message": "Gyanús link rejtett QR-kódban"
+  },
+  "hiddenQrDetected": {
+    "message": "Rejtett QR-kód észlelve az oldal tartalmában. Ez rosszindulatú URL-t tartalmazhat."
+  },
+
+  "bitbAttackCritical": {
+    "message": "KRITIKUS: Browser-in-the-Browser támadás észlelve! Ez az oldal hamis bejelentkezési ablakot jelenít meg a hitelesítő adataid ellopására."
+  },
+  "bitbAttackWarning": {
+    "message": "Figyelmeztetés: Gyanús felugró ablak észlelve, amely Browser-in-the-Browser támadás lehet. Ellenőrizd figyelmesen az URL-t."
+  },
+  "clickFixDetected": {
+    "message": "ClickFix támadás észlelve! Ez az oldal rosszindulatú parancsot tartalmaz javításnak vagy ellenőrzési lépésnek álcázva. Ne másold és ne futtasd."
+  },
+  "clipboardHijacking": {
+    "message": "Vágólap eltérítés észlelve! Ez az oldal engedély nélkül próbálja módosítani a vágólap tartalmát."
+  },
+  "hiddenIframe": {
+    "message": "Rejtett iframe észlelve ezen az oldalon. A láthatatlan kereteket követésre, hitelesítő adatlopásra vagy kártevő terjesztésére használhatják."
+  },
+  "typosquatting": {
+    "message": "Typosquatting észlelve! Ez a domain szándékosan el van írva, hogy egy legitim weboldalt utánozzon."
+  },
+  "ipAddressDomain": {
+    "message": "Ez a weboldal IP-címet használ domain név helyett. Ez nagyon szokatlan és gyakran rosszindulatú szándékra utal."
+  },
+  "extremeSubdomains": {
+    "message": "Extrém számú aldomain észlelve. Ezt a technikát gyakran használják rosszindulatú URL-ek elrejtésére vagy legitim oldalak utánzására."
+  },
+  "vishingDetected": {
+    "message": "Potenciális vishing (hangalapú adathalász) támadás észlelve. Ez az oldal telefonszámokat kombinál adathalász jelzőkkel."
+  },
+  "punycodeDetected": {
+    "message": "Punycode domain észlelve! Ez a cím nemzetközi karaktereket használ, amelyek egy legitim weboldalt utánozhatnak."
+  },
+
+  "reason_nonAscii": {
+    "message": "Gyanús karakterek észlelve (homoglifák)"
+  },
+  "reason_brandKeywordHomoglyph": {
+    "message": "Márka utánzás észlelve"
+  },
+  "reason_noHttps": {
+    "message": "Nincs biztonságos kapcsolat (HTTPS)"
+  },
+  "reason_suspiciousTLD": {
+    "message": "Gyanús domainvégződés"
+  },
+  "reason_ipAsDomain": {
+    "message": "IP-cím domain névként"
+  },
+  "reason_tooManySubdomains": {
+    "message": "Túl sok aldomain"
+  },
+  "reason_shortenedUrl": {
+    "message": "Rövidített URL észlelve"
+  },
+  "reason_suspiciousKeywords": {
+    "message": "Gyanús kulcsszavak az URL-ben"
+  },
+  "reason_malwareExtension": {
+    "message": "Potenciálisan ártalmas fájlkiterjesztés"
+  },
+  "reason_urlTooLong": {
+    "message": "Szokatlanul hosszú URL"
+  },
+  "reason_encodedCharacters": {
+    "message": "Kódolt karakterek az URL-ben"
+  },
+  "reason_homoglyphAttack": {
+    "message": "Homoglif támadás észlelve"
+  },
+  "reason_typosquatting": {
+    "message": "Typosquatting észlelve"
+  },
+  "reason_suspiciousBrandPattern": {
+    "message": "Gyanús márka minta"
+  },
+  "reason_unusualPort": {
+    "message": "Szokatlan port"
+  },
+  "reason_punycode": {
+    "message": "Punycode domain észlelve"
+  },
+  "reason_loginPageNoMX": {
+    "message": "Bejelentkezési oldal e-mail szerver nélkül"
+  },
+  "reason_insecureLoginPage": {
+    "message": "Nem biztonságos bejelentkezési oldal"
+  },
+  "reason_sslValidationFailed": {
+    "message": "SSL ellenőrzés sikertelen"
+  },
+  "reason_similarToLegitimateDomain": {
+    "message": "Hasonlít egy legitim domainre"
+  },
+  "trialPeriodActive": {
+    "message": "Próbaidőszak aktív"
+  }
+}

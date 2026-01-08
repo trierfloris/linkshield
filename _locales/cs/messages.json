@@ -1,0 +1,1061 @@
+{
+  "extName": {
+    "message": "LinkShield"
+  },
+  "extDescription": {
+    "message": "LinkShield vám pomáhá identifikovat nebezpečné webové stránky a odkazy pro vaši ochranu online."
+  },
+  "alertTitle": {
+    "message": "Varování!"
+  },
+  "alertMessage": {
+    "message": "Tato webová stránka obsahuje odkaz na:"
+  },
+  "severityLabel": {
+    "message": "Riziko:"
+  },
+  "reasonLabel": {
+    "message": "Důvod:"
+  },
+  "adviceMessage": {
+    "message": "Co můžete udělat?"
+  },
+  "adviceCheckUrl": {
+    "message": "Otevřete tento odkaz pouze pokud plně důvěřujete odesílateli. V případě pochybností neklikejte. Nikdy nezadávejte heslo na stránce, které nedůvěřujete."
+  },
+  "noHttps": {
+    "message": "Připojení k této webové stránce není zabezpečené (bez HTTPS). Ostatní mohou vidět vaše informace."
+  },
+  "ipAsDomain": {
+    "message": "Tato webová stránka používá IP adresu místo názvu domény. To je neobvyklé a velmi rizikové."
+  },
+  "tooManySubdomains": {
+    "message": "Tato webová adresa má mnoho subdomén (např. cast1.cast2.stranka.com). To může naznačovat nebezpečnou stránku (střední riziko)."
+  },
+  "suspiciousKeywords": {
+    "message": "Odkaz obsahuje slova často spojovaná s podvody (nízké riziko)."
+  },
+  "suspiciousPattern": {
+    "message": "Struktura této webové adresy vypadá neobvykle (střední riziko)."
+  },
+  "shortenedUrl": {
+    "message": "Toto je zkrácený odkaz (jako bit.ly). Skutečný cíl není okamžitě viditelný (střední riziko)."
+  },
+  "downloadPage": {
+    "message": "Tento odkaz zřejmě stahuje soubor. Otevírejte pouze soubory, kterým plně důvěřujete (střední riziko)."
+  },
+  "freeHosting": {
+    "message": "Tato webová stránka používá bezplatnou hostingovou platformu. Podvodníci toho někdy zneužívají (střední riziko)."
+  },
+  "encodedCharacters": {
+    "message": "Odkaz obsahuje neobvyklé znaky (nízké riziko). To může být použito ke skrytí skutečného cíle."
+  },
+  "homoglyphAttack": {
+    "message": "Tato webová adresa používá znaky téměř identické se známou webovou stránkou (vysoké riziko). Toto je trik, jak vás oklamat."
+  },
+  "metaRedirect": {
+    "message": "Tato webová stránka vás automaticky přesměrovává. To může vést na nebezpečnou stránku (střední riziko)."
+  },
+  "cryptoPhishing": {
+    "message": "Tento odkaz vypadá jako krypto podvod (vysoké riziko). Buďte velmi opatrní s vaší peněženkou a přihlašovacími údaji."
+  },
+  "externalScripts": {
+    "message": "Tato stránka načítá kód z externího zdroje, který byl označen jako rizikový."
+  },
+  "suspiciousParams": {
+    "message": "Odkaz obsahuje technické parametry, které jsou někdy používány pro nebezpečné akce (nízké riziko)."
+  },
+  "mixedContent": {
+    "message": "Tato zabezpečená stránka také načítá nezabezpečený obsah. Toto je bezpečnostní riziko (střední riziko)."
+  },
+  "unusualPort": {
+    "message": "Tato stránka používá neobvyklý technický port. To může být pokus obejít zabezpečení (střední riziko)."
+  },
+  "javascriptScheme": {
+    "message": "Tento odkaz se pokouší spustit kód přímo ve vašem prohlížeči (vysoké riziko)."
+  },
+  "urlFragmentTrick": {
+    "message": "Odkaz obsahuje neobvykle dlouhý fragment. Toto je technika někdy používaná k oklamání (nízké riziko)."
+  },
+  "suspiciousTLD": {
+    "message": "Tato webová stránka používá příponu domény (jako .zip nebo .mov), která je často zneužívána pro podvody (vysoké riziko)."
+  },
+  "base64OrHex": {
+    "message": "Tento odkaz obsahuje silně zakódované informace. To se často používá ke skrytí škodlivého kódu (vysoké riziko)."
+  },
+  "similarToLegitimateDomain": {
+    "message": "Tato stránka vypadá velmi podobně jako známá důvěryhodná stránka. Pečlivě zkontrolujte adresu, může to být falešná kopie."
+  },
+  "youngDomain": {
+    "message": "Tato doména byla zaregistrována teprve před $AGE$ dny (vysoké riziko). Nové domény jsou častěji používány pro podvody.",
+    "placeholders": {
+      "AGE": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "insecureLoginPage": {
+    "message": "Tato přihlašovací stránka není zabezpečená (bez HTTPS). Nikdy zde nezadávejte heslo (vysoké riziko)."
+  },
+  "loginPageNoMX": {
+    "message": "Tato přihlašovací stránka patří doméně, která nemůže přijímat emaily. To je velmi rizikové (vysoké riziko)."
+  },
+  "malwareExtension": {
+    "message": "Tento odkaz vede na soubor, který může být škodlivý (jako .exe nebo .zip). Nestahujte (vysoké riziko)."
+  },
+  "popupTitle": {
+    "message": "LinkShield: Vaše ochrana proti phishingu"
+  },
+  "popupSubtitle": {
+    "message": "Zůstaňte v bezpečí s upozorněními a ochranou v reálném čase."
+  },
+  "backgroundAnalysis": {
+    "message": "Skenování na pozadí"
+  },
+  "backgroundAnalysisDescription": {
+    "message": "Ochrana v reálném čase. Aktualizováno každou hodinu. Celosvětové pokrytí."
+  },
+  "activationRequired": {
+    "message": "Povolte tuto funkci pro její použití."
+  },
+  "integratedProtection": {
+    "message": "Integrovaná ochrana"
+  },
+  "integratedProtectionDescription": {
+    "message": "Přímo kontroluje webové stránky a odkazy na rizikové charakteristiky."
+  },
+  "premiumFeaturesActive": {
+    "message": "Nyní používáte prémiovou verzi!"
+  },
+  "upgradePrompt": {
+    "message": "Upgradujte na prémiovou verzi pro další funkce."
+  },
+  "saveSettings": {
+    "message": "Uložit nastavení"
+  },
+  "settingsSaved": {
+    "message": "Nastavení uloženo!"
+  },
+  "licenseActivate": {
+    "message": "Aktivovat licenci"
+  },
+  "licenseInputPlaceholder": {
+    "message": "Zadejte licenční kód"
+  },
+  "licenseCheck": {
+    "message": "Zkontrolovat licenci"
+  },
+  "licenseInvalid": {
+    "message": "Neplatný licenční kód."
+  },
+  "licenseValid": {
+    "message": "Licence úspěšně aktivována!"
+  },
+  "lastRuleUpdate": {
+    "message": "Poslední aktualizace databáze: "
+  },
+  "licenseStatus": {
+    "message": "Stav licence:"
+  },
+  "licenseFreemium": {
+    "message": "Bezplatná verze"
+  },
+  "bulkUrlCheck": {
+    "message": "Zkontrolovat více odkazů"
+  },
+  "bulkUrlCheckDescription": {
+    "message": "Nahrajte soubor .txt pro kontrolu seznamu odkazů."
+  },
+  "fileChoose": {
+    "message": "Vyberte soubor"
+  },
+  "fileCheck": {
+    "message": "Zkontrolovat soubor"
+  },
+  "fileCheckNoUrls": {
+    "message": "Vybraný soubor neobsahuje žádné odkazy."
+  },
+  "fileCheckFailed": {
+    "message": "Kontrola souboru selhala."
+  },
+  "safeDomain": {
+    "message": "Toto je známá bezpečná webová stránka."
+  },
+  "allowedProtocol": {
+    "message": "Tento odkaz používá bezpečný protokol (jako 'mailto:' nebo 'tel:')."
+  },
+  "invalidUrl": {
+    "message": "Tato webová adresa je neplatná nebo chybně napsaná."
+  },
+  "loadingMessage": {
+    "message": "Analyzuji stránku..."
+  },
+  "cannotRetrieveSiteStatus": {
+    "message": "Nelze získat stav stránky."
+  },
+  "unknownRisk": {
+    "message": "Neznámé riziko"
+  },
+  "highRisk": {
+    "message": "Vysoké riziko: buďte velmi opatrní."
+  },
+  "mediumRisk": {
+    "message": "Střední riziko: věnujte pozornost."
+  },
+  "lowRisk": {
+    "message": "Nízké riziko: některé body k zamyšlení."
+  },
+  "noSuspiciousFeatures": {
+    "message": "Nebyly nalezeny žádné přímé rizikové charakteristiky."
+  },
+  "siteStatusNotAvailable": {
+    "message": "Stav této stránky není dostupný."
+  },
+  "sslValidationFailed": {
+    "message": "Bezpečnostní certifikát této webové stránky je neplatný."
+  },
+  "shortenedUrlError": {
+    "message": "Nepodařilo se zkontrolovat konečný cíl tohoto zkráceného odkazu."
+  },
+  "redirectedShortenedUrl": {
+    "message": "Tento zkrácený odkaz vás přesměrovává na jinou webovou stránku."
+  },
+  "cryptoPhishingAd": {
+    "message": "Tato reklama má charakteristiky krypto podvodu (vysoké riziko)."
+  },
+  "suspiciousAdStructure": {
+    "message": "Odkaz této reklamy má neobvyklou strukturu (střední riziko)."
+  },
+  "suspiciousAdTLD": {
+    "message": "Tato reklama používá příponu domény, která je často zneužívána (střední riziko)."
+  },
+  "homoglyphAdAttack": {
+    "message": "Reklama používá znaky téměř identické se známou webovou stránkou (střední riziko)."
+  },
+  "brandMisuse": {
+    "message": "Reklama neoprávněně používá známou značku (vysoké riziko)."
+  },
+  "unknownWarning": {
+    "message": "Bylo nalezeno neznámé riziko. Buďte extra opatrní."
+  },
+  "typosquattingAttack": {
+    "message": "Tato webová adresa vypadá jako skutečná stránka, ale je záměrně chybně napsaná (vysoké riziko). Může to být falešná verze."
+  },
+  "downloadKeyword": {
+    "message": "Odkaz obsahuje slova související se stahováním (nízké riziko). Otevírejte pouze soubory, kterým důvěřujete."
+  },
+  "suspiciousScriptContent": {
+    "message": "Skript na této stránce obsahuje rizikový kód. To může být nebezpečné."
+  },
+  "invalidScriptSrc": {
+    "message": "Odkaz na skript na této stránce je nesprávný."
+  },
+  "mixedScripts": {
+    "message": "Tato adresa používá směs různých písemných systémů (např. latinky a cyrilice). Toto je známý phishingový trik (vysoké riziko)."
+  },
+  "introBannerMessage": {
+    "message": "LinkShield je aktivní a označuje rizikové odkazy pomocí ⚠️. Najeďte myší na ikonu pro zobrazení důvodu."
+  },
+  "digitHomoglyph": {
+    "message": "Tato adresa používá čísla, která vypadají jako písmena, k napodobení známé značky (střední riziko)."
+  },
+  "trustedTLD": {
+    "message": "Tato doména má standardní příponu domény (nízké riziko)."
+  },
+  "trustedTld": {
+    "message": "Tato doména má standardní příponu domény (nízké riziko)."
+  },
+  "suspiciousPageText": {
+    "message": "Text na této stránce obsahuje slova často používaná v podvodech (vysoké riziko)."
+  },
+  "urgencyTactic": {
+    "message": "Tato stránka používá naléhavý jazyk k nátlaku (vysoké riziko). Pozor na podvody."
+  },
+  "severityMediumRisk": {
+    "message": "Střední riziko: tento odkaz může být nebezpečný. Buďte opatrní."
+  },
+  "allowedQueryParam": {
+    "message": "Odkaz obsahuje bezpečný, povolený technický parametr."
+  },
+  "suspiciousIframeAdComponent": {
+    "message": "Tato stránka načítá reklamní komponent z jiné webové stránky."
+  },
+  "suspiciousIframeTracking": {
+    "message": "Tato stránka načítá sledovač, který může monitorovat vaše chování při prohlížení."
+  },
+  "suspiciousIframeMalicious": {
+    "message": "Na této stránce byl nalezen potenciálně škodlivý komponent (jako phishing)."
+  },
+  "suspiciousIframeHidden": {
+    "message": "Na stránce byl nalezen rizikový neviditelný prvek."
+  },
+  "mixedContentIframe": {
+    "message": "Tato zabezpečená stránka načítá nezabezpečený komponent. Toto je bezpečnostní riziko."
+  },
+  "invalidIframeSrc": {
+    "message": "Komponent na této stránce nelze správně načíst (neplatný zdroj)."
+  },
+  "iframeHidden": {
+    "message": "Na stránce byl nalezen rizikový neviditelný prvek."
+  },
+  "typosquattingAttack_adobe_com": {
+    "message": "Tato webová adresa vypadá jako adobe.com, ale je záměrně chybně napsaná (vysoké riziko)."
+  },
+  "typosquattingAttack_alibaba_com": {
+    "message": "Tato webová adresa vypadá jako alibaba.com, ale je záměrně chybně napsaná (vysoké riziko)."
+  },
+  "typosquattingAttack_amazon_com": {
+    "message": "Tato webová adresa vypadá jako amazon.com, ale je záměrně chybně napsaná (vysoké riziko)."
+  },
+  "typosquattingAttack_apple_com": {
+    "message": "Tato webová adresa vypadá jako apple.com, ale je záměrně chybně napsaná (vysoké riziko)."
+  },
+  "typosquattingAttack_facebook_com": {
+    "message": "Tato webová adresa vypadá jako facebook.com, ale je záměrně chybně napsaná (vysoké riziko)."
+  },
+  "typosquattingAttack_google_com": {
+    "message": "Tato webová adresa vypadá jako google.com, ale je záměrně chybně napsaná (vysoké riziko)."
+  },
+  "typosquattingAttack_linkedin_com": {
+    "message": "Tato webová adresa vypadá jako linkedin.com, ale je záměrně chybně napsaná (vysoké riziko)."
+  },
+  "typosquattingAttack_microsoft_com": {
+    "message": "Tato webová adresa vypadá jako microsoft.com, ale je záměrně chybně napsaná (vysoké riziko)."
+  },
+  "typosquattingAttack_paypal_com": {
+    "message": "Tato webová adresa vypadá jako paypal.com, ale je záměrně chybně napsaná (vysoké riziko)."
+  },
+  "typosquattingAttack_whatsapp_com": {
+    "message": "Tato webová adresa vypadá jako whatsapp.com, ale je záměrně chybně napsaná (vysoké riziko)."
+  },
+  "typosquattingAttack_x_com": {
+    "message": "Tato webová adresa vypadá jako x.com, ale je záměrně chybně napsaná (vysoké riziko)."
+  },
+  "homoglyphAttack_microsoft_com": {
+    "message": "Tato adresa používá znaky téměř identické s microsoft.com (vysoké riziko)."
+  },
+  "homoglyphAttack_apple_com": {
+    "message": "Tato adresa používá znaky téměř identické s apple.com (vysoké riziko)."
+  },
+  "homoglyphAttack_google_com": {
+    "message": "Tato adresa používá znaky téměř identické s google.com (vysoké riziko)."
+  },
+  "homoglyphAttack_linkedin_com": {
+    "message": "Tato adresa používá znaky téměř identické s linkedin.com (vysoké riziko)."
+  },
+  "homoglyphAttack_alibaba_com": {
+    "message": "Tato adresa používá znaky téměř identické s alibaba.com (vysoké riziko)."
+  },
+  "homoglyphAttack_whatsapp_com": {
+    "message": "Tato adresa používá znaky téměř identické s whatsapp.com (vysoké riziko)."
+  },
+  "homoglyphAttack_amazon_com": {
+    "message": "Tato adresa používá znaky téměř identické s amazon.com (vysoké riziko)."
+  },
+  "homoglyphAttack_x_com": {
+    "message": "Tato adresa používá znaky téměř identické s x.com (vysoké riziko)."
+  },
+  "homoglyphAttack_facebook_com": {
+    "message": "Tato adresa používá znaky téměř identické s facebook.com (vysoké riziko)."
+  },
+  "homoglyphAttack_adobe_com": {
+    "message": "Tato adresa používá znaky téměř identické s adobe.com (vysoké riziko)."
+  },
+  "homoglyphAttack_paypal_com": {
+    "message": "Tato adresa používá znaky téměř identické s paypal.com (vysoké riziko)."
+  },
+  "typosquatting_microsoft_com": {
+    "message": "Tato adresa vypadá velmi podobně jako microsoft.com (vysoké riziko). Může být falešná."
+  },
+  "typosquatting_apple_com": {
+    "message": "Tato adresa vypadá velmi podobně jako apple.com (vysoké riziko). Může být falešná."
+  },
+  "typosquatting_google_com": {
+    "message": "Tato adresa vypadá velmi podobně jako google.com (vysoké riziko). Může být falešná."
+  },
+  "typosquatting_linkedin_com": {
+    "message": "Tato adresa vypadá velmi podobně jako linkedin.com (vysoké riziko). Může být falešná."
+  },
+  "typosquatting_alibaba_com": {
+    "message": "Tato adresa vypadá velmi podobně jako alibaba.com (vysoké riziko). Může být falešná."
+  },
+  "typosquatting_whatsapp_com": {
+    "message": "Tato adresa vypadá velmi podobně jako whatsapp.com (vysoké riziko). Může být falešná."
+  },
+  "typosquatting_amazon_com": {
+    "message": "Tato adresa vypadá velmi podobně jako amazon.com (vysoké riziko). Může být falešná."
+  },
+  "typosquatting_x_com": {
+    "message": "Tato adresa vypadá velmi podobně jako x.com (vysoké riziko). Může být falešná."
+  },
+  "typosquatting_facebook_com": {
+    "message": "Tato adresa vypadá velmi podobně jako facebook.com (vysoké riziko). Může být falešná."
+  },
+  "typosquatting_adobe_com": {
+    "message": "Tato adresa vypadá velmi podobně jako adobe.com (vysoké riziko). Může být falešná."
+  },
+  "typosquatting_paypal_com": {
+    "message": "Tato adresa vypadá velmi podobně jako paypal.com (vysoké riziko). Může být falešná."
+  },
+  "similarToLegitimateDomain_microsoft_com": {
+    "message": "Tato stránka vypadá jako microsoft.com, pečlivě zkontrolujte adresu."
+  },
+  "similarToLegitimateDomain_apple_com": {
+    "message": "Tato stránka vypadá jako apple.com, pečlivě zkontrolujte adresu."
+  },
+  "similarToLegitimateDomain_google_com": {
+    "message": "Tato stránka vypadá jako google.com, pečlivě zkontrolujte adresu."
+  },
+  "similarToLegitimateDomain_linkedin_com": {
+    "message": "Tato stránka vypadá jako linkedin.com, pečlivě zkontrolujte adresu."
+  },
+  "similarToLegitimateDomain_alibaba_com": {
+    "message": "Tato stránka vypadá jako alibaba.com, pečlivě zkontrolujte adresu."
+  },
+  "similarToLegitimateDomain_whatsapp_com": {
+    "message": "Tato stránka vypadá jako whatsapp.com, pečlivě zkontrolujte adresu."
+  },
+  "similarToLegitimateDomain_amazon_com": {
+    "message": "Tato stránka vypadá jako amazon.com, pečlivě zkontrolujte adresu."
+  },
+  "similarToLegitimateDomain_x_com": {
+    "message": "Tato stránka vypadá jako x.com, pečlivě zkontrolujte adresu."
+  },
+  "similarToLegitimateDomain_facebook_com": {
+    "message": "Tato stránka vypadá jako facebook.com, pečlivě zkontrolujte adresu."
+  },
+  "similarToLegitimateDomain_adobe_com": {
+    "message": "Tato stránka vypadá jako adobe.com, pečlivě zkontrolujte adresu."
+  },
+  "similarToLegitimateDomain_paypal_com": {
+    "message": "Tato stránka vypadá jako paypal.com, pečlivě zkontrolujte adresu."
+  },
+  "suspiciousPunycodeDecoding_microsoft_com": {
+    "message": "Tento odkaz používá neobvyklé znaky, aby vypadal jako microsoft.com (vysoké riziko)."
+  },
+  "suspiciousPunycodeDecoding_apple_com": {
+    "message": "Tento odkaz používá neobvyklé znaky, aby vypadal jako apple.com (vysoké riziko)."
+  },
+  "suspiciousPunycodeDecoding_google_com": {
+    "message": "Tento odkaz používá neobvyklé znaky, aby vypadal jako google.com (vysoké riziko)."
+  },
+  "suspiciousPunycodeDecoding_linkedin_com": {
+    "message": "Tento odkaz používá neobvyklé znaky, aby vypadal jako linkedin.com (vysoké riziko)."
+  },
+  "suspiciousPunycodeDecoding_alibaba_com": {
+    "message": "Tento odkaz používá neobvyklé znaky, aby vypadal jako alibaba.com (vysoké riziko)."
+  },
+  "suspiciousPunycodeDecoding_whatsapp_com": {
+    "message": "Tento odkaz používá neobvyklé znaky, aby vypadal jako whatsapp.com (vysoké riziko)."
+  },
+  "suspiciousPunycodeDecoding_amazon_com": {
+    "message": "Tento odkaz používá neobvyklé znaky, aby vypadal jako amazon.com (vysoké riziko)."
+  },
+  "suspiciousPunycodeDecoding_x_com": {
+    "message": "Tento odkaz používá neobvyklé znaky, aby vypadal jako x.com (vysoké riziko)."
+  },
+  "suspiciousPunycodeDecoding_facebook_com": {
+    "message": "Tento odkaz používá neobvyklé znaky, aby vypadal jako facebook.com (vysoké riziko)."
+  },
+  "suspiciousPunycodeDecoding_adobe_com": {
+    "message": "Tento odkaz používá neobvyklé znaky, aby vypadal jako adobe.com (vysoké riziko)."
+  },
+  "suspiciousPunycodeDecoding_paypal_com": {
+    "message": "Tento odkaz používá neobvyklé znaky, aby vypadal jako paypal.com (vysoké riziko)."
+  },
+  "popupPageTitle": {
+    "message": "Ovládací panel LinkShield"
+  },
+  "extNameFull": {
+    "message": "LinkShield: Vaše zbraň proti phishingu"
+  },
+  "extDescriptionFull": {
+    "message": "Zvyšte své zabezpečení s přímými upozorněními a pokročilou ochranou proti online hrozbám."
+  },
+  "licenseTrialTitle": {
+    "message": "Zkušební období: zbývá $DAYS$ dní",
+    "placeholders": { "DAYS": { "content": "$1", "example": "30" } }
+  },
+  "licenseTrialSubtitle": {
+    "message": "Všechny prémiové funkce jsou aktivní během zkušebního období"
+  },
+  "licenseUpgradeLink": {
+    "message": "Upgradovat na Premium →"
+  },
+  "licenseExpiredTitle": {
+    "message": "Zkušební období vypršelo"
+  },
+  "licenseExpiredSubtitle": {
+    "message": "Aktivujte Premium pro plnou ochranu"
+  },
+  "licenseBenefitsLabel": {
+    "message": "Premium zahrnuje:"
+  },
+  "licenseBenefitsText": {
+    "message": "Analýza na pozadí, skenování QR kódů, nepřetržitá ochrana"
+  },
+  "licenseKeyPlaceholder": {
+    "message": "Zadejte licenční kód"
+  },
+  "licenseActivateButton": {
+    "message": "Aktivovat Premium"
+  },
+  "licenseBuyLink": {
+    "message": "Nemáte licenci? Kupte zde →"
+  },
+  "licensePremiumTitle": {
+    "message": "Premium aktivní"
+  },
+  "licensePremiumSubtitle": {
+    "message": "Plná ochrana povolena"
+  },
+  "sectionSecuritySettings": {
+    "message": "Nastavení zabezpečení"
+  },
+  "backgroundAnalysisTitle": {
+    "message": "Nastavení zabezpečení"
+  },
+  "backgroundAnalysisFeature": {
+    "message": "Analýza na pozadí"
+  },
+  "premiumBadge": {
+    "message": "PREMIUM"
+  },
+  "integratedProtectionFeature": {
+    "message": "Integrovaná ochrana proti malwaru a phishingu"
+  },
+  "confirmationMessage": {
+    "message": "Nastavení úspěšně uloženo!"
+  },
+  "lastRuleUpdateNone": {
+    "message": "Dosud nebyla provedena žádná aktualizace databáze"
+  },
+  "errorOccurred": {
+    "message": "Došlo k chybě"
+  },
+  "trialDaysRemaining": {
+    "message": "Zbývá $DAYS$ dní zkušebního období",
+    "placeholders": { "DAYS": { "content": "$1", "example": "14" } }
+  },
+  "trialExpired": {
+    "message": "Zkušební období vypršelo"
+  },
+  "trialExpiredMessage": {
+    "message": "Vaše 30denní zkušební období vypršelo. Aktivujte licenci pro pokračování v používání všech funkcí."
+  },
+  "upgradeNow": {
+    "message": "Upgradovat nyní"
+  },
+  "gumroadErrorUnknown": {
+    "message": "Neznámá chyba"
+  },
+  "gumroadErrorLicenseNotExistProduct": {
+    "message": "Tento licenční kód neexistuje pro tento produkt"
+  },
+  "gumroadErrorLicenseNotExist": {
+    "message": "Tento licenční kód neexistuje"
+  },
+  "gumroadErrorLicenseRequired": {
+    "message": "Prosím zadejte licenční kód"
+  },
+  "gumroadErrorProductNotFound": {
+    "message": "Produkt nenalezen"
+  },
+  "gumroadErrorLicenseDisabled": {
+    "message": "Tato licence byla deaktivována"
+  },
+  "gumroadErrorLicenseRefunded": {
+    "message": "Tato licence byla vrácena"
+  },
+  "gumroadErrorLicenseRevoked": {
+    "message": "Tato licence byla vrácena nebo odvolána"
+  },
+  "gumroadErrorLicenseInvalid": {
+    "message": "Neplatný licenční kód"
+  },
+  "gumroadErrorNetwork": {
+    "message": "Chyba sítě během ověřování. Zkontrolujte připojení k internetu."
+  },
+  "licenseEmptyError": {
+    "message": "Prosím zadejte licenční kód"
+  },
+  "licenseActivating": {
+    "message": "Aktivuji..."
+  },
+  "licenseActivatedSuccess": {
+    "message": "Premium úspěšně aktivován!"
+  },
+  "licenseConnectionError": {
+    "message": "Chyba připojení. Zkuste to znovu."
+  },
+  "debugModeTitle": {
+    "message": "Režim ladění"
+  },
+  "debugTrial30": {
+    "message": "Zkušební (30 dní)"
+  },
+  "debugTrial3": {
+    "message": "Zkušební (3 dny)"
+  },
+  "debugExpired": {
+    "message": "Vypršelo"
+  },
+  "debugPremium": {
+    "message": "Premium"
+  },
+  "debugReset": {
+    "message": "Reset"
+  },
+  "debugTrialSimulated": {
+    "message": "✓ Zkušební období ($DAYS$ dní) simulováno",
+    "placeholders": { "DAYS": { "content": "$1", "example": "30" } }
+  },
+  "debugExpiredSimulated": {
+    "message": "✓ Vypršené zkušební období simulováno"
+  },
+  "debugPremiumSimulated": {
+    "message": "✓ Premium simulován"
+  },
+  "debugStorageReset": {
+    "message": "✓ Úložiště resetováno - znovu načtěte rozšíření"
+  },
+  "debugError": {
+    "message": "✗ Chyba: $ERROR$",
+    "placeholders": { "ERROR": { "content": "$1", "example": "Neznámá chyba" } }
+  },
+  "reason_redirectChain": {
+    "message": "Detekován podezřelý řetězec přesměrování. Odkaz prochází více servery před dosažením cíle."
+  },
+  "reason_excessiveRedirects": {
+    "message": "Příliš mnoho přesměrování v řetězci (vysoké riziko). Tento odkaz přesměrovává více než 5krát."
+  },
+  "reason_domainHopping": {
+    "message": "Více změn domény v řetězci přesměrování (vysoké riziko)."
+  },
+  "reason_chainedShorteners": {
+    "message": "Více zkracovačů URL zřetězených dohromady (střední riziko)."
+  },
+  "reason_suspiciousFinalTLD": {
+    "message": "Konečný cíl má podezřelou příponu domény (vysoké riziko)."
+  },
+  "reason_redirectToIP": {
+    "message": "Přesměrování vede na IP adresu (vysoké riziko)."
+  },
+  "reason_redirectTimeout": {
+    "message": "Analýza přesměrování vypršela (střední riziko)."
+  },
+  "atSymbolPhishing": {
+    "message": "KRITICKÉ: Tento odkaz používá symbol @ ke skrytí skutečného cíle (vysoké riziko)."
+  },
+  "atSymbolInPath": {
+    "message": "Odkaz obsahuje symbol @ v cestě (střední riziko)."
+  },
+  "doubleEncoding": {
+    "message": "Tento odkaz používá dvojité kódování URL ke skrytí skutečného obsahu (vysoké riziko)."
+  },
+  "fullwidthCharacters": {
+    "message": "Tento odkaz používá znaky Unicode plné šířky (vysoké riziko)."
+  },
+  "nullByteInjection": {
+    "message": "Tento odkaz obsahuje znak null byte (vysoké riziko)."
+  },
+  "reason_atSymbolPhishing": {
+    "message": "KRITICKÉ: Detekován útok URL s přihlašovacími údaji."
+  },
+  "reason_doubleEncoding": {
+    "message": "Detekováno dvojité kódování URL (vysoké riziko)."
+  },
+  "reason_fullwidthCharacters": {
+    "message": "Detekovány znaky Unicode plné šířky (vysoké riziko)."
+  },
+  "reason_nullByteInjection": {
+    "message": "Detekována injekce null byte (vysoké riziko)."
+  },
+  "formActionHijacking": {
+    "message": "Tento přihlašovací formulář odesílá vaše údaje na externí web (kritické riziko)."
+  },
+  "formActionExternal": {
+    "message": "Přihlašovací formulář odesílá data na externí doménu: $DOMAIN$ (kritické riziko).",
+    "placeholders": { "DOMAIN": { "content": "$1", "example": "evil-site.com" } }
+  },
+  "formActionInvalid": {
+    "message": "Přihlašovací formulář má neplatnou nebo podezřelou URL akce (vysoké riziko)."
+  },
+  "hiddenIframeZeroSize": {
+    "message": "Detekován skrytý iframe s nulovou velikostí (vysoké riziko)."
+  },
+  "hiddenIframeOffScreen": {
+    "message": "Detekován iframe umístěný mimo obrazovku (vysoké riziko)."
+  },
+  "hiddenIframeCSSHidden": {
+    "message": "Detekován CSS skrytý iframe (vysoké riziko)."
+  },
+  "hiddenIframeNegativePos": {
+    "message": "Detekován iframe se záporným umístěním (střední riziko)."
+  },
+  "nrdCritical": {
+    "message": "KRITICKÉ: Doména zaregistrována před $DAYS$ dny (kritické riziko).",
+    "placeholders": { "DAYS": { "content": "$1", "example": "0" } }
+  },
+  "nrdHigh": {
+    "message": "Doména zaregistrována teprve před $DAYS$ dny (vysoké riziko).",
+    "placeholders": { "DAYS": { "content": "$1", "example": "5" } }
+  },
+  "nrdMedium": {
+    "message": "Doména zaregistrována před $DAYS$ dny (střední riziko).",
+    "placeholders": { "DAYS": { "content": "$1", "example": "15" } }
+  },
+  "nrdLow": {
+    "message": "Doména zaregistrována před $DAYS$ dny (nízké riziko).",
+    "placeholders": { "DAYS": { "content": "$1", "example": "60" } }
+  },
+  "licenseErrorNotFound": {
+    "message": "Licenční kód nenalezen."
+  },
+  "licenseErrorDisabled": {
+    "message": "Tato licence byla deaktivována."
+  },
+  "licenseErrorExpired": {
+    "message": "Tato licence vypršela."
+  },
+  "licenseErrorActivationLimit": {
+    "message": "Dosažen limit aktivací."
+  },
+  "licenseErrorInstanceNotFound": {
+    "message": "Instance instalace nenalezena."
+  },
+  "licenseErrorInvalid": {
+    "message": "Neplatný licenční kód."
+  },
+  "licenseErrorNetwork": {
+    "message": "Chyba sítě. Zkontrolujte připojení."
+  },
+  "licenseErrorUnknown": {
+    "message": "Během ověřování došlo k neznámé chybě."
+  },
+  "invalidUrlFormat": {
+    "message": "Neplatný formát URL."
+  },
+  "invalidDomain": {
+    "message": "Neplatná doména."
+  },
+  "trustedDomain": {
+    "message": "Toto je důvěryhodná doména ověřená jako bezpečná."
+  },
+  "errorCalculatingRisk": {
+    "message": "Chyba při výpočtu skóre rizika."
+  },
+  "punycodeDecodingError": {
+    "message": "Chyba při dekódování mezinárodních znaků."
+  },
+  "fileProtocol": {
+    "message": "Tento odkaz používá protokol file://."
+  },
+  "invalidHostname": {
+    "message": "Neplatný název hostitele."
+  },
+  "urlTooLong": {
+    "message": "Tato URL je neobvykle dlouhá (střední riziko)."
+  },
+  "nonAscii": {
+    "message": "Tato URL obsahuje ne-ASCII znaky."
+  },
+  "typosquattingPattern": {
+    "message": "Tato doména odpovídá vzoru typosquattingu (vysoké riziko)."
+  },
+  "suspiciousIframes": {
+    "message": "Na této stránce byly detekovány podezřelé iframe prvky."
+  },
+  "suspiciousScripts": {
+    "message": "Na této stránce byly detekovány podezřelé skripty."
+  },
+  "hiddenIframes": {
+    "message": "Na této stránce byly detekovány skryté iframe prvky."
+  },
+  "unifiedCheckError": {
+    "message": "Chyba během bezpečnostní kontroly."
+  },
+  "initializationError": {
+    "message": "Chyba při inicializaci bezpečnostního skeneru."
+  },
+  "checkCurrentUrlError": {
+    "message": "Chyba při kontrole zabezpečení aktuální URL."
+  },
+  "ocrDangerTitle": {
+    "message": "Detekován nebezpečný odkaz v obrázku"
+  },
+  "ocrCautionTitle": {
+    "message": "Detekován podezřelý odkaz v obrázku"
+  },
+  "suspiciousDomainDetected": {
+    "message": "Detekována podezřelá doména"
+  },
+  "extractedText": {
+    "message": "Extrahovaný text"
+  },
+  "reasons": {
+    "message": "Důvody"
+  },
+  "asciiQrDangerTitle": {
+    "message": "Nebezpečný odkaz v ASCII QR kódu"
+  },
+  "asciiQrCautionTitle": {
+    "message": "Podezřelý odkaz v ASCII QR kódu"
+  },
+  "hiddenUrl": {
+    "message": "Skrytá URL"
+  },
+  "qrDangerTitle": {
+    "message": "Detekován nebezpečný QR kód"
+  },
+  "qrCautionTitle": {
+    "message": "Detekován podezřelý QR kód"
+  },
+  "fullUrl": {
+    "message": "Úplná URL"
+  },
+  "neutralIconTitle": {
+    "message": "LinkShield - Ochrana aktivní"
+  },
+  "installNotificationTitle": {
+    "message": "LinkShield nainstalován"
+  },
+  "installNotificationMessage": {
+    "message": "Nyní jste chráněni proti phishingu a škodlivým webovým stránkám."
+  },
+  "not_eligible": {
+    "message": "Nemáte nárok na tuto funkci"
+  },
+  "trial_expired": {
+    "message": "Vaše zkušební období vypršelo"
+  },
+  "Error": {
+    "message": "Chyba"
+  },
+  "siteSafeTitle": {
+    "message": "Stránka vypadá bezpečně"
+  },
+  "siteCautionTitle": {
+    "message": "Postupujte opatrně"
+  },
+  "siteAlertTitle": {
+    "message": "Varování: Detekována potenciální hrozba"
+  },
+  "clipboardHijackingCryptoTitle": {
+    "message": "Detekován únos krypto adresy!"
+  },
+  "clipboardHijackingTitle": {
+    "message": "Detekována manipulace se schránkou!"
+  },
+  "clipboardHijackingMessage": {
+    "message": "Tato stránka se pokouší upravit vaši schránku."
+  },
+  "reason_clipboardHijackingCrypto": {
+    "message": "KRITICKÉ: Tato stránka unáší vaši schránku s krypto adresami (kritické riziko)."
+  },
+  "reason_clipboardHijackingDetected": {
+    "message": "Tato stránka manipuluje s obsahem vaší schránky (vysoké riziko)."
+  },
+  "brandSubdomainPhishing": {
+    "message": "Detekováno klíčové slovo značky na bezplatné hostingové platformě (vysoké riziko)."
+  },
+  "reason_brandSubdomainPhishing": {
+    "message": "Detekováno klíčové slovo značky na bezplatné hostingové platformě (vysoké riziko)."
+  },
+  "nrdTelCombo": {
+    "message": "Telefonní číslo na nově registrované doméně s phishingovými klíčovými slovy (střední riziko)."
+  },
+  "reason_nrdTelCombo": {
+    "message": "Telefonní číslo na nově registrované doméně s phishingovými klíčovými slovy (střední riziko)."
+  },
+  "reason_opaqueRedirectChain": {
+    "message": "Detekováno neprůhledné přesměrování (nízké riziko)."
+  },
+  "reason_opaqueRedirectToIP": {
+    "message": "Neprůhledné přesměrování na IP adresu (vysoké riziko)."
+  },
+  "reason_opaqueRedirectSuspiciousTLD": {
+    "message": "Neprůhledné přesměrování na podezřelou příponu domény (střední riziko)."
+  },
+  "reason_opaqueRedirectNRD": {
+    "message": "Neprůhledné přesměrování na nově registrovanou doménu (vysoké riziko)."
+  },
+  "bitbWarningTitle": {
+    "message": "Detekováno falešné přihlašovací okno!"
+  },
+  "bitbWarningMessage": {
+    "message": "Tato stránka zobrazuje simulované okno prohlížeče napodobující skutečné přihlašovací vyskakovací okno. Jedná se o útok Browser-in-the-Browser (BitB)."
+  },
+  "reason_bitbAttackDetected": {
+    "message": "Detekován útok Browser-in-the-Browser (kritické riziko)."
+  },
+  "reason_bitbFakeUrlBar": {
+    "message": "Detekována falešná adresní řádka zobrazující důvěryhodnou doménu (kritické riziko)."
+  },
+  "reason_bitbWindowControls": {
+    "message": "Detekovány falešné ovládací prvky okna (vysoké riziko)."
+  },
+  "reason_bitbLoginFormInOverlay": {
+    "message": "Detekován přihlašovací formulář uvnitř překryvu (vysoké riziko)."
+  },
+  "reason_bitbOAuthBranding": {
+    "message": "OAuth branding s přihlašovacím formulářem v překryvu (vysoké riziko)."
+  },
+  "reason_bitbPadlockIcon": {
+    "message": "Detekována falešná ikona bezpečnostního zámku (střední riziko)."
+  },
+  "reason_bitbWindowChrome": {
+    "message": "Detekován simulovaný styl okna prohlížeče (střední riziko)."
+  },
+  "reason_bitbIframeInModal": {
+    "message": "Detekován iframe uvnitř modálního překryvu (nízké riziko)."
+  },
+  "clickFixPowerShellTitle": {
+    "message": "Detekován příkaz PowerShell!"
+  },
+  "clickFixCommandTitle": {
+    "message": "Detekována injekce příkazu!"
+  },
+  "clickFixMessage": {
+    "message": "Tato stránka obsahuje podezřelý příkaz, který by mohl poškodit váš počítač."
+  },
+  "clickFixSubMessage": {
+    "message": "Útočníci často maskují škodlivé příkazy jako 'opravy' nebo 'kroky ověření'."
+  },
+  "bitbAttackCriticalTitle": {
+    "message": "Kritické: Falešné přihlašovací okno!"
+  },
+  "bitbAttackWarningTitle": {
+    "message": "Varování: Podezřelé přihlašovací vyskakovací okno"
+  },
+  "bitbAttackMessage": {
+    "message": "Tato stránka zobrazuje falešné okno prohlížeče navržené ke krádeži vašich přihlašovacích údajů."
+  },
+  "bitbAttackTip": {
+    "message": "Vždy zkontrolujte adresní řádek prohlížeče pro skutečnou URL."
+  },
+  "shadowDomLoginForm": {
+    "message": "Detekován přihlašovací formulář skrytý v Shadow DOM (vysoké riziko)."
+  },
+  "shadowDomPhishingOverlay": {
+    "message": "Detekován phishingový překryv skrytý v Shadow DOM (kritické riziko)."
+  },
+  "shadowDomIframe": {
+    "message": "Detekován podezřelý iframe skrytý v Shadow DOM (vysoké riziko)."
+  },
+  "urlCredentialsAttack": {
+    "message": "URL obsahuje přihlašovací údaje ve formátu útoku (kritické riziko)."
+  },
+  "nrdUltraCritical": {
+    "message": "Doména zaregistrována teprve před několika hodinami (kritické riziko)."
+  },
+  "nrdVishingCombo": {
+    "message": "Telefonní číslo na nově registrované doméně s indikátory phishingu (vysoké riziko)."
+  },
+  "tableBasedQR": {
+    "message": "Detekován QR kód skrytý v HTML tabulce (střední riziko)."
+  },
+  "tableQrDangerTitle": {
+    "message": "Nebezpečný odkaz ve skrytém QR kódu"
+  },
+  "tableQrCautionTitle": {
+    "message": "Podezřelý odkaz ve skrytém QR kódu"
+  },
+  "hiddenQrDetected": {
+    "message": "Detekován skrytý QR kód v obsahu stránky."
+  },
+  "bitbAttackCritical": {
+    "message": "KRITICKÉ: Detekován útok Browser-in-the-Browser!"
+  },
+  "bitbAttackWarning": {
+    "message": "Varování: Detekováno podezřelé vyskakovací okno."
+  },
+  "clickFixDetected": {
+    "message": "Detekován útok ClickFix!"
+  },
+  "clipboardHijacking": {
+    "message": "Detekován únos schránky!"
+  },
+  "hiddenIframe": {
+    "message": "Detekován skrytý iframe na této stránce."
+  },
+  "typosquatting": {
+    "message": "Detekován typosquatting!"
+  },
+  "ipAddressDomain": {
+    "message": "Tato webová stránka používá IP adresu místo názvu domény."
+  },
+  "extremeSubdomains": {
+    "message": "Detekován extrémní počet subdomén."
+  },
+  "vishingDetected": {
+    "message": "Detekován potenciální vishingový útok."
+  },
+  "punycodeDetected": {
+    "message": "Detekována Punycode doména!"
+  },
+  "reason_nonAscii": {
+    "message": "Detekovány podezřelé znaky (homoglyfy)"
+  },
+  "reason_brandKeywordHomoglyph": {
+    "message": "Detekována imitace značky"
+  },
+  "reason_noHttps": {
+    "message": "Žádné zabezpečené připojení (HTTPS)"
+  },
+  "reason_suspiciousTLD": {
+    "message": "Podezřelá přípona domény"
+  },
+  "reason_ipAsDomain": {
+    "message": "IP adresa jako název domény"
+  },
+  "reason_tooManySubdomains": {
+    "message": "Příliš mnoho subdomén"
+  },
+  "reason_shortenedUrl": {
+    "message": "Detekována zkrácená URL"
+  },
+  "reason_suspiciousKeywords": {
+    "message": "Podezřelá klíčová slova v URL"
+  },
+  "reason_malwareExtension": {
+    "message": "Potenciálně škodlivá přípona souboru"
+  },
+  "reason_urlTooLong": {
+    "message": "Neobvykle dlouhá URL"
+  },
+  "reason_encodedCharacters": {
+    "message": "Zakódované znaky v URL"
+  },
+  "reason_homoglyphAttack": {
+    "message": "Detekován homoglyfový útok"
+  },
+  "reason_typosquatting": {
+    "message": "Detekován typosquatting"
+  },
+  "reason_suspiciousBrandPattern": {
+    "message": "Podezřelý vzor značky"
+  },
+  "reason_unusualPort": {
+    "message": "Neobvyklý port"
+  },
+  "reason_punycode": {
+    "message": "Detekována Punycode doména"
+  },
+  "reason_loginPageNoMX": {
+    "message": "Přihlašovací stránka bez emailového serveru"
+  },
+  "reason_insecureLoginPage": {
+    "message": "Nezabezpečená přihlašovací stránka"
+  },
+  "reason_sslValidationFailed": {
+    "message": "Ověření SSL selhalo"
+  },
+  "reason_similarToLegitimateDomain": {
+    "message": "Vypadá jako legitimní doména"
+  },
+  "trialPeriodActive": {
+    "message": "Zkušební období aktivní"
+  }
+}

@@ -1,0 +1,1106 @@
+{
+  "extName": {
+    "message": "LinkShield"
+  },
+  "extDescription": {
+    "message": "LinkShield vă ajută să identificați site-urile web și linkurile nesigure pentru a vă proteja online."
+  },
+  "alertTitle": {
+    "message": "Avertisment!"
+  },
+  "alertMessage": {
+    "message": "Acest site web conține un link către:"
+  },
+  "severityLabel": {
+    "message": "Risc:"
+  },
+  "reasonLabel": {
+    "message": "Motiv:"
+  },
+  "adviceMessage": {
+    "message": "Ce puteți face?"
+  },
+  "adviceCheckUrl": {
+    "message": "Deschideți acest link doar dacă aveți încredere deplină în expeditor. Când aveți dubii, nu faceți clic. Nu introduceți niciodată parola pe un site în care nu aveți încredere."
+  },
+  "noHttps": {
+    "message": "Conexiunea la acest site web nu este securizată (fără HTTPS). Alții pot vedea informațiile dvs."
+  },
+  "ipAsDomain": {
+    "message": "Acest site web folosește o adresă IP în loc de un nume de domeniu. Acest lucru este neobișnuit și foarte riscant."
+  },
+  "tooManySubdomains": {
+    "message": "Această adresă web are multe subdomenii (ex. parte1.parte2.site.com). Acest lucru poate indica un site nesigur (risc mediu)."
+  },
+  "suspiciousKeywords": {
+    "message": "Linkul conține cuvinte adesea asociate cu escrocherii (risc scăzut)."
+  },
+  "suspiciousPattern": {
+    "message": "Structura acestei adrese web pare neobișnuită (risc mediu)."
+  },
+  "shortenedUrl": {
+    "message": "Acesta este un link scurtat (precum bit.ly). Destinația reală nu este vizibilă imediat (risc mediu)."
+  },
+  "downloadPage": {
+    "message": "Acest link pare să descarce un fișier. Deschideți doar fișierele în care aveți încredere deplină (risc mediu)."
+  },
+  "freeHosting": {
+    "message": "Acest site web folosește o platformă de găzduire gratuită. Escrocii profită uneori de acest lucru (risc mediu)."
+  },
+  "encodedCharacters": {
+    "message": "Linkul conține caractere neobișnuite (risc scăzut). Acestea pot fi folosite pentru a ascunde destinația reală."
+  },
+  "homoglyphAttack": {
+    "message": "Această adresă web folosește caractere aproape identice cu un site web cunoscut (risc ridicat). Acesta este un truc pentru a vă înșela."
+  },
+  "metaRedirect": {
+    "message": "Acest site web vă redirecționează automat. Acest lucru poate duce la un site nesigur (risc mediu)."
+  },
+  "cryptoPhishing": {
+    "message": "Acest link pare a fi o escrocherie crypto (risc ridicat). Fiți foarte atenți cu portofelul și credențialele dvs."
+  },
+  "externalScripts": {
+    "message": "Acest site încarcă cod dintr-o sursă externă care a fost marcată ca riscantă."
+  },
+  "suspiciousParams": {
+    "message": "Linkul conține parametri tehnici care sunt uneori folosiți pentru acțiuni nesigure (risc scăzut)."
+  },
+  "mixedContent": {
+    "message": "Această pagină securizată încarcă și conținut nesecurizat. Acesta este un risc de securitate (risc mediu)."
+  },
+  "unusualPort": {
+    "message": "Acest site folosește un port tehnic neobișnuit. Aceasta poate fi o încercare de a ocoli securitatea (risc mediu)."
+  },
+  "javascriptScheme": {
+    "message": "Acest link încearcă să execute cod direct în browserul dvs. (risc ridicat)."
+  },
+  "urlFragmentTrick": {
+    "message": "Linkul conține un fragment neobișnuit de lung. Aceasta este o tehnică uneori folosită pentru a înșela (risc scăzut)."
+  },
+  "suspiciousTLD": {
+    "message": "Acest site web folosește o extensie de domeniu (precum .zip sau .mov) care este adesea abuzată pentru escrocherii (risc ridicat)."
+  },
+  "base64OrHex": {
+    "message": "Acest link conține informații puternic codificate. Acest lucru este adesea folosit pentru a ascunde cod malițios (risc ridicat)."
+  },
+  "similarToLegitimateDomain": {
+    "message": "Acest site arată foarte similar cu un site cunoscut și de încredere. Verificați adresa cu atenție, ar putea fi o copie falsă."
+  },
+  "youngDomain": {
+    "message": "Acest domeniu a fost înregistrat doar acum $AGE$ zile (risc ridicat). Domeniile noi sunt folosite mai frecvent pentru escrocherii.",
+    "placeholders": {
+      "AGE": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "insecureLoginPage": {
+    "message": "Această pagină de autentificare nu este securizată (fără HTTPS). Nu introduceți niciodată parola aici (risc ridicat)."
+  },
+  "loginPageNoMX": {
+    "message": "Această pagină de autentificare aparține unui domeniu care nu poate primi email. Acest lucru este foarte riscant (risc ridicat)."
+  },
+  "malwareExtension": {
+    "message": "Acest link duce la un fișier care ar putea fi dăunător (precum .exe sau .zip). Nu descărcați (risc ridicat)."
+  },
+  "popupTitle": {
+    "message": "LinkShield: Protecția dvs. împotriva Phishing-ului"
+  },
+  "popupSubtitle": {
+    "message": "Rămâneți în siguranță cu alerte și protecție în timp real."
+  },
+  "backgroundAnalysis": {
+    "message": "Scanare în fundal"
+  },
+  "backgroundAnalysisDescription": {
+    "message": "Protecție în timp real. Actualizat în fiecare oră. Acoperire globală."
+  },
+  "activationRequired": {
+    "message": "Activați această funcție pentru a o utiliza."
+  },
+  "integratedProtection": {
+    "message": "Protecție integrată"
+  },
+  "integratedProtectionDescription": {
+    "message": "Verifică direct site-urile web și linkurile pentru caracteristici riscante."
+  },
+  "premiumFeaturesActive": {
+    "message": "Acum folosiți versiunea premium!"
+  },
+  "upgradePrompt": {
+    "message": "Faceți upgrade la premium pentru funcții suplimentare."
+  },
+  "saveSettings": {
+    "message": "Salvare setări"
+  },
+  "settingsSaved": {
+    "message": "Setări salvate!"
+  },
+  "licenseActivate": {
+    "message": "Activare licență"
+  },
+  "licenseInputPlaceholder": {
+    "message": "Introduceți codul de licență"
+  },
+  "licenseCheck": {
+    "message": "Verificare licență"
+  },
+  "licenseInvalid": {
+    "message": "Cod de licență invalid."
+  },
+  "licenseValid": {
+    "message": "Licență activată cu succes!"
+  },
+  "lastRuleUpdate": {
+    "message": "Ultima actualizare a bazei de date: "
+  },
+  "licenseStatus": {
+    "message": "Stare licență:"
+  },
+  "licenseFreemium": {
+    "message": "Versiune gratuită"
+  },
+  "bulkUrlCheck": {
+    "message": "Verificare linkuri multiple"
+  },
+  "bulkUrlCheckDescription": {
+    "message": "Încărcați un fișier .txt pentru a verifica o listă de linkuri."
+  },
+  "fileChoose": {
+    "message": "Alegeți un fișier"
+  },
+  "fileCheck": {
+    "message": "Verificare fișier"
+  },
+  "fileCheckNoUrls": {
+    "message": "Fișierul selectat nu conține niciun link."
+  },
+  "fileCheckFailed": {
+    "message": "Verificarea fișierului a eșuat."
+  },
+  "safeDomain": {
+    "message": "Acesta este un site web cunoscut și sigur."
+  },
+  "allowedProtocol": {
+    "message": "Acest link folosește un protocol sigur (precum 'mailto:' sau 'tel:')."
+  },
+  "invalidUrl": {
+    "message": "Această adresă web este invalidă sau scrisă greșit."
+  },
+  "loadingMessage": {
+    "message": "Se analizează pagina..."
+  },
+  "cannotRetrieveSiteStatus": {
+    "message": "Nu se poate obține starea site-ului."
+  },
+  "unknownRisk": {
+    "message": "Risc necunoscut"
+  },
+  "highRisk": {
+    "message": "Risc ridicat: fiți foarte atent."
+  },
+  "mediumRisk": {
+    "message": "Risc mediu: acordați atenție."
+  },
+  "lowRisk": {
+    "message": "Risc scăzut: câteva puncte de îngrijorare."
+  },
+  "noSuspiciousFeatures": {
+    "message": "Nu s-au găsit caracteristici riscante directe."
+  },
+  "siteStatusNotAvailable": {
+    "message": "Starea acestui site nu este disponibilă."
+  },
+  "sslValidationFailed": {
+    "message": "Certificatul de securitate al acestui site web este invalid."
+  },
+  "shortenedUrlError": {
+    "message": "Nu s-a putut verifica destinația finală a acestui link scurtat."
+  },
+  "redirectedShortenedUrl": {
+    "message": "Acest link scurtat vă redirecționează către un alt site web."
+  },
+  "cryptoPhishingAd": {
+    "message": "Această reclamă are caracteristici de escrocherie crypto (risc ridicat)."
+  },
+  "suspiciousAdStructure": {
+    "message": "Linkul acestei reclame are o structură neobișnuită (risc mediu)."
+  },
+  "suspiciousAdTLD": {
+    "message": "Această reclamă folosește o extensie de domeniu care este adesea abuzată (risc mediu)."
+  },
+  "homoglyphAdAttack": {
+    "message": "Reclama folosește caractere aproape identice cu un site web cunoscut (risc mediu)."
+  },
+  "brandMisuse": {
+    "message": "Reclama folosește ilegal un nume de brand cunoscut (risc ridicat)."
+  },
+  "unknownWarning": {
+    "message": "A fost găsit un risc necunoscut. Fiți foarte atent."
+  },
+  "typosquattingAttack": {
+    "message": "Această adresă web arată ca un site real dar este scrisă greșit intenționat (risc ridicat). Aceasta ar putea fi o versiune falsă."
+  },
+  "downloadKeyword": {
+    "message": "Linkul conține cuvinte legate de descărcări (risc scăzut). Deschideți doar fișierele în care aveți încredere."
+  },
+  "suspiciousScriptContent": {
+    "message": "Un script de pe această pagină conține cod riscant. Aceasta poate fi nesigură."
+  },
+  "invalidScriptSrc": {
+    "message": "Linkul către un script de pe această pagină este incorect."
+  },
+  "mixedScripts": {
+    "message": "Această adresă folosește un amestec de sisteme de scriere diferite (ex. litere latine și chirilice). Acesta este un truc de phishing cunoscut (risc ridicat)."
+  },
+  "introBannerMessage": {
+    "message": "LinkShield este activ și marchează linkurile riscante cu ⚠️. Treceți cu mouse-ul peste pictogramă pentru a vedea motivul."
+  },
+  "digitHomoglyph": {
+    "message": "Această adresă folosește cifre care arată ca litere pentru a imita un brand cunoscut (risc mediu)."
+  },
+  "trustedTLD": {
+    "message": "Acest domeniu are o extensie de domeniu standard (risc scăzut)."
+  },
+  "trustedTld": {
+    "message": "Acest domeniu are o extensie de domeniu standard (risc scăzut)."
+  },
+  "suspiciousPageText": {
+    "message": "Textul de pe această pagină conține cuvinte adesea folosite în escrocherii (risc ridicat)."
+  },
+  "urgencyTactic": {
+    "message": "Această pagină folosește un limbaj urgent pentru a vă pune presiune (risc ridicat). Aveți grijă la escrocherii."
+  },
+  "severityMediumRisk": {
+    "message": "Risc mediu: acest link poate fi nesigur. Fiți atent."
+  },
+  "allowedQueryParam": {
+    "message": "Linkul conține un parametru tehnic sigur și permis."
+  },
+  "suspiciousIframeAdComponent": {
+    "message": "Această pagină încarcă o componentă publicitară de pe un alt site web."
+  },
+  "suspiciousIframeTracking": {
+    "message": "Această pagină încarcă un tracker care vă poate monitoriza comportamentul de navigare."
+  },
+  "suspiciousIframeMalicious": {
+    "message": "A fost găsită o componentă potențial dăunătoare pe această pagină (precum phishing)."
+  },
+  "suspiciousIframeHidden": {
+    "message": "A fost găsit un element invizibil riscant pe pagină."
+  },
+  "mixedContentIframe": {
+    "message": "Această pagină securizată încarcă o componentă nesecurizată. Acesta este un risc de securitate."
+  },
+  "invalidIframeSrc": {
+    "message": "O componentă de pe această pagină nu a putut fi încărcată corect (sursă invalidă)."
+  },
+  "iframeHidden": {
+    "message": "A fost găsit un element invizibil riscant pe pagină."
+  },
+  "typosquattingAttack_adobe_com": {
+    "message": "Această adresă web arată ca adobe.com dar este scrisă greșit intenționat (risc ridicat)."
+  },
+  "typosquattingAttack_alibaba_com": {
+    "message": "Această adresă web arată ca alibaba.com dar este scrisă greșit intenționat (risc ridicat)."
+  },
+  "typosquattingAttack_amazon_com": {
+    "message": "Această adresă web arată ca amazon.com dar este scrisă greșit intenționat (risc ridicat)."
+  },
+  "typosquattingAttack_apple_com": {
+    "message": "Această adresă web arată ca apple.com dar este scrisă greșit intenționat (risc ridicat)."
+  },
+  "typosquattingAttack_facebook_com": {
+    "message": "Această adresă web arată ca facebook.com dar este scrisă greșit intenționat (risc ridicat)."
+  },
+  "typosquattingAttack_google_com": {
+    "message": "Această adresă web arată ca google.com dar este scrisă greșit intenționat (risc ridicat)."
+  },
+  "typosquattingAttack_linkedin_com": {
+    "message": "Această adresă web arată ca linkedin.com dar este scrisă greșit intenționat (risc ridicat)."
+  },
+  "typosquattingAttack_microsoft_com": {
+    "message": "Această adresă web arată ca microsoft.com dar este scrisă greșit intenționat (risc ridicat)."
+  },
+  "typosquattingAttack_paypal_com": {
+    "message": "Această adresă web arată ca paypal.com dar este scrisă greșit intenționat (risc ridicat)."
+  },
+  "typosquattingAttack_whatsapp_com": {
+    "message": "Această adresă web arată ca whatsapp.com dar este scrisă greșit intenționat (risc ridicat)."
+  },
+  "typosquattingAttack_x_com": {
+    "message": "Această adresă web arată ca x.com dar este scrisă greșit intenționat (risc ridicat)."
+  },
+  "homoglyphAttack_microsoft_com": {
+    "message": "Această adresă folosește caractere aproape identice cu microsoft.com (risc ridicat)."
+  },
+  "homoglyphAttack_apple_com": {
+    "message": "Această adresă folosește caractere aproape identice cu apple.com (risc ridicat)."
+  },
+  "homoglyphAttack_google_com": {
+    "message": "Această adresă folosește caractere aproape identice cu google.com (risc ridicat)."
+  },
+  "homoglyphAttack_linkedin_com": {
+    "message": "Această adresă folosește caractere aproape identice cu linkedin.com (risc ridicat)."
+  },
+  "homoglyphAttack_alibaba_com": {
+    "message": "Această adresă folosește caractere aproape identice cu alibaba.com (risc ridicat)."
+  },
+  "homoglyphAttack_whatsapp_com": {
+    "message": "Această adresă folosește caractere aproape identice cu whatsapp.com (risc ridicat)."
+  },
+  "homoglyphAttack_amazon_com": {
+    "message": "Această adresă folosește caractere aproape identice cu amazon.com (risc ridicat)."
+  },
+  "homoglyphAttack_x_com": {
+    "message": "Această adresă folosește caractere aproape identice cu x.com (risc ridicat)."
+  },
+  "homoglyphAttack_facebook_com": {
+    "message": "Această adresă folosește caractere aproape identice cu facebook.com (risc ridicat)."
+  },
+  "homoglyphAttack_adobe_com": {
+    "message": "Această adresă folosește caractere aproape identice cu adobe.com (risc ridicat)."
+  },
+  "homoglyphAttack_paypal_com": {
+    "message": "Această adresă folosește caractere aproape identice cu paypal.com (risc ridicat)."
+  },
+  "typosquatting_microsoft_com": {
+    "message": "Această adresă arată foarte similar cu microsoft.com (risc ridicat). Ar putea fi o pagină falsă."
+  },
+  "typosquatting_apple_com": {
+    "message": "Această adresă arată foarte similar cu apple.com (risc ridicat). Ar putea fi o pagină falsă."
+  },
+  "typosquatting_google_com": {
+    "message": "Această adresă arată foarte similar cu google.com (risc ridicat). Ar putea fi o pagină falsă."
+  },
+  "typosquatting_linkedin_com": {
+    "message": "Această adresă arată foarte similar cu linkedin.com (risc ridicat). Ar putea fi o pagină falsă."
+  },
+  "typosquatting_alibaba_com": {
+    "message": "Această adresă arată foarte similar cu alibaba.com (risc ridicat). Ar putea fi o pagină falsă."
+  },
+  "typosquatting_whatsapp_com": {
+    "message": "Această adresă arată foarte similar cu whatsapp.com (risc ridicat). Ar putea fi o pagină falsă."
+  },
+  "typosquatting_amazon_com": {
+    "message": "Această adresă arată foarte similar cu amazon.com (risc ridicat). Ar putea fi o pagină falsă."
+  },
+  "typosquatting_x_com": {
+    "message": "Această adresă arată foarte similar cu x.com (risc ridicat). Ar putea fi o pagină falsă."
+  },
+  "typosquatting_facebook_com": {
+    "message": "Această adresă arată foarte similar cu facebook.com (risc ridicat). Ar putea fi o pagină falsă."
+  },
+  "typosquatting_adobe_com": {
+    "message": "Această adresă arată foarte similar cu adobe.com (risc ridicat). Ar putea fi o pagină falsă."
+  },
+  "typosquatting_paypal_com": {
+    "message": "Această adresă arată foarte similar cu paypal.com (risc ridicat). Ar putea fi o pagină falsă."
+  },
+  "similarToLegitimateDomain_microsoft_com": {
+    "message": "Acest site arată ca microsoft.com, verificați adresa cu atenție."
+  },
+  "similarToLegitimateDomain_apple_com": {
+    "message": "Acest site arată ca apple.com, verificați adresa cu atenție."
+  },
+  "similarToLegitimateDomain_google_com": {
+    "message": "Acest site arată ca google.com, verificați adresa cu atenție."
+  },
+  "similarToLegitimateDomain_linkedin_com": {
+    "message": "Acest site arată ca linkedin.com, verificați adresa cu atenție."
+  },
+  "similarToLegitimateDomain_alibaba_com": {
+    "message": "Acest site arată ca alibaba.com, verificați adresa cu atenție."
+  },
+  "similarToLegitimateDomain_whatsapp_com": {
+    "message": "Acest site arată ca whatsapp.com, verificați adresa cu atenție."
+  },
+  "similarToLegitimateDomain_amazon_com": {
+    "message": "Acest site arată ca amazon.com, verificați adresa cu atenție."
+  },
+  "similarToLegitimateDomain_x_com": {
+    "message": "Acest site arată ca x.com, verificați adresa cu atenție."
+  },
+  "similarToLegitimateDomain_facebook_com": {
+    "message": "Acest site arată ca facebook.com, verificați adresa cu atenție."
+  },
+  "similarToLegitimateDomain_adobe_com": {
+    "message": "Acest site arată ca adobe.com, verificați adresa cu atenție."
+  },
+  "similarToLegitimateDomain_paypal_com": {
+    "message": "Acest site arată ca paypal.com, verificați adresa cu atenție."
+  },
+  "suspiciousPunycodeDecoding_microsoft_com": {
+    "message": "Acest link folosește caractere neobișnuite pentru a arăta ca microsoft.com (risc ridicat)."
+  },
+  "suspiciousPunycodeDecoding_apple_com": {
+    "message": "Acest link folosește caractere neobișnuite pentru a arăta ca apple.com (risc ridicat)."
+  },
+  "suspiciousPunycodeDecoding_google_com": {
+    "message": "Acest link folosește caractere neobișnuite pentru a arăta ca google.com (risc ridicat)."
+  },
+  "suspiciousPunycodeDecoding_linkedin_com": {
+    "message": "Acest link folosește caractere neobișnuite pentru a arăta ca linkedin.com (risc ridicat)."
+  },
+  "suspiciousPunycodeDecoding_alibaba_com": {
+    "message": "Acest link folosește caractere neobișnuite pentru a arăta ca alibaba.com (risc ridicat)."
+  },
+  "suspiciousPunycodeDecoding_whatsapp_com": {
+    "message": "Acest link folosește caractere neobișnuite pentru a arăta ca whatsapp.com (risc ridicat)."
+  },
+  "suspiciousPunycodeDecoding_amazon_com": {
+    "message": "Acest link folosește caractere neobișnuite pentru a arăta ca amazon.com (risc ridicat)."
+  },
+  "suspiciousPunycodeDecoding_x_com": {
+    "message": "Acest link folosește caractere neobișnuite pentru a arăta ca x.com (risc ridicat)."
+  },
+  "suspiciousPunycodeDecoding_facebook_com": {
+    "message": "Acest link folosește caractere neobișnuite pentru a arăta ca facebook.com (risc ridicat)."
+  },
+  "suspiciousPunycodeDecoding_adobe_com": {
+    "message": "Acest link folosește caractere neobișnuite pentru a arăta ca adobe.com (risc ridicat)."
+  },
+  "suspiciousPunycodeDecoding_paypal_com": {
+    "message": "Acest link folosește caractere neobișnuite pentru a arăta ca paypal.com (risc ridicat)."
+  },
+  "popupPageTitle": {
+    "message": "Panou de control LinkShield"
+  },
+  "extNameFull": {
+    "message": "LinkShield: Arma dvs. împotriva Phishing-ului"
+  },
+  "extDescriptionFull": {
+    "message": "Creșteți-vă securitatea cu alerte directe și protecție avansată împotriva amenințărilor online."
+  },
+  "licenseTrialTitle": {
+    "message": "Perioadă de probă: $DAYS$ zile rămase",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "licenseTrialSubtitle": {
+    "message": "Toate funcțiile premium sunt active în perioada de probă"
+  },
+  "licenseUpgradeLink": {
+    "message": "Upgrade la Premium →"
+  },
+  "licenseExpiredTitle": {
+    "message": "Perioada de probă expirată"
+  },
+  "licenseExpiredSubtitle": {
+    "message": "Activați Premium pentru protecție completă"
+  },
+  "licenseBenefitsLabel": {
+    "message": "Premium include:"
+  },
+  "licenseBenefitsText": {
+    "message": "Analiză în fundal, scanare coduri QR, protecție continuă"
+  },
+  "licenseKeyPlaceholder": {
+    "message": "Introduceți codul de licență"
+  },
+  "licenseActivateButton": {
+    "message": "Activare Premium"
+  },
+  "licenseBuyLink": {
+    "message": "Nu aveți licență? Cumpărați aici →"
+  },
+  "licensePremiumTitle": {
+    "message": "Premium activ"
+  },
+  "licensePremiumSubtitle": {
+    "message": "Protecție completă activată"
+  },
+  "sectionSecuritySettings": {
+    "message": "Setări de securitate"
+  },
+  "backgroundAnalysisTitle": {
+    "message": "Setări de securitate"
+  },
+  "backgroundAnalysisFeature": {
+    "message": "Analiză în fundal"
+  },
+  "premiumBadge": {
+    "message": "PREMIUM"
+  },
+  "integratedProtectionFeature": {
+    "message": "Protecție integrată împotriva Malware și Phishing"
+  },
+  "confirmationMessage": {
+    "message": "Setări salvate cu succes!"
+  },
+  "lastRuleUpdateNone": {
+    "message": "Nu s-a efectuat nicio actualizare a bazei de date"
+  },
+  "errorOccurred": {
+    "message": "A apărut o eroare"
+  },
+  "trialDaysRemaining": {
+    "message": "$DAYS$ zile rămase în perioada de probă",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "14"
+      }
+    }
+  },
+  "trialExpired": {
+    "message": "Perioada de probă expirată"
+  },
+  "trialExpiredMessage": {
+    "message": "Perioada dvs. de probă de 30 de zile a expirat. Activați o licență pentru a continua să utilizați toate funcțiile."
+  },
+  "upgradeNow": {
+    "message": "Upgrade acum"
+  },
+  "gumroadErrorUnknown": {
+    "message": "Eroare necunoscută"
+  },
+  "gumroadErrorLicenseNotExistProduct": {
+    "message": "Acest cod de licență nu există pentru acest produs"
+  },
+  "gumroadErrorLicenseNotExist": {
+    "message": "Acest cod de licență nu există"
+  },
+  "gumroadErrorLicenseRequired": {
+    "message": "Vă rugăm să introduceți un cod de licență"
+  },
+  "gumroadErrorProductNotFound": {
+    "message": "Produsul nu a fost găsit"
+  },
+  "gumroadErrorLicenseDisabled": {
+    "message": "Această licență a fost dezactivată"
+  },
+  "gumroadErrorLicenseRefunded": {
+    "message": "Această licență a fost rambursată"
+  },
+  "gumroadErrorLicenseRevoked": {
+    "message": "Această licență a fost rambursată sau revocată"
+  },
+  "gumroadErrorLicenseInvalid": {
+    "message": "Cod de licență invalid"
+  },
+  "gumroadErrorNetwork": {
+    "message": "Eroare de rețea în timpul validării. Verificați conexiunea la internet."
+  },
+  "licenseEmptyError": {
+    "message": "Vă rugăm să introduceți un cod de licență"
+  },
+  "licenseActivating": {
+    "message": "Se activează..."
+  },
+  "licenseActivatedSuccess": {
+    "message": "Premium activat cu succes!"
+  },
+  "licenseConnectionError": {
+    "message": "Eroare de conexiune. Încercați din nou."
+  },
+  "debugModeTitle": {
+    "message": "Mod depanare"
+  },
+  "debugTrial30": {
+    "message": "Probă (30 zile)"
+  },
+  "debugTrial3": {
+    "message": "Probă (3 zile)"
+  },
+  "debugExpired": {
+    "message": "Expirat"
+  },
+  "debugPremium": {
+    "message": "Premium"
+  },
+  "debugReset": {
+    "message": "Resetare"
+  },
+  "debugTrialSimulated": {
+    "message": "✓ Probă ($DAYS$ zile) simulată",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "debugExpiredSimulated": {
+    "message": "✓ Probă expirată simulată"
+  },
+  "debugPremiumSimulated": {
+    "message": "✓ Premium simulat"
+  },
+  "debugStorageReset": {
+    "message": "✓ Stocare resetată - reîncărcați extensia"
+  },
+  "debugError": {
+    "message": "✗ Eroare: $ERROR$",
+    "placeholders": {
+      "ERROR": {
+        "content": "$1",
+        "example": "Eroare necunoscută"
+      }
+    }
+  },
+  "reason_redirectChain": {
+    "message": "Lanț de redirecționare suspect detectat. Linkul trece prin mai multe servere înainte de a ajunge la destinație."
+  },
+  "reason_excessiveRedirects": {
+    "message": "Prea multe redirecționări în lanț (risc ridicat). Acest link redirecționează de mai mult de 5 ori, ceea ce este adesea folosit pentru a ascunde destinația reală."
+  },
+  "reason_domainHopping": {
+    "message": "Multiple schimbări de domeniu în lanțul de redirecționare (risc ridicat). Linkul sare între mai multe site-uri diferite."
+  },
+  "reason_chainedShorteners": {
+    "message": "Multiple servicii de scurtare URL înlănțuite (risc mediu). Linkurile legitime rareori folosesc mai multe servicii de scurtare."
+  },
+  "reason_suspiciousFinalTLD": {
+    "message": "Destinația finală are o extensie de domeniu suspectă (risc ridicat). Punctul final real folosește un TLD riscant."
+  },
+  "reason_redirectToIP": {
+    "message": "Redirecționarea duce la o adresă IP (risc ridicat). Destinația finală este o adresă IP brută în loc de un nume de domeniu."
+  },
+  "reason_redirectTimeout": {
+    "message": "Analiza redirecționării a expirat (risc mediu). Nu s-a putut urmări complet lanțul de redirecționare în limita de timp."
+  },
+  "atSymbolPhishing": {
+    "message": "CRITIC: Acest link folosește simbolul @ pentru a ascunde destinația reală (risc ridicat). Adresa de dinaintea @ este falsă - veți ajunge de fapt pe un alt site web."
+  },
+  "atSymbolInPath": {
+    "message": "Linkul conține un simbol @ în cale care poate fi folosit pentru ofuscare (risc mediu)."
+  },
+  "doubleEncoding": {
+    "message": "Acest link folosește codificare URL dublă pentru a ascunde conținutul real (risc ridicat). Aceasta este o tehnică comună pentru a ocoli filtrele de securitate."
+  },
+  "fullwidthCharacters": {
+    "message": "Acest link folosește caractere Unicode cu lățime completă care arată ca litere normale (risc ridicat). Acesta este un truc pentru a face site-urile false să pară legitime."
+  },
+  "nullByteInjection": {
+    "message": "Acest link conține un caracter null byte (risc ridicat). Aceasta este o tehnică de hacking care poate fi folosită pentru a ocoli verificările de securitate."
+  },
+  "reason_atSymbolPhishing": {
+    "message": "CRITIC: Atac URL cu credențiale detectat. Domeniul vizibil este fals - veți fi redirecționat către un alt site web."
+  },
+  "reason_doubleEncoding": {
+    "message": "Codificare URL dublă detectată (risc ridicat). Această tehnică de ofuscare este folosită pentru a ascunde conținut malițios."
+  },
+  "reason_fullwidthCharacters": {
+    "message": "Caractere Unicode cu lățime completă detectate (risc ridicat). Aceste caractere speciale imită literele normale pentru a înșela utilizatorii."
+  },
+  "reason_nullByteInjection": {
+    "message": "Injecție null byte detectată (risc ridicat). Această tehnică este folosită pentru a ocoli filtrele de securitate și poate indica un link malițios."
+  },
+  "formActionHijacking": {
+    "message": "Acest formular de autentificare trimite credențialele dvs. către un site web extern (risc critic). Numele de utilizator și parola dvs. pot fi furate."
+  },
+  "formActionExternal": {
+    "message": "Formularul de autentificare trimite date către un domeniu extern: $DOMAIN$ (risc critic). Aceasta este o încercare de furt de credențiale.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "site-rau.com"
+      }
+    }
+  },
+  "formActionInvalid": {
+    "message": "Formularul de autentificare are un URL de acțiune invalid sau suspect (risc ridicat). Credențialele dvs. pot să nu fie trimise în siguranță."
+  },
+  "hiddenIframeZeroSize": {
+    "message": "Iframe ascuns cu dimensiune zero detectat (risc ridicat). Acesta poate fi folosit pentru a încărca conținut malițios invizibil."
+  },
+  "hiddenIframeOffScreen": {
+    "message": "Iframe poziționat în afara ecranului detectat (risc ridicat). Conținutul ascuns vă poate urmări sau fura date."
+  },
+  "hiddenIframeCSSHidden": {
+    "message": "Iframe ascuns CSS detectat (risc ridicat). Cadrele invizibile pot captura apăsările de taste sau încărca malware."
+  },
+  "hiddenIframeNegativePos": {
+    "message": "Iframe cu poziționare negativă detectat (risc mediu). Această tehnică este folosită pentru a ascunde conținut de utilizatori."
+  },
+  "nrdCritical": {
+    "message": "CRITIC: Domeniu înregistrat acum $DAYS$ zile (risc critic). Domeniile complet noi sunt extrem de probabil să fie malițioase.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "0"
+      }
+    }
+  },
+  "nrdHigh": {
+    "message": "Domeniu înregistrat doar acum $DAYS$ zile (risc ridicat). Domeniile foarte noi sunt frecvent folosite pentru escrocherii.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "nrdMedium": {
+    "message": "Domeniu înregistrat acum $DAYS$ zile (risc mediu). Domeniile noi sub 30 de zile necesită prudență suplimentară.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "15"
+      }
+    }
+  },
+  "nrdLow": {
+    "message": "Domeniu înregistrat acum $DAYS$ zile (risc scăzut). Domeniu relativ nou, exercitați puțină prudență.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "60"
+      }
+    }
+  },
+  "licenseErrorNotFound": {
+    "message": "Codul de licență nu a fost găsit. Verificați introducerea dvs."
+  },
+  "licenseErrorDisabled": {
+    "message": "Această licență a fost dezactivată."
+  },
+  "licenseErrorExpired": {
+    "message": "Această licență a expirat."
+  },
+  "licenseErrorActivationLimit": {
+    "message": "Limita de activare atinsă. Dezactivați mai întâi un alt dispozitiv."
+  },
+  "licenseErrorInstanceNotFound": {
+    "message": "Instanța de instalare nu a fost găsită."
+  },
+  "licenseErrorInvalid": {
+    "message": "Cod de licență invalid."
+  },
+  "licenseErrorNetwork": {
+    "message": "Eroare de rețea. Verificați conexiunea și încercați din nou."
+  },
+  "licenseErrorUnknown": {
+    "message": "A apărut o eroare necunoscută în timpul validării."
+  },
+  "invalidUrlFormat": {
+    "message": "Format URL invalid. Adresa web nu a putut fi analizată corect."
+  },
+  "invalidDomain": {
+    "message": "Domeniu invalid. Adresa site-ului web este malformată sau incompletă."
+  },
+  "trustedDomain": {
+    "message": "Acesta este un domeniu de încredere verificat ca sigur."
+  },
+  "errorCalculatingRisk": {
+    "message": "Eroare la calcularea scorului de risc. Încercați din nou."
+  },
+  "punycodeDecodingError": {
+    "message": "Eroare la decodarea caracterelor internaționale din numele de domeniu."
+  },
+  "fileProtocol": {
+    "message": "Acest link folosește protocolul file:// care accesează fișiere locale."
+  },
+  "invalidHostname": {
+    "message": "Nume de gazdă invalid. Formatul numelui de domeniu este incorect."
+  },
+  "urlTooLong": {
+    "message": "Acest URL este neobișnuit de lung (risc mediu). URL-urile foarte lungi pot fi folosite pentru a ascunde conținut malițios."
+  },
+  "nonAscii": {
+    "message": "Acest URL conține caractere non-ASCII care pot fi folosite pentru înșelăciune."
+  },
+  "typosquattingPattern": {
+    "message": "Acest domeniu se potrivește cu un model de typosquatting (risc ridicat). Pare să se dea drept un site web legitim."
+  },
+  "suspiciousIframes": {
+    "message": "Elemente iframe suspecte detectate pe această pagină."
+  },
+  "suspiciousScripts": {
+    "message": "Scripturi suspecte detectate pe această pagină."
+  },
+  "hiddenIframes": {
+    "message": "Elemente iframe ascunse detectate pe această pagină care pot fi folosite în scopuri malițioase."
+  },
+  "unifiedCheckError": {
+    "message": "Eroare în timpul verificării de securitate. Unele verificări pot să nu se fi finalizat."
+  },
+  "initializationError": {
+    "message": "Eroare la inițializarea scanerului de securitate. Reîncărcați pagina."
+  },
+  "checkCurrentUrlError": {
+    "message": "Eroare la verificarea securității URL-ului curent."
+  },
+  "ocrDangerTitle": {
+    "message": "Link periculos detectat în imagine"
+  },
+  "ocrCautionTitle": {
+    "message": "Link suspect detectat în imagine"
+  },
+  "suspiciousDomainDetected": {
+    "message": "Domeniu suspect detectat"
+  },
+  "extractedText": {
+    "message": "Text extras"
+  },
+  "reasons": {
+    "message": "Motive"
+  },
+  "asciiQrDangerTitle": {
+    "message": "Link periculos în codul QR ASCII"
+  },
+  "asciiQrCautionTitle": {
+    "message": "Link suspect în codul QR ASCII"
+  },
+  "hiddenUrl": {
+    "message": "URL ascuns"
+  },
+  "qrDangerTitle": {
+    "message": "Cod QR periculos detectat"
+  },
+  "qrCautionTitle": {
+    "message": "Cod QR suspect detectat"
+  },
+  "fullUrl": {
+    "message": "URL complet"
+  },
+  "neutralIconTitle": {
+    "message": "LinkShield - Protecție activă"
+  },
+  "installNotificationTitle": {
+    "message": "LinkShield instalat"
+  },
+  "installNotificationMessage": {
+    "message": "Acum sunteți protejat împotriva phishing-ului și site-urilor web malițioase."
+  },
+  "not_eligible": {
+    "message": "Nu sunteți eligibil pentru această funcție"
+  },
+  "trial_expired": {
+    "message": "Perioada dvs. de probă a expirat"
+  },
+  "Error": {
+    "message": "Eroare"
+  },
+  "siteSafeTitle": {
+    "message": "Site-ul pare sigur"
+  },
+  "siteCautionTitle": {
+    "message": "Procedați cu prudență"
+  },
+  "siteAlertTitle": {
+    "message": "Avertisment: Amenințare potențială detectată"
+  },
+  "clipboardHijackingCryptoTitle": {
+    "message": "Deturnare adresă crypto detectată!"
+  },
+  "clipboardHijackingTitle": {
+    "message": "Manipulare clipboard detectată!"
+  },
+  "clipboardHijackingMessage": {
+    "message": "Această pagină încearcă să vă modifice clipboard-ul. Fiți atenți când lipiți adrese de portofel sau date sensibile."
+  },
+  "reason_clipboardHijackingCrypto": {
+    "message": "CRITIC: Această pagină vă deturnează clipboard-ul cu adrese crypto (risc critic). Adresele de portofel copiate pot fi înlocuite cu adresele atacatorului."
+  },
+  "reason_clipboardHijackingDetected": {
+    "message": "Această pagină manipulează conținutul clipboard-ului dvs. (risc ridicat). Conținutul lipit poate fi diferit de ce ați copiat."
+  },
+  "brandSubdomainPhishing": {
+    "message": "Cuvânt cheie de brand detectat pe platforma de găzduire gratuită (risc ridicat). Companiile legitime nu folosesc găzduire gratuită pentru servicii oficiale."
+  },
+  "reason_brandSubdomainPhishing": {
+    "message": "Cuvânt cheie de brand detectat pe platforma de găzduire gratuită (risc ridicat). Companiile legitime nu folosesc găzduire gratuită pentru servicii oficiale."
+  },
+  "nrdTelCombo": {
+    "message": "Număr de telefon pe un domeniu recent înregistrat cu cuvinte cheie de phishing (risc mediu). Aceasta poate fi o încercare de vishing (phishing vocal)."
+  },
+  "reason_nrdTelCombo": {
+    "message": "Număr de telefon pe un domeniu recent înregistrat cu cuvinte cheie de phishing (risc mediu). Aceasta poate fi o încercare de vishing (phishing vocal)."
+  },
+  "reason_opaqueRedirectChain": {
+    "message": "Redirecționare opacă detectată (risc scăzut). Destinația redirecționării nu a putut fi urmărită complet."
+  },
+  "reason_opaqueRedirectToIP": {
+    "message": "Redirecționare opacă către adresă IP (risc ridicat). Redirecționarea ascunsă duce la o adresă IP brută în loc de un domeniu."
+  },
+  "reason_opaqueRedirectSuspiciousTLD": {
+    "message": "Redirecționare opacă către extensie de domeniu suspectă (risc mediu). Redirecționarea ascunsă duce la un TLD riscant."
+  },
+  "reason_opaqueRedirectNRD": {
+    "message": "Redirecționare opacă către domeniu recent înregistrat (risc ridicat). Redirecționarea ascunsă duce la un domeniu foarte nou."
+  },
+  "bitbWarningTitle": {
+    "message": "Fereastră de autentificare falsă detectată!"
+  },
+  "bitbWarningMessage": {
+    "message": "Această pagină afișează o fereastră de browser simulată care imită un popup de autentificare real. Acesta este un atac Browser-in-the-Browser (BitB) conceput pentru a vă fura credențialele. 'Popup-ul' este de fapt doar HTML/CSS făcut să arate ca o fereastră de browser reală."
+  },
+  "reason_bitbAttackDetected": {
+    "message": "Atac Browser-in-the-Browser detectat (risc critic). Această pagină afișează o fereastră de browser falsă pentru a vă fura credențialele de autentificare."
+  },
+  "reason_bitbFakeUrlBar": {
+    "message": "Bară URL falsă detectată afișând domeniu de încredere (risc critic). Adresa afișată este falsă și concepută să vă înșele."
+  },
+  "reason_bitbWindowControls": {
+    "message": "Controale de fereastră false detectate (risc ridicat). Butoanele de închidere/minimizare sunt simulate să arate ca un popup real."
+  },
+  "reason_bitbLoginFormInOverlay": {
+    "message": "Formular de autentificare în suprapunere detectat (risc ridicat). Popup-urile de autentificare reale se deschid în ferestre de browser separate, nu suprapuneri."
+  },
+  "reason_bitbOAuthBranding": {
+    "message": "Branding OAuth cu formular de autentificare în suprapunere (risc ridicat). Butoanele 'Conectare cu Google/Microsoft' în popup-uri false sunt furt de credențiale."
+  },
+  "reason_bitbPadlockIcon": {
+    "message": "Pictogramă de lacăt de securitate falsă detectată (risc mediu). Lacătele reale apar în bara de adrese a browserului, nu în conținutul paginii."
+  },
+  "reason_bitbWindowChrome": {
+    "message": "Stil de fereastră de browser simulat detectat (risc mediu). Suprapunerea este stilizată să arate ca o fereastră de sistem de operare."
+  },
+  "reason_bitbIframeInModal": {
+    "message": "Iframe în suprapunere modală detectat (risc scăzut). Acesta poate fi folosit pentru a încărca conținut de autentificare extern."
+  },
+  "clickFixPowerShellTitle": {
+    "message": "Comandă PowerShell detectată!"
+  },
+  "clickFixCommandTitle": {
+    "message": "Injecție de comandă detectată!"
+  },
+  "clickFixMessage": {
+    "message": "Această pagină conține o comandă suspectă care ar putea dăuna computerului dvs. Nu copiați sau executați această comandă."
+  },
+  "clickFixSubMessage": {
+    "message": "Atacatorii deseori deghizează comenzile malițioase ca 'remedieri' sau 'pași de verificare'. Nu rulați niciodată comenzi din surse de neîncredere."
+  },
+  "bitbAttackCriticalTitle": {
+    "message": "Critic: Fereastră de autentificare falsă!"
+  },
+  "bitbAttackWarningTitle": {
+    "message": "Avertisment: Popup de autentificare suspect"
+  },
+  "bitbAttackMessage": {
+    "message": "Această pagină afișează o fereastră de browser falsă concepută să vă fure credențialele. Popup-urile de autentificare reale se deschid în ferestre de browser separate."
+  },
+  "bitbAttackTip": {
+    "message": "Verificați întotdeauna bara de adrese a browserului pentru URL-ul real, nu textul afișat în pagină."
+  },
+  "shadowDomLoginForm": {
+    "message": "Formular de autentificare ascuns în Shadow DOM detectat (risc ridicat). Această tehnică este folosită pentru a evita scanerele de securitate."
+  },
+  "shadowDomPhishingOverlay": {
+    "message": "Suprapunere de phishing ascunsă în Shadow DOM detectată (risc critic). Shadow DOM este folosit pentru a ascunde conținut malițios."
+  },
+  "shadowDomIframe": {
+    "message": "Iframe suspect ascuns în Shadow DOM detectat (risc ridicat). Iframe-urile ascunse pot fi folosite pentru furt de credențiale."
+  },
+  "urlCredentialsAttack": {
+    "message": "URL-ul conține credențiale în format de atac (risc critic). Domeniul vizibil este fals - veți fi redirecționat în altă parte."
+  },
+  "nrdUltraCritical": {
+    "message": "Domeniu înregistrat doar cu ore în urmă (risc critic). Acest lucru este extrem de suspect și folosit de obicei pentru phishing."
+  },
+  "nrdVishingCombo": {
+    "message": "Număr de telefon pe domeniu recent înregistrat cu indicatori de phishing (risc ridicat). Aceasta poate fi o încercare de vishing (phishing vocal)."
+  },
+  "tableBasedQR": {
+    "message": "Cod QR ascuns în tabel HTML detectat (risc mediu). Această tehnică este folosită pentru a ocoli detectarea QR bazată pe imagini."
+  },
+  "tableQrDangerTitle": {
+    "message": "Link periculos în cod QR ascuns"
+  },
+  "tableQrCautionTitle": {
+    "message": "Link suspect în cod QR ascuns"
+  },
+  "hiddenQrDetected": {
+    "message": "Cod QR ascuns detectat în conținutul paginii. Acesta poate conține un URL malițios."
+  },
+  "bitbAttackCritical": {
+    "message": "CRITIC: Atac Browser-in-the-Browser detectat! Această pagină afișează o fereastră de autentificare falsă concepută să vă fure credențialele."
+  },
+  "bitbAttackWarning": {
+    "message": "Avertisment: Popup suspect detectat care poate fi un atac Browser-in-the-Browser. Verificați URL-ul cu atenție."
+  },
+  "clickFixDetected": {
+    "message": "Atac ClickFix detectat! Această pagină conține o comandă malițioasă deghizată ca remediere sau pas de verificare. Nu o copiați sau executați."
+  },
+  "clipboardHijacking": {
+    "message": "Deturnare clipboard detectată! Această pagină încearcă să vă modifice conținutul clipboard-ului fără permisiune."
+  },
+  "hiddenIframe": {
+    "message": "Iframe ascuns detectat pe această pagină. Cadrele invizibile pot fi folosite pentru urmărire, furt de credențiale sau livrare de malware."
+  },
+  "typosquatting": {
+    "message": "Typosquatting detectat! Acest domeniu este scris greșit intenționat pentru a se da drept un site web legitim."
+  },
+  "ipAddressDomain": {
+    "message": "Acest site web folosește o adresă IP în loc de un nume de domeniu. Acest lucru este foarte neobișnuit și indică adesea intenție malițioasă."
+  },
+  "extremeSubdomains": {
+    "message": "Număr extrem de subdomenii detectat. Această tehnică este adesea folosită pentru a ascunde URL-uri malițioase sau pentru a se da drept site-uri legitime."
+  },
+  "vishingDetected": {
+    "message": "Potențial atac de vishing (phishing vocal) detectat. Această pagină combină numere de telefon cu indicatori de phishing."
+  },
+  "punycodeDetected": {
+    "message": "Domeniu Punycode detectat! Această adresă folosește caractere internaționale care pot să se dea drept un site web legitim."
+  },
+  "reason_nonAscii": {
+    "message": "Caractere suspecte detectate (homoglife)"
+  },
+  "reason_brandKeywordHomoglyph": {
+    "message": "Imitare de brand detectată"
+  },
+  "reason_noHttps": {
+    "message": "Fără conexiune securizată (HTTPS)"
+  },
+  "reason_suspiciousTLD": {
+    "message": "Extensie de domeniu suspectă"
+  },
+  "reason_ipAsDomain": {
+    "message": "Adresă IP ca nume de domeniu"
+  },
+  "reason_tooManySubdomains": {
+    "message": "Prea multe subdomenii"
+  },
+  "reason_shortenedUrl": {
+    "message": "URL scurtat detectat"
+  },
+  "reason_suspiciousKeywords": {
+    "message": "Cuvinte cheie suspecte în URL"
+  },
+  "reason_malwareExtension": {
+    "message": "Extensie de fișier potențial dăunătoare"
+  },
+  "reason_urlTooLong": {
+    "message": "URL neobișnuit de lung"
+  },
+  "reason_encodedCharacters": {
+    "message": "Caractere codificate în URL"
+  },
+  "reason_homoglyphAttack": {
+    "message": "Atac homoglif detectat"
+  },
+  "reason_typosquatting": {
+    "message": "Typosquatting detectat"
+  },
+  "reason_suspiciousBrandPattern": {
+    "message": "Model de brand suspect"
+  },
+  "reason_unusualPort": {
+    "message": "Port neobișnuit"
+  },
+  "reason_punycode": {
+    "message": "Domeniu Punycode detectat"
+  },
+  "reason_loginPageNoMX": {
+    "message": "Pagină de autentificare fără server de email"
+  },
+  "reason_insecureLoginPage": {
+    "message": "Pagină de autentificare nesecurizată"
+  },
+  "reason_sslValidationFailed": {
+    "message": "Validare SSL eșuată"
+  },
+  "reason_similarToLegitimateDomain": {
+    "message": "Arată ca un domeniu legitim"
+  },
+  "trialPeriodActive": {
+    "message": "Perioada de probă activă"
+  }
+}

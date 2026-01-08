@@ -123,7 +123,7 @@
     "message": "Proteção Integrada"
   },
   "integratedProtectionDescription": {
-    "message": "Verifica diretamente sites e links em busca de características arriscadas."
+    "message": "Combina múltiplos serviços de segurança para proteção abrangente."
   },
   "premiumFeaturesActive": {
     "message": "Você está usando a versão premium!"
@@ -464,7 +464,6 @@
   "suspiciousPunycodeDecoding_paypal_com": {
     "message": "Este link usa caracteres incomuns para parecer paypal.com (risco alto)."
   },
-
   "popupPageTitle": {
     "message": "Painel do LinkShield"
   },
@@ -474,7 +473,6 @@
   "extDescriptionFull": {
     "message": "Aumente sua segurança com alertas diretos e proteção avançada contra ameaças online."
   },
-
   "licenseTrialTitle": {
     "message": "Teste: $DAYS$ dias restantes",
     "placeholders": {
@@ -517,7 +515,6 @@
   "licensePremiumSubtitle": {
     "message": "Proteção completa ativada"
   },
-
   "sectionSecuritySettings": {
     "message": "Configurações de Segurança"
   },
@@ -533,9 +530,6 @@
   "integratedProtectionFeature": {
     "message": "Proteção Integrada contra Malware e Phishing"
   },
-  "integratedProtectionDescription": {
-    "message": "Combina múltiplos serviços de segurança para proteção abrangente."
-  },
   "confirmationMessage": {
     "message": "Configurações salvas com sucesso!"
   },
@@ -545,7 +539,6 @@
   "errorOccurred": {
     "message": "Ocorreu um erro"
   },
-
   "trialDaysRemaining": {
     "message": "$DAYS$ dias restantes no teste",
     "placeholders": {
@@ -564,7 +557,6 @@
   "upgradeNow": {
     "message": "Atualizar agora"
   },
-
   "gumroadErrorUnknown": {
     "message": "Erro desconhecido"
   },
@@ -595,7 +587,6 @@
   "gumroadErrorNetwork": {
     "message": "Erro de rede durante a validação. Por favor, verifique sua conexão com a internet."
   },
-
   "licenseEmptyError": {
     "message": "Por favor, digite um código de licença"
   },
@@ -608,7 +599,6 @@
   "licenseConnectionError": {
     "message": "Erro de conexão. Por favor, tente novamente."
   },
-
   "debugModeTitle": {
     "message": "Modo de Depuração"
   },
@@ -702,7 +692,6 @@
   "reason_nullByteInjection": {
     "message": "Injeção de byte nulo detectada (risco alto). Esta técnica é usada para burlar filtros de segurança e pode indicar um link malicioso."
   },
-
   "formActionHijacking": {
     "message": "Este formulário de login envia suas credenciais para um site externo (risco crítico). Seu nome de usuário e senha podem ser roubados."
   },
@@ -718,7 +707,6 @@
   "formActionInvalid": {
     "message": "Formulário de login tem URL de ação inválida ou suspeita (risco alto). Suas credenciais podem não ser enviadas de forma segura."
   },
-
   "hiddenIframeZeroSize": {
     "message": "Iframe oculto com tamanho zero detectado (risco alto). Isso pode ser usado para carregar conteúdo malicioso de forma invisível."
   },
@@ -731,7 +719,6 @@
   "hiddenIframeNegativePos": {
     "message": "Iframe com posicionamento negativo detectado (risco médio). Esta técnica é usada para esconder conteúdo dos usuários."
   },
-
   "nrdCritical": {
     "message": "CRÍTICO: Domínio registrado há $DAYS$ dia(s) (risco crítico). Domínios novos têm alta probabilidade de serem maliciosos.",
     "placeholders": {
@@ -768,7 +755,6 @@
       }
     }
   },
-
   "licenseErrorNotFound": {
     "message": "Chave de licença não encontrada. Por favor, verifique sua entrada."
   },
@@ -793,7 +779,6 @@
   "licenseErrorUnknown": {
     "message": "Ocorreu um erro desconhecido durante a validação."
   },
-
   "invalidUrlFormat": {
     "message": "Formato de URL inválido. O endereço não pôde ser analisado corretamente."
   },
@@ -893,7 +878,6 @@
   "Error": {
     "message": "Erro"
   },
-
   "siteSafeTitle": {
     "message": "Site parece seguro"
   },
@@ -903,7 +887,6 @@
   "siteAlertTitle": {
     "message": "Atenção: Ameaça potencial detectada"
   },
-
   "clipboardHijackingCryptoTitle": {
     "message": "Sequestro de Endereço Crypto Detectado!"
   },
@@ -919,21 +902,18 @@
   "reason_clipboardHijackingDetected": {
     "message": "Esta página manipula o conteúdo da sua área de transferência (risco alto). O conteúdo colado pode diferir do que você copiou."
   },
-
   "brandSubdomainPhishing": {
     "message": "Palavra-chave de marca detectada em plataforma de hospedagem gratuita (risco alto). Empresas legítimas não usam hospedagem gratuita para serviços oficiais."
   },
   "reason_brandSubdomainPhishing": {
     "message": "Palavra-chave de marca detectada em plataforma de hospedagem gratuita (risco alto). Empresas legítimas não usam hospedagem gratuita para serviços oficiais."
   },
-
   "nrdTelCombo": {
     "message": "Número de telefone em domínio recém-registrado com palavras-chave de phishing (risco médio). Pode ser uma tentativa de vishing (phishing por voz)."
   },
   "reason_nrdTelCombo": {
     "message": "Número de telefone em domínio recém-registrado com palavras-chave de phishing (risco médio). Pode ser uma tentativa de vishing (phishing por voz)."
   },
-
   "reason_opaqueRedirectChain": {
     "message": "Redirecionamento opaco detectado (risco baixo). O destino do redirecionamento não pôde ser totalmente rastreado."
   },
@@ -946,7 +926,6 @@
   "reason_opaqueRedirectNRD": {
     "message": "Redirecionamento opaco para domínio recém-registrado (risco alto). O redirecionamento oculto leva a um domínio muito novo."
   },
-
   "bitbWarningTitle": {
     "message": "Janela de Login Falsa Detectada!"
   },
@@ -977,7 +956,6 @@
   "reason_bitbIframeInModal": {
     "message": "Iframe dentro de overlay modal detectado (risco baixo). Isso pode ser usado para carregar conteúdo de login externo."
   },
-
   "clickFixPowerShellTitle": {
     "message": "Comando PowerShell Detectado!"
   },
@@ -1032,7 +1010,6 @@
   "hiddenQrDetected": {
     "message": "QR code oculto detectado no conteúdo da página. Pode conter uma URL maliciosa."
   },
-
   "bitbAttackCritical": {
     "message": "CRÍTICO: Ataque Browser-in-the-Browser detectado! Esta página exibe uma janela de login falsa projetada para roubar suas credenciais."
   },
@@ -1063,7 +1040,6 @@
   "punycodeDetected": {
     "message": "Domínio Punycode detectado! Este endereço usa caracteres internacionais que podem estar imitando um site legítimo."
   },
-
   "reason_nonAscii": {
     "message": "Caracteres suspeitos detectados (homóglifos)"
   },
@@ -1126,5 +1102,11 @@
   },
   "trialPeriodActive": {
     "message": "Período de teste ativo"
+  },
+  "bitbClosePageButton": {
+    "message": "Fechar esta página"
+  },
+  "bitbDismissButton": {
+    "message": "Eu entendo o risco"
   }
 }

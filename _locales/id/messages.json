@@ -464,7 +464,6 @@
   "suspiciousPunycodeDecoding_paypal_com": {
     "message": "Tautan ini menggunakan karakter tidak biasa untuk terlihat seperti paypal.com (risiko tinggi)."
   },
-
   "popupPageTitle": {
     "message": "Dasbor LinkShield"
   },
@@ -474,7 +473,6 @@
   "extDescriptionFull": {
     "message": "Tingkatkan keamanan Anda dengan peringatan langsung dan perlindungan canggih terhadap ancaman online."
   },
-
   "licenseTrialTitle": {
     "message": "Uji coba: $DAYS$ hari tersisa",
     "placeholders": {
@@ -517,7 +515,6 @@
   "licensePremiumSubtitle": {
     "message": "Perlindungan penuh diaktifkan"
   },
-
   "sectionSecuritySettings": {
     "message": "Pengaturan Keamanan"
   },
@@ -542,7 +539,6 @@
   "errorOccurred": {
     "message": "Terjadi kesalahan"
   },
-
   "trialDaysRemaining": {
     "message": "$DAYS$ hari tersisa dalam uji coba",
     "placeholders": {
@@ -561,7 +557,6 @@
   "upgradeNow": {
     "message": "Tingkatkan sekarang"
   },
-
   "gumroadErrorUnknown": {
     "message": "Kesalahan tidak diketahui"
   },
@@ -592,7 +587,6 @@
   "gumroadErrorNetwork": {
     "message": "Kesalahan jaringan saat validasi. Silakan periksa koneksi internet Anda."
   },
-
   "licenseEmptyError": {
     "message": "Silakan masukkan kode lisensi"
   },
@@ -605,7 +599,6 @@
   "licenseConnectionError": {
     "message": "Kesalahan koneksi. Silakan coba lagi."
   },
-
   "debugModeTitle": {
     "message": "Mode Debug"
   },
@@ -699,7 +692,6 @@
   "reason_nullByteInjection": {
     "message": "Injeksi null byte terdeteksi (risiko tinggi). Teknik ini digunakan untuk melewati filter keamanan dan dapat menunjukkan tautan berbahaya."
   },
-
   "formActionHijacking": {
     "message": "Formulir login ini mengirim kredensial Anda ke situs web eksternal (risiko kritis). Nama pengguna dan kata sandi Anda mungkin dicuri."
   },
@@ -715,7 +707,6 @@
   "formActionInvalid": {
     "message": "Formulir login memiliki URL aksi yang tidak valid atau mencurigakan (risiko tinggi). Kredensial Anda mungkin tidak dikirim dengan aman."
   },
-
   "hiddenIframeZeroSize": {
     "message": "Iframe tersembunyi dengan ukuran nol terdeteksi (risiko tinggi). Ini dapat digunakan untuk memuat konten berbahaya secara tidak terlihat."
   },
@@ -728,7 +719,6 @@
   "hiddenIframeNegativePos": {
     "message": "Iframe dengan posisi negatif terdeteksi (risiko sedang). Teknik ini digunakan untuk menyembunyikan konten dari pengguna."
   },
-
   "nrdCritical": {
     "message": "KRITIS: Domain terdaftar $DAYS$ hari yang lalu (risiko kritis). Domain yang baru sekali sangat mungkin berbahaya.",
     "placeholders": {
@@ -765,7 +755,6 @@
       }
     }
   },
-
   "licenseErrorNotFound": {
     "message": "Kode lisensi tidak ditemukan. Silakan periksa input Anda."
   },
@@ -790,7 +779,6 @@
   "licenseErrorUnknown": {
     "message": "Terjadi kesalahan tidak diketahui selama validasi."
   },
-
   "invalidUrlFormat": {
     "message": "Format URL tidak valid. Alamat web tidak dapat diurai dengan benar."
   },
@@ -890,7 +878,6 @@
   "Error": {
     "message": "Kesalahan"
   },
-
   "siteSafeTitle": {
     "message": "Situs tampak aman"
   },
@@ -900,7 +887,6 @@
   "siteAlertTitle": {
     "message": "Peringatan: Ancaman potensial terdeteksi"
   },
-
   "clipboardHijackingCryptoTitle": {
     "message": "Pembajakan Alamat Kripto Terdeteksi!"
   },
@@ -916,21 +902,18 @@
   "reason_clipboardHijackingDetected": {
     "message": "Halaman ini memanipulasi konten clipboard Anda (risiko tinggi). Konten yang ditempelkan mungkin berbeda dari yang Anda salin."
   },
-
   "brandSubdomainPhishing": {
     "message": "Kata kunci merek terdeteksi pada platform hosting gratis (risiko tinggi). Perusahaan yang sah tidak menggunakan hosting gratis untuk layanan resmi."
   },
   "reason_brandSubdomainPhishing": {
     "message": "Kata kunci merek terdeteksi pada platform hosting gratis (risiko tinggi). Perusahaan yang sah tidak menggunakan hosting gratis untuk layanan resmi."
   },
-
   "nrdTelCombo": {
     "message": "Nomor telepon pada domain yang baru terdaftar dengan kata kunci phishing (risiko sedang). Ini mungkin upaya vishing (phishing suara)."
   },
   "reason_nrdTelCombo": {
     "message": "Nomor telepon pada domain yang baru terdaftar dengan kata kunci phishing (risiko sedang). Ini mungkin upaya vishing (phishing suara)."
   },
-
   "reason_opaqueRedirectChain": {
     "message": "Pengalihan tidak transparan terdeteksi (risiko rendah). Tujuan pengalihan tidak dapat dilacak sepenuhnya."
   },
@@ -943,7 +926,6 @@
   "reason_opaqueRedirectNRD": {
     "message": "Pengalihan tidak transparan ke domain yang baru terdaftar (risiko tinggi). Pengalihan tersembunyi mengarah ke domain yang sangat baru."
   },
-
   "bitbWarningTitle": {
     "message": "Jendela Login Palsu Terdeteksi!"
   },
@@ -974,7 +956,6 @@
   "reason_bitbIframeInModal": {
     "message": "Iframe di dalam overlay modal terdeteksi (risiko rendah). Ini mungkin digunakan untuk memuat konten login eksternal."
   },
-
   "clickFixPowerShellTitle": {
     "message": "Perintah PowerShell Terdeteksi!"
   },
@@ -1029,7 +1010,6 @@
   "hiddenQrDetected": {
     "message": "Kode QR tersembunyi terdeteksi di konten halaman. Ini mungkin berisi URL berbahaya."
   },
-
   "bitbAttackCritical": {
     "message": "KRITIS: Serangan Browser-in-the-Browser terdeteksi! Halaman ini menampilkan jendela login palsu yang dirancang untuk mencuri kredensial Anda."
   },
@@ -1060,7 +1040,6 @@
   "punycodeDetected": {
     "message": "Domain Punycode terdeteksi! Alamat ini menggunakan karakter internasional yang mungkin menyamar sebagai situs web yang sah."
   },
-
   "reason_nonAscii": {
     "message": "Karakter mencurigakan terdeteksi (homoglyph)"
   },
@@ -1123,5 +1102,11 @@
   },
   "trialPeriodActive": {
     "message": "Periode uji coba aktif"
+  },
+  "bitbClosePageButton": {
+    "message": "Tutup halaman ini"
+  },
+  "bitbDismissButton": {
+    "message": "Saya memahami risikonya"
   }
 }

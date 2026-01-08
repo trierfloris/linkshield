@@ -1102,5 +1102,11 @@
   },
   "trialPeriodActive": {
     "message": "Пробний період активний"
+  },
+  "bitbClosePageButton": {
+    "message": "Закрити цю сторінку"
+  },
+  "bitbDismissButton": {
+    "message": "Я розумію ризик"
   }
 }

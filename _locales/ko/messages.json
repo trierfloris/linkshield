@@ -123,7 +123,7 @@
     "message": "통합 보호"
   },
   "integratedProtectionDescription": {
-    "message": "웹사이트와 링크의 위험한 특징을 직접 확인합니다."
+    "message": "여러 보안 서비스를 결합하여 포괄적인 보호를 제공합니다."
   },
   "premiumFeaturesActive": {
     "message": "현재 프리미엄 버전을 사용하고 있습니다!"
@@ -464,7 +464,6 @@
   "suspiciousPunycodeDecoding_paypal_com": {
     "message": "이 링크는 paypal.com처럼 보이게 하기 위해 비정상적인 문자를 사용합니다(높은 위험)."
   },
-
   "reason_nonAscii": {
     "message": "의심스러운 문자 감지 (동형문자)"
   },
@@ -525,7 +524,6 @@
   "reason_similarToLegitimateDomain": {
     "message": "합법적인 도메인과 유사"
   },
-
   "qrDangerTitle": {
     "message": "위험: 피싱 QR 코드!"
   },
@@ -559,7 +557,6 @@
   "extractedText": {
     "message": "추출된 텍스트"
   },
-
   "trialPeriodActive": {
     "message": "체험 기간 활성화"
   },
@@ -581,7 +578,6 @@
   "upgradeNow": {
     "message": "지금 업그레이드"
   },
-
   "popupPageTitle": {
     "message": "LinkShield 대시보드"
   },
@@ -591,7 +587,6 @@
   "extDescriptionFull": {
     "message": "즉각적인 알림과 고급 보호로 온라인 보안을 강화하세요."
   },
-
   "licenseTrialTitle": {
     "message": "체험 기간: $DAYS$일 남음",
     "placeholders": {
@@ -634,7 +629,6 @@
   "licensePremiumSubtitle": {
     "message": "완전한 보호가 활성화되었습니다"
   },
-
   "sectionSecuritySettings": {
     "message": "보안 설정"
   },
@@ -650,9 +644,6 @@
   "integratedProtectionFeature": {
     "message": "통합 악성코드 및 피싱 보호"
   },
-  "integratedProtectionDescription": {
-    "message": "여러 보안 서비스를 결합하여 포괄적인 보호를 제공합니다."
-  },
   "confirmationMessage": {
     "message": "설정이 성공적으로 저장되었습니다!"
   },
@@ -662,7 +653,6 @@
   "errorOccurred": {
     "message": "오류가 발생했습니다"
   },
-
   "gumroadErrorUnknown": {
     "message": "알 수 없는 오류"
   },
@@ -693,7 +683,6 @@
   "gumroadErrorNetwork": {
     "message": "검증 중 네트워크 오류가 발생했습니다. 인터넷 연결을 확인하세요."
   },
-
   "licenseEmptyError": {
     "message": "라이선스 키를 입력하세요"
   },
@@ -706,7 +695,6 @@
   "licenseConnectionError": {
     "message": "연결 오류. 다시 시도하세요."
   },
-
   "debugModeTitle": {
     "message": "디버그 모드"
   },
@@ -785,7 +773,6 @@
   "nullByteInjection": {
     "message": "이 링크에는 널 바이트 문자가 포함되어 있습니다 (높은 위험). 이것은 보안 검사를 우회하는 데 사용할 수 있는 해킹 기술입니다."
   },
-
   "formActionHijacking": {
     "message": "이 로그인 양식이 자격 증명을 외부 웹사이트로 전송합니다 (심각한 위험). 사용자 이름과 비밀번호가 도난당할 수 있습니다."
   },
@@ -801,7 +788,6 @@
   "formActionInvalid": {
     "message": "로그인 양식에 잘못되거나 의심스러운 작업 URL이 있습니다 (높은 위험). 자격 증명이 안전하게 전송되지 않을 수 있습니다."
   },
-
   "hiddenIframeZeroSize": {
     "message": "크기가 0인 숨겨진 iframe 감지됨 (높은 위험). 악성 콘텐츠를 보이지 않게 로드하는 데 사용될 수 있습니다."
   },
@@ -814,7 +800,6 @@
   "hiddenIframeNegativePos": {
     "message": "음수 위치 지정된 iframe 감지됨 (중간 위험). 이 기술은 사용자로부터 콘텐츠를 숨기는 데 사용됩니다."
   },
-
   "nrdCritical": {
     "message": "심각: 도메인이 $DAYS$일 전에 등록됨 (심각한 위험). 아주 새로운 도메인은 악성일 가능성이 매우 높습니다.",
     "placeholders": {
@@ -851,7 +836,6 @@
       }
     }
   },
-
   "licenseErrorNotFound": {
     "message": "라이선스 키를 찾을 수 없습니다. 입력 내용을 확인해 주세요."
   },
@@ -876,92 +860,253 @@
   "licenseErrorUnknown": {
     "message": "검증 중 알 수 없는 오류가 발생했습니다."
   },
-  "invalidUrlFormat": { "message": "잘못된 URL 형식입니다. 웹 주소를 올바르게 처리할 수 없습니다." },
-  "invalidDomain": { "message": "잘못된 도메인입니다. 웹사이트 주소가 잘못되었거나 불완전합니다." },
-  "trustedDomain": { "message": "이것은 안전한 것으로 확인된 신뢰할 수 있는 도메인입니다." },
-  "errorCalculatingRisk": { "message": "위험 계산 중 오류가 발생했습니다. 다시 시도해 주세요." },
-  "punycodeDecodingError": { "message": "도메인 이름의 국제 문자를 디코딩하는 중 오류가 발생했습니다." },
-  "fileProtocol": { "message": "이 링크는 로컬 파일을 여는 file:// 프로토콜을 사용합니다." },
-  "invalidHostname": { "message": "잘못된 호스트 이름입니다. 도메인 이름 형식이 잘못되었습니다." },
-  "urlTooLong": { "message": "이 URL은 비정상적으로 깁니다 (중간 위험). 매우 긴 URL은 악성 콘텐츠를 숨기는 데 사용될 수 있습니다." },
-  "nonAscii": { "message": "이 URL에는 속임에 사용될 수 있는 비 ASCII 문자가 포함되어 있습니다." },
-  "typosquattingPattern": { "message": "이 도메인은 타이포스쿼팅 패턴과 일치합니다 (높은 위험). 합법적인 웹사이트를 모방하는 것으로 보입니다." },
-  "suspiciousIframes": { "message": "이 페이지에서 의심스러운 iframe 요소가 감지되었습니다." },
-  "suspiciousScripts": { "message": "이 페이지에서 의심스러운 스크립트가 감지되었습니다." },
-  "hiddenIframes": { "message": "악의적인 목적으로 사용될 수 있는 숨겨진 iframe 요소가 감지되었습니다." },
-  "unifiedCheckError": { "message": "보안 검사 중 오류가 발생했습니다. 일부 검사가 완료되지 않았을 수 있습니다." },
-  "initializationError": { "message": "보안 스캐너 초기화 중 오류가 발생했습니다. 페이지를 새로고침 해주세요." },
-  "checkCurrentUrlError": { "message": "현재 URL 보안 확인 중 오류가 발생했습니다." },
-  "neutralIconTitle": { "message": "LinkShield - 보호 활성화됨" },
-  "installNotificationTitle": { "message": "LinkShield 설치됨" },
-  "installNotificationMessage": { "message": "이제 피싱 및 악성 웹사이트로부터 보호됩니다." },
-  "not_eligible": { "message": "이 기능을 사용할 자격이 없습니다" },
-  "trial_expired": { "message": "체험 기간이 만료되었습니다" },
-  "Error": { "message": "오류" },
-  "siteSafeTitle": { "message": "웹사이트가 안전해 보입니다" },
-  "siteCautionTitle": { "message": "주의하여 진행하세요" },
-  "siteAlertTitle": { "message": "경고: 잠재적 위협 감지됨" },
-  "atSymbolInPath": { "message": "링크 경로에 @ 기호가 포함되어 있어 난독화에 사용될 수 있습니다 (중간 위험)." },
-  "reason_atSymbolPhishing": { "message": "심각: 자격 증명 URL 공격이 감지되었습니다. 표시된 도메인은 가짜입니다 - 다른 웹사이트로 리디렉션됩니다." },
-  "reason_doubleEncoding": { "message": "이중 URL 인코딩 감지됨 (높은 위험). 이 난독화 기술은 악성 콘텐츠를 숨기는 데 사용됩니다." },
-  "reason_fullwidthCharacters": { "message": "전각 유니코드 문자 감지됨 (높은 위험). 이러한 특수 문자는 사용자를 속이기 위해 일반 문자를 모방합니다." },
-  "reason_nullByteInjection": { "message": "널 바이트 인젝션 감지됨 (높은 위험). 이 기술은 보안 필터를 우회하는 데 사용됩니다." },
-
-  "clipboardHijackingCryptoTitle": { "message": "암호화폐 주소 하이재킹 감지!" },
-  "clipboardHijackingTitle": { "message": "클립보드 조작 감지!" },
-  "clipboardHijackingMessage": { "message": "이 페이지가 클립보드를 수정하려고 합니다. 지갑 주소나 민감한 데이터를 붙여넣을 때 주의하세요." },
-  "reason_clipboardHijackingCrypto": { "message": "심각: 이 페이지가 암호화폐 주소로 클립보드를 하이재킹합니다 (심각한 위험). 복사한 지갑 주소가 공격자 주소로 대체될 수 있습니다." },
-  "reason_clipboardHijackingDetected": { "message": "이 페이지가 클립보드 내용을 조작합니다 (높은 위험). 붙여넣은 내용이 복사한 내용과 다를 수 있습니다." },
-
-  "brandSubdomainPhishing": { "message": "무료 호스팅 플랫폼에서 브랜드 이름 감지됨 (높은 위험). 합법적인 회사는 공식 서비스에 무료 호스팅을 사용하지 않습니다." },
-  "reason_brandSubdomainPhishing": { "message": "무료 호스팅 플랫폼에서 브랜드 이름 감지됨 (높은 위험). 합법적인 회사는 공식 서비스에 무료 호스팅을 사용하지 않습니다." },
-
-  "nrdTelCombo": { "message": "피싱 키워드가 있는 신규 등록 도메인에 전화번호 (중간 위험). 비싱(음성 피싱) 시도일 수 있습니다." },
-  "reason_nrdTelCombo": { "message": "피싱 키워드가 있는 신규 등록 도메인에 전화번호 (중간 위험). 비싱(음성 피싱) 시도일 수 있습니다." },
-
-  "reason_opaqueRedirectChain": { "message": "불투명한 리다이렉트 감지됨 (낮은 위험). 리다이렉트 대상을 완전히 추적할 수 없습니다." },
-  "reason_opaqueRedirectToIP": { "message": "IP 주소로의 불투명한 리다이렉트 (높은 위험). 숨겨진 리다이렉트가 도메인 대신 원시 IP 주소로 연결됩니다." },
-  "reason_opaqueRedirectSuspiciousTLD": { "message": "의심스러운 도메인 확장자로의 불투명한 리다이렉트 (중간 위험). 숨겨진 리다이렉트가 위험한 TLD로 연결됩니다." },
-  "reason_opaqueRedirectNRD": { "message": "신규 등록 도메인으로의 불투명한 리다이렉트 (높은 위험). 숨겨진 리다이렉트가 매우 새로운 도메인으로 연결됩니다." },
-
-  "bitbWarningTitle": { "message": "가짜 로그인 창 감지됨!" },
-  "bitbWarningMessage": { "message": "이 페이지는 실제 로그인 팝업을 모방한 시뮬레이션된 브라우저 창을 표시하고 있습니다. 이것은 자격 증명을 훔치도록 설계된 Browser-in-the-Browser (BitB) 공격입니다. '팝업'은 실제로 실제 브라우저 창처럼 보이는 HTML/CSS입니다." },
-  "reason_bitbAttackDetected": { "message": "Browser-in-the-Browser 공격 감지됨 (심각한 위험). 이 페이지는 로그인 자격 증명을 훔치기 위해 가짜 브라우저 창을 표시합니다." },
-  "reason_bitbFakeUrlBar": { "message": "신뢰할 수 있는 도메인을 표시하는 가짜 URL 바 감지됨 (심각한 위험). 표시된 주소는 가짜이며 속이기 위해 설계되었습니다." },
-  "reason_bitbWindowControls": { "message": "가짜 창 컨트롤 감지됨 (높은 위험). 닫기/최소화 버튼은 실제 팝업처럼 보이도록 시뮬레이션되었습니다." },
-  "reason_bitbLoginFormInOverlay": { "message": "오버레이 내 로그인 폼 감지됨 (높은 위험). 실제 로그인 팝업은 오버레이가 아닌 별도의 브라우저 창에서 열립니다." },
-  "reason_bitbOAuthBranding": { "message": "오버레이 내 폼과 함께 OAuth 브랜딩 (높은 위험). 가짜 팝업의 'Google/Microsoft로 로그인' 버튼은 자격 증명 도용입니다." },
-  "reason_bitbPadlockIcon": { "message": "가짜 보안 자물쇠 아이콘 감지됨 (중간 위험). 실제 자물쇠는 페이지 내용이 아닌 브라우저 주소 표시줄에 나타납니다." },
-  "reason_bitbWindowChrome": { "message": "시뮬레이션된 브라우저 창 스타일링 감지됨 (중간 위험). 오버레이가 운영 체제 창처럼 보이도록 스타일되었습니다." },
-  "reason_bitbIframeInModal": { "message": "모달 오버레이 내 Iframe 감지됨 (낮은 위험). 외부 로그인 콘텐츠를 로드하는 데 사용될 수 있습니다." },
-
-  "clickFixPowerShellTitle": { "message": "PowerShell 명령 감지됨!" },
-  "clickFixCommandTitle": { "message": "명령 주입 감지됨!" },
-  "clickFixMessage": { "message": "이 페이지에는 컴퓨터에 해를 끼칠 수 있는 의심스러운 명령이 포함되어 있습니다. 이 명령을 복사하거나 실행하지 마세요." },
-  "clickFixSubMessage": { "message": "공격자들은 종종 악성 명령을 '수정' 또는 '확인 단계'로 위장합니다. 신뢰할 수 없는 소스의 명령은 절대 실행하지 마세요." },
-  "bitbAttackCriticalTitle": { "message": "심각: 가짜 로그인 창!" },
-  "bitbAttackWarningTitle": { "message": "경고: 의심스러운 로그인 팝업" },
-  "bitbAttackMessage": { "message": "이 페이지는 자격 증명을 훔치도록 설계된 가짜 브라우저 창을 표시하고 있습니다. 실제 로그인 팝업은 별도의 브라우저 창에서 열립니다." },
-  "bitbAttackTip": { "message": "항상 브라우저 주소 표시줄에서 실제 URL을 확인하세요. 페이지 내에 표시된 텍스트가 아닙니다." },
-  "shadowDomLoginForm": { "message": "Shadow DOM에 숨겨진 로그인 폼 감지됨 (높은 위험). 이 기술은 보안 스캐너를 회피하는 데 사용됩니다." },
-  "shadowDomPhishingOverlay": { "message": "Shadow DOM에 숨겨진 피싱 오버레이 감지됨 (심각한 위험). Shadow DOM이 악성 콘텐츠를 숨기는 데 사용되고 있습니다." },
-  "shadowDomIframe": { "message": "Shadow DOM에 숨겨진 의심스러운 iframe 감지됨 (높은 위험). 숨겨진 iframe은 자격 증명 도용에 사용될 수 있습니다." },
-  "urlCredentialsAttack": { "message": "URL에 공격 형식의 자격 증명이 포함되어 있음 (심각한 위험). 표시된 도메인은 가짜입니다 - 다른 곳으로 리디렉션됩니다." },
-  "nrdUltraCritical": { "message": "몇 시간 전에 등록된 도메인 (심각한 위험). 이것은 매우 의심스러우며 일반적으로 피싱에 사용됩니다." },
-  "nrdVishingCombo": { "message": "피싱 지표가 있는 신규 등록 도메인에 전화번호 (높은 위험). 비싱(음성 피싱) 시도일 수 있습니다." },
-  "tableBasedQR": { "message": "HTML 테이블에 숨겨진 QR 코드 감지됨 (중간 위험). 이 기술은 이미지 기반 QR 감지를 우회하는 데 사용됩니다." },
-  "tableQrDangerTitle": { "message": "숨겨진 QR 코드의 위험한 링크" },
-  "tableQrCautionTitle": { "message": "숨겨진 QR 코드의 의심스러운 링크" },
-  "hiddenQrDetected": { "message": "페이지 콘텐츠에 숨겨진 QR 코드 감지됨. 악성 URL이 포함되어 있을 수 있습니다." },
-
-  "bitbAttackCritical": { "message": "심각: Browser-in-the-Browser 공격 감지됨! 이 페이지는 자격 증명을 훔치기 위해 가짜 로그인 창을 표시하고 있습니다." },
-  "bitbAttackWarning": { "message": "경고: Browser-in-the-Browser 공격일 수 있는 의심스러운 팝업이 감지되었습니다. URL을 주의 깊게 확인하세요." },
-  "clickFixDetected": { "message": "ClickFix 공격 감지됨! 이 페이지에는 수정 또는 확인 단계로 위장한 악성 명령이 포함되어 있습니다. 복사하거나 실행하지 마세요." },
-  "clipboardHijacking": { "message": "클립보드 하이재킹 감지됨! 이 페이지가 권한 없이 클립보드 내용을 수정하려고 합니다." },
-  "hiddenIframe": { "message": "이 페이지에서 숨겨진 iframe이 감지되었습니다. 보이지 않는 프레임은 추적, 자격 증명 도용 또는 맬웨어 배포에 사용될 수 있습니다." },
-  "typosquatting": { "message": "타이포스쿼팅 감지됨! 이 도메인은 합법적인 웹사이트를 사칭하기 위해 의도적으로 철자가 틀립니다." },
-  "ipAddressDomain": { "message": "이 웹사이트는 도메인 이름 대신 IP 주소를 사용합니다. 이는 매우 비정상적이며 종종 악의적인 의도를 나타냅니다." },
-  "extremeSubdomains": { "message": "극단적인 수의 하위 도메인이 감지되었습니다. 이 기술은 악성 URL을 숨기거나 합법적인 사이트를 사칭하는 데 자주 사용됩니다." },
-  "vishingDetected": { "message": "잠재적인 비싱(음성 피싱) 공격 감지됨. 이 페이지는 전화번호와 피싱 지표를 결합합니다." },
-  "punycodeDetected": { "message": "Punycode 도메인 감지됨! 이 주소는 합법적인 웹사이트를 사칭할 수 있는 국제 문자를 사용합니다." }
+  "invalidUrlFormat": {
+    "message": "잘못된 URL 형식입니다. 웹 주소를 올바르게 처리할 수 없습니다."
+  },
+  "invalidDomain": {
+    "message": "잘못된 도메인입니다. 웹사이트 주소가 잘못되었거나 불완전합니다."
+  },
+  "trustedDomain": {
+    "message": "이것은 안전한 것으로 확인된 신뢰할 수 있는 도메인입니다."
+  },
+  "errorCalculatingRisk": {
+    "message": "위험 계산 중 오류가 발생했습니다. 다시 시도해 주세요."
+  },
+  "punycodeDecodingError": {
+    "message": "도메인 이름의 국제 문자를 디코딩하는 중 오류가 발생했습니다."
+  },
+  "fileProtocol": {
+    "message": "이 링크는 로컬 파일을 여는 file:// 프로토콜을 사용합니다."
+  },
+  "invalidHostname": {
+    "message": "잘못된 호스트 이름입니다. 도메인 이름 형식이 잘못되었습니다."
+  },
+  "urlTooLong": {
+    "message": "이 URL은 비정상적으로 깁니다 (중간 위험). 매우 긴 URL은 악성 콘텐츠를 숨기는 데 사용될 수 있습니다."
+  },
+  "nonAscii": {
+    "message": "이 URL에는 속임에 사용될 수 있는 비 ASCII 문자가 포함되어 있습니다."
+  },
+  "typosquattingPattern": {
+    "message": "이 도메인은 타이포스쿼팅 패턴과 일치합니다 (높은 위험). 합법적인 웹사이트를 모방하는 것으로 보입니다."
+  },
+  "suspiciousIframes": {
+    "message": "이 페이지에서 의심스러운 iframe 요소가 감지되었습니다."
+  },
+  "suspiciousScripts": {
+    "message": "이 페이지에서 의심스러운 스크립트가 감지되었습니다."
+  },
+  "hiddenIframes": {
+    "message": "악의적인 목적으로 사용될 수 있는 숨겨진 iframe 요소가 감지되었습니다."
+  },
+  "unifiedCheckError": {
+    "message": "보안 검사 중 오류가 발생했습니다. 일부 검사가 완료되지 않았을 수 있습니다."
+  },
+  "initializationError": {
+    "message": "보안 스캐너 초기화 중 오류가 발생했습니다. 페이지를 새로고침 해주세요."
+  },
+  "checkCurrentUrlError": {
+    "message": "현재 URL 보안 확인 중 오류가 발생했습니다."
+  },
+  "neutralIconTitle": {
+    "message": "LinkShield - 보호 활성화됨"
+  },
+  "installNotificationTitle": {
+    "message": "LinkShield 설치됨"
+  },
+  "installNotificationMessage": {
+    "message": "이제 피싱 및 악성 웹사이트로부터 보호됩니다."
+  },
+  "not_eligible": {
+    "message": "이 기능을 사용할 자격이 없습니다"
+  },
+  "trial_expired": {
+    "message": "체험 기간이 만료되었습니다"
+  },
+  "Error": {
+    "message": "오류"
+  },
+  "siteSafeTitle": {
+    "message": "웹사이트가 안전해 보입니다"
+  },
+  "siteCautionTitle": {
+    "message": "주의하여 진행하세요"
+  },
+  "siteAlertTitle": {
+    "message": "경고: 잠재적 위협 감지됨"
+  },
+  "atSymbolInPath": {
+    "message": "링크 경로에 @ 기호가 포함되어 있어 난독화에 사용될 수 있습니다 (중간 위험)."
+  },
+  "reason_atSymbolPhishing": {
+    "message": "심각: 자격 증명 URL 공격이 감지되었습니다. 표시된 도메인은 가짜입니다 - 다른 웹사이트로 리디렉션됩니다."
+  },
+  "reason_doubleEncoding": {
+    "message": "이중 URL 인코딩 감지됨 (높은 위험). 이 난독화 기술은 악성 콘텐츠를 숨기는 데 사용됩니다."
+  },
+  "reason_fullwidthCharacters": {
+    "message": "전각 유니코드 문자 감지됨 (높은 위험). 이러한 특수 문자는 사용자를 속이기 위해 일반 문자를 모방합니다."
+  },
+  "reason_nullByteInjection": {
+    "message": "널 바이트 인젝션 감지됨 (높은 위험). 이 기술은 보안 필터를 우회하는 데 사용됩니다."
+  },
+  "clipboardHijackingCryptoTitle": {
+    "message": "암호화폐 주소 하이재킹 감지!"
+  },
+  "clipboardHijackingTitle": {
+    "message": "클립보드 조작 감지!"
+  },
+  "clipboardHijackingMessage": {
+    "message": "이 페이지가 클립보드를 수정하려고 합니다. 지갑 주소나 민감한 데이터를 붙여넣을 때 주의하세요."
+  },
+  "reason_clipboardHijackingCrypto": {
+    "message": "심각: 이 페이지가 암호화폐 주소로 클립보드를 하이재킹합니다 (심각한 위험). 복사한 지갑 주소가 공격자 주소로 대체될 수 있습니다."
+  },
+  "reason_clipboardHijackingDetected": {
+    "message": "이 페이지가 클립보드 내용을 조작합니다 (높은 위험). 붙여넣은 내용이 복사한 내용과 다를 수 있습니다."
+  },
+  "brandSubdomainPhishing": {
+    "message": "무료 호스팅 플랫폼에서 브랜드 이름 감지됨 (높은 위험). 합법적인 회사는 공식 서비스에 무료 호스팅을 사용하지 않습니다."
+  },
+  "reason_brandSubdomainPhishing": {
+    "message": "무료 호스팅 플랫폼에서 브랜드 이름 감지됨 (높은 위험). 합법적인 회사는 공식 서비스에 무료 호스팅을 사용하지 않습니다."
+  },
+  "nrdTelCombo": {
+    "message": "피싱 키워드가 있는 신규 등록 도메인에 전화번호 (중간 위험). 비싱(음성 피싱) 시도일 수 있습니다."
+  },
+  "reason_nrdTelCombo": {
+    "message": "피싱 키워드가 있는 신규 등록 도메인에 전화번호 (중간 위험). 비싱(음성 피싱) 시도일 수 있습니다."
+  },
+  "reason_opaqueRedirectChain": {
+    "message": "불투명한 리다이렉트 감지됨 (낮은 위험). 리다이렉트 대상을 완전히 추적할 수 없습니다."
+  },
+  "reason_opaqueRedirectToIP": {
+    "message": "IP 주소로의 불투명한 리다이렉트 (높은 위험). 숨겨진 리다이렉트가 도메인 대신 원시 IP 주소로 연결됩니다."
+  },
+  "reason_opaqueRedirectSuspiciousTLD": {
+    "message": "의심스러운 도메인 확장자로의 불투명한 리다이렉트 (중간 위험). 숨겨진 리다이렉트가 위험한 TLD로 연결됩니다."
+  },
+  "reason_opaqueRedirectNRD": {
+    "message": "신규 등록 도메인으로의 불투명한 리다이렉트 (높은 위험). 숨겨진 리다이렉트가 매우 새로운 도메인으로 연결됩니다."
+  },
+  "bitbWarningTitle": {
+    "message": "가짜 로그인 창 감지됨!"
+  },
+  "bitbWarningMessage": {
+    "message": "이 페이지는 실제 로그인 팝업을 모방한 시뮬레이션된 브라우저 창을 표시하고 있습니다. 이것은 자격 증명을 훔치도록 설계된 Browser-in-the-Browser (BitB) 공격입니다. '팝업'은 실제로 실제 브라우저 창처럼 보이는 HTML/CSS입니다."
+  },
+  "reason_bitbAttackDetected": {
+    "message": "Browser-in-the-Browser 공격 감지됨 (심각한 위험). 이 페이지는 로그인 자격 증명을 훔치기 위해 가짜 브라우저 창을 표시합니다."
+  },
+  "reason_bitbFakeUrlBar": {
+    "message": "신뢰할 수 있는 도메인을 표시하는 가짜 URL 바 감지됨 (심각한 위험). 표시된 주소는 가짜이며 속이기 위해 설계되었습니다."
+  },
+  "reason_bitbWindowControls": {
+    "message": "가짜 창 컨트롤 감지됨 (높은 위험). 닫기/최소화 버튼은 실제 팝업처럼 보이도록 시뮬레이션되었습니다."
+  },
+  "reason_bitbLoginFormInOverlay": {
+    "message": "오버레이 내 로그인 폼 감지됨 (높은 위험). 실제 로그인 팝업은 오버레이가 아닌 별도의 브라우저 창에서 열립니다."
+  },
+  "reason_bitbOAuthBranding": {
+    "message": "오버레이 내 폼과 함께 OAuth 브랜딩 (높은 위험). 가짜 팝업의 'Google/Microsoft로 로그인' 버튼은 자격 증명 도용입니다."
+  },
+  "reason_bitbPadlockIcon": {
+    "message": "가짜 보안 자물쇠 아이콘 감지됨 (중간 위험). 실제 자물쇠는 페이지 내용이 아닌 브라우저 주소 표시줄에 나타납니다."
+  },
+  "reason_bitbWindowChrome": {
+    "message": "시뮬레이션된 브라우저 창 스타일링 감지됨 (중간 위험). 오버레이가 운영 체제 창처럼 보이도록 스타일되었습니다."
+  },
+  "reason_bitbIframeInModal": {
+    "message": "모달 오버레이 내 Iframe 감지됨 (낮은 위험). 외부 로그인 콘텐츠를 로드하는 데 사용될 수 있습니다."
+  },
+  "clickFixPowerShellTitle": {
+    "message": "PowerShell 명령 감지됨!"
+  },
+  "clickFixCommandTitle": {
+    "message": "명령 주입 감지됨!"
+  },
+  "clickFixMessage": {
+    "message": "이 페이지에는 컴퓨터에 해를 끼칠 수 있는 의심스러운 명령이 포함되어 있습니다. 이 명령을 복사하거나 실행하지 마세요."
+  },
+  "clickFixSubMessage": {
+    "message": "공격자들은 종종 악성 명령을 '수정' 또는 '확인 단계'로 위장합니다. 신뢰할 수 없는 소스의 명령은 절대 실행하지 마세요."
+  },
+  "bitbAttackCriticalTitle": {
+    "message": "심각: 가짜 로그인 창!"
+  },
+  "bitbAttackWarningTitle": {
+    "message": "경고: 의심스러운 로그인 팝업"
+  },
+  "bitbAttackMessage": {
+    "message": "이 페이지는 자격 증명을 훔치도록 설계된 가짜 브라우저 창을 표시하고 있습니다. 실제 로그인 팝업은 별도의 브라우저 창에서 열립니다."
+  },
+  "bitbAttackTip": {
+    "message": "항상 브라우저 주소 표시줄에서 실제 URL을 확인하세요. 페이지 내에 표시된 텍스트가 아닙니다."
+  },
+  "shadowDomLoginForm": {
+    "message": "Shadow DOM에 숨겨진 로그인 폼 감지됨 (높은 위험). 이 기술은 보안 스캐너를 회피하는 데 사용됩니다."
+  },
+  "shadowDomPhishingOverlay": {
+    "message": "Shadow DOM에 숨겨진 피싱 오버레이 감지됨 (심각한 위험). Shadow DOM이 악성 콘텐츠를 숨기는 데 사용되고 있습니다."
+  },
+  "shadowDomIframe": {
+    "message": "Shadow DOM에 숨겨진 의심스러운 iframe 감지됨 (높은 위험). 숨겨진 iframe은 자격 증명 도용에 사용될 수 있습니다."
+  },
+  "urlCredentialsAttack": {
+    "message": "URL에 공격 형식의 자격 증명이 포함되어 있음 (심각한 위험). 표시된 도메인은 가짜입니다 - 다른 곳으로 리디렉션됩니다."
+  },
+  "nrdUltraCritical": {
+    "message": "몇 시간 전에 등록된 도메인 (심각한 위험). 이것은 매우 의심스러우며 일반적으로 피싱에 사용됩니다."
+  },
+  "nrdVishingCombo": {
+    "message": "피싱 지표가 있는 신규 등록 도메인에 전화번호 (높은 위험). 비싱(음성 피싱) 시도일 수 있습니다."
+  },
+  "tableBasedQR": {
+    "message": "HTML 테이블에 숨겨진 QR 코드 감지됨 (중간 위험). 이 기술은 이미지 기반 QR 감지를 우회하는 데 사용됩니다."
+  },
+  "tableQrDangerTitle": {
+    "message": "숨겨진 QR 코드의 위험한 링크"
+  },
+  "tableQrCautionTitle": {
+    "message": "숨겨진 QR 코드의 의심스러운 링크"
+  },
+  "hiddenQrDetected": {
+    "message": "페이지 콘텐츠에 숨겨진 QR 코드 감지됨. 악성 URL이 포함되어 있을 수 있습니다."
+  },
+  "bitbAttackCritical": {
+    "message": "심각: Browser-in-the-Browser 공격 감지됨! 이 페이지는 자격 증명을 훔치기 위해 가짜 로그인 창을 표시하고 있습니다."
+  },
+  "bitbAttackWarning": {
+    "message": "경고: Browser-in-the-Browser 공격일 수 있는 의심스러운 팝업이 감지되었습니다. URL을 주의 깊게 확인하세요."
+  },
+  "clickFixDetected": {
+    "message": "ClickFix 공격 감지됨! 이 페이지에는 수정 또는 확인 단계로 위장한 악성 명령이 포함되어 있습니다. 복사하거나 실행하지 마세요."
+  },
+  "clipboardHijacking": {
+    "message": "클립보드 하이재킹 감지됨! 이 페이지가 권한 없이 클립보드 내용을 수정하려고 합니다."
+  },
+  "hiddenIframe": {
+    "message": "이 페이지에서 숨겨진 iframe이 감지되었습니다. 보이지 않는 프레임은 추적, 자격 증명 도용 또는 맬웨어 배포에 사용될 수 있습니다."
+  },
+  "typosquatting": {
+    "message": "타이포스쿼팅 감지됨! 이 도메인은 합법적인 웹사이트를 사칭하기 위해 의도적으로 철자가 틀립니다."
+  },
+  "ipAddressDomain": {
+    "message": "이 웹사이트는 도메인 이름 대신 IP 주소를 사용합니다. 이는 매우 비정상적이며 종종 악의적인 의도를 나타냅니다."
+  },
+  "extremeSubdomains": {
+    "message": "극단적인 수의 하위 도메인이 감지되었습니다. 이 기술은 악성 URL을 숨기거나 합법적인 사이트를 사칭하는 데 자주 사용됩니다."
+  },
+  "vishingDetected": {
+    "message": "잠재적인 비싱(음성 피싱) 공격 감지됨. 이 페이지는 전화번호와 피싱 지표를 결합합니다."
+  },
+  "punycodeDetected": {
+    "message": "Punycode 도메인 감지됨! 이 주소는 합법적인 웹사이트를 사칭할 수 있는 국제 문자를 사용합니다."
+  },
+  "bitbClosePageButton": {
+    "message": "이 페이지 닫기"
+  },
+  "bitbDismissButton": {
+    "message": "위험을 이해합니다"
+  }
 }

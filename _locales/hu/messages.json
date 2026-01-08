@@ -123,7 +123,7 @@
     "message": "Integrált védelem"
   },
   "integratedProtectionDescription": {
-    "message": "Közvetlenül ellenőrzi a weboldalakat és linkeket kockázatos jellemzők tekintetében."
+    "message": "Több biztonsági szolgáltatást kombinál az átfogó védelemért."
   },
   "premiumFeaturesActive": {
     "message": "Most a prémium verziót használod!"
@@ -464,7 +464,6 @@
   "suspiciousPunycodeDecoding_paypal_com": {
     "message": "Ez a link szokatlan karaktereket használ, hogy úgy nézzen ki, mint a paypal.com (magas kockázat)."
   },
-
   "popupPageTitle": {
     "message": "LinkShield Vezérlőpult"
   },
@@ -474,7 +473,6 @@
   "extDescriptionFull": {
     "message": "Növeld biztonságodat közvetlen figyelmeztetésekkel és fejlett védelemmel az online fenyegetések ellen."
   },
-
   "licenseTrialTitle": {
     "message": "Próbaidő: $DAYS$ nap hátra",
     "placeholders": {
@@ -517,7 +515,6 @@
   "licensePremiumSubtitle": {
     "message": "Teljes védelem engedélyezve"
   },
-
   "sectionSecuritySettings": {
     "message": "Biztonsági beállítások"
   },
@@ -533,9 +530,6 @@
   "integratedProtectionFeature": {
     "message": "Integrált kártevő és adathalász védelem"
   },
-  "integratedProtectionDescription": {
-    "message": "Több biztonsági szolgáltatást kombinál az átfogó védelemért."
-  },
   "confirmationMessage": {
     "message": "Beállítások sikeresen mentve!"
   },
@@ -545,7 +539,6 @@
   "errorOccurred": {
     "message": "Hiba történt"
   },
-
   "trialDaysRemaining": {
     "message": "$DAYS$ nap maradt a próbaidőből",
     "placeholders": {
@@ -564,7 +557,6 @@
   "upgradeNow": {
     "message": "Frissítés most"
   },
-
   "gumroadErrorUnknown": {
     "message": "Ismeretlen hiba"
   },
@@ -595,7 +587,6 @@
   "gumroadErrorNetwork": {
     "message": "Hálózati hiba az ellenőrzés során. Ellenőrizd az internetkapcsolatodat."
   },
-
   "licenseEmptyError": {
     "message": "Kérjük, adj meg egy licenckódot"
   },
@@ -608,7 +599,6 @@
   "licenseConnectionError": {
     "message": "Kapcsolódási hiba. Kérjük, próbáld újra."
   },
-
   "debugModeTitle": {
     "message": "Hibakeresési mód"
   },
@@ -702,7 +692,6 @@
   "reason_nullByteInjection": {
     "message": "Null bájt injekció észlelve (magas kockázat). Ezt a technikát biztonsági szűrők megkerülésére használják és rosszindulatú linkre utalhat."
   },
-
   "formActionHijacking": {
     "message": "Ez a bejelentkezési űrlap külső weboldalra küldi a hitelesítő adataidat (kritikus kockázat). A felhasználónevedet és jelszavadat ellophatják."
   },
@@ -718,7 +707,6 @@
   "formActionInvalid": {
     "message": "A bejelentkezési űrlap érvénytelen vagy gyanús célcímmel rendelkezik (magas kockázat). A hitelesítő adataid nem biztonságosan küldhetők el."
   },
-
   "hiddenIframeZeroSize": {
     "message": "Rejtett, nulla méretű iframe észlelve (magas kockázat). Ezt rosszindulatú tartalom láthatatlan betöltésére használhatják."
   },
@@ -731,7 +719,6 @@
   "hiddenIframeNegativePos": {
     "message": "Negatív pozicionálású iframe észlelve (közepes kockázat). Ezt a technikát tartalom elrejtésére használják a felhasználók elől."
   },
-
   "nrdCritical": {
     "message": "KRITIKUS: Domain $DAYS$ napja regisztrálva (kritikus kockázat). A vadonatúj domainek rendkívül valószínű, hogy rosszindulatúak.",
     "placeholders": {
@@ -768,7 +755,6 @@
       }
     }
   },
-
   "licenseErrorNotFound": {
     "message": "Licenckulcs nem található. Ellenőrizd a beírt adatokat."
   },
@@ -793,7 +779,6 @@
   "licenseErrorUnknown": {
     "message": "Ismeretlen hiba történt az ellenőrzés során."
   },
-
   "invalidUrlFormat": {
     "message": "Érvénytelen URL formátum. A webcímet nem sikerült megfelelően értelmezni."
   },
@@ -893,7 +878,6 @@
   "Error": {
     "message": "Hiba"
   },
-
   "siteSafeTitle": {
     "message": "Az oldal biztonságosnak tűnik"
   },
@@ -903,7 +887,6 @@
   "siteAlertTitle": {
     "message": "Figyelmeztetés: Potenciális fenyegetés észlelve"
   },
-
   "clipboardHijackingCryptoTitle": {
     "message": "Kripto címeltérítés észlelve!"
   },
@@ -919,21 +902,18 @@
   "reason_clipboardHijackingDetected": {
     "message": "Ez az oldal manipulálja a vágólap tartalmát (magas kockázat). A beillesztett tartalom eltérhet attól, amit másoltál."
   },
-
   "brandSubdomainPhishing": {
     "message": "Márka kulcsszó észlelve ingyenes tárhelyen (magas kockázat). A legitim cégek nem használnak ingyenes tárhelyet hivatalos szolgáltatásokhoz."
   },
   "reason_brandSubdomainPhishing": {
     "message": "Márka kulcsszó észlelve ingyenes tárhelyen (magas kockázat). A legitim cégek nem használnak ingyenes tárhelyet hivatalos szolgáltatásokhoz."
   },
-
   "nrdTelCombo": {
     "message": "Telefonszám újonnan regisztrált domainen adathalász kulcsszavakkal (közepes kockázat). Ez vishing (hangalapú adathalász) kísérlet lehet."
   },
   "reason_nrdTelCombo": {
     "message": "Telefonszám újonnan regisztrált domainen adathalász kulcsszavakkal (közepes kockázat). Ez vishing (hangalapú adathalász) kísérlet lehet."
   },
-
   "reason_opaqueRedirectChain": {
     "message": "Átlátszatlan átirányítás észlelve (alacsony kockázat). Az átirányítás célját nem sikerült teljesen nyomon követni."
   },
@@ -946,7 +926,6 @@
   "reason_opaqueRedirectNRD": {
     "message": "Átlátszatlan átirányítás újonnan regisztrált domainre (magas kockázat). A rejtett átirányítás nagyon új domainre vezet."
   },
-
   "bitbWarningTitle": {
     "message": "Hamis bejelentkezési ablak észlelve!"
   },
@@ -977,7 +956,6 @@
   "reason_bitbIframeInModal": {
     "message": "Iframe észlelve modális átfedésben (alacsony kockázat). Ezt külső bejelentkezési tartalom betöltésére használhatják."
   },
-
   "clickFixPowerShellTitle": {
     "message": "PowerShell parancs észlelve!"
   },
@@ -1032,7 +1010,6 @@
   "hiddenQrDetected": {
     "message": "Rejtett QR-kód észlelve az oldal tartalmában. Ez rosszindulatú URL-t tartalmazhat."
   },
-
   "bitbAttackCritical": {
     "message": "KRITIKUS: Browser-in-the-Browser támadás észlelve! Ez az oldal hamis bejelentkezési ablakot jelenít meg a hitelesítő adataid ellopására."
   },
@@ -1063,7 +1040,6 @@
   "punycodeDetected": {
     "message": "Punycode domain észlelve! Ez a cím nemzetközi karaktereket használ, amelyek egy legitim weboldalt utánozhatnak."
   },
-
   "reason_nonAscii": {
     "message": "Gyanús karakterek észlelve (homoglifák)"
   },
@@ -1126,5 +1102,11 @@
   },
   "trialPeriodActive": {
     "message": "Próbaidőszak aktív"
+  },
+  "bitbClosePageButton": {
+    "message": "Oldal bezárása"
+  },
+  "bitbDismissButton": {
+    "message": "Megértem a kockázatot"
   }
 }

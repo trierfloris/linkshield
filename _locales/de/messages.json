@@ -123,7 +123,7 @@
     "message": "Integrierter Schutz"
   },
   "integratedProtectionDescription": {
-    "message": "Überprüft Webseiten und Links direkt auf riskante Merkmale."
+    "message": "Kombiniert mehrere Sicherheitsdienste für umfassenden Schutz."
   },
   "premiumFeaturesActive": {
     "message": "Du nutzt jetzt die Premium-Version!"
@@ -464,7 +464,6 @@
   "suspiciousPunycodeDecoding_paypal_com": {
     "message": "Dieser Link verwendet ungewöhnliche Zeichen, um wie paypal.com auszusehen (hohes Risiko)."
   },
-
   "reason_nonAscii": {
     "message": "Verdächtige Zeichen erkannt (Homoglyphen)"
   },
@@ -525,7 +524,6 @@
   "reason_similarToLegitimateDomain": {
     "message": "Ähnelt einer legitimen Domain"
   },
-
   "qrDangerTitle": {
     "message": "GEFAHR: Phishing-QR-Code!"
   },
@@ -559,7 +557,6 @@
   "extractedText": {
     "message": "Extrahierter Text"
   },
-
   "trialPeriodActive": {
     "message": "Testphase aktiv"
   },
@@ -581,7 +578,6 @@
   "upgradeNow": {
     "message": "Jetzt upgraden"
   },
-
   "popupPageTitle": {
     "message": "LinkShield Dashboard"
   },
@@ -591,7 +587,6 @@
   "extDescriptionFull": {
     "message": "Erhöhe deine Sicherheit mit sofortigen Warnungen und fortschrittlichem Schutz vor Online-Bedrohungen."
   },
-
   "licenseTrialTitle": {
     "message": "Testphase: $DAYS$ Tage verbleibend",
     "placeholders": {
@@ -634,7 +629,6 @@
   "licensePremiumSubtitle": {
     "message": "Voller Schutz aktiviert"
   },
-
   "sectionSecuritySettings": {
     "message": "Sicherheitseinstellungen"
   },
@@ -650,9 +644,6 @@
   "integratedProtectionFeature": {
     "message": "Integrierter Malware- und Phishing-Schutz"
   },
-  "integratedProtectionDescription": {
-    "message": "Kombiniert mehrere Sicherheitsdienste für umfassenden Schutz."
-  },
   "confirmationMessage": {
     "message": "Einstellungen erfolgreich gespeichert!"
   },
@@ -662,7 +653,6 @@
   "errorOccurred": {
     "message": "Ein Fehler ist aufgetreten"
   },
-
   "gumroadErrorUnknown": {
     "message": "Unbekannter Fehler"
   },
@@ -693,7 +683,6 @@
   "gumroadErrorNetwork": {
     "message": "Netzwerkfehler bei der Validierung. Überprüfe deine Internetverbindung."
   },
-
   "licenseEmptyError": {
     "message": "Bitte gib einen Lizenzcode ein"
   },
@@ -706,7 +695,6 @@
   "licenseConnectionError": {
     "message": "Verbindungsfehler. Bitte versuche es erneut."
   },
-
   "debugModeTitle": {
     "message": "Debug-Modus"
   },
@@ -785,7 +773,6 @@
   "nullByteInjection": {
     "message": "Dieser Link enthält ein Null-Byte-Zeichen (hohes Risiko). Dies ist eine Hacking-Technik, die verwendet werden kann, um Sicherheitsprüfungen zu umgehen."
   },
-
   "formActionHijacking": {
     "message": "Dieses Anmeldeformular sendet Ihre Daten an eine externe Website (kritisches Risiko). Ihr Benutzername und Passwort könnten gestohlen werden."
   },
@@ -801,7 +788,6 @@
   "formActionInvalid": {
     "message": "Anmeldeformular hat eine ungültige oder verdächtige Aktions-URL (hohes Risiko). Ihre Daten werden möglicherweise nicht sicher gesendet."
   },
-
   "hiddenIframeZeroSize": {
     "message": "Versteckter Iframe mit Nullgröße erkannt (hohes Risiko). Dies kann verwendet werden, um unsichtbar schädlichen Inhalt zu laden."
   },
@@ -814,7 +800,6 @@
   "hiddenIframeNegativePos": {
     "message": "Iframe mit negativer Positionierung erkannt (mittleres Risiko). Diese Technik wird verwendet, um Inhalte vor Benutzern zu verbergen."
   },
-
   "nrdCritical": {
     "message": "KRITISCH: Domain vor $DAYS$ Tag(en) registriert (kritisches Risiko). Brandneue Domains sind sehr wahrscheinlich bösartig.",
     "placeholders": {
@@ -851,7 +836,6 @@
       }
     }
   },
-
   "licenseErrorNotFound": {
     "message": "Lizenzschlüssel nicht gefunden. Bitte überprüfen Sie Ihre Eingabe."
   },
@@ -876,92 +860,253 @@
   "licenseErrorUnknown": {
     "message": "Ein unbekannter Fehler ist bei der Validierung aufgetreten."
   },
-  "invalidUrlFormat": { "message": "Ungültiges URL-Format. Die Webadresse konnte nicht korrekt verarbeitet werden." },
-  "invalidDomain": { "message": "Ungültige Domain. Die Website-Adresse ist fehlerhaft oder unvollständig." },
-  "trustedDomain": { "message": "Dies ist eine vertrauenswürdige Domain, die als sicher verifiziert wurde." },
-  "errorCalculatingRisk": { "message": "Fehler bei der Risikoberechnung. Bitte versuchen Sie es erneut." },
-  "punycodeDecodingError": { "message": "Fehler beim Dekodieren internationaler Zeichen im Domainnamen." },
-  "fileProtocol": { "message": "Dieser Link verwendet das file:// Protokoll, das lokale Dateien öffnet." },
-  "invalidHostname": { "message": "Ungültiger Hostname. Das Domainnamenformat ist falsch." },
-  "urlTooLong": { "message": "Diese URL ist ungewöhnlich lang (mittleres Risiko). Sehr lange URLs können verwendet werden, um schädliche Inhalte zu verbergen." },
-  "nonAscii": { "message": "Diese URL enthält Nicht-ASCII-Zeichen, die zur Täuschung verwendet werden können." },
-  "typosquattingPattern": { "message": "Diese Domain entspricht einem Typosquatting-Muster (hohes Risiko). Sie scheint eine legitime Website zu imitieren." },
-  "suspiciousIframes": { "message": "Verdächtige iframe-Elemente auf dieser Seite erkannt." },
-  "suspiciousScripts": { "message": "Verdächtige Skripte auf dieser Seite erkannt." },
-  "hiddenIframes": { "message": "Versteckte iframe-Elemente auf dieser Seite erkannt, die für bösartige Zwecke verwendet werden können." },
-  "unifiedCheckError": { "message": "Fehler während der Sicherheitsprüfung. Einige Prüfungen wurden möglicherweise nicht abgeschlossen." },
-  "initializationError": { "message": "Fehler beim Initialisieren des Sicherheitsscanners. Bitte laden Sie die Seite neu." },
-  "checkCurrentUrlError": { "message": "Fehler bei der Prüfung der aktuellen URL-Sicherheit." },
-  "neutralIconTitle": { "message": "LinkShield - Schutz Aktiv" },
-  "installNotificationTitle": { "message": "LinkShield Installiert" },
-  "installNotificationMessage": { "message": "Sie sind jetzt vor Phishing und bösartigen Websites geschützt." },
-  "not_eligible": { "message": "Nicht berechtigt für diese Funktion" },
-  "trial_expired": { "message": "Ihr Testzeitraum ist abgelaufen" },
-  "Error": { "message": "Fehler" },
-  "siteSafeTitle": { "message": "Website erscheint sicher" },
-  "siteCautionTitle": { "message": "Mit Vorsicht fortfahren" },
-  "siteAlertTitle": { "message": "Warnung: Mögliche Bedrohung erkannt" },
-  "atSymbolInPath": { "message": "Der Link enthält ein @-Symbol im Pfad, das möglicherweise zur Verschleierung verwendet wird (mittleres Risiko)." },
-  "reason_atSymbolPhishing": { "message": "KRITISCH: Credential-URL-Angriff erkannt. Die sichtbare Domain ist gefälscht - Sie werden zu einer anderen Website weitergeleitet." },
-  "reason_doubleEncoding": { "message": "Doppelte URL-Kodierung erkannt (hohes Risiko). Diese Verschleierungstechnik wird verwendet, um schädliche Inhalte zu verbergen." },
-  "reason_fullwidthCharacters": { "message": "Vollbreite Unicode-Zeichen erkannt (hohes Risiko). Diese speziellen Zeichen imitieren normale Buchstaben, um Benutzer zu täuschen." },
-  "reason_nullByteInjection": { "message": "Null-Byte-Injektion erkannt (hohes Risiko). Diese Technik wird verwendet, um Sicherheitsfilter zu umgehen und kann auf einen bösartigen Link hinweisen." },
-
-  "clipboardHijackingCryptoTitle": { "message": "Krypto-Adress-Hijacking erkannt!" },
-  "clipboardHijackingTitle": { "message": "Zwischenablage-Manipulation erkannt!" },
-  "clipboardHijackingMessage": { "message": "Diese Seite versucht, Ihre Zwischenablage zu ändern. Seien Sie vorsichtig beim Einfügen von Wallet-Adressen oder sensiblen Daten." },
-  "reason_clipboardHijackingCrypto": { "message": "KRITISCH: Diese Seite kapert Ihre Zwischenablage mit Krypto-Adressen (kritisches Risiko). Kopierte Wallet-Adressen können durch Angreifer-Adressen ersetzt werden." },
-  "reason_clipboardHijackingDetected": { "message": "Diese Seite manipuliert Ihren Zwischenablageinhalt (hohes Risiko). Eingefügte Inhalte können von dem abweichen, was Sie kopiert haben." },
-
-  "brandSubdomainPhishing": { "message": "Markenname auf kostenloser Hosting-Plattform erkannt (hohes Risiko). Legitime Unternehmen nutzen kein kostenloses Hosting für offizielle Dienste." },
-  "reason_brandSubdomainPhishing": { "message": "Markenname auf kostenloser Hosting-Plattform erkannt (hohes Risiko). Legitime Unternehmen nutzen kein kostenloses Hosting für offizielle Dienste." },
-
-  "nrdTelCombo": { "message": "Telefonnummer auf neu registrierter Domain mit Phishing-Schlüsselwörtern (mittleres Risiko). Dies könnte ein Vishing (Voice-Phishing) Versuch sein." },
-  "reason_nrdTelCombo": { "message": "Telefonnummer auf neu registrierter Domain mit Phishing-Schlüsselwörtern (mittleres Risiko). Dies könnte ein Vishing (Voice-Phishing) Versuch sein." },
-
-  "reason_opaqueRedirectChain": { "message": "Undurchsichtige Weiterleitung erkannt (niedriges Risiko). Das Weiterleitungsziel konnte nicht vollständig zurückverfolgt werden." },
-  "reason_opaqueRedirectToIP": { "message": "Undurchsichtige Weiterleitung zu IP-Adresse (hohes Risiko). Die versteckte Weiterleitung führt zu einer rohen IP-Adresse statt einer Domain." },
-  "reason_opaqueRedirectSuspiciousTLD": { "message": "Undurchsichtige Weiterleitung zu verdächtiger Domain-Endung (mittleres Risiko). Die versteckte Weiterleitung führt zu einer riskanten TLD." },
-  "reason_opaqueRedirectNRD": { "message": "Undurchsichtige Weiterleitung zu neu registrierter Domain (hohes Risiko). Die versteckte Weiterleitung führt zu einer sehr neuen Domain." },
-
-  "bitbWarningTitle": { "message": "Gefälschtes Anmeldefenster erkannt!" },
-  "bitbWarningMessage": { "message": "Diese Seite zeigt ein simuliertes Browserfenster, das ein echtes Anmelde-Popup imitiert. Dies ist ein Browser-in-the-Browser (BitB) Angriff, der darauf abzielt, Ihre Anmeldedaten zu stehlen. Das 'Popup' ist eigentlich nur HTML/CSS, das wie ein echtes Browserfenster aussieht." },
-  "reason_bitbAttackDetected": { "message": "Browser-in-the-Browser Angriff erkannt (kritisches Risiko). Diese Seite zeigt ein gefälschtes Browserfenster, um Ihre Anmeldedaten zu stehlen." },
-  "reason_bitbFakeUrlBar": { "message": "Gefälschte URL-Leiste mit vertrauenswürdiger Domain erkannt (kritisches Risiko). Die angezeigte Adresse ist gefälscht und soll Sie täuschen." },
-  "reason_bitbWindowControls": { "message": "Gefälschte Fenstersteuerungen erkannt (hohes Risiko). Schließen/Minimieren-Schaltflächen sind simuliert, um wie ein echtes Popup auszusehen." },
-  "reason_bitbLoginFormInOverlay": { "message": "Anmeldeformular in Overlay erkannt (hohes Risiko). Echte Anmelde-Popups öffnen sich in separaten Browserfenstern, nicht in Overlays." },
-  "reason_bitbOAuthBranding": { "message": "OAuth-Branding mit Anmeldeformular in Overlay (hohes Risiko). 'Mit Google/Microsoft anmelden'-Schaltflächen in gefälschten Popups sind Anmeldedaten-Diebstahl." },
-  "reason_bitbPadlockIcon": { "message": "Gefälschtes Sicherheits-Vorhängeschloss-Symbol erkannt (mittleres Risiko). Echte Vorhängeschlösser erscheinen in der Browser-Adressleiste, nicht im Seiteninhalt." },
-  "reason_bitbWindowChrome": { "message": "Simuliertes Browserfenster-Styling erkannt (mittleres Risiko). Das Overlay ist so gestaltet, dass es wie ein Betriebssystemfenster aussieht." },
-  "reason_bitbIframeInModal": { "message": "Iframe in Modal-Overlay erkannt (niedriges Risiko). Dies kann verwendet werden, um externe Anmeldeinhalte zu laden." },
-
-  "clickFixPowerShellTitle": { "message": "PowerShell-Befehl erkannt!" },
-  "clickFixCommandTitle": { "message": "Befehlsinjektion erkannt!" },
-  "clickFixMessage": { "message": "Diese Seite enthält einen verdächtigen Befehl, der Ihren Computer beschädigen könnte. Kopieren oder führen Sie diesen Befehl nicht aus." },
-  "clickFixSubMessage": { "message": "Angreifer tarnen bösartige Befehle oft als 'Fixes' oder 'Verifizierungsschritte'. Führen Sie niemals Befehle aus nicht vertrauenswürdigen Quellen aus." },
-  "bitbAttackCriticalTitle": { "message": "Kritisch: Gefälschtes Anmeldefenster!" },
-  "bitbAttackWarningTitle": { "message": "Warnung: Verdächtiges Anmelde-Popup" },
-  "bitbAttackMessage": { "message": "Diese Seite zeigt ein gefälschtes Browserfenster, das Ihre Anmeldedaten stehlen soll. Echte Anmelde-Popups öffnen sich in separaten Browserfenstern." },
-  "bitbAttackTip": { "message": "Überprüfen Sie immer die Browser-Adressleiste für die echte URL, nicht den Text, der auf der Seite angezeigt wird." },
-  "shadowDomLoginForm": { "message": "Anmeldeformular im Shadow DOM erkannt (hohes Risiko). Diese Technik wird verwendet, um Sicherheitsscanner zu umgehen." },
-  "shadowDomPhishingOverlay": { "message": "Phishing-Overlay im Shadow DOM erkannt (kritisches Risiko). Shadow DOM wird verwendet, um bösartige Inhalte zu verstecken." },
-  "shadowDomIframe": { "message": "Verdächtiger Iframe im Shadow DOM erkannt (hohes Risiko). Versteckte Iframes können für Anmeldedaten-Diebstahl verwendet werden." },
-  "urlCredentialsAttack": { "message": "URL enthält Anmeldedaten im Angriffsformat (kritisches Risiko). Die sichtbare Domain ist gefälscht - Sie werden woanders hingeleitet." },
-  "nrdUltraCritical": { "message": "Domain erst vor Stunden registriert (kritisches Risiko). Dies ist äußerst verdächtig und wird häufig für Phishing verwendet." },
-  "nrdVishingCombo": { "message": "Telefonnummer auf neu registrierter Domain mit Phishing-Indikatoren (hohes Risiko). Dies könnte ein Vishing-Versuch (Voice-Phishing) sein." },
-  "tableBasedQR": { "message": "QR-Code in HTML-Tabelle versteckt erkannt (mittleres Risiko). Diese Technik wird verwendet, um bildbasierte QR-Erkennung zu umgehen." },
-  "tableQrDangerTitle": { "message": "Gefährlicher Link in verstecktem QR-Code" },
-  "tableQrCautionTitle": { "message": "Verdächtiger Link in verstecktem QR-Code" },
-  "hiddenQrDetected": { "message": "Versteckter QR-Code im Seiteninhalt erkannt. Dieser könnte eine bösartige URL enthalten." },
-
-  "bitbAttackCritical": { "message": "KRITISCH: Browser-in-the-Browser-Angriff erkannt! Diese Seite zeigt ein gefälschtes Anmeldefenster, um Ihre Anmeldedaten zu stehlen." },
-  "bitbAttackWarning": { "message": "Warnung: Verdächtiges Popup erkannt, das ein Browser-in-the-Browser-Angriff sein könnte. Überprüfen Sie die URL sorgfältig." },
-  "clickFixDetected": { "message": "ClickFix-Angriff erkannt! Diese Seite enthält einen bösartigen Befehl, der als Fix oder Verifizierungsschritt getarnt ist. Nicht kopieren oder ausführen." },
-  "clipboardHijacking": { "message": "Zwischenablage-Hijacking erkannt! Diese Seite versucht, Ihre Zwischenablage ohne Erlaubnis zu ändern." },
-  "hiddenIframe": { "message": "Versteckter Iframe auf dieser Seite erkannt. Unsichtbare Frames können für Tracking, Credential-Diebstahl oder Malware verwendet werden." },
-  "typosquatting": { "message": "Typosquatting erkannt! Diese Domain ist absichtlich falsch geschrieben, um eine legitime Website nachzuahmen." },
-  "ipAddressDomain": { "message": "Diese Website verwendet eine IP-Adresse anstelle eines Domainnamens. Dies ist sehr ungewöhnlich und deutet oft auf böswillige Absichten hin." },
-  "extremeSubdomains": { "message": "Extreme Anzahl von Subdomains erkannt. Diese Technik wird oft verwendet, um bösartige URLs zu verbergen oder legitime Seiten nachzuahmen." },
-  "vishingDetected": { "message": "Möglicher Vishing (Voice-Phishing) Angriff erkannt. Diese Seite kombiniert Telefonnummern mit Phishing-Indikatoren." },
-  "punycodeDetected": { "message": "Punycode-Domain erkannt! Diese Adresse verwendet internationale Zeichen, die möglicherweise eine legitime Website imitieren." }
+  "invalidUrlFormat": {
+    "message": "Ungültiges URL-Format. Die Webadresse konnte nicht korrekt verarbeitet werden."
+  },
+  "invalidDomain": {
+    "message": "Ungültige Domain. Die Website-Adresse ist fehlerhaft oder unvollständig."
+  },
+  "trustedDomain": {
+    "message": "Dies ist eine vertrauenswürdige Domain, die als sicher verifiziert wurde."
+  },
+  "errorCalculatingRisk": {
+    "message": "Fehler bei der Risikoberechnung. Bitte versuchen Sie es erneut."
+  },
+  "punycodeDecodingError": {
+    "message": "Fehler beim Dekodieren internationaler Zeichen im Domainnamen."
+  },
+  "fileProtocol": {
+    "message": "Dieser Link verwendet das file:// Protokoll, das lokale Dateien öffnet."
+  },
+  "invalidHostname": {
+    "message": "Ungültiger Hostname. Das Domainnamenformat ist falsch."
+  },
+  "urlTooLong": {
+    "message": "Diese URL ist ungewöhnlich lang (mittleres Risiko). Sehr lange URLs können verwendet werden, um schädliche Inhalte zu verbergen."
+  },
+  "nonAscii": {
+    "message": "Diese URL enthält Nicht-ASCII-Zeichen, die zur Täuschung verwendet werden können."
+  },
+  "typosquattingPattern": {
+    "message": "Diese Domain entspricht einem Typosquatting-Muster (hohes Risiko). Sie scheint eine legitime Website zu imitieren."
+  },
+  "suspiciousIframes": {
+    "message": "Verdächtige iframe-Elemente auf dieser Seite erkannt."
+  },
+  "suspiciousScripts": {
+    "message": "Verdächtige Skripte auf dieser Seite erkannt."
+  },
+  "hiddenIframes": {
+    "message": "Versteckte iframe-Elemente auf dieser Seite erkannt, die für bösartige Zwecke verwendet werden können."
+  },
+  "unifiedCheckError": {
+    "message": "Fehler während der Sicherheitsprüfung. Einige Prüfungen wurden möglicherweise nicht abgeschlossen."
+  },
+  "initializationError": {
+    "message": "Fehler beim Initialisieren des Sicherheitsscanners. Bitte laden Sie die Seite neu."
+  },
+  "checkCurrentUrlError": {
+    "message": "Fehler bei der Prüfung der aktuellen URL-Sicherheit."
+  },
+  "neutralIconTitle": {
+    "message": "LinkShield - Schutz Aktiv"
+  },
+  "installNotificationTitle": {
+    "message": "LinkShield Installiert"
+  },
+  "installNotificationMessage": {
+    "message": "Sie sind jetzt vor Phishing und bösartigen Websites geschützt."
+  },
+  "not_eligible": {
+    "message": "Nicht berechtigt für diese Funktion"
+  },
+  "trial_expired": {
+    "message": "Ihr Testzeitraum ist abgelaufen"
+  },
+  "Error": {
+    "message": "Fehler"
+  },
+  "siteSafeTitle": {
+    "message": "Website erscheint sicher"
+  },
+  "siteCautionTitle": {
+    "message": "Mit Vorsicht fortfahren"
+  },
+  "siteAlertTitle": {
+    "message": "Warnung: Mögliche Bedrohung erkannt"
+  },
+  "atSymbolInPath": {
+    "message": "Der Link enthält ein @-Symbol im Pfad, das möglicherweise zur Verschleierung verwendet wird (mittleres Risiko)."
+  },
+  "reason_atSymbolPhishing": {
+    "message": "KRITISCH: Credential-URL-Angriff erkannt. Die sichtbare Domain ist gefälscht - Sie werden zu einer anderen Website weitergeleitet."
+  },
+  "reason_doubleEncoding": {
+    "message": "Doppelte URL-Kodierung erkannt (hohes Risiko). Diese Verschleierungstechnik wird verwendet, um schädliche Inhalte zu verbergen."
+  },
+  "reason_fullwidthCharacters": {
+    "message": "Vollbreite Unicode-Zeichen erkannt (hohes Risiko). Diese speziellen Zeichen imitieren normale Buchstaben, um Benutzer zu täuschen."
+  },
+  "reason_nullByteInjection": {
+    "message": "Null-Byte-Injektion erkannt (hohes Risiko). Diese Technik wird verwendet, um Sicherheitsfilter zu umgehen und kann auf einen bösartigen Link hinweisen."
+  },
+  "clipboardHijackingCryptoTitle": {
+    "message": "Krypto-Adress-Hijacking erkannt!"
+  },
+  "clipboardHijackingTitle": {
+    "message": "Zwischenablage-Manipulation erkannt!"
+  },
+  "clipboardHijackingMessage": {
+    "message": "Diese Seite versucht, Ihre Zwischenablage zu ändern. Seien Sie vorsichtig beim Einfügen von Wallet-Adressen oder sensiblen Daten."
+  },
+  "reason_clipboardHijackingCrypto": {
+    "message": "KRITISCH: Diese Seite kapert Ihre Zwischenablage mit Krypto-Adressen (kritisches Risiko). Kopierte Wallet-Adressen können durch Angreifer-Adressen ersetzt werden."
+  },
+  "reason_clipboardHijackingDetected": {
+    "message": "Diese Seite manipuliert Ihren Zwischenablageinhalt (hohes Risiko). Eingefügte Inhalte können von dem abweichen, was Sie kopiert haben."
+  },
+  "brandSubdomainPhishing": {
+    "message": "Markenname auf kostenloser Hosting-Plattform erkannt (hohes Risiko). Legitime Unternehmen nutzen kein kostenloses Hosting für offizielle Dienste."
+  },
+  "reason_brandSubdomainPhishing": {
+    "message": "Markenname auf kostenloser Hosting-Plattform erkannt (hohes Risiko). Legitime Unternehmen nutzen kein kostenloses Hosting für offizielle Dienste."
+  },
+  "nrdTelCombo": {
+    "message": "Telefonnummer auf neu registrierter Domain mit Phishing-Schlüsselwörtern (mittleres Risiko). Dies könnte ein Vishing (Voice-Phishing) Versuch sein."
+  },
+  "reason_nrdTelCombo": {
+    "message": "Telefonnummer auf neu registrierter Domain mit Phishing-Schlüsselwörtern (mittleres Risiko). Dies könnte ein Vishing (Voice-Phishing) Versuch sein."
+  },
+  "reason_opaqueRedirectChain": {
+    "message": "Undurchsichtige Weiterleitung erkannt (niedriges Risiko). Das Weiterleitungsziel konnte nicht vollständig zurückverfolgt werden."
+  },
+  "reason_opaqueRedirectToIP": {
+    "message": "Undurchsichtige Weiterleitung zu IP-Adresse (hohes Risiko). Die versteckte Weiterleitung führt zu einer rohen IP-Adresse statt einer Domain."
+  },
+  "reason_opaqueRedirectSuspiciousTLD": {
+    "message": "Undurchsichtige Weiterleitung zu verdächtiger Domain-Endung (mittleres Risiko). Die versteckte Weiterleitung führt zu einer riskanten TLD."
+  },
+  "reason_opaqueRedirectNRD": {
+    "message": "Undurchsichtige Weiterleitung zu neu registrierter Domain (hohes Risiko). Die versteckte Weiterleitung führt zu einer sehr neuen Domain."
+  },
+  "bitbWarningTitle": {
+    "message": "Gefälschtes Anmeldefenster erkannt!"
+  },
+  "bitbWarningMessage": {
+    "message": "Diese Seite zeigt ein simuliertes Browserfenster, das ein echtes Anmelde-Popup imitiert. Dies ist ein Browser-in-the-Browser (BitB) Angriff, der darauf abzielt, Ihre Anmeldedaten zu stehlen. Das 'Popup' ist eigentlich nur HTML/CSS, das wie ein echtes Browserfenster aussieht."
+  },
+  "reason_bitbAttackDetected": {
+    "message": "Browser-in-the-Browser Angriff erkannt (kritisches Risiko). Diese Seite zeigt ein gefälschtes Browserfenster, um Ihre Anmeldedaten zu stehlen."
+  },
+  "reason_bitbFakeUrlBar": {
+    "message": "Gefälschte URL-Leiste mit vertrauenswürdiger Domain erkannt (kritisches Risiko). Die angezeigte Adresse ist gefälscht und soll Sie täuschen."
+  },
+  "reason_bitbWindowControls": {
+    "message": "Gefälschte Fenstersteuerungen erkannt (hohes Risiko). Schließen/Minimieren-Schaltflächen sind simuliert, um wie ein echtes Popup auszusehen."
+  },
+  "reason_bitbLoginFormInOverlay": {
+    "message": "Anmeldeformular in Overlay erkannt (hohes Risiko). Echte Anmelde-Popups öffnen sich in separaten Browserfenstern, nicht in Overlays."
+  },
+  "reason_bitbOAuthBranding": {
+    "message": "OAuth-Branding mit Anmeldeformular in Overlay (hohes Risiko). 'Mit Google/Microsoft anmelden'-Schaltflächen in gefälschten Popups sind Anmeldedaten-Diebstahl."
+  },
+  "reason_bitbPadlockIcon": {
+    "message": "Gefälschtes Sicherheits-Vorhängeschloss-Symbol erkannt (mittleres Risiko). Echte Vorhängeschlösser erscheinen in der Browser-Adressleiste, nicht im Seiteninhalt."
+  },
+  "reason_bitbWindowChrome": {
+    "message": "Simuliertes Browserfenster-Styling erkannt (mittleres Risiko). Das Overlay ist so gestaltet, dass es wie ein Betriebssystemfenster aussieht."
+  },
+  "reason_bitbIframeInModal": {
+    "message": "Iframe in Modal-Overlay erkannt (niedriges Risiko). Dies kann verwendet werden, um externe Anmeldeinhalte zu laden."
+  },
+  "clickFixPowerShellTitle": {
+    "message": "PowerShell-Befehl erkannt!"
+  },
+  "clickFixCommandTitle": {
+    "message": "Befehlsinjektion erkannt!"
+  },
+  "clickFixMessage": {
+    "message": "Diese Seite enthält einen verdächtigen Befehl, der Ihren Computer beschädigen könnte. Kopieren oder führen Sie diesen Befehl nicht aus."
+  },
+  "clickFixSubMessage": {
+    "message": "Angreifer tarnen bösartige Befehle oft als 'Fixes' oder 'Verifizierungsschritte'. Führen Sie niemals Befehle aus nicht vertrauenswürdigen Quellen aus."
+  },
+  "bitbAttackCriticalTitle": {
+    "message": "Kritisch: Gefälschtes Anmeldefenster!"
+  },
+  "bitbAttackWarningTitle": {
+    "message": "Warnung: Verdächtiges Anmelde-Popup"
+  },
+  "bitbAttackMessage": {
+    "message": "Diese Seite zeigt ein gefälschtes Browserfenster, das Ihre Anmeldedaten stehlen soll. Echte Anmelde-Popups öffnen sich in separaten Browserfenstern."
+  },
+  "bitbAttackTip": {
+    "message": "Überprüfen Sie immer die Browser-Adressleiste für die echte URL, nicht den Text, der auf der Seite angezeigt wird."
+  },
+  "shadowDomLoginForm": {
+    "message": "Anmeldeformular im Shadow DOM erkannt (hohes Risiko). Diese Technik wird verwendet, um Sicherheitsscanner zu umgehen."
+  },
+  "shadowDomPhishingOverlay": {
+    "message": "Phishing-Overlay im Shadow DOM erkannt (kritisches Risiko). Shadow DOM wird verwendet, um bösartige Inhalte zu verstecken."
+  },
+  "shadowDomIframe": {
+    "message": "Verdächtiger Iframe im Shadow DOM erkannt (hohes Risiko). Versteckte Iframes können für Anmeldedaten-Diebstahl verwendet werden."
+  },
+  "urlCredentialsAttack": {
+    "message": "URL enthält Anmeldedaten im Angriffsformat (kritisches Risiko). Die sichtbare Domain ist gefälscht - Sie werden woanders hingeleitet."
+  },
+  "nrdUltraCritical": {
+    "message": "Domain erst vor Stunden registriert (kritisches Risiko). Dies ist äußerst verdächtig und wird häufig für Phishing verwendet."
+  },
+  "nrdVishingCombo": {
+    "message": "Telefonnummer auf neu registrierter Domain mit Phishing-Indikatoren (hohes Risiko). Dies könnte ein Vishing-Versuch (Voice-Phishing) sein."
+  },
+  "tableBasedQR": {
+    "message": "QR-Code in HTML-Tabelle versteckt erkannt (mittleres Risiko). Diese Technik wird verwendet, um bildbasierte QR-Erkennung zu umgehen."
+  },
+  "tableQrDangerTitle": {
+    "message": "Gefährlicher Link in verstecktem QR-Code"
+  },
+  "tableQrCautionTitle": {
+    "message": "Verdächtiger Link in verstecktem QR-Code"
+  },
+  "hiddenQrDetected": {
+    "message": "Versteckter QR-Code im Seiteninhalt erkannt. Dieser könnte eine bösartige URL enthalten."
+  },
+  "bitbAttackCritical": {
+    "message": "KRITISCH: Browser-in-the-Browser-Angriff erkannt! Diese Seite zeigt ein gefälschtes Anmeldefenster, um Ihre Anmeldedaten zu stehlen."
+  },
+  "bitbAttackWarning": {
+    "message": "Warnung: Verdächtiges Popup erkannt, das ein Browser-in-the-Browser-Angriff sein könnte. Überprüfen Sie die URL sorgfältig."
+  },
+  "clickFixDetected": {
+    "message": "ClickFix-Angriff erkannt! Diese Seite enthält einen bösartigen Befehl, der als Fix oder Verifizierungsschritt getarnt ist. Nicht kopieren oder ausführen."
+  },
+  "clipboardHijacking": {
+    "message": "Zwischenablage-Hijacking erkannt! Diese Seite versucht, Ihre Zwischenablage ohne Erlaubnis zu ändern."
+  },
+  "hiddenIframe": {
+    "message": "Versteckter Iframe auf dieser Seite erkannt. Unsichtbare Frames können für Tracking, Credential-Diebstahl oder Malware verwendet werden."
+  },
+  "typosquatting": {
+    "message": "Typosquatting erkannt! Diese Domain ist absichtlich falsch geschrieben, um eine legitime Website nachzuahmen."
+  },
+  "ipAddressDomain": {
+    "message": "Diese Website verwendet eine IP-Adresse anstelle eines Domainnamens. Dies ist sehr ungewöhnlich und deutet oft auf böswillige Absichten hin."
+  },
+  "extremeSubdomains": {
+    "message": "Extreme Anzahl von Subdomains erkannt. Diese Technik wird oft verwendet, um bösartige URLs zu verbergen oder legitime Seiten nachzuahmen."
+  },
+  "vishingDetected": {
+    "message": "Möglicher Vishing (Voice-Phishing) Angriff erkannt. Diese Seite kombiniert Telefonnummern mit Phishing-Indikatoren."
+  },
+  "punycodeDetected": {
+    "message": "Punycode-Domain erkannt! Diese Adresse verwendet internationale Zeichen, die möglicherweise eine legitime Website imitieren."
+  },
+  "bitbClosePageButton": {
+    "message": "Diese Seite schließen"
+  },
+  "bitbDismissButton": {
+    "message": "Ich verstehe das Risiko"
+  }
 }

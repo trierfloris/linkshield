@@ -1091,12 +1091,33 @@ function reportBitBAttack(severity, indicators, score) {
 
 /**
  * Toont waarschuwing voor BitB aanval
+ * Design consistent met alert.html/caution.html
  */
 function showBitBWarning(severity, indicators, score) {
     // Verwijder bestaande waarschuwing
     document.getElementById('linkshield-bitb-warning')?.remove();
 
     const isCritical = severity === 'critical';
+
+    // Design tokens (matching shared.css)
+    const colors = {
+        danger: '#dc2626',
+        dangerLight: '#fef2f2',
+        dangerBorder: '#fecaca',
+        dangerText: '#991b1b',
+        warning: '#d97706',
+        warningLight: '#fffbeb',
+        warningBorder: '#fde68a',
+        warningText: '#92400e',
+        textSecondary: '#6b7280',
+        surface: '#ffffff',
+        border: 'rgba(0, 0, 0, 0.08)'
+    };
+
+    const themeColor = isCritical ? colors.danger : colors.warning;
+    const themeBg = isCritical ? colors.dangerLight : colors.warningLight;
+    const themeBorder = isCritical ? colors.dangerBorder : colors.warningBorder;
+    const themeText = isCritical ? colors.dangerText : colors.warningText;
 
     const warning = document.createElement('div');
     warning.id = 'linkshield-bitb-warning';
@@ -1105,68 +1126,115 @@ function showBitBWarning(severity, indicators, score) {
         top: 20px;
         left: 50%;
         transform: translateX(-50%);
-        background: ${isCritical
-            ? 'linear-gradient(135deg, #dc2626 0%, #7f1d1d 100%)'
-            : 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)'};
-        color: white;
-        padding: 20px 28px;
-        border-radius: 12px;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        background: ${colors.surface};
+        color: #1f1f1f;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+        border: 1px solid ${colors.border};
         z-index: 2147483647;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         font-size: 14px;
         max-width: 520px;
-        text-align: center;
+        min-width: 320px;
         animation: bitbSlideIn 0.3s ease-out;
     `;
 
     const title = isCritical
-        ? (chrome.i18n.getMessage('bitbAttackCriticalTitle') || '🚨 FAKE LOGIN VENSTER GEDETECTEERD!')
-        : (chrome.i18n.getMessage('bitbAttackWarningTitle') || '⚠️ Verdacht Login Venster');
+        ? (chrome.i18n.getMessage('bitbAttackCriticalTitle') || 'Critical: Fake Login Window!')
+        : (chrome.i18n.getMessage('bitbAttackWarningTitle') || 'Warning: Suspicious Login Popup');
 
     const message = chrome.i18n.getMessage('bitbAttackMessage') ||
-        'Dit is mogelijk een NEPPE browser popup die probeert uw inloggegevens te stelen. Het "venster" dat u ziet is GEEN echt browser venster!';
+        'This page is showing a fake browser window designed to steal your credentials. Real login popups open in separate browser windows.';
 
     const tip = chrome.i18n.getMessage('bitbAttackTip') ||
-        'TIP: Probeer het "venster" buiten de pagina te slepen. Een echt popup kan buiten de browser, een neppe niet.';
+        'Always check the browser address bar for the real URL, not text displayed within the page.';
+
+    const closeButtonText = chrome.i18n.getMessage('bitbClosePageButton') || 'Close this page';
+    const dismissButtonText = chrome.i18n.getMessage('bitbDismissButton') || 'I understand the risk';
 
     warning.innerHTML = `
-        <div style="font-size: 28px; margin-bottom: 12px;">${isCritical ? '🚨' : '⚠️'}</div>
-        <div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">${title}</div>
-        <div style="margin-bottom: 12px; line-height: 1.5;">${message}</div>
-        <div style="font-size: 12px; opacity: 0.9; margin-bottom: 16px; font-style: italic; padding: 8px; background: rgba(255,255,255,0.1); border-radius: 6px;">${tip}</div>
+        <div style="
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding-bottom: 12px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid ${colors.border};
+        ">
+            <svg style="width: 20px; height: 20px; color: ${colors.textSecondary};" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            <span style="font-size: 13px; font-weight: 500; color: ${colors.textSecondary}; letter-spacing: 0.3px;">LinkShield Security</span>
+        </div>
+        <h1 style="
+            font-size: 18px;
+            text-align: center;
+            margin-bottom: 12px;
+            font-weight: 600;
+            color: ${themeColor};
+        ">${isCritical ? '🚨 ' : '⚠️ '}${title}</h1>
+        <p style="
+            text-align: center;
+            color: ${colors.textSecondary};
+            margin-bottom: 16px;
+            font-size: 14px;
+            line-height: 1.5;
+        ">${message}</p>
+        <div style="
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            background-color: ${themeBg};
+            color: ${themeText};
+            border: 1px solid ${themeBorder};
+            margin-bottom: 16px;
+        ">
+            <strong style="display: block; margin-bottom: 4px;">💡 Tip:</strong>
+            ${tip}
+        </div>
         <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
             <button id="linkshield-bitb-close-page" style="
-                background: white;
-                color: ${isCritical ? '#dc2626' : '#d97706'};
+                background-color: ${themeColor};
+                color: white;
                 border: none;
                 padding: 10px 20px;
                 border-radius: 6px;
                 cursor: pointer;
-                font-weight: bold;
-                font-size: 13px;
-            ">Sluit deze pagina</button>
+                font-weight: 500;
+                font-size: 14px;
+                transition: filter 0.2s ease;
+            ">${closeButtonText}</button>
             <button id="linkshield-bitb-dismiss" style="
-                background: transparent;
+                background-color: ${colors.textSecondary};
                 color: white;
-                border: 1px solid rgba(255,255,255,0.5);
+                border: none;
                 padding: 10px 20px;
                 border-radius: 6px;
                 cursor: pointer;
-                font-size: 13px;
-            ">Ik begrijp het risico</button>
+                font-size: 14px;
+                transition: filter 0.2s ease;
+            ">${dismissButtonText}</button>
         </div>
     `;
 
-    // Voeg animatie toe
+    // Voeg animatie en hover styles toe
     const style = document.createElement('style');
+    style.id = 'linkshield-bitb-styles';
     style.textContent = `
         @keyframes bitbSlideIn {
             from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
             to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
+        #linkshield-bitb-close-page:hover,
+        #linkshield-bitb-dismiss:hover {
+            filter: brightness(90%);
+        }
     `;
-    document.head.appendChild(style);
+    if (!document.getElementById('linkshield-bitb-styles')) {
+        document.head.appendChild(style);
+    }
     document.body.appendChild(warning);
 
     // Event listeners

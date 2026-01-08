@@ -123,7 +123,7 @@
     "message": "Entegre Koruma"
   },
   "integratedProtectionDescription": {
-    "message": "Web sitelerini ve bağlantıları doğrudan riskli özellikler için kontrol eder."
+    "message": "Kapsamlı koruma için birden fazla güvenlik hizmetini birleştirir."
   },
   "premiumFeaturesActive": {
     "message": "Artık premium sürümü kullanıyorsunuz!"
@@ -464,7 +464,6 @@
   "suspiciousPunycodeDecoding_paypal_com": {
     "message": "Bu bağlantı paypal.com'a benzemek için olağandışı karakterler kullanıyor (yüksek risk)."
   },
-
   "popupPageTitle": {
     "message": "LinkShield Kontrol Paneli"
   },
@@ -474,7 +473,6 @@
   "extDescriptionFull": {
     "message": "Doğrudan uyarılar ve çevrimiçi tehditlere karşı gelişmiş koruma ile güvenliğinizi artırın."
   },
-
   "licenseTrialTitle": {
     "message": "Deneme: $DAYS$ gün kaldı",
     "placeholders": {
@@ -517,7 +515,6 @@
   "licensePremiumSubtitle": {
     "message": "Tam koruma etkinleştirildi"
   },
-
   "sectionSecuritySettings": {
     "message": "Güvenlik Ayarları"
   },
@@ -533,9 +530,6 @@
   "integratedProtectionFeature": {
     "message": "Entegre Kötü Amaçlı Yazılım ve Kimlik Avı Koruması"
   },
-  "integratedProtectionDescription": {
-    "message": "Kapsamlı koruma için birden fazla güvenlik hizmetini birleştirir."
-  },
   "confirmationMessage": {
     "message": "Ayarlar başarıyla kaydedildi!"
   },
@@ -545,7 +539,6 @@
   "errorOccurred": {
     "message": "Bir hata oluştu"
   },
-
   "trialDaysRemaining": {
     "message": "Denemede $DAYS$ gün kaldı",
     "placeholders": {
@@ -564,7 +557,6 @@
   "upgradeNow": {
     "message": "Şimdi yükselt"
   },
-
   "gumroadErrorUnknown": {
     "message": "Bilinmeyen hata"
   },
@@ -595,7 +587,6 @@
   "gumroadErrorNetwork": {
     "message": "Doğrulama sırasında ağ hatası. Lütfen internet bağlantınızı kontrol edin."
   },
-
   "licenseEmptyError": {
     "message": "Lütfen bir lisans kodu girin"
   },
@@ -608,7 +599,6 @@
   "licenseConnectionError": {
     "message": "Bağlantı hatası. Lütfen tekrar deneyin."
   },
-
   "debugModeTitle": {
     "message": "Hata Ayıklama Modu"
   },
@@ -702,7 +692,6 @@
   "reason_nullByteInjection": {
     "message": "Boş bayt enjeksiyonu tespit edildi (yüksek risk). Bu teknik güvenlik filtrelerini atlamak için kullanılır ve kötü amaçlı bir bağlantıya işaret edebilir."
   },
-
   "formActionHijacking": {
     "message": "Bu giriş formu kimlik bilgilerinizi harici bir web sitesine gönderiyor (kritik risk). Kullanıcı adınız ve şifreniz çalınabilir."
   },
@@ -718,7 +707,6 @@
   "formActionInvalid": {
     "message": "Giriş formunun geçersiz veya şüpheli eylem URL'si var (yüksek risk). Kimlik bilgileriniz güvenli bir şekilde gönderilmeyebilir."
   },
-
   "hiddenIframeZeroSize": {
     "message": "Sıfır boyutlu gizli iframe tespit edildi (yüksek risk). Bu, kötü amaçlı içeriği görünmez şekilde yüklemek için kullanılabilir."
   },
@@ -731,7 +719,6 @@
   "hiddenIframeNegativePos": {
     "message": "Negatif konumlandırmalı iframe tespit edildi (orta risk). Bu teknik kullanıcılardan içeriği gizlemek için kullanılır."
   },
-
   "nrdCritical": {
     "message": "KRİTİK: Alan adı $DAYS$ gün önce kaydedilmiş (kritik risk). Yepyeni alan adlarının kötü amaçlı olma olasılığı son derece yüksek.",
     "placeholders": {
@@ -768,7 +755,6 @@
       }
     }
   },
-
   "licenseErrorNotFound": {
     "message": "Lisans anahtarı bulunamadı. Lütfen girişinizi kontrol edin."
   },
@@ -793,7 +779,6 @@
   "licenseErrorUnknown": {
     "message": "Doğrulama sırasında bilinmeyen bir hata oluştu."
   },
-
   "invalidUrlFormat": {
     "message": "Geçersiz URL formatı. Web adresi doğru şekilde ayrıştırılamadı."
   },
@@ -893,7 +878,6 @@
   "Error": {
     "message": "Hata"
   },
-
   "siteSafeTitle": {
     "message": "Site güvenli görünüyor"
   },
@@ -903,7 +887,6 @@
   "siteAlertTitle": {
     "message": "Uyarı: Potansiyel tehdit tespit edildi"
   },
-
   "clipboardHijackingCryptoTitle": {
     "message": "Kripto Adresi Kaçırma Tespit Edildi!"
   },
@@ -919,21 +902,18 @@
   "reason_clipboardHijackingDetected": {
     "message": "Bu sayfa pano içeriğinizi manipüle ediyor (yüksek risk). Yapıştırılan içerik kopyaladığınızdan farklı olabilir."
   },
-
   "brandSubdomainPhishing": {
     "message": "Ücretsiz barındırma platformunda marka anahtar kelimesi tespit edildi (yüksek risk). Meşru şirketler resmi hizmetler için ücretsiz barındırma kullanmaz."
   },
   "reason_brandSubdomainPhishing": {
     "message": "Ücretsiz barındırma platformunda marka anahtar kelimesi tespit edildi (yüksek risk). Meşru şirketler resmi hizmetler için ücretsiz barındırma kullanmaz."
   },
-
   "nrdTelCombo": {
     "message": "Kimlik avı anahtar kelimeleri ile yeni kayıtlı alan adında telefon numarası (orta risk). Bu bir sesli kimlik avı (vishing) girişimi olabilir."
   },
   "reason_nrdTelCombo": {
     "message": "Kimlik avı anahtar kelimeleri ile yeni kayıtlı alan adında telefon numarası (orta risk). Bu bir sesli kimlik avı (vishing) girişimi olabilir."
   },
-
   "reason_opaqueRedirectChain": {
     "message": "Opak yönlendirme tespit edildi (düşük risk). Yönlendirme hedefi tam olarak takip edilemedi."
   },
@@ -946,7 +926,6 @@
   "reason_opaqueRedirectNRD": {
     "message": "Yeni kayıtlı alan adına opak yönlendirme (yüksek risk). Gizli yönlendirme çok yeni bir alan adına yol açıyor."
   },
-
   "bitbWarningTitle": {
     "message": "Sahte Giriş Penceresi Tespit Edildi!"
   },
@@ -977,7 +956,6 @@
   "reason_bitbIframeInModal": {
     "message": "Modal overlay içinde iframe tespit edildi (düşük risk). Bu harici giriş içeriği yüklemek için kullanılabilir."
   },
-
   "clickFixPowerShellTitle": {
     "message": "PowerShell Komutu Tespit Edildi!"
   },
@@ -1032,7 +1010,6 @@
   "hiddenQrDetected": {
     "message": "Sayfa içeriğinde gizli QR kodu tespit edildi. Bu kötü amaçlı bir URL içerebilir."
   },
-
   "bitbAttackCritical": {
     "message": "KRİTİK: Tarayıcı-içinde-Tarayıcı saldırısı tespit edildi! Bu sayfa kimlik bilgilerinizi çalmak için tasarlanmış sahte bir giriş penceresi gösteriyor."
   },
@@ -1063,7 +1040,6 @@
   "punycodeDetected": {
     "message": "Punycode alan adı tespit edildi! Bu adres meşru bir web sitesini taklit edebilecek uluslararası karakterler kullanıyor."
   },
-
   "reason_nonAscii": {
     "message": "Şüpheli karakterler tespit edildi (homoglyph'ler)"
   },
@@ -1126,5 +1102,11 @@
   },
   "trialPeriodActive": {
     "message": "Deneme süresi aktif"
+  },
+  "bitbClosePageButton": {
+    "message": "Bu sayfayı kapat"
+  },
+  "bitbDismissButton": {
+    "message": "Riski anlıyorum"
   }
 }

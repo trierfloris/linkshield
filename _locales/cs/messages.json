@@ -475,7 +475,12 @@
   },
   "licenseTrialTitle": {
     "message": "Zkušební období: zbývá $DAYS$ dní",
-    "placeholders": { "DAYS": { "content": "$1", "example": "30" } }
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
   },
   "licenseTrialSubtitle": {
     "message": "Všechny prémiové funkce jsou aktivní během zkušebního období"
@@ -536,7 +541,12 @@
   },
   "trialDaysRemaining": {
     "message": "Zbývá $DAYS$ dní zkušebního období",
-    "placeholders": { "DAYS": { "content": "$1", "example": "14" } }
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "14"
+      }
+    }
   },
   "trialExpired": {
     "message": "Zkušební období vypršelo"
@@ -609,7 +619,12 @@
   },
   "debugTrialSimulated": {
     "message": "✓ Zkušební období ($DAYS$ dní) simulováno",
-    "placeholders": { "DAYS": { "content": "$1", "example": "30" } }
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
   },
   "debugExpiredSimulated": {
     "message": "✓ Vypršené zkušební období simulováno"
@@ -622,7 +637,12 @@
   },
   "debugError": {
     "message": "✗ Chyba: $ERROR$",
-    "placeholders": { "ERROR": { "content": "$1", "example": "Neznámá chyba" } }
+    "placeholders": {
+      "ERROR": {
+        "content": "$1",
+        "example": "Neznámá chyba"
+      }
+    }
   },
   "reason_redirectChain": {
     "message": "Detekován podezřelý řetězec přesměrování. Odkaz prochází více servery před dosažením cíle."
@@ -677,7 +697,12 @@
   },
   "formActionExternal": {
     "message": "Přihlašovací formulář odesílá data na externí doménu: $DOMAIN$ (kritické riziko).",
-    "placeholders": { "DOMAIN": { "content": "$1", "example": "evil-site.com" } }
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "evil-site.com"
+      }
+    }
   },
   "formActionInvalid": {
     "message": "Přihlašovací formulář má neplatnou nebo podezřelou URL akce (vysoké riziko)."
@@ -696,19 +721,39 @@
   },
   "nrdCritical": {
     "message": "KRITICKÉ: Doména zaregistrována před $DAYS$ dny (kritické riziko).",
-    "placeholders": { "DAYS": { "content": "$1", "example": "0" } }
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "0"
+      }
+    }
   },
   "nrdHigh": {
     "message": "Doména zaregistrována teprve před $DAYS$ dny (vysoké riziko).",
-    "placeholders": { "DAYS": { "content": "$1", "example": "5" } }
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
   },
   "nrdMedium": {
     "message": "Doména zaregistrována před $DAYS$ dny (střední riziko).",
-    "placeholders": { "DAYS": { "content": "$1", "example": "15" } }
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "15"
+      }
+    }
   },
   "nrdLow": {
     "message": "Doména zaregistrována před $DAYS$ dny (nízké riziko).",
-    "placeholders": { "DAYS": { "content": "$1", "example": "60" } }
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "60"
+      }
+    }
   },
   "licenseErrorNotFound": {
     "message": "Licenční kód nenalezen."
@@ -1057,5 +1102,11 @@
   },
   "trialPeriodActive": {
     "message": "Zkušební období aktivní"
+  },
+  "bitbClosePageButton": {
+    "message": "Zavřít tuto stránku"
+  },
+  "bitbDismissButton": {
+    "message": "Rozumím riziku"
   }
 }

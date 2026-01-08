@@ -464,7 +464,6 @@
   "suspiciousPunycodeDecoding_paypal_com": {
     "message": "Liên kết này sử dụng các ký tự bất thường để trông giống paypal.com (rủi ro cao)."
   },
-
   "popupPageTitle": {
     "message": "Bảng Điều Khiển LinkShield"
   },
@@ -474,7 +473,6 @@
   "extDescriptionFull": {
     "message": "Tăng cường bảo mật với cảnh báo trực tiếp và bảo vệ nâng cao chống lại các mối đe dọa trực tuyến."
   },
-
   "licenseTrialTitle": {
     "message": "Dùng thử: còn $DAYS$ ngày",
     "placeholders": {
@@ -517,7 +515,6 @@
   "licensePremiumSubtitle": {
     "message": "Bảo vệ đầy đủ đã được kích hoạt"
   },
-
   "sectionSecuritySettings": {
     "message": "Cài Đặt Bảo Mật"
   },
@@ -542,7 +539,6 @@
   "errorOccurred": {
     "message": "Đã xảy ra lỗi"
   },
-
   "trialDaysRemaining": {
     "message": "Còn $DAYS$ ngày dùng thử",
     "placeholders": {
@@ -561,7 +557,6 @@
   "upgradeNow": {
     "message": "Nâng cấp ngay"
   },
-
   "gumroadErrorUnknown": {
     "message": "Lỗi không xác định"
   },
@@ -592,7 +587,6 @@
   "gumroadErrorNetwork": {
     "message": "Lỗi mạng khi xác thực. Vui lòng kiểm tra kết nối internet."
   },
-
   "licenseEmptyError": {
     "message": "Vui lòng nhập mã giấy phép"
   },
@@ -605,7 +599,6 @@
   "licenseConnectionError": {
     "message": "Lỗi kết nối. Vui lòng thử lại."
   },
-
   "debugModeTitle": {
     "message": "Chế Độ Gỡ Lỗi"
   },
@@ -699,7 +692,6 @@
   "reason_nullByteInjection": {
     "message": "Phát hiện tiêm null byte (rủi ro cao). Kỹ thuật này được sử dụng để vượt qua bộ lọc bảo mật và có thể chỉ ra liên kết độc hại."
   },
-
   "formActionHijacking": {
     "message": "Form đăng nhập này gửi thông tin xác thực của bạn đến trang web bên ngoài (rủi ro nghiêm trọng). Tên người dùng và mật khẩu của bạn có thể bị đánh cắp."
   },
@@ -715,7 +707,6 @@
   "formActionInvalid": {
     "message": "Form đăng nhập có URL hành động không hợp lệ hoặc đáng ngờ (rủi ro cao). Thông tin xác thực của bạn có thể không được gửi an toàn."
   },
-
   "hiddenIframeZeroSize": {
     "message": "Phát hiện iframe ẩn có kích thước bằng không (rủi ro cao). Điều này có thể được sử dụng để tải nội dung độc hại vô hình."
   },
@@ -728,7 +719,6 @@
   "hiddenIframeNegativePos": {
     "message": "Phát hiện iframe có vị trí âm (rủi ro trung bình). Kỹ thuật này được sử dụng để ẩn nội dung khỏi người dùng."
   },
-
   "nrdCritical": {
     "message": "NGUY HIỂM: Tên miền được đăng ký $DAYS$ ngày trước (rủi ro nghiêm trọng). Tên miền hoàn toàn mới cực kỳ có khả năng là độc hại.",
     "placeholders": {
@@ -765,7 +755,6 @@
       }
     }
   },
-
   "licenseErrorNotFound": {
     "message": "Không tìm thấy mã giấy phép. Vui lòng kiểm tra đầu vào của bạn."
   },
@@ -790,7 +779,6 @@
   "licenseErrorUnknown": {
     "message": "Đã xảy ra lỗi không xác định trong quá trình xác thực."
   },
-
   "invalidUrlFormat": {
     "message": "Định dạng URL không hợp lệ. Không thể phân tích địa chỉ web chính xác."
   },
@@ -890,7 +878,6 @@
   "Error": {
     "message": "Lỗi"
   },
-
   "siteSafeTitle": {
     "message": "Trang web có vẻ an toàn"
   },
@@ -900,7 +887,6 @@
   "siteAlertTitle": {
     "message": "Cảnh báo: Phát hiện mối đe dọa tiềm ẩn"
   },
-
   "clipboardHijackingCryptoTitle": {
     "message": "Phát Hiện Chiếm Đoạt Địa Chỉ Tiền Điện Tử!"
   },
@@ -916,21 +902,18 @@
   "reason_clipboardHijackingDetected": {
     "message": "Trang này thao túng nội dung clipboard của bạn (rủi ro cao). Nội dung dán có thể khác với những gì bạn đã sao chép."
   },
-
   "brandSubdomainPhishing": {
     "message": "Phát hiện từ khóa thương hiệu trên nền tảng lưu trữ miễn phí (rủi ro cao). Các công ty hợp pháp không sử dụng lưu trữ miễn phí cho dịch vụ chính thức."
   },
   "reason_brandSubdomainPhishing": {
     "message": "Phát hiện từ khóa thương hiệu trên nền tảng lưu trữ miễn phí (rủi ro cao). Các công ty hợp pháp không sử dụng lưu trữ miễn phí cho dịch vụ chính thức."
   },
-
   "nrdTelCombo": {
     "message": "Số điện thoại trên tên miền mới đăng ký với từ khóa lừa đảo (rủi ro trung bình). Đây có thể là nỗ lực vishing (lừa đảo qua điện thoại)."
   },
   "reason_nrdTelCombo": {
     "message": "Số điện thoại trên tên miền mới đăng ký với từ khóa lừa đảo (rủi ro trung bình). Đây có thể là nỗ lực vishing (lừa đảo qua điện thoại)."
   },
-
   "reason_opaqueRedirectChain": {
     "message": "Phát hiện chuyển hướng không rõ ràng (rủi ro thấp). Không thể truy vết đầy đủ đích đến chuyển hướng."
   },
@@ -943,7 +926,6 @@
   "reason_opaqueRedirectNRD": {
     "message": "Chuyển hướng không rõ ràng đến tên miền mới đăng ký (rủi ro cao). Chuyển hướng ẩn dẫn đến tên miền rất mới."
   },
-
   "bitbWarningTitle": {
     "message": "Phát Hiện Cửa Sổ Đăng Nhập Giả!"
   },
@@ -974,7 +956,6 @@
   "reason_bitbIframeInModal": {
     "message": "Phát hiện iframe bên trong modal overlay (rủi ro thấp). Điều này có thể được sử dụng để tải nội dung đăng nhập bên ngoài."
   },
-
   "clickFixPowerShellTitle": {
     "message": "Phát Hiện Lệnh PowerShell!"
   },
@@ -1029,7 +1010,6 @@
   "hiddenQrDetected": {
     "message": "Phát hiện mã QR ẩn trong nội dung trang. Có thể chứa URL độc hại."
   },
-
   "bitbAttackCritical": {
     "message": "NGUY HIỂM: Phát hiện tấn công Browser-in-the-Browser! Trang này hiển thị cửa sổ đăng nhập giả được thiết kế để đánh cắp thông tin xác thực của bạn."
   },
@@ -1060,7 +1040,6 @@
   "punycodeDetected": {
     "message": "Phát hiện tên miền Punycode! Địa chỉ này sử dụng các ký tự quốc tế có thể đang mạo danh một trang web hợp pháp."
   },
-
   "reason_nonAscii": {
     "message": "Phát hiện ký tự đáng ngờ (homoglyph)"
   },
@@ -1123,5 +1102,11 @@
   },
   "trialPeriodActive": {
     "message": "Thời gian dùng thử đang hoạt động"
+  },
+  "bitbClosePageButton": {
+    "message": "Đóng trang này"
+  },
+  "bitbDismissButton": {
+    "message": "Tôi hiểu rủi ro"
   }
 }

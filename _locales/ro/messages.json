@@ -1102,5 +1102,11 @@
   },
   "trialPeriodActive": {
     "message": "Perioada de probă activă"
+  },
+  "bitbClosePageButton": {
+    "message": "Închide această pagină"
+  },
+  "bitbDismissButton": {
+    "message": "Înțeleg riscul"
   }
 }

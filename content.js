@@ -6816,19 +6816,26 @@ document.addEventListener('DOMContentLoaded', async () => {
     logDebug("🚀 Initializing content script...");
     await initContentScript(); // Wacht op configuratie en veilige domeinen
 
-    // Initialiseer Clipboard Guard voor crypto hijacking detectie
-    initClipboardGuard();
+    // Check of protection is ingeschakeld voordat speciale detectie features worden gestart
+    const protectionEnabled = await isProtectionEnabled();
 
-    // Initialiseer ClickFix Attack detectie voor PowerShell/CMD injectie via nep-CAPTCHA
-    initClickFixDetection();
+    if (protectionEnabled) {
+      // Initialiseer Clipboard Guard voor crypto hijacking detectie
+      initClipboardGuard();
 
-    // Initialiseer Browser-in-the-Browser (BitB) detectie voor nep OAuth popups
-    initBitBDetection();
+      // Initialiseer ClickFix Attack detectie voor PowerShell/CMD injectie via nep-CAPTCHA
+      initClickFixDetection();
 
-    // Initialiseer Table QR Scanner voor imageless QR-code detectie (AI-phishing kits)
-    initTableQRScanner();
-    if (tableQRScanner) {
-      tableQRScanner.scanAllTables(); // Initial scan bij page load
+      // Initialiseer Browser-in-the-Browser (BitB) detectie voor nep OAuth popups
+      initBitBDetection();
+
+      // Initialiseer Table QR Scanner voor imageless QR-code detectie (AI-phishing kits)
+      initTableQRScanner();
+      if (tableQRScanner) {
+        tableQRScanner.scanAllTables(); // Initial scan bij page load
+      }
+    } else {
+      logDebug("Protection disabled, skipping special detection features initialization");
     }
     const currentUrl = window.location.href;
     logDebug(`🔍 Checking the current page: ${currentUrl}`);
@@ -7051,6 +7058,11 @@ async function checkLinksLegacy() {
 // 2) checkCurrentUrl stuurt nu precies één bericht, incl. de uitkomst van checkLinks()
 let lastCheckedUrl = null;
 async function checkCurrentUrl() {
+  // Check of protection is ingeschakeld
+  if (!(await isProtectionEnabled())) {
+    logDebug('Protection disabled, skipping checkCurrentUrl');
+    return;
+  }
   await ensureConfigReady();
   try {
     const currentUrl = window.location.href;

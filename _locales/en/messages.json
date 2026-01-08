@@ -1062,5 +1062,69 @@
   },
   "punycodeDetected": {
     "message": "Punycode domain detected! This address uses international characters that may be impersonating a legitimate website."
+  },
+
+  "reason_nonAscii": {
+    "message": "Suspicious characters detected (homoglyphs)"
+  },
+  "reason_brandKeywordHomoglyph": {
+    "message": "Brand imitation detected"
+  },
+  "reason_noHttps": {
+    "message": "No secure connection (HTTPS)"
+  },
+  "reason_suspiciousTLD": {
+    "message": "Suspicious domain extension"
+  },
+  "reason_ipAsDomain": {
+    "message": "IP address as domain name"
+  },
+  "reason_tooManySubdomains": {
+    "message": "Too many subdomains"
+  },
+  "reason_shortenedUrl": {
+    "message": "Shortened URL detected"
+  },
+  "reason_suspiciousKeywords": {
+    "message": "Suspicious keywords in URL"
+  },
+  "reason_malwareExtension": {
+    "message": "Potentially harmful file extension"
+  },
+  "reason_urlTooLong": {
+    "message": "Unusually long URL"
+  },
+  "reason_encodedCharacters": {
+    "message": "Encoded characters in URL"
+  },
+  "reason_homoglyphAttack": {
+    "message": "Homoglyph attack detected"
+  },
+  "reason_typosquatting": {
+    "message": "Typosquatting detected"
+  },
+  "reason_suspiciousBrandPattern": {
+    "message": "Suspicious brand pattern"
+  },
+  "reason_unusualPort": {
+    "message": "Unusual port"
+  },
+  "reason_punycode": {
+    "message": "Punycode domain detected"
+  },
+  "reason_loginPageNoMX": {
+    "message": "Login page without email server"
+  },
+  "reason_insecureLoginPage": {
+    "message": "Insecure login page"
+  },
+  "reason_sslValidationFailed": {
+    "message": "SSL validation failed"
+  },
+  "reason_similarToLegitimateDomain": {
+    "message": "Looks like a legitimate domain"
+  },
+  "trialPeriodActive": {
+    "message": "Trial period active"
   }
 }

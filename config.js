@@ -18,7 +18,7 @@ window.CONFIG = {
         'rodeo', 'sbs', 'site', 'skin', 'space', 'store', 'stream', 'surf', 'tech',
         'today', 'vip', 'wang', 'webcam', 'website', 'work', 'world', 'wtf', 'yachts',
         // AI/Tech gerelateerde TLD's (hoog risico in 2026)
-        'ai', 'bot', 'chat', 'crypto', 'dao', 'data', 'dex', 'eth', 'gpt', 'llm',
+        'ai', 'bot', 'chat', 'crypto', 'dao', 'data', 'dex', 'eth', 'gpt', 'link', 'llm',
         'metaverse', 'nft', 'sol', 'token', 'wallet', 'web3'
     ])).sort().join('|') + ')$', 'i'),
 
@@ -88,16 +88,65 @@ window.CONFIG = {
     SUSPICION_THRESHOLD: 0.1, // 10% van de links moet verdacht zijn
 
     // Domeinen waarvan we weten dat ze legitieme embeds/advertenties leveren
+    // SECURITY NOTE: Google Docs/Drive/Forms verwijderd - worden veel misbruikt voor phishing
     TRUSTED_IFRAME_DOMAINS: [
-        'youtube.com', 'www.youtube.com', 'youtu.be', 'vimeo.com', 'player.vimeo.com', 'dailymotion.com', 'www.dailymotion.com', 'twitch.tv', 'player.twitch.tv', 'soundcloud.com', 'w.soundcloud.com', 'spotify.com', 'open.spotify.com', 'maps.google.com', 'www.google.com/maps', 'docs.google.com', 'drive.google.com', 'calendar.google.com', 'forms.google.com', 'openstreetmap.org', 'www.openstreetmap.org', 'facebook.com', 'www.facebook.com', 'facebook.net', 'instagram.com', 'www.instagram.com', 'twitter.com', 'www.twitter.com', 'platform.twitter.com', 'linkedin.com', 'www.linkedin.com', 'platform.linkedin.com', 'pinterest.com', 'assets.pinterest.com', 'tiktok.com', 'embed.tiktok.com', 'paypal.com', 'www.paypal.com', 'stripe.com', 'js.stripe.com', 'checkout.stripe.com', 'adyen.com', 'checkoutshopper-live.adyen.com', 'discord.com', 'discordapp.com', 'slack.com', 'app.slack.com', 'intercom.io', 'widget.intercom.io', 'crisp.chat', 'webchat.livechatinc.com', 'js.zendesk.com', 'gist.github.com', 'codesandbox.io', 'stackblitz.com', 'repl.it', 'embed.replit.com', 'doubleclick.net', 'fls.doubleclick.net', 'googleadservices.com', 'googlesyndication.com', 'adservice.google.com', 'ads.pubmatic.com', 'hb.pubmatic.com', 'ads.rubiconproject.com', 'ads.adnxs.com', 'secure.adnxs.com', 'servedby.flashtalking.com', 'ads.yahoo.com', 'ads.openx.net', 'a.openx.net', 'indexexchange.com', 'sync.crwdcntrl.net', 'ads.coinzilla.com', 'adsafeprotected.com', 'segment.com', 'analytics.twitter.com', 'analytics.tiktok.com', 'bat.bing.com', 'cm.g.doubleclick.net', 'widget.buqer.com', 'widget.trustpilot.com', 'consent.cookiebot.com', 'consentcdn.cookiebot.com'
+        // Video platforms
+        'youtube.com', 'www.youtube.com', 'youtu.be', 'vimeo.com', 'player.vimeo.com',
+        'dailymotion.com', 'www.dailymotion.com', 'twitch.tv', 'player.twitch.tv',
+        // Audio platforms
+        'soundcloud.com', 'w.soundcloud.com', 'spotify.com', 'open.spotify.com',
+        // Maps (alleen embed)
+        'maps.google.com', 'www.google.com/maps', 'openstreetmap.org', 'www.openstreetmap.org',
+        // Google Calendar (relatief veilig voor embeds)
+        'calendar.google.com',
+        // Social media (alleen officiële embeds)
+        'platform.twitter.com', 'platform.linkedin.com', 'assets.pinterest.com',
+        'embed.tiktok.com', 'facebook.net',
+        // Payment providers (gevalideerde checkout flows)
+        'js.stripe.com', 'checkout.stripe.com', 'checkoutshopper-live.adyen.com',
+        // Chat widgets
+        'widget.intercom.io', 'crisp.chat', 'webchat.livechatinc.com', 'js.zendesk.com',
+        // Dev tools (sandbox)
+        'gist.github.com', 'codesandbox.io', 'stackblitz.com', 'embed.replit.com',
+        // Advertising (analytics/tracking)
+        'fls.doubleclick.net', 'cm.g.doubleclick.net', 'googleadservices.com',
+        'googlesyndication.com', 'adservice.google.com', 'ads.pubmatic.com',
+        'hb.pubmatic.com', 'ads.rubiconproject.com', 'secure.adnxs.com',
+        'adsafeprotected.com', 'segment.com', 'bat.bing.com',
+        // Trust & consent
+        'widget.trustpilot.com', 'consent.cookiebot.com', 'consentcdn.cookiebot.com'
     ],
 
     // Inlogpatronen
     LOGIN_PATTERNS: /(login|account|auth|authenticate|signin|wp-login|sign-in|log-in|dashboard|portal|session|user|profile)/i,
 
-    // Gratis Hosting Domeinen
+    // Gratis Hosting Domeinen (uitgebreid 2026 - veel misbruikt door AI phishing kits)
     FREE_HOSTING_DOMAINS: [
-        'sites.net', 'angelfire.com', 'geocities.ws', '000a.biz', '000webhostapp.com', 'weebly.com', 'wixsite.com', 'freehosting.com', 'glitch.me', 'firebaseapp.com', 'herokuapp.com', 'freehostia.com', 'netlify.app', 'webs.com', 'yolasite.com', 'github.io', 'bravenet.com', 'zyro.com', 'altervista.org', 'tripod.com', 'jimdo.com', 'ucoz.com', 'blogspot.com', 'square.site', 'pages.dev', 'r2.dev', 'mybluehost.me', '000space.com', 'awardspace.com', 'byethost.com', 'biz.nf', 'hyperphp.com', 'infinityfree.net', '50webs.com', 'tripod.lycos.com', 'site123.me', 'webflow.io', 'strikingly.com', 'x10hosting.com', 'freehostingnoads.net', '000freewebhost.com', 'mystrikingly.com', 'sites.google.com', 'appspot.com', 'vercel.app', 'weeblysite.com', 's3.amazonaws.com', 'bubbleapps.io', 'typedream.app', 'codeanyapp.com', 'carrd.co', 'surge.sh', 'replit.dev', 'fly.dev', 'render.com', 'onrender.com', 'fly.io', 'workers.dev'
+        // Klassieke gratis hosting
+        'sites.net', 'angelfire.com', 'geocities.ws', '000a.biz', '000webhostapp.com', 'weebly.com',
+        'wixsite.com', 'freehosting.com', 'glitch.me', 'freehostia.com', 'webs.com', 'yolasite.com',
+        'bravenet.com', 'zyro.com', 'altervista.org', 'tripod.com', 'jimdo.com', 'ucoz.com',
+        'blogspot.com', 'square.site', 'mybluehost.me', '000space.com', 'awardspace.com',
+        'byethost.com', 'biz.nf', 'hyperphp.com', 'infinityfree.net', '50webs.com',
+        'tripod.lycos.com', 'site123.me', 'strikingly.com', 'x10hosting.com',
+        'freehostingnoads.net', '000freewebhost.com', 'mystrikingly.com', 'weeblysite.com',
+        // Moderne cloud/serverless hosting (veel misbruikt voor AI-phishing in 2026)
+        'vercel.app', 'netlify.app', 'pages.dev', 'workers.dev', 'r2.dev',
+        'herokuapp.com', 'fly.dev', 'fly.io', 'render.com', 'onrender.com',
+        'railway.app', 'deno.dev', 'val.run', 'val.town',
+        // Firebase/Google Cloud
+        'firebaseapp.com', 'web.app', 'firebaseio.com', 'cloudfunctions.net',
+        'appspot.com', 'sites.google.com',
+        // GitHub/GitLab/Azure
+        'github.io', 'gitlab.io', 'azurewebsites.net', 'azurestaticapps.net',
+        // AWS
+        's3.amazonaws.com', 'amplifyapp.com', 'execute-api.amazonaws.com',
+        // Andere moderne platforms
+        'webflow.io', 'framer.website', 'framercanvas.com',
+        'bubbleapps.io', 'typedream.app', 'codeanyapp.com', 'carrd.co',
+        'surge.sh', 'replit.dev', 'repl.co',
+        // Edge/CDN platforms
+        'edgecompute.app', 'durable.co', 'liveblocks.io'
     ],
 
     // Verkorte URL Domeinen

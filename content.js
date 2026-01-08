@@ -1706,6 +1706,112 @@ class LinkScannerOptimized {
   }
 
   /**
+   * Scant Shadow DOM specifiek voor verborgen login forms en phishing overlays
+   * AI-phishing kits injecteren vaak login forms in Shadow DOM om detectie te omzeilen
+   *
+   * @param {Element|Document} root - Root element om te scannen
+   * @param {number} depth - Huidige recursie diepte
+   * @returns {{detected: boolean, forms: Array, overlays: Array, reasons: string[]}}
+   */
+  scanShadowDOMForPhishing(root, depth = 0) {
+    const MAX_SHADOW_DEPTH = 5;
+    const result = {
+      detected: false,
+      forms: [],
+      overlays: [],
+      reasons: []
+    };
+
+    if (!root || depth >= MAX_SHADOW_DEPTH) return result;
+
+    try {
+      const allElements = root.querySelectorAll ? root.querySelectorAll('*') : [];
+
+      allElements.forEach(el => {
+        if (el.shadowRoot) {
+          // 1. Zoek naar login forms in Shadow DOM
+          const shadowForms = el.shadowRoot.querySelectorAll('form');
+          shadowForms.forEach(form => {
+            const hasPassword = form.querySelector('input[type="password"]');
+            const hasEmail = form.querySelector('input[type="email"], input[name*="email"], input[name*="user"]');
+
+            if (hasPassword || hasEmail) {
+              result.forms.push({
+                element: form,
+                hasPassword: !!hasPassword,
+                hasEmail: !!hasEmail,
+                action: form.action || form.getAttribute('action')
+              });
+              result.detected = true;
+              result.reasons.push('shadowDomLoginForm');
+              logDebug(`[ShadowDOM] Login form gevonden in Shadow DOM: ${form.action || 'geen action'}`);
+            }
+          });
+
+          // 2. Zoek naar verdachte overlays (login modals, fake pop-ups)
+          const shadowOverlays = el.shadowRoot.querySelectorAll(
+            '[class*="modal"], [class*="overlay"], [class*="popup"], [class*="dialog"], ' +
+            '[id*="modal"], [id*="overlay"], [id*="popup"], [id*="login"]'
+          );
+          shadowOverlays.forEach(overlay => {
+            // Check of overlay password/login velden bevat
+            const hasCredentialInputs = overlay.querySelector(
+              'input[type="password"], input[type="email"], input[name*="password"], input[name*="user"]'
+            );
+
+            if (hasCredentialInputs) {
+              // Check of het element verborgen is maar nog steeds in DOM (phishing techniek)
+              const style = window.getComputedStyle(overlay);
+              const isHidden = style.display === 'none' ||
+                              style.visibility === 'hidden' ||
+                              style.opacity === '0' ||
+                              parseInt(style.height) === 0;
+
+              result.overlays.push({
+                element: overlay,
+                isHidden,
+                hasCredentialInputs: true,
+                className: overlay.className
+              });
+
+              if (!isHidden) {
+                result.detected = true;
+                result.reasons.push('shadowDomPhishingOverlay');
+                logDebug(`[ShadowDOM] Phishing overlay gevonden: ${overlay.className || overlay.id || 'unknown'}`);
+              }
+            }
+          });
+
+          // 3. Zoek naar iframes in Shadow DOM (extra verdacht)
+          const shadowIframes = el.shadowRoot.querySelectorAll('iframe');
+          shadowIframes.forEach(iframe => {
+            if (iframe.src) {
+              result.detected = true;
+              result.reasons.push('shadowDomIframe');
+              logDebug(`[ShadowDOM] Iframe in Shadow DOM: ${iframe.src}`);
+            }
+          });
+
+          // 4. Recursief scannen
+          const nestedResult = this.scanShadowDOMForPhishing(el.shadowRoot, depth + 1);
+          if (nestedResult.detected) {
+            result.detected = true;
+            result.forms.push(...nestedResult.forms);
+            result.overlays.push(...nestedResult.overlays);
+            result.reasons.push(...nestedResult.reasons);
+          }
+        }
+      });
+    } catch (error) {
+      logDebug(`[ShadowDOM] Phishing scan error: ${error.message}`);
+    }
+
+    // Deduplicate reasons
+    result.reasons = [...new Set(result.reasons)];
+    return result;
+  }
+
+  /**
    * Scant same-origin iframes voor links
    * @returns {Array} Array van gevonden link elementen
    */
@@ -3280,17 +3386,31 @@ function detectHiddenIframes() {
  */
 function analyzeNRDRisk(creationDate) {
   if (!creationDate || !(creationDate instanceof Date) || isNaN(creationDate.getTime())) {
-    return { isNRD: false, ageDays: null, riskLevel: 'none', reason: null };
+    return { isNRD: false, ageDays: null, ageHours: null, riskLevel: 'none', reason: null };
   }
 
-  const ageDays = Math.floor((Date.now() - creationDate.getTime()) / (1000 * 60 * 60 * 24));
+  const ageMs = Date.now() - creationDate.getTime();
+  const ageHours = Math.floor(ageMs / (1000 * 60 * 60));
+  const ageDays = Math.floor(ageMs / (1000 * 60 * 60 * 24));
 
   // Risico classificatie gebaseerd op domein leeftijd
-  if (ageDays <= 1) {
-    // Domein vandaag of gisteren geregistreerd - KRITIEK
+  // AI-phishing kits registreren domeinen vlak voor aanvallen - ultra-jonge domeinen zijn hoogste risico
+  if (ageHours < 24) {
+    // Domein minder dan 24 uur oud - ULTRA KRITIEK (AI-phishing indicator)
+    // Dit is de primaire indicator voor agentic AI aanvallen
     return {
       isNRD: true,
       ageDays,
+      ageHours,
+      riskLevel: 'critical',
+      reason: 'nrdUltraCritical' // < 24 uur - hoogste risico
+    };
+  } else if (ageDays <= 1) {
+    // Domein 24-48 uur oud - KRITIEK
+    return {
+      isNRD: true,
+      ageDays,
+      ageHours,
       riskLevel: 'critical',
       reason: 'nrdCritical' // < 2 dagen
     };
@@ -3299,6 +3419,7 @@ function analyzeNRDRisk(creationDate) {
     return {
       isNRD: true,
       ageDays,
+      ageHours,
       riskLevel: 'high',
       reason: 'nrdHigh' // < 7 dagen
     };
@@ -3307,6 +3428,7 @@ function analyzeNRDRisk(creationDate) {
     return {
       isNRD: true,
       ageDays,
+      ageHours,
       riskLevel: 'medium',
       reason: 'nrdMedium' // < 30 dagen
     };
@@ -3315,12 +3437,13 @@ function analyzeNRDRisk(creationDate) {
     return {
       isNRD: true,
       ageDays,
+      ageHours,
       riskLevel: 'low',
       reason: 'nrdLow' // < 90 dagen
     };
   }
 
-  return { isNRD: false, ageDays, riskLevel: 'none', reason: null };
+  return { isNRD: false, ageDays, ageHours, riskLevel: 'none', reason: null };
 }
 
 /**
@@ -3342,67 +3465,153 @@ function getNRDRiskScore(riskLevel) {
  * NRD + tel: combo detectie (Vishing Indicator)
  * Detecteert tel: links op pagina's die:
  * 1. Een NRD zijn (<7 dagen oud)
- * 2. Phishing keywords bevatten
- * Dit is een sterke indicator voor vishing (voice phishing) aanvallen.
+ * 2. tel: links bevatten OF telefoonnummer-gerelateerde CTA's
+ * 3. Optioneel: phishing keywords bevatten
  *
- * @returns {Promise<{detected: boolean, score: number, reason: string|null}>}
+ * Dit is een sterke indicator voor vishing (voice phishing) aanvallen,
+ * waarbij AI-gegenereerde stemmen worden gebruikt om slachtoffers te bellen.
+ *
+ * @returns {Promise<{detected: boolean, score: number, reason: string|null, indicators: string[]}>}
  */
 async function checkNRDTelCombo() {
   try {
     const pageUrl = window.location.href;
     const pageHostname = window.location.hostname;
+    const indicators = [];
 
     // Haal domein leeftijd op via bestaande RDAP functie
     const domain = getRegistrableDomain(pageUrl);
     if (!domain) {
-      return { detected: false, score: 0, reason: null };
+      return { detected: false, score: 0, reason: null, indicators: [] };
     }
 
     const created = await fetchDomainCreationDate(domain);
     if (!created) {
-      return { detected: false, score: 0, reason: null };
+      return { detected: false, score: 0, reason: null, indicators: [] };
     }
 
     // Check of domein NRD is (<7 dagen)
     const nrdAnalysis = analyzeNRDRisk(created);
     if (!nrdAnalysis.isNRD || nrdAnalysis.ageDays > 7) {
-      return { detected: false, score: 0, reason: null };
+      return { detected: false, score: 0, reason: null, indicators: [] };
     }
 
-    // Check of pagina phishing keywords bevat
-    const phishingKeywords = globalConfig?.PHISHING_KEYWORDS || new Set([
-      'verify', 'login', 'bank', 'secure', 'account', 'update', 'confirm',
-      'password', 'credential', 'suspend', 'unlock', 'urgent'
-    ]);
+    // Indicator 1: tel: links aanwezig
+    const telLinks = document.querySelectorAll('a[href^="tel:"]');
+    const hasTelLinks = telLinks.length > 0;
+    if (hasTelLinks) {
+      indicators.push(`tel:links(${telLinks.length})`);
+    }
 
-    // Check URL en pagina content
-    const urlLower = pageUrl.toLowerCase();
-    const bodyText = document.body?.innerText?.toLowerCase() || '';
-    const titleText = document.title?.toLowerCase() || '';
+    // Indicator 2: Telefoonnummer patronen in tekst (internationale formaten)
+    const phonePatterns = [
+      /\+\d{1,4}[\s.-]?\(?\d{1,4}\)?[\s.-]?\d{1,4}[\s.-]?\d{1,9}/g, // Internationaal: +31 6 12345678
+      /\(?\d{2,4}\)?[\s.-]?\d{3,4}[\s.-]?\d{3,4}/g, // Lokaal: (020) 123-4567
+      /\d{3}[\s.-]\d{3}[\s.-]\d{4}/g, // US format: 123-456-7890
+      /0\d{9,10}/g, // NL mobiel: 0612345678
+    ];
 
-    let hasPhishingKeyword = false;
-    let foundKeyword = '';
+    const bodyText = document.body?.innerText || '';
+    let phoneMatches = 0;
+    for (const pattern of phonePatterns) {
+      const matches = bodyText.match(pattern);
+      if (matches) phoneMatches += matches.length;
+    }
+    const hasPhoneNumbers = phoneMatches > 0;
+    if (hasPhoneNumbers) {
+      indicators.push(`phoneNumbers(${phoneMatches})`);
+    }
 
-    for (const keyword of phishingKeywords) {
-      if (urlLower.includes(keyword) || bodyText.includes(keyword) || titleText.includes(keyword)) {
-        hasPhishingKeyword = true;
-        foundKeyword = keyword;
+    // Indicator 3: Vishing-specifieke CTA keywords
+    const vishingKeywords = [
+      'call us', 'bel ons', 'call now', 'bel nu', 'call immediately', 'bel direct',
+      'phone support', 'telefonische hulp', 'call back', 'terugbellen',
+      'speak to', 'spreek met', 'contact by phone', 'telefonisch contact',
+      'our agents', 'onze medewerkers', 'customer service', 'klantenservice',
+      'helpdesk', 'support line', 'hotline', 'toll free', 'gratis nummer',
+      'verify by phone', 'telefonisch verifiëren', 'confirm by call', 'bevestig telefonisch',
+      'we will call', 'wij bellen', 'expect a call', 'verwacht een telefoontje'
+    ];
+
+    const bodyTextLower = bodyText.toLowerCase();
+    const titleTextLower = document.title?.toLowerCase() || '';
+    let foundVishingKeywords = [];
+
+    for (const keyword of vishingKeywords) {
+      if (bodyTextLower.includes(keyword) || titleTextLower.includes(keyword)) {
+        foundVishingKeywords.push(keyword);
+      }
+    }
+    const hasVishingKeywords = foundVishingKeywords.length > 0;
+    if (hasVishingKeywords) {
+      indicators.push(`vishingCTA(${foundVishingKeywords.slice(0, 3).join(',')})`);
+    }
+
+    // Indicator 4: Urgentie keywords (verhogen risico bij combinatie)
+    const urgencyKeywords = [
+      'urgent', 'immediately', 'right now', 'nu meteen', 'direct actie',
+      'within 24 hours', 'binnen 24 uur', 'expires', 'verloopt', 'deadline',
+      'suspended', 'opgeschort', 'blocked', 'geblokkeerd', 'unauthorized',
+      'unusual activity', 'ongebruikelijke activiteit', 'security alert'
+    ];
+
+    let hasUrgency = false;
+    for (const keyword of urgencyKeywords) {
+      if (bodyTextLower.includes(keyword) || titleTextLower.includes(keyword)) {
+        hasUrgency = true;
+        indicators.push('urgency');
         break;
       }
     }
 
-    if (hasPhishingKeyword) {
+    // Bereken score gebaseerd op indicatoren
+    let score = 0;
+    const nrdAge = nrdAnalysis.ageHours !== undefined
+      ? `${nrdAnalysis.ageHours}h`
+      : `${nrdAnalysis.ageDays}d`;
+
+    // NRD basis score
+    if (nrdAnalysis.ageHours !== undefined && nrdAnalysis.ageHours < 24) {
+      score += 5; // Ultra-kritiek NRD
+    } else {
+      score += 3; // Kritiek NRD
+    }
+
+    // Tel links of telefoonnummers
+    if (hasTelLinks) score += 4;
+    if (hasPhoneNumbers && phoneMatches >= 2) score += 2;
+
+    // Vishing keywords
+    if (hasVishingKeywords) score += 3;
+
+    // Urgentie verhoogt risico
+    if (hasUrgency) score += 2;
+
+    // Detectie drempel: minimaal NRD + (tel links OF vishing keywords)
+    const isVishingIndicator = hasTelLinks || hasVishingKeywords || (hasPhoneNumbers && phoneMatches >= 2);
+
+    if (isVishingIndicator) {
+      logDebug(`[NRDTelCombo] Vishing indicator detected: NRD(${nrdAge}), indicators: ${indicators.join(', ')}, score: ${score}`);
+
       return {
         detected: true,
-        score: 3,
-        reason: `NRD (${nrdAnalysis.ageDays.toFixed(0)}d) + tel: + keyword "${foundKeyword}"`
+        score,
+        reason: 'nrdVishingCombo',
+        indicators,
+        details: {
+          nrdAge,
+          telLinks: telLinks.length,
+          phoneNumbers: phoneMatches,
+          vishingKeywords: foundVishingKeywords.slice(0, 5),
+          hasUrgency
+        }
       };
     }
 
-    return { detected: false, score: 0, reason: null };
+    return { detected: false, score: 0, reason: null, indicators: [] };
   } catch (error) {
     logError('[NRDTelCombo] Error:', error);
-    return { detected: false, score: 0, reason: null };
+    return { detected: false, score: 0, reason: null, indicators: [] };
   }
 }
 
@@ -5797,6 +6006,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Initialiseer Clipboard Guard voor crypto hijacking detectie
     initClipboardGuard();
+
+    // Initialiseer Table QR Scanner voor imageless QR-code detectie (AI-phishing kits)
+    initTableQRScanner();
+    if (tableQRScanner) {
+      tableQRScanner.scanAllTables(); // Initial scan bij page load
+    }
     const currentUrl = window.location.href;
     logDebug(`🔍 Checking the current page: ${currentUrl}`);
     // --- 1. Pagina-brede checks ---
@@ -6261,6 +6476,12 @@ const observer = new MutationObserver(debounce(async (mutations) => {
   if (linksAdded && isSearchResultPage()) {
     debounceCheckGoogleSearchResults();
   }
+
+  // Table QR Scanner: Scan voor imageless QR-codes in nieuw toegevoegde tabellen
+  // Dit detecteert AI-phishing kits die QR-codes via HTML tables renderen
+  if (tableQRScanner) {
+    debouncedTableScan();
+  }
 }, 500)); // Debounce om te voorkomen dat het te vaak afvuurt
 observer.observe(document.documentElement, { childList: true, subtree: true });
 document.addEventListener('mouseover', debounce((event) => {
@@ -6504,6 +6725,369 @@ class ImageScannerOptimized {
 // Global image scanner instance
 let imageScanner = null;
 
+// =============================================================================
+// TABLE-BASED QR CODE SCANNER (Imageless QR Detection)
+// Detecteert QR-codes die via HTML <table> elementen worden gerenderd
+// AI-phishing kits gebruiken deze techniek om image-scanning te omzeilen
+// =============================================================================
+
+const TABLE_QR_CACHE = new Map();
+const TABLE_QR_CACHE_TTL_MS = 1800000; // 30 minuten cache
+const TABLE_QR_MIN_SIZE = 21; // Minimale QR-code grootte (21x21 modules)
+const TABLE_QR_MAX_SIZE = 177; // Maximale QR-code grootte (version 40)
+
+/**
+ * TableQRScanner - Scant <table> elementen voor QR-code patronen
+ * AI-phishing kits gebruiken tables met bgcolor om QR-codes te renderen zonder images
+ */
+class TableQRScanner {
+  constructor(options = {}) {
+    this.minSize = options.minSize || TABLE_QR_MIN_SIZE;
+    this.maxSize = options.maxSize || TABLE_QR_MAX_SIZE;
+    this.cacheTTL = options.cacheTTL || TABLE_QR_CACHE_TTL_MS;
+    this.pendingTables = new Set();
+    this.isProcessing = false;
+    this.scannedTables = new WeakSet();
+
+    logDebug('[TableQR] TableQRScanner initialized');
+  }
+
+  /**
+   * Controleert of een tabel een QR-code patroon zou kunnen zijn
+   * @param {HTMLTableElement} table - Het table element om te controleren
+   * @returns {boolean} True als de tabel een potentiële QR-code is
+   */
+  isPotentialQRTable(table) {
+    if (!table || this.scannedTables.has(table)) return false;
+
+    const rows = table.querySelectorAll('tr');
+    if (rows.length < this.minSize || rows.length > this.maxSize) return false;
+
+    // Check consistentie: alle rijen moeten ongeveer evenveel cellen hebben
+    const firstRowCells = rows[0]?.querySelectorAll('td, th').length || 0;
+    if (firstRowCells < this.minSize || firstRowCells > this.maxSize) return false;
+
+    // Controleer of de tabel vierkant is (±3 cellen tolerantie)
+    if (Math.abs(rows.length - firstRowCells) > 3) return false;
+
+    // Check of minstens 30% van de cellen een achtergrondkleur heeft
+    let coloredCells = 0;
+    let totalCells = 0;
+
+    for (const row of rows) {
+      const cells = row.querySelectorAll('td, th');
+      for (const cell of cells) {
+        totalCells++;
+        const bgColor = cell.getAttribute('bgcolor') ||
+                        cell.style.backgroundColor ||
+                        window.getComputedStyle(cell).backgroundColor;
+
+        if (bgColor && bgColor !== 'transparent' && bgColor !== 'rgba(0, 0, 0, 0)') {
+          coloredCells++;
+        }
+      }
+    }
+
+    const colorRatio = coloredCells / totalCells;
+    return colorRatio >= 0.3 && colorRatio <= 0.7; // QR-codes hebben typisch 30-70% zwarte modules
+  }
+
+  /**
+   * Rendert een tabel naar een canvas en scant voor QR-code
+   * @param {HTMLTableElement} table - Het table element
+   * @returns {Promise<{detected: boolean, url: string|null, level: string, reasons: string[]}>}
+   */
+  async scanTable(table) {
+    if (typeof jsQR === 'undefined') {
+      logDebug('[TableQR] jsQR not available, skipping table scan');
+      return null;
+    }
+
+    const cacheKey = this.getTableHash(table);
+    const cached = TABLE_QR_CACHE.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < this.cacheTTL) {
+      return cached.result;
+    }
+
+    this.scannedTables.add(table);
+
+    try {
+      const rows = table.querySelectorAll('tr');
+      const rowCount = rows.length;
+      const colCount = rows[0]?.querySelectorAll('td, th').length || 0;
+
+      // Maak een off-screen canvas
+      const cellSize = 4; // Pixels per cel
+      const canvas = document.createElement('canvas');
+      canvas.width = colCount * cellSize;
+      canvas.height = rowCount * cellSize;
+      const ctx = canvas.getContext('2d');
+
+      // Witte achtergrond
+      ctx.fillStyle = 'white';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Render elke cel
+      ctx.fillStyle = 'black';
+      rows.forEach((row, y) => {
+        const cells = row.querySelectorAll('td, th');
+        cells.forEach((cell, x) => {
+          if (this.isCellDark(cell)) {
+            ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+          }
+        });
+      });
+
+      // Scan met jsQR
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const qrResult = jsQR(imageData.data, imageData.width, imageData.height);
+
+      if (qrResult && qrResult.data) {
+        const decodedUrl = qrResult.data;
+        logDebug(`[TableQR] Decoded URL from table: ${decodedUrl}`);
+
+        if (isValidURL(decodedUrl)) {
+          // Voer security checks uit op de gedecodeerde URL
+          const securityResult = await this.analyzeDecodedUrl(decodedUrl, table);
+
+          const result = {
+            detected: true,
+            type: 'table-qr',
+            url: decodedUrl,
+            ...securityResult
+          };
+
+          TABLE_QR_CACHE.set(cacheKey, { result, timestamp: Date.now() });
+          return result;
+        }
+      }
+
+      const noQrResult = { detected: false, url: null, level: 'safe', reasons: [] };
+      TABLE_QR_CACHE.set(cacheKey, { result: noQrResult, timestamp: Date.now() });
+      return noQrResult;
+
+    } catch (error) {
+      handleError(error, '[TableQR] Error scanning table');
+      return null;
+    }
+  }
+
+  /**
+   * Bepaalt of een cel "donker" is (zwart module in QR-code)
+   * @param {HTMLTableCellElement} cell - De tabel cel
+   * @returns {boolean}
+   */
+  isCellDark(cell) {
+    const bgColor = cell.getAttribute('bgcolor') ||
+                    cell.style.backgroundColor ||
+                    window.getComputedStyle(cell).backgroundColor;
+
+    if (!bgColor || bgColor === 'transparent' || bgColor === 'rgba(0, 0, 0, 0)') {
+      return false;
+    }
+
+    // Parse kleur naar RGB
+    let r = 255, g = 255, b = 255;
+    if (bgColor.startsWith('#')) {
+      const hex = bgColor.slice(1);
+      r = parseInt(hex.slice(0, 2), 16) || 255;
+      g = parseInt(hex.slice(2, 4), 16) || 255;
+      b = parseInt(hex.slice(4, 6), 16) || 255;
+    } else if (bgColor.startsWith('rgb')) {
+      const match = bgColor.match(/\d+/g);
+      if (match && match.length >= 3) {
+        [r, g, b] = match.slice(0, 3).map(Number);
+      }
+    } else {
+      // Benoemde kleuren
+      const darkColors = ['black', 'darkblue', 'darkgreen', 'darkred', 'navy', 'maroon'];
+      return darkColors.includes(bgColor.toLowerCase());
+    }
+
+    // Bereken luminantie - donker = < 128
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b);
+    return luminance < 128;
+  }
+
+  /**
+   * Genereert een simpele hash voor caching
+   */
+  getTableHash(table) {
+    const rows = table.querySelectorAll('tr');
+    let hash = `${rows.length}x${rows[0]?.querySelectorAll('td, th').length || 0}:`;
+
+    // Sample eerste, middelste en laatste rij voor hash
+    const sampleIndices = [0, Math.floor(rows.length / 2), rows.length - 1];
+    for (const idx of sampleIndices) {
+      const row = rows[idx];
+      if (row) {
+        const cells = row.querySelectorAll('td, th');
+        cells.forEach(cell => {
+          hash += this.isCellDark(cell) ? '1' : '0';
+        });
+      }
+    }
+    return hash;
+  }
+
+  /**
+   * Analyseert de gedecodeerde URL voor security threats
+   */
+  async analyzeDecodedUrl(url, tableElement) {
+    const reasons = [];
+    let totalRisk = 0;
+
+    // Basis URL checks
+    const result = await performSuspiciousChecks(url);
+    reasons.push(...result.reasons);
+    totalRisk += result.risk || 0;
+
+    // Extra risico: Table-gebaseerde QR is inherent verdacht (anti-detection techniek)
+    reasons.push('tableBasedQR');
+    totalRisk += 3;
+
+    // Check redirect chain via background script
+    try {
+      const redirectResult = await new Promise((resolve, reject) => {
+        const timeoutId = setTimeout(() => reject(new Error('Timeout')), 5000);
+        chrome.runtime.sendMessage({
+          action: 'analyzeRedirectChain',
+          url: url,
+          source: 'table-qr'
+        }, response => {
+          clearTimeout(timeoutId);
+          resolve(response || { threats: [] });
+        });
+      });
+
+      if (redirectResult.threats && redirectResult.threats.length > 0) {
+        reasons.push(...redirectResult.threats);
+        totalRisk += redirectResult.threats.length * 3;
+      }
+    } catch (e) {
+      logDebug(`[TableQR] Redirect analysis failed: ${e.message}`);
+    }
+
+    // Bepaal risico level
+    let level = 'safe';
+    if (totalRisk >= globalConfig.HIGH_THRESHOLD) {
+      level = 'alert';
+    } else if (totalRisk >= globalConfig.LOW_THRESHOLD) {
+      level = 'caution';
+    }
+
+    return { level, reasons: [...new Set(reasons)], risk: totalRisk };
+  }
+
+  /**
+   * Scant alle tabellen op de pagina (debounced)
+   */
+  async scanAllTables() {
+    const tables = document.querySelectorAll('table');
+    let scannedCount = 0;
+
+    for (const table of tables) {
+      if (this.isPotentialQRTable(table)) {
+        const result = await this.scanTable(table);
+        scannedCount++;
+
+        if (result && result.detected && result.level !== 'safe') {
+          this.warnTableQR(table, result);
+        }
+      }
+    }
+
+    if (scannedCount > 0) {
+      logDebug(`[TableQR] Scanned ${scannedCount} potential QR tables`);
+    }
+  }
+
+  /**
+   * Toont waarschuwing bij verdachte table QR-code
+   */
+  warnTableQR(table, { level, reasons = [], url }) {
+    if (table.dataset.qrWarned === 'true') return;
+    table.dataset.qrWarned = 'true';
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'linkshield-warning';
+    wrapper.style.position = 'relative';
+    wrapper.style.display = 'inline-block';
+    table.parentNode?.insertBefore(wrapper, table);
+    wrapper.appendChild(table);
+
+    const isAlert = level === 'alert';
+    const bgColor = isAlert ? 'rgba(220, 38, 38, 0.9)' : 'rgba(234, 179, 8, 0.9)';
+    const borderColor = isAlert ? '#dc2626' : '#eab308';
+    const emoji = isAlert ? '⚠️' : '⚡';
+    const title = isAlert
+      ? (chrome.i18n.getMessage('tableQrDangerTitle') || 'GEVAAR: Verborgen QR-code!')
+      : (chrome.i18n.getMessage('tableQrCautionTitle') || 'Let op: Verborgen QR-code');
+
+    const translatedReasons = Array.isArray(reasons) && reasons.length > 0
+      ? reasons.slice(0, 3).map(r => translateReason(r)).join(', ')
+      : (chrome.i18n.getMessage('hiddenQrDetected') || 'Verborgen QR-code gedetecteerd');
+
+    const displayUrl = url && url.length > 50 ? url.substring(0, 50) + '...' : url;
+
+    const overlay = document.createElement('div');
+    overlay.className = 'linkshield-overlay table-qr-warning';
+    overlay.innerHTML = `
+      <div style="font-weight:bold;font-size:14px;margin-bottom:4px;">${emoji} ${title}</div>
+      <div style="font-size:11px;margin-bottom:4px;">URL: ${displayUrl || 'Verborgen'}</div>
+      <div style="font-size:10px;opacity:0.9;">${translatedReasons}</div>
+    `;
+
+    overlay.style.cssText = `
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: ${bgColor};
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 10px;
+      z-index: 10000;
+      border: 3px solid ${borderColor};
+      border-radius: 4px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    `;
+
+    wrapper.appendChild(overlay);
+    logDebug(`[TableQR] Warning displayed for table QR: ${url}`);
+  }
+}
+
+// Global table QR scanner instance
+let tableQRScanner = null;
+
+/**
+ * Initialiseert de Table QR Scanner
+ */
+function initTableQRScanner() {
+  if (!tableQRScanner) {
+    tableQRScanner = new TableQRScanner();
+  }
+  return tableQRScanner;
+}
+
+// Debounced table scan voor MutationObserver
+const debouncedTableScan = debounce(async () => {
+  if (tableQRScanner) {
+    await tableQRScanner.scanAllTables();
+  }
+}, 500);
+
+// =============================================================================
+// END TABLE-BASED QR CODE SCANNER
+// =============================================================================
+
 /**
  * Scan image for QR codes using jsQR library (IIFE, MV3 compatible)
  */
@@ -6552,6 +7136,30 @@ async function scanImageForQR(imgEl) {
         // Perform suspicious checks
         let result = await performSuspiciousChecks(decodedUrl);
 
+        // ENHANCED: Redirect chain analyse voor QR-code URLs (AI-proxy detectie)
+        // QR-codes worden vaak gebruikt door AI-phishing kits met meerdere redirects
+        try {
+          const redirectResult = await new Promise((resolve, reject) => {
+            const timeoutId = setTimeout(() => reject(new Error('Timeout')), 6000);
+            chrome.runtime.sendMessage({
+              action: 'analyzeRedirectChain',
+              url: decodedUrl,
+              source: 'image-qr' // Markeer als QR-code bron voor prioritaire analyse
+            }, response => {
+              clearTimeout(timeoutId);
+              resolve(response || { threats: [] });
+            });
+          });
+
+          if (redirectResult.analyzed && redirectResult.threats && redirectResult.threats.length > 0) {
+            result.reasons.push(...redirectResult.threats);
+            result.risk = (result.risk || 0) + (redirectResult.threats.length * 3);
+            logDebug(`[LinkShield OCR] Redirect threats found: ${redirectResult.threats.join(', ')}`);
+          }
+        } catch (e) {
+          logDebug(`[LinkShield OCR] Redirect analysis skipped: ${e.message}`);
+        }
+
         // Integrate Chrome Safe Browsing if available
         if (chrome.safeBrowsing) {
           try {
@@ -6567,6 +7175,13 @@ async function scanImageForQR(imgEl) {
         if (contextReasons.length > 0) {
           result.reasons = [...result.reasons, ...contextReasons];
           if (result.level === 'safe') result.level = 'caution';
+        }
+
+        // Herbereken level op basis van totale risk
+        if (result.risk >= globalConfig.HIGH_THRESHOLD) {
+          result.level = 'alert';
+        } else if (result.risk >= globalConfig.LOW_THRESHOLD && result.level === 'safe') {
+          result.level = 'caution';
         }
 
         if (result.level !== 'safe') {

@@ -1647,9 +1647,18 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             return true;
 
         case 'analyzeRedirectChain': {
-            // Redirect Chain Analysis (v7.1)
+            // Redirect Chain Analysis (v7.1) - Enhanced for QR code URLs
             const targetUrl = request.url;
-            const shouldAnalyze = request.force || isKnownShortener(targetUrl) || request.level === 'caution';
+            const source = request.source || 'unknown';
+
+            // QR-code URLs worden ALTIJD geanalyseerd (AI-proxy redirect detectie)
+            // Dit is cruciaal voor het ontmaskeren van AI-phishing redirects
+            const isQRSource = source === 'table-qr' || source === 'image-qr' || source === 'qr' || source === 'ascii-qr';
+            const shouldAnalyze = request.force || isQRSource || isKnownShortener(targetUrl) || request.level === 'caution';
+
+            if (globalThresholds.DEBUG_MODE && isQRSource) {
+                console.log(`[RedirectChain] QR-code URL detected (source: ${source}), forcing analysis: ${targetUrl}`);
+            }
 
             if (!shouldAnalyze) {
                 sendResponse({
@@ -1662,7 +1671,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 return true;
             }
 
-            traceRedirectChain(targetUrl, 3000)
+            // Langere timeout voor QR URLs (kunnen meer redirects hebben)
+            const timeout = isQRSource ? 5000 : 3000;
+            traceRedirectChain(targetUrl, timeout)
                 .then(result => {
                     sendResponse({
                         analyzed: true,

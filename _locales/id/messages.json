@@ -1,0 +1,1127 @@
+{
+  "extName": {
+    "message": "LinkShield"
+  },
+  "extDescription": {
+    "message": "LinkShield membantu Anda mengidentifikasi situs web dan tautan tidak aman untuk menjaga keamanan Anda saat online."
+  },
+  "alertTitle": {
+    "message": "Peringatan!"
+  },
+  "alertMessage": {
+    "message": "Situs web ini berisi tautan ke:"
+  },
+  "severityLabel": {
+    "message": "Risiko:"
+  },
+  "reasonLabel": {
+    "message": "Alasan:"
+  },
+  "adviceMessage": {
+    "message": "Apa yang dapat Anda lakukan?"
+  },
+  "adviceCheckUrl": {
+    "message": "Hanya buka tautan ini jika Anda sepenuhnya mempercayai pengirimnya. Jika ragu, jangan klik. Jangan pernah memasukkan kata sandi di situs yang tidak Anda percayai."
+  },
+  "noHttps": {
+    "message": "Koneksi ke situs web ini tidak aman (tidak ada HTTPS). Orang lain mungkin dapat melihat informasi Anda."
+  },
+  "ipAsDomain": {
+    "message": "Situs web ini menggunakan alamat IP alih-alih nama domain. Ini tidak biasa dan sangat berisiko."
+  },
+  "tooManySubdomains": {
+    "message": "Alamat web ini memiliki banyak subdomain (mis. bagian1.bagian2.situs.com). Ini dapat menunjukkan situs yang tidak aman (risiko sedang)."
+  },
+  "suspiciousKeywords": {
+    "message": "Tautan berisi kata-kata yang sering dikaitkan dengan penipuan (risiko rendah)."
+  },
+  "suspiciousPattern": {
+    "message": "Struktur alamat web ini tampak tidak biasa (risiko sedang)."
+  },
+  "shortenedUrl": {
+    "message": "Ini adalah tautan yang diperpendek (seperti bit.ly). Tujuan sebenarnya tidak langsung terlihat (risiko sedang)."
+  },
+  "downloadPage": {
+    "message": "Tautan ini tampaknya mengunduh file. Hanya buka file yang sepenuhnya Anda percayai (risiko sedang)."
+  },
+  "freeHosting": {
+    "message": "Situs web ini menggunakan platform hosting gratis. Penipu terkadang memanfaatkan ini (risiko sedang)."
+  },
+  "encodedCharacters": {
+    "message": "Tautan berisi karakter yang tidak biasa (risiko rendah). Ini dapat digunakan untuk menyembunyikan tujuan sebenarnya."
+  },
+  "homoglyphAttack": {
+    "message": "Alamat web ini menggunakan karakter yang hampir identik dengan situs web yang dikenal (risiko tinggi). Ini adalah trik untuk menipu Anda."
+  },
+  "metaRedirect": {
+    "message": "Situs web ini secara otomatis mengarahkan Anda. Ini dapat mengarah ke situs yang tidak aman (risiko sedang)."
+  },
+  "cryptoPhishing": {
+    "message": "Tautan ini tampaknya merupakan penipuan kripto (risiko tinggi). Berhati-hatilah dengan dompet dan kredensial Anda."
+  },
+  "externalScripts": {
+    "message": "Situs ini memuat kode dari sumber eksternal yang telah ditandai berisiko."
+  },
+  "suspiciousParams": {
+    "message": "Tautan berisi parameter teknis yang terkadang digunakan untuk tindakan tidak aman (risiko rendah)."
+  },
+  "mixedContent": {
+    "message": "Halaman aman ini juga memuat konten tidak aman. Ini adalah risiko keamanan (risiko sedang)."
+  },
+  "unusualPort": {
+    "message": "Situs ini menggunakan port teknis yang tidak biasa. Ini mungkin upaya untuk melewati keamanan (risiko sedang)."
+  },
+  "javascriptScheme": {
+    "message": "Tautan ini mencoba menjalankan kode langsung di browser Anda (risiko tinggi)."
+  },
+  "urlFragmentTrick": {
+    "message": "Tautan berisi fragmen yang sangat panjang. Ini adalah teknik yang terkadang digunakan untuk menipu (risiko rendah)."
+  },
+  "suspiciousTLD": {
+    "message": "Situs web ini menggunakan ekstensi domain (seperti .zip atau .mov) yang sering disalahgunakan untuk penipuan (risiko tinggi)."
+  },
+  "base64OrHex": {
+    "message": "Tautan ini berisi informasi yang sangat dienkode. Ini sering digunakan untuk menyembunyikan kode berbahaya (risiko tinggi)."
+  },
+  "similarToLegitimateDomain": {
+    "message": "Situs ini terlihat sangat mirip dengan situs terkenal dan terpercaya. Periksa alamatnya dengan cermat, mungkin salinan palsu."
+  },
+  "youngDomain": {
+    "message": "Domain ini baru didaftarkan $AGE$ hari yang lalu (risiko tinggi). Domain baru lebih sering digunakan untuk penipuan.",
+    "placeholders": {
+      "AGE": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "insecureLoginPage": {
+    "message": "Halaman login ini tidak aman (tidak ada HTTPS). Jangan pernah memasukkan kata sandi di sini (risiko tinggi)."
+  },
+  "loginPageNoMX": {
+    "message": "Halaman login ini milik domain yang tidak dapat menerima email. Ini sangat berisiko (risiko tinggi)."
+  },
+  "malwareExtension": {
+    "message": "Tautan ini mengarah ke file yang mungkin berbahaya (seperti .exe atau .zip). Jangan unduh (risiko tinggi)."
+  },
+  "popupTitle": {
+    "message": "LinkShield: Perlindungan Anda Terhadap Phishing"
+  },
+  "popupSubtitle": {
+    "message": "Tetap aman dengan peringatan dan perlindungan real-time."
+  },
+  "backgroundAnalysis": {
+    "message": "Pemindaian Latar Belakang"
+  },
+  "backgroundAnalysisDescription": {
+    "message": "Perlindungan real-time. Diperbarui setiap jam. Cakupan seluruh dunia."
+  },
+  "activationRequired": {
+    "message": "Aktifkan fitur ini untuk menggunakannya."
+  },
+  "integratedProtection": {
+    "message": "Perlindungan Terintegrasi"
+  },
+  "integratedProtectionDescription": {
+    "message": "Memeriksa situs web dan tautan secara langsung untuk karakteristik berisiko."
+  },
+  "premiumFeaturesActive": {
+    "message": "Anda sekarang menggunakan versi premium!"
+  },
+  "upgradePrompt": {
+    "message": "Tingkatkan ke premium untuk fitur tambahan."
+  },
+  "saveSettings": {
+    "message": "Simpan Pengaturan"
+  },
+  "settingsSaved": {
+    "message": "Pengaturan disimpan!"
+  },
+  "licenseActivate": {
+    "message": "Aktifkan Lisensi"
+  },
+  "licenseInputPlaceholder": {
+    "message": "Masukkan kode lisensi Anda"
+  },
+  "licenseCheck": {
+    "message": "Periksa Lisensi"
+  },
+  "licenseInvalid": {
+    "message": "Kode lisensi tidak valid."
+  },
+  "licenseValid": {
+    "message": "Lisensi berhasil diaktifkan!"
+  },
+  "lastRuleUpdate": {
+    "message": "Pembaruan database terakhir: "
+  },
+  "licenseStatus": {
+    "message": "Status Lisensi:"
+  },
+  "licenseFreemium": {
+    "message": "Versi Gratis"
+  },
+  "bulkUrlCheck": {
+    "message": "Periksa Banyak Tautan"
+  },
+  "bulkUrlCheckDescription": {
+    "message": "Unggah file .txt untuk memeriksa daftar tautan."
+  },
+  "fileChoose": {
+    "message": "Pilih file"
+  },
+  "fileCheck": {
+    "message": "Periksa File"
+  },
+  "fileCheckNoUrls": {
+    "message": "File yang dipilih tidak berisi tautan apa pun."
+  },
+  "fileCheckFailed": {
+    "message": "Pemeriksaan file gagal."
+  },
+  "safeDomain": {
+    "message": "Ini adalah situs web yang aman dan terverifikasi."
+  },
+  "allowedProtocol": {
+    "message": "Tautan ini menggunakan protokol aman (seperti 'mailto:' atau 'tel:')."
+  },
+  "invalidUrl": {
+    "message": "Alamat web ini tidak valid atau salah eja."
+  },
+  "loadingMessage": {
+    "message": "Menganalisis halaman..."
+  },
+  "cannotRetrieveSiteStatus": {
+    "message": "Tidak dapat mengambil status situs."
+  },
+  "unknownRisk": {
+    "message": "Risiko Tidak Diketahui"
+  },
+  "highRisk": {
+    "message": "Risiko tinggi: sangat berhati-hati."
+  },
+  "mediumRisk": {
+    "message": "Risiko sedang: perhatikan dengan cermat."
+  },
+  "lowRisk": {
+    "message": "Risiko rendah: beberapa hal yang perlu diperhatikan."
+  },
+  "noSuspiciousFeatures": {
+    "message": "Tidak ditemukan karakteristik berisiko langsung."
+  },
+  "siteStatusNotAvailable": {
+    "message": "Status situs ini tidak tersedia."
+  },
+  "sslValidationFailed": {
+    "message": "Sertifikat keamanan situs web ini tidak valid."
+  },
+  "shortenedUrlError": {
+    "message": "Tidak dapat memeriksa tujuan akhir tautan yang diperpendek ini."
+  },
+  "redirectedShortenedUrl": {
+    "message": "Tautan yang diperpendek ini mengarahkan Anda ke situs web lain."
+  },
+  "cryptoPhishingAd": {
+    "message": "Iklan ini memiliki karakteristik penipuan kripto (risiko tinggi)."
+  },
+  "suspiciousAdStructure": {
+    "message": "Tautan iklan ini memiliki struktur yang tidak biasa (risiko sedang)."
+  },
+  "suspiciousAdTLD": {
+    "message": "Iklan ini menggunakan ekstensi domain yang sering disalahgunakan (risiko sedang)."
+  },
+  "homoglyphAdAttack": {
+    "message": "Iklan menggunakan karakter yang hampir identik dengan situs web yang dikenal (risiko sedang)."
+  },
+  "brandMisuse": {
+    "message": "Iklan secara tidak sah menggunakan nama merek terkenal (risiko tinggi)."
+  },
+  "unknownWarning": {
+    "message": "Risiko tidak diketahui telah ditemukan. Berhati-hatilah."
+  },
+  "typosquattingAttack": {
+    "message": "Alamat web ini terlihat seperti situs web asli tetapi sengaja salah eja (risiko tinggi). Ini mungkin versi palsu."
+  },
+  "downloadKeyword": {
+    "message": "Tautan berisi kata-kata yang terkait dengan unduhan (risiko rendah). Hanya buka file yang Anda percayai."
+  },
+  "suspiciousScriptContent": {
+    "message": "Skrip di halaman ini berisi kode berisiko. Ini mungkin tidak aman."
+  },
+  "invalidScriptSrc": {
+    "message": "Tautan ke skrip di halaman ini tidak benar."
+  },
+  "mixedScripts": {
+    "message": "Alamat ini menggunakan campuran sistem penulisan yang berbeda (mis. huruf Latin dan Sirilik). Ini adalah trik phishing yang dikenal (risiko tinggi)."
+  },
+  "introBannerMessage": {
+    "message": "LinkShield aktif dan menandai tautan berisiko dengan ⚠️. Arahkan kursor ke ikon untuk melihat alasannya."
+  },
+  "digitHomoglyph": {
+    "message": "Alamat ini menggunakan angka yang terlihat seperti huruf untuk meniru merek yang dikenal (risiko sedang)."
+  },
+  "trustedTLD": {
+    "message": "Domain ini memiliki ekstensi domain standar (risiko rendah)."
+  },
+  "trustedTld": {
+    "message": "Domain ini memiliki ekstensi domain standar (risiko rendah)."
+  },
+  "suspiciousPageText": {
+    "message": "Teks di halaman ini berisi kata-kata yang sering digunakan dalam penipuan (risiko tinggi)."
+  },
+  "urgencyTactic": {
+    "message": "Halaman ini menggunakan bahasa mendesak untuk menekan Anda (risiko tinggi). Waspadalah terhadap penipuan."
+  },
+  "severityMediumRisk": {
+    "message": "Risiko sedang: tautan ini mungkin tidak aman. Berhati-hatilah."
+  },
+  "allowedQueryParam": {
+    "message": "Tautan berisi parameter teknis yang aman dan diizinkan."
+  },
+  "suspiciousIframeAdComponent": {
+    "message": "Halaman ini memuat komponen iklan dari situs web lain."
+  },
+  "suspiciousIframeTracking": {
+    "message": "Halaman ini memuat pelacak yang dapat memantau perilaku penjelajahan Anda."
+  },
+  "suspiciousIframeMalicious": {
+    "message": "Komponen yang berpotensi berbahaya telah ditemukan di halaman ini (seperti phishing)."
+  },
+  "suspiciousIframeHidden": {
+    "message": "Elemen tidak terlihat yang berisiko telah ditemukan di halaman."
+  },
+  "mixedContentIframe": {
+    "message": "Halaman aman ini memuat komponen tidak aman. Ini adalah risiko keamanan."
+  },
+  "invalidIframeSrc": {
+    "message": "Komponen di halaman ini tidak dapat dimuat dengan benar (sumber tidak valid)."
+  },
+  "iframeHidden": {
+    "message": "Elemen tidak terlihat yang berisiko telah ditemukan di halaman."
+  },
+  "typosquattingAttack_adobe_com": {
+    "message": "Alamat web ini terlihat seperti adobe.com tetapi sengaja salah eja (risiko tinggi)."
+  },
+  "typosquattingAttack_alibaba_com": {
+    "message": "Alamat web ini terlihat seperti alibaba.com tetapi sengaja salah eja (risiko tinggi)."
+  },
+  "typosquattingAttack_amazon_com": {
+    "message": "Alamat web ini terlihat seperti amazon.com tetapi sengaja salah eja (risiko tinggi)."
+  },
+  "typosquattingAttack_apple_com": {
+    "message": "Alamat web ini terlihat seperti apple.com tetapi sengaja salah eja (risiko tinggi)."
+  },
+  "typosquattingAttack_facebook_com": {
+    "message": "Alamat web ini terlihat seperti facebook.com tetapi sengaja salah eja (risiko tinggi)."
+  },
+  "typosquattingAttack_google_com": {
+    "message": "Alamat web ini terlihat seperti google.com tetapi sengaja salah eja (risiko tinggi)."
+  },
+  "typosquattingAttack_linkedin_com": {
+    "message": "Alamat web ini terlihat seperti linkedin.com tetapi sengaja salah eja (risiko tinggi)."
+  },
+  "typosquattingAttack_microsoft_com": {
+    "message": "Alamat web ini terlihat seperti microsoft.com tetapi sengaja salah eja (risiko tinggi)."
+  },
+  "typosquattingAttack_paypal_com": {
+    "message": "Alamat web ini terlihat seperti paypal.com tetapi sengaja salah eja (risiko tinggi)."
+  },
+  "typosquattingAttack_whatsapp_com": {
+    "message": "Alamat web ini terlihat seperti whatsapp.com tetapi sengaja salah eja (risiko tinggi)."
+  },
+  "typosquattingAttack_x_com": {
+    "message": "Alamat web ini terlihat seperti x.com tetapi sengaja salah eja (risiko tinggi)."
+  },
+  "homoglyphAttack_microsoft_com": {
+    "message": "Alamat ini menggunakan karakter yang hampir identik dengan microsoft.com (risiko tinggi)."
+  },
+  "homoglyphAttack_apple_com": {
+    "message": "Alamat ini menggunakan karakter yang hampir identik dengan apple.com (risiko tinggi)."
+  },
+  "homoglyphAttack_google_com": {
+    "message": "Alamat ini menggunakan karakter yang hampir identik dengan google.com (risiko tinggi)."
+  },
+  "homoglyphAttack_linkedin_com": {
+    "message": "Alamat ini menggunakan karakter yang hampir identik dengan linkedin.com (risiko tinggi)."
+  },
+  "homoglyphAttack_alibaba_com": {
+    "message": "Alamat ini menggunakan karakter yang hampir identik dengan alibaba.com (risiko tinggi)."
+  },
+  "homoglyphAttack_whatsapp_com": {
+    "message": "Alamat ini menggunakan karakter yang hampir identik dengan whatsapp.com (risiko tinggi)."
+  },
+  "homoglyphAttack_amazon_com": {
+    "message": "Alamat ini menggunakan karakter yang hampir identik dengan amazon.com (risiko tinggi)."
+  },
+  "homoglyphAttack_x_com": {
+    "message": "Alamat ini menggunakan karakter yang hampir identik dengan x.com (risiko tinggi)."
+  },
+  "homoglyphAttack_facebook_com": {
+    "message": "Alamat ini menggunakan karakter yang hampir identik dengan facebook.com (risiko tinggi)."
+  },
+  "homoglyphAttack_adobe_com": {
+    "message": "Alamat ini menggunakan karakter yang hampir identik dengan adobe.com (risiko tinggi)."
+  },
+  "homoglyphAttack_paypal_com": {
+    "message": "Alamat ini menggunakan karakter yang hampir identik dengan paypal.com (risiko tinggi)."
+  },
+  "typosquatting_microsoft_com": {
+    "message": "Alamat ini sangat mirip dengan microsoft.com (risiko tinggi). Mungkin halaman palsu."
+  },
+  "typosquatting_apple_com": {
+    "message": "Alamat ini sangat mirip dengan apple.com (risiko tinggi). Mungkin halaman palsu."
+  },
+  "typosquatting_google_com": {
+    "message": "Alamat ini sangat mirip dengan google.com (risiko tinggi). Mungkin halaman palsu."
+  },
+  "typosquatting_linkedin_com": {
+    "message": "Alamat ini sangat mirip dengan linkedin.com (risiko tinggi). Mungkin halaman palsu."
+  },
+  "typosquatting_alibaba_com": {
+    "message": "Alamat ini sangat mirip dengan alibaba.com (risiko tinggi). Mungkin halaman palsu."
+  },
+  "typosquatting_whatsapp_com": {
+    "message": "Alamat ini sangat mirip dengan whatsapp.com (risiko tinggi). Mungkin halaman palsu."
+  },
+  "typosquatting_amazon_com": {
+    "message": "Alamat ini sangat mirip dengan amazon.com (risiko tinggi). Mungkin halaman palsu."
+  },
+  "typosquatting_x_com": {
+    "message": "Alamat ini sangat mirip dengan x.com (risiko tinggi). Mungkin halaman palsu."
+  },
+  "typosquatting_facebook_com": {
+    "message": "Alamat ini sangat mirip dengan facebook.com (risiko tinggi). Mungkin halaman palsu."
+  },
+  "typosquatting_adobe_com": {
+    "message": "Alamat ini sangat mirip dengan adobe.com (risiko tinggi). Mungkin halaman palsu."
+  },
+  "typosquatting_paypal_com": {
+    "message": "Alamat ini sangat mirip dengan paypal.com (risiko tinggi). Mungkin halaman palsu."
+  },
+  "similarToLegitimateDomain_microsoft_com": {
+    "message": "Situs ini terlihat seperti microsoft.com, periksa alamatnya dengan cermat."
+  },
+  "similarToLegitimateDomain_apple_com": {
+    "message": "Situs ini terlihat seperti apple.com, periksa alamatnya dengan cermat."
+  },
+  "similarToLegitimateDomain_google_com": {
+    "message": "Situs ini terlihat seperti google.com, periksa alamatnya dengan cermat."
+  },
+  "similarToLegitimateDomain_linkedin_com": {
+    "message": "Situs ini terlihat seperti linkedin.com, periksa alamatnya dengan cermat."
+  },
+  "similarToLegitimateDomain_alibaba_com": {
+    "message": "Situs ini terlihat seperti alibaba.com, periksa alamatnya dengan cermat."
+  },
+  "similarToLegitimateDomain_whatsapp_com": {
+    "message": "Situs ini terlihat seperti whatsapp.com, periksa alamatnya dengan cermat."
+  },
+  "similarToLegitimateDomain_amazon_com": {
+    "message": "Situs ini terlihat seperti amazon.com, periksa alamatnya dengan cermat."
+  },
+  "similarToLegitimateDomain_x_com": {
+    "message": "Situs ini terlihat seperti x.com, periksa alamatnya dengan cermat."
+  },
+  "similarToLegitimateDomain_facebook_com": {
+    "message": "Situs ini terlihat seperti facebook.com, periksa alamatnya dengan cermat."
+  },
+  "similarToLegitimateDomain_adobe_com": {
+    "message": "Situs ini terlihat seperti adobe.com, periksa alamatnya dengan cermat."
+  },
+  "similarToLegitimateDomain_paypal_com": {
+    "message": "Situs ini terlihat seperti paypal.com, periksa alamatnya dengan cermat."
+  },
+  "suspiciousPunycodeDecoding_microsoft_com": {
+    "message": "Tautan ini menggunakan karakter tidak biasa untuk terlihat seperti microsoft.com (risiko tinggi)."
+  },
+  "suspiciousPunycodeDecoding_apple_com": {
+    "message": "Tautan ini menggunakan karakter tidak biasa untuk terlihat seperti apple.com (risiko tinggi)."
+  },
+  "suspiciousPunycodeDecoding_google_com": {
+    "message": "Tautan ini menggunakan karakter tidak biasa untuk terlihat seperti google.com (risiko tinggi)."
+  },
+  "suspiciousPunycodeDecoding_linkedin_com": {
+    "message": "Tautan ini menggunakan karakter tidak biasa untuk terlihat seperti linkedin.com (risiko tinggi)."
+  },
+  "suspiciousPunycodeDecoding_alibaba_com": {
+    "message": "Tautan ini menggunakan karakter tidak biasa untuk terlihat seperti alibaba.com (risiko tinggi)."
+  },
+  "suspiciousPunycodeDecoding_whatsapp_com": {
+    "message": "Tautan ini menggunakan karakter tidak biasa untuk terlihat seperti whatsapp.com (risiko tinggi)."
+  },
+  "suspiciousPunycodeDecoding_amazon_com": {
+    "message": "Tautan ini menggunakan karakter tidak biasa untuk terlihat seperti amazon.com (risiko tinggi)."
+  },
+  "suspiciousPunycodeDecoding_x_com": {
+    "message": "Tautan ini menggunakan karakter tidak biasa untuk terlihat seperti x.com (risiko tinggi)."
+  },
+  "suspiciousPunycodeDecoding_facebook_com": {
+    "message": "Tautan ini menggunakan karakter tidak biasa untuk terlihat seperti facebook.com (risiko tinggi)."
+  },
+  "suspiciousPunycodeDecoding_adobe_com": {
+    "message": "Tautan ini menggunakan karakter tidak biasa untuk terlihat seperti adobe.com (risiko tinggi)."
+  },
+  "suspiciousPunycodeDecoding_paypal_com": {
+    "message": "Tautan ini menggunakan karakter tidak biasa untuk terlihat seperti paypal.com (risiko tinggi)."
+  },
+
+  "popupPageTitle": {
+    "message": "Dasbor LinkShield"
+  },
+  "extNameFull": {
+    "message": "LinkShield: Senjata Anda Melawan Phishing"
+  },
+  "extDescriptionFull": {
+    "message": "Tingkatkan keamanan Anda dengan peringatan langsung dan perlindungan canggih terhadap ancaman online."
+  },
+
+  "licenseTrialTitle": {
+    "message": "Uji coba: $DAYS$ hari tersisa",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "licenseTrialSubtitle": {
+    "message": "Semua fitur premium aktif selama uji coba Anda"
+  },
+  "licenseUpgradeLink": {
+    "message": "Tingkatkan ke Premium →"
+  },
+  "licenseExpiredTitle": {
+    "message": "Uji Coba Berakhir"
+  },
+  "licenseExpiredSubtitle": {
+    "message": "Aktifkan Premium untuk perlindungan penuh"
+  },
+  "licenseBenefitsLabel": {
+    "message": "Premium meliputi:"
+  },
+  "licenseBenefitsText": {
+    "message": "Analisis latar belakang, pemindaian kode QR, perlindungan berkelanjutan"
+  },
+  "licenseKeyPlaceholder": {
+    "message": "Masukkan kode lisensi Anda"
+  },
+  "licenseActivateButton": {
+    "message": "Aktifkan Premium"
+  },
+  "licenseBuyLink": {
+    "message": "Belum punya lisensi? Beli di sini →"
+  },
+  "licensePremiumTitle": {
+    "message": "Premium Aktif"
+  },
+  "licensePremiumSubtitle": {
+    "message": "Perlindungan penuh diaktifkan"
+  },
+
+  "sectionSecuritySettings": {
+    "message": "Pengaturan Keamanan"
+  },
+  "backgroundAnalysisTitle": {
+    "message": "Pengaturan Keamanan"
+  },
+  "backgroundAnalysisFeature": {
+    "message": "Analisis Latar Belakang"
+  },
+  "premiumBadge": {
+    "message": "PREMIUM"
+  },
+  "integratedProtectionFeature": {
+    "message": "Perlindungan Malware & Phishing Terintegrasi"
+  },
+  "confirmationMessage": {
+    "message": "Pengaturan berhasil disimpan!"
+  },
+  "lastRuleUpdateNone": {
+    "message": "Belum ada pembaruan database yang dilakukan"
+  },
+  "errorOccurred": {
+    "message": "Terjadi kesalahan"
+  },
+
+  "trialDaysRemaining": {
+    "message": "$DAYS$ hari tersisa dalam uji coba",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "14"
+      }
+    }
+  },
+  "trialExpired": {
+    "message": "Uji coba berakhir"
+  },
+  "trialExpiredMessage": {
+    "message": "Uji coba 30 hari Anda telah berakhir. Aktifkan lisensi untuk terus menggunakan semua fitur."
+  },
+  "upgradeNow": {
+    "message": "Tingkatkan sekarang"
+  },
+
+  "gumroadErrorUnknown": {
+    "message": "Kesalahan tidak diketahui"
+  },
+  "gumroadErrorLicenseNotExistProduct": {
+    "message": "Kode lisensi ini tidak ada untuk produk ini"
+  },
+  "gumroadErrorLicenseNotExist": {
+    "message": "Kode lisensi ini tidak ada"
+  },
+  "gumroadErrorLicenseRequired": {
+    "message": "Silakan masukkan kode lisensi"
+  },
+  "gumroadErrorProductNotFound": {
+    "message": "Produk tidak ditemukan"
+  },
+  "gumroadErrorLicenseDisabled": {
+    "message": "Lisensi ini telah dinonaktifkan"
+  },
+  "gumroadErrorLicenseRefunded": {
+    "message": "Lisensi ini telah dikembalikan dananya"
+  },
+  "gumroadErrorLicenseRevoked": {
+    "message": "Lisensi ini telah dikembalikan dananya atau dicabut"
+  },
+  "gumroadErrorLicenseInvalid": {
+    "message": "Kode lisensi tidak valid"
+  },
+  "gumroadErrorNetwork": {
+    "message": "Kesalahan jaringan saat validasi. Silakan periksa koneksi internet Anda."
+  },
+
+  "licenseEmptyError": {
+    "message": "Silakan masukkan kode lisensi"
+  },
+  "licenseActivating": {
+    "message": "Mengaktifkan..."
+  },
+  "licenseActivatedSuccess": {
+    "message": "Premium berhasil diaktifkan!"
+  },
+  "licenseConnectionError": {
+    "message": "Kesalahan koneksi. Silakan coba lagi."
+  },
+
+  "debugModeTitle": {
+    "message": "Mode Debug"
+  },
+  "debugTrial30": {
+    "message": "Uji coba (30 hari)"
+  },
+  "debugTrial3": {
+    "message": "Uji coba (3 hari)"
+  },
+  "debugExpired": {
+    "message": "Berakhir"
+  },
+  "debugPremium": {
+    "message": "Premium"
+  },
+  "debugReset": {
+    "message": "Reset"
+  },
+  "debugTrialSimulated": {
+    "message": "✓ Uji coba ($DAYS$ hari) disimulasikan",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "debugExpiredSimulated": {
+    "message": "✓ Uji coba berakhir disimulasikan"
+  },
+  "debugPremiumSimulated": {
+    "message": "✓ Premium disimulasikan"
+  },
+  "debugStorageReset": {
+    "message": "✓ Penyimpanan direset - muat ulang ekstensi"
+  },
+  "debugError": {
+    "message": "✗ Kesalahan: $ERROR$",
+    "placeholders": {
+      "ERROR": {
+        "content": "$1",
+        "example": "Kesalahan tidak diketahui"
+      }
+    }
+  },
+  "reason_redirectChain": {
+    "message": "Rantai pengalihan mencurigakan terdeteksi. Tautan melewati beberapa server sebelum mencapai tujuannya."
+  },
+  "reason_excessiveRedirects": {
+    "message": "Terlalu banyak pengalihan dalam rantai (risiko tinggi). Tautan ini mengalihkan lebih dari 5 kali, yang sering digunakan untuk menyembunyikan tujuan sebenarnya."
+  },
+  "reason_domainHopping": {
+    "message": "Beberapa pergantian domain dalam rantai pengalihan (risiko tinggi). Tautan melompat di antara banyak situs web yang berbeda."
+  },
+  "reason_chainedShorteners": {
+    "message": "Beberapa pemendek URL dirangkai bersama (risiko sedang). Tautan yang sah jarang menggunakan beberapa layanan pemendek."
+  },
+  "reason_suspiciousFinalTLD": {
+    "message": "Tujuan akhir memiliki ekstensi domain yang mencurigakan (risiko tinggi). Titik akhir sebenarnya menggunakan TLD berisiko."
+  },
+  "reason_redirectToIP": {
+    "message": "Pengalihan mengarah ke alamat IP (risiko tinggi). Tujuan akhir adalah alamat IP mentah alih-alih nama domain."
+  },
+  "reason_redirectTimeout": {
+    "message": "Analisis pengalihan habis waktu (risiko sedang). Tidak dapat sepenuhnya melacak rantai pengalihan dalam batas waktu."
+  },
+  "atSymbolPhishing": {
+    "message": "KRITIS: Tautan ini menggunakan simbol @ untuk menyembunyikan tujuan sebenarnya (risiko tinggi). Alamat sebelum @ adalah palsu - Anda sebenarnya akan pergi ke situs web yang berbeda."
+  },
+  "atSymbolInPath": {
+    "message": "Tautan berisi simbol @ di jalur yang mungkin digunakan untuk penyamaran (risiko sedang)."
+  },
+  "doubleEncoding": {
+    "message": "Tautan ini menggunakan pengkodean URL ganda untuk menyembunyikan konten sebenarnya (risiko tinggi). Ini adalah teknik umum untuk melewati filter keamanan."
+  },
+  "fullwidthCharacters": {
+    "message": "Tautan ini menggunakan karakter Unicode lebar penuh yang terlihat seperti huruf normal (risiko tinggi). Ini adalah trik untuk membuat situs web palsu terlihat sah."
+  },
+  "nullByteInjection": {
+    "message": "Tautan ini berisi karakter null byte (risiko tinggi). Ini adalah teknik peretasan yang dapat digunakan untuk melewati pemeriksaan keamanan."
+  },
+  "reason_atSymbolPhishing": {
+    "message": "KRITIS: Serangan URL kredensial terdeteksi. Domain yang terlihat adalah palsu - Anda akan diarahkan ke situs web yang berbeda."
+  },
+  "reason_doubleEncoding": {
+    "message": "Pengkodean URL ganda terdeteksi (risiko tinggi). Teknik penyamaran ini digunakan untuk menyembunyikan konten berbahaya."
+  },
+  "reason_fullwidthCharacters": {
+    "message": "Karakter Unicode lebar penuh terdeteksi (risiko tinggi). Karakter khusus ini meniru huruf normal untuk menipu pengguna."
+  },
+  "reason_nullByteInjection": {
+    "message": "Injeksi null byte terdeteksi (risiko tinggi). Teknik ini digunakan untuk melewati filter keamanan dan dapat menunjukkan tautan berbahaya."
+  },
+
+  "formActionHijacking": {
+    "message": "Formulir login ini mengirim kredensial Anda ke situs web eksternal (risiko kritis). Nama pengguna dan kata sandi Anda mungkin dicuri."
+  },
+  "formActionExternal": {
+    "message": "Formulir login mengirim data ke domain eksternal: $DOMAIN$ (risiko kritis). Ini adalah upaya pencurian kredensial.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "situs-jahat.com"
+      }
+    }
+  },
+  "formActionInvalid": {
+    "message": "Formulir login memiliki URL aksi yang tidak valid atau mencurigakan (risiko tinggi). Kredensial Anda mungkin tidak dikirim dengan aman."
+  },
+
+  "hiddenIframeZeroSize": {
+    "message": "Iframe tersembunyi dengan ukuran nol terdeteksi (risiko tinggi). Ini dapat digunakan untuk memuat konten berbahaya secara tidak terlihat."
+  },
+  "hiddenIframeOffScreen": {
+    "message": "Iframe diposisikan di luar layar terdeteksi (risiko tinggi). Konten tersembunyi mungkin melacak Anda atau mencuri data."
+  },
+  "hiddenIframeCSSHidden": {
+    "message": "Iframe tersembunyi CSS terdeteksi (risiko tinggi). Frame tak terlihat dapat menangkap penekanan tombol atau memuat malware."
+  },
+  "hiddenIframeNegativePos": {
+    "message": "Iframe dengan posisi negatif terdeteksi (risiko sedang). Teknik ini digunakan untuk menyembunyikan konten dari pengguna."
+  },
+
+  "nrdCritical": {
+    "message": "KRITIS: Domain terdaftar $DAYS$ hari yang lalu (risiko kritis). Domain yang baru sekali sangat mungkin berbahaya.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "0"
+      }
+    }
+  },
+  "nrdHigh": {
+    "message": "Domain terdaftar hanya $DAYS$ hari yang lalu (risiko tinggi). Domain yang sangat baru sering digunakan untuk penipuan.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "nrdMedium": {
+    "message": "Domain terdaftar $DAYS$ hari yang lalu (risiko sedang). Domain baru di bawah 30 hari memerlukan kewaspadaan ekstra.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "15"
+      }
+    }
+  },
+  "nrdLow": {
+    "message": "Domain terdaftar $DAYS$ hari yang lalu (risiko rendah). Domain yang relatif baru, berhati-hatilah.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "60"
+      }
+    }
+  },
+
+  "licenseErrorNotFound": {
+    "message": "Kode lisensi tidak ditemukan. Silakan periksa input Anda."
+  },
+  "licenseErrorDisabled": {
+    "message": "Lisensi ini telah dinonaktifkan."
+  },
+  "licenseErrorExpired": {
+    "message": "Lisensi ini telah berakhir."
+  },
+  "licenseErrorActivationLimit": {
+    "message": "Batas aktivasi tercapai. Silakan nonaktifkan perangkat lain terlebih dahulu."
+  },
+  "licenseErrorInstanceNotFound": {
+    "message": "Instance instalasi tidak ditemukan."
+  },
+  "licenseErrorInvalid": {
+    "message": "Kode lisensi tidak valid."
+  },
+  "licenseErrorNetwork": {
+    "message": "Kesalahan jaringan. Silakan periksa koneksi Anda dan coba lagi."
+  },
+  "licenseErrorUnknown": {
+    "message": "Terjadi kesalahan tidak diketahui selama validasi."
+  },
+
+  "invalidUrlFormat": {
+    "message": "Format URL tidak valid. Alamat web tidak dapat diurai dengan benar."
+  },
+  "invalidDomain": {
+    "message": "Domain tidak valid. Alamat situs web salah format atau tidak lengkap."
+  },
+  "trustedDomain": {
+    "message": "Ini adalah domain tepercaya yang telah diverifikasi aman."
+  },
+  "errorCalculatingRisk": {
+    "message": "Kesalahan menghitung skor risiko. Silakan coba lagi."
+  },
+  "punycodeDecodingError": {
+    "message": "Kesalahan mendekode karakter internasional dalam nama domain."
+  },
+  "fileProtocol": {
+    "message": "Tautan ini menggunakan protokol file:// yang mengakses file lokal."
+  },
+  "invalidHostname": {
+    "message": "Nama host tidak valid. Format nama domain tidak benar."
+  },
+  "urlTooLong": {
+    "message": "URL ini sangat panjang (risiko sedang). URL yang sangat panjang dapat digunakan untuk menyembunyikan konten berbahaya."
+  },
+  "nonAscii": {
+    "message": "URL ini berisi karakter non-ASCII yang mungkin digunakan untuk penipuan."
+  },
+  "typosquattingPattern": {
+    "message": "Domain ini cocok dengan pola typosquatting (risiko tinggi). Tampaknya menyamar sebagai situs web yang sah."
+  },
+  "suspiciousIframes": {
+    "message": "Elemen iframe mencurigakan terdeteksi di halaman ini."
+  },
+  "suspiciousScripts": {
+    "message": "Skrip mencurigakan terdeteksi di halaman ini."
+  },
+  "hiddenIframes": {
+    "message": "Elemen iframe tersembunyi terdeteksi di halaman ini yang mungkin digunakan untuk tujuan berbahaya."
+  },
+  "unifiedCheckError": {
+    "message": "Kesalahan selama pemeriksaan keamanan. Beberapa pemeriksaan mungkin tidak selesai."
+  },
+  "initializationError": {
+    "message": "Kesalahan menginisialisasi pemindai keamanan. Silakan muat ulang halaman."
+  },
+  "checkCurrentUrlError": {
+    "message": "Kesalahan memeriksa keamanan URL saat ini."
+  },
+  "ocrDangerTitle": {
+    "message": "Tautan Berbahaya Terdeteksi dalam Gambar"
+  },
+  "ocrCautionTitle": {
+    "message": "Tautan Mencurigakan Terdeteksi dalam Gambar"
+  },
+  "suspiciousDomainDetected": {
+    "message": "Domain mencurigakan terdeteksi"
+  },
+  "extractedText": {
+    "message": "Teks yang diekstrak"
+  },
+  "reasons": {
+    "message": "Alasan"
+  },
+  "asciiQrDangerTitle": {
+    "message": "Tautan Berbahaya dalam Kode QR ASCII"
+  },
+  "asciiQrCautionTitle": {
+    "message": "Tautan Mencurigakan dalam Kode QR ASCII"
+  },
+  "hiddenUrl": {
+    "message": "URL tersembunyi"
+  },
+  "qrDangerTitle": {
+    "message": "Kode QR Berbahaya Terdeteksi"
+  },
+  "qrCautionTitle": {
+    "message": "Kode QR Mencurigakan Terdeteksi"
+  },
+  "fullUrl": {
+    "message": "URL lengkap"
+  },
+  "neutralIconTitle": {
+    "message": "LinkShield - Perlindungan Aktif"
+  },
+  "installNotificationTitle": {
+    "message": "LinkShield Terinstal"
+  },
+  "installNotificationMessage": {
+    "message": "Anda sekarang dilindungi dari phishing dan situs web berbahaya."
+  },
+  "not_eligible": {
+    "message": "Tidak memenuhi syarat untuk fitur ini"
+  },
+  "trial_expired": {
+    "message": "Periode uji coba Anda telah berakhir"
+  },
+  "Error": {
+    "message": "Kesalahan"
+  },
+
+  "siteSafeTitle": {
+    "message": "Situs tampak aman"
+  },
+  "siteCautionTitle": {
+    "message": "Lanjutkan dengan hati-hati"
+  },
+  "siteAlertTitle": {
+    "message": "Peringatan: Ancaman potensial terdeteksi"
+  },
+
+  "clipboardHijackingCryptoTitle": {
+    "message": "Pembajakan Alamat Kripto Terdeteksi!"
+  },
+  "clipboardHijackingTitle": {
+    "message": "Manipulasi Clipboard Terdeteksi!"
+  },
+  "clipboardHijackingMessage": {
+    "message": "Halaman ini mencoba mengubah clipboard Anda. Berhati-hatilah saat menempelkan alamat dompet atau data sensitif."
+  },
+  "reason_clipboardHijackingCrypto": {
+    "message": "KRITIS: Halaman ini membajak clipboard Anda dengan alamat kripto (risiko kritis). Alamat dompet yang disalin mungkin diganti dengan alamat penyerang."
+  },
+  "reason_clipboardHijackingDetected": {
+    "message": "Halaman ini memanipulasi konten clipboard Anda (risiko tinggi). Konten yang ditempelkan mungkin berbeda dari yang Anda salin."
+  },
+
+  "brandSubdomainPhishing": {
+    "message": "Kata kunci merek terdeteksi pada platform hosting gratis (risiko tinggi). Perusahaan yang sah tidak menggunakan hosting gratis untuk layanan resmi."
+  },
+  "reason_brandSubdomainPhishing": {
+    "message": "Kata kunci merek terdeteksi pada platform hosting gratis (risiko tinggi). Perusahaan yang sah tidak menggunakan hosting gratis untuk layanan resmi."
+  },
+
+  "nrdTelCombo": {
+    "message": "Nomor telepon pada domain yang baru terdaftar dengan kata kunci phishing (risiko sedang). Ini mungkin upaya vishing (phishing suara)."
+  },
+  "reason_nrdTelCombo": {
+    "message": "Nomor telepon pada domain yang baru terdaftar dengan kata kunci phishing (risiko sedang). Ini mungkin upaya vishing (phishing suara)."
+  },
+
+  "reason_opaqueRedirectChain": {
+    "message": "Pengalihan tidak transparan terdeteksi (risiko rendah). Tujuan pengalihan tidak dapat dilacak sepenuhnya."
+  },
+  "reason_opaqueRedirectToIP": {
+    "message": "Pengalihan tidak transparan ke alamat IP (risiko tinggi). Pengalihan tersembunyi mengarah ke alamat IP mentah alih-alih domain."
+  },
+  "reason_opaqueRedirectSuspiciousTLD": {
+    "message": "Pengalihan tidak transparan ke ekstensi domain mencurigakan (risiko sedang). Pengalihan tersembunyi mengarah ke TLD berisiko."
+  },
+  "reason_opaqueRedirectNRD": {
+    "message": "Pengalihan tidak transparan ke domain yang baru terdaftar (risiko tinggi). Pengalihan tersembunyi mengarah ke domain yang sangat baru."
+  },
+
+  "bitbWarningTitle": {
+    "message": "Jendela Login Palsu Terdeteksi!"
+  },
+  "bitbWarningMessage": {
+    "message": "Halaman ini menampilkan jendela browser simulasi yang meniru popup login asli. Ini adalah serangan Browser-in-the-Browser (BitB) yang dirancang untuk mencuri kredensial Anda. 'Popup' ini sebenarnya hanya HTML/CSS yang dibuat terlihat seperti jendela browser asli."
+  },
+  "reason_bitbAttackDetected": {
+    "message": "Serangan Browser-in-the-Browser terdeteksi (risiko kritis). Halaman ini menampilkan jendela browser palsu untuk mencuri kredensial login Anda."
+  },
+  "reason_bitbFakeUrlBar": {
+    "message": "Bilah URL palsu terdeteksi menampilkan domain tepercaya (risiko kritis). Alamat yang ditampilkan adalah palsu dan dirancang untuk menipu Anda."
+  },
+  "reason_bitbWindowControls": {
+    "message": "Kontrol jendela palsu terdeteksi (risiko tinggi). Tombol tutup/minimalkan disimulasikan agar terlihat seperti popup asli."
+  },
+  "reason_bitbLoginFormInOverlay": {
+    "message": "Formulir login di dalam overlay terdeteksi (risiko tinggi). Popup login asli terbuka di jendela browser terpisah, bukan overlay."
+  },
+  "reason_bitbOAuthBranding": {
+    "message": "Branding OAuth dengan formulir login di overlay (risiko tinggi). Tombol 'Masuk dengan Google/Microsoft' di popup palsu adalah pencurian kredensial."
+  },
+  "reason_bitbPadlockIcon": {
+    "message": "Ikon gembok keamanan palsu terdeteksi (risiko sedang). Gembok asli muncul di bilah alamat browser, bukan di konten halaman."
+  },
+  "reason_bitbWindowChrome": {
+    "message": "Gaya jendela browser simulasi terdeteksi (risiko sedang). Overlay diberi gaya agar terlihat seperti jendela sistem operasi."
+  },
+  "reason_bitbIframeInModal": {
+    "message": "Iframe di dalam overlay modal terdeteksi (risiko rendah). Ini mungkin digunakan untuk memuat konten login eksternal."
+  },
+
+  "clickFixPowerShellTitle": {
+    "message": "Perintah PowerShell Terdeteksi!"
+  },
+  "clickFixCommandTitle": {
+    "message": "Injeksi Perintah Terdeteksi!"
+  },
+  "clickFixMessage": {
+    "message": "Halaman ini berisi perintah mencurigakan yang dapat membahayakan komputer Anda. Jangan salin atau jalankan perintah ini."
+  },
+  "clickFixSubMessage": {
+    "message": "Penyerang sering menyamarkan perintah berbahaya sebagai 'perbaikan' atau 'langkah verifikasi'. Jangan pernah menjalankan perintah dari sumber yang tidak tepercaya."
+  },
+  "bitbAttackCriticalTitle": {
+    "message": "Kritis: Jendela Login Palsu!"
+  },
+  "bitbAttackWarningTitle": {
+    "message": "Peringatan: Popup Login Mencurigakan"
+  },
+  "bitbAttackMessage": {
+    "message": "Halaman ini menampilkan jendela browser palsu yang dirancang untuk mencuri kredensial Anda. Popup login asli terbuka di jendela browser terpisah."
+  },
+  "bitbAttackTip": {
+    "message": "Selalu periksa bilah alamat browser untuk URL asli, bukan teks yang ditampilkan dalam halaman."
+  },
+  "shadowDomLoginForm": {
+    "message": "Formulir login tersembunyi di Shadow DOM terdeteksi (risiko tinggi). Teknik ini digunakan untuk menghindari pemindai keamanan."
+  },
+  "shadowDomPhishingOverlay": {
+    "message": "Overlay phishing tersembunyi di Shadow DOM terdeteksi (risiko kritis). Shadow DOM digunakan untuk menyembunyikan konten berbahaya."
+  },
+  "shadowDomIframe": {
+    "message": "Iframe mencurigakan tersembunyi di Shadow DOM terdeteksi (risiko tinggi). Iframe tersembunyi dapat digunakan untuk pencurian kredensial."
+  },
+  "urlCredentialsAttack": {
+    "message": "URL berisi kredensial dalam format serangan (risiko kritis). Domain yang terlihat adalah palsu - Anda akan diarahkan ke tempat lain."
+  },
+  "nrdUltraCritical": {
+    "message": "Domain terdaftar hanya beberapa jam yang lalu (risiko kritis). Ini sangat mencurigakan dan umumnya digunakan untuk phishing."
+  },
+  "nrdVishingCombo": {
+    "message": "Nomor telepon pada domain yang baru terdaftar dengan indikator phishing (risiko tinggi). Ini mungkin upaya vishing (phishing suara)."
+  },
+  "tableBasedQR": {
+    "message": "Kode QR tersembunyi di tabel HTML terdeteksi (risiko sedang). Teknik ini digunakan untuk melewati deteksi QR berbasis gambar."
+  },
+  "tableQrDangerTitle": {
+    "message": "Tautan Berbahaya dalam Kode QR Tersembunyi"
+  },
+  "tableQrCautionTitle": {
+    "message": "Tautan Mencurigakan dalam Kode QR Tersembunyi"
+  },
+  "hiddenQrDetected": {
+    "message": "Kode QR tersembunyi terdeteksi di konten halaman. Ini mungkin berisi URL berbahaya."
+  },
+
+  "bitbAttackCritical": {
+    "message": "KRITIS: Serangan Browser-in-the-Browser terdeteksi! Halaman ini menampilkan jendela login palsu yang dirancang untuk mencuri kredensial Anda."
+  },
+  "bitbAttackWarning": {
+    "message": "Peringatan: Popup mencurigakan terdeteksi yang mungkin merupakan serangan Browser-in-the-Browser. Verifikasi URL dengan cermat."
+  },
+  "clickFixDetected": {
+    "message": "Serangan ClickFix terdeteksi! Halaman ini berisi perintah berbahaya yang disamarkan sebagai perbaikan atau langkah verifikasi. Jangan salin atau jalankan."
+  },
+  "clipboardHijacking": {
+    "message": "Pembajakan clipboard terdeteksi! Halaman ini mencoba mengubah konten clipboard Anda tanpa izin."
+  },
+  "hiddenIframe": {
+    "message": "Iframe tersembunyi terdeteksi di halaman ini. Frame tak terlihat dapat digunakan untuk pelacakan, pencurian kredensial, atau pengiriman malware."
+  },
+  "typosquatting": {
+    "message": "Typosquatting terdeteksi! Domain ini sengaja salah eja untuk menyamar sebagai situs web yang sah."
+  },
+  "ipAddressDomain": {
+    "message": "Situs web ini menggunakan alamat IP alih-alih nama domain. Ini sangat tidak biasa dan sering menunjukkan niat jahat."
+  },
+  "extremeSubdomains": {
+    "message": "Jumlah subdomain yang ekstrem terdeteksi. Teknik ini sering digunakan untuk menyembunyikan URL berbahaya atau menyamar sebagai situs yang sah."
+  },
+  "vishingDetected": {
+    "message": "Potensi serangan vishing (phishing suara) terdeteksi. Halaman ini menggabungkan nomor telepon dengan indikator phishing."
+  },
+  "punycodeDetected": {
+    "message": "Domain Punycode terdeteksi! Alamat ini menggunakan karakter internasional yang mungkin menyamar sebagai situs web yang sah."
+  },
+
+  "reason_nonAscii": {
+    "message": "Karakter mencurigakan terdeteksi (homoglyph)"
+  },
+  "reason_brandKeywordHomoglyph": {
+    "message": "Tiruan merek terdeteksi"
+  },
+  "reason_noHttps": {
+    "message": "Tidak ada koneksi aman (HTTPS)"
+  },
+  "reason_suspiciousTLD": {
+    "message": "Ekstensi domain mencurigakan"
+  },
+  "reason_ipAsDomain": {
+    "message": "Alamat IP sebagai nama domain"
+  },
+  "reason_tooManySubdomains": {
+    "message": "Terlalu banyak subdomain"
+  },
+  "reason_shortenedUrl": {
+    "message": "URL yang diperpendek terdeteksi"
+  },
+  "reason_suspiciousKeywords": {
+    "message": "Kata kunci mencurigakan dalam URL"
+  },
+  "reason_malwareExtension": {
+    "message": "Ekstensi file yang berpotensi berbahaya"
+  },
+  "reason_urlTooLong": {
+    "message": "URL sangat panjang"
+  },
+  "reason_encodedCharacters": {
+    "message": "Karakter yang dikodekan dalam URL"
+  },
+  "reason_homoglyphAttack": {
+    "message": "Serangan homoglyph terdeteksi"
+  },
+  "reason_typosquatting": {
+    "message": "Typosquatting terdeteksi"
+  },
+  "reason_suspiciousBrandPattern": {
+    "message": "Pola merek mencurigakan"
+  },
+  "reason_unusualPort": {
+    "message": "Port tidak biasa"
+  },
+  "reason_punycode": {
+    "message": "Domain Punycode terdeteksi"
+  },
+  "reason_loginPageNoMX": {
+    "message": "Halaman login tanpa server email"
+  },
+  "reason_insecureLoginPage": {
+    "message": "Halaman login tidak aman"
+  },
+  "reason_sslValidationFailed": {
+    "message": "Validasi SSL gagal"
+  },
+  "reason_similarToLegitimateDomain": {
+    "message": "Terlihat seperti domain yang sah"
+  },
+  "trialPeriodActive": {
+    "message": "Periode uji coba aktif"
+  }
+}

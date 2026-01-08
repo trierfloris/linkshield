@@ -1,0 +1,1127 @@
+{
+  "extName": {
+    "message": "LinkShield"
+  },
+  "extDescription": {
+    "message": "LinkShield giúp bạn nhận diện các trang web và liên kết không an toàn để bảo vệ bạn khi lướt web."
+  },
+  "alertTitle": {
+    "message": "Cảnh báo!"
+  },
+  "alertMessage": {
+    "message": "Trang web này chứa liên kết đến:"
+  },
+  "severityLabel": {
+    "message": "Mức độ rủi ro:"
+  },
+  "reasonLabel": {
+    "message": "Lý do:"
+  },
+  "adviceMessage": {
+    "message": "Bạn có thể làm gì?"
+  },
+  "adviceCheckUrl": {
+    "message": "Chỉ mở liên kết này nếu bạn hoàn toàn tin tưởng người gửi. Khi nghi ngờ, đừng nhấp. Không bao giờ nhập mật khẩu trên trang web bạn không tin tưởng."
+  },
+  "noHttps": {
+    "message": "Kết nối đến trang web này không an toàn (không có HTTPS). Người khác có thể thấy thông tin của bạn."
+  },
+  "ipAsDomain": {
+    "message": "Trang web này sử dụng địa chỉ IP thay vì tên miền. Điều này bất thường và rất rủi ro."
+  },
+  "tooManySubdomains": {
+    "message": "Địa chỉ web này có nhiều tên miền phụ (ví dụ: phan1.phan2.trangweb.com). Điều này có thể chỉ ra một trang web không an toàn (rủi ro trung bình)."
+  },
+  "suspiciousKeywords": {
+    "message": "Liên kết chứa các từ thường liên quan đến lừa đảo (rủi ro thấp)."
+  },
+  "suspiciousPattern": {
+    "message": "Cấu trúc của địa chỉ web này có vẻ bất thường (rủi ro trung bình)."
+  },
+  "shortenedUrl": {
+    "message": "Đây là liên kết rút gọn (như bit.ly). Đích đến thực sự không hiển thị ngay (rủi ro trung bình)."
+  },
+  "downloadPage": {
+    "message": "Liên kết này có vẻ tải xuống một tệp. Chỉ mở các tệp bạn hoàn toàn tin tưởng (rủi ro trung bình)."
+  },
+  "freeHosting": {
+    "message": "Trang web này sử dụng nền tảng lưu trữ miễn phí. Kẻ lừa đảo đôi khi lợi dụng điều này (rủi ro trung bình)."
+  },
+  "encodedCharacters": {
+    "message": "Liên kết chứa các ký tự bất thường (rủi ro thấp). Điều này có thể được sử dụng để ẩn đích đến thực sự."
+  },
+  "homoglyphAttack": {
+    "message": "Địa chỉ web này sử dụng các ký tự gần giống hệt với một trang web đã biết (rủi ro cao). Đây là một thủ thuật để đánh lừa bạn."
+  },
+  "metaRedirect": {
+    "message": "Trang web này tự động chuyển hướng bạn. Điều này có thể dẫn đến một trang web không an toàn (rủi ro trung bình)."
+  },
+  "cryptoPhishing": {
+    "message": "Liên kết này có vẻ là lừa đảo tiền điện tử (rủi ro cao). Hãy cẩn thận với ví và thông tin đăng nhập của bạn."
+  },
+  "externalScripts": {
+    "message": "Trang này tải mã từ nguồn bên ngoài đã được đánh dấu là rủi ro."
+  },
+  "suspiciousParams": {
+    "message": "Liên kết chứa các tham số kỹ thuật đôi khi được sử dụng cho các hành động không an toàn (rủi ro thấp)."
+  },
+  "mixedContent": {
+    "message": "Trang bảo mật này cũng đang tải nội dung không bảo mật. Đây là rủi ro bảo mật (rủi ro trung bình)."
+  },
+  "unusualPort": {
+    "message": "Trang này sử dụng cổng kỹ thuật bất thường. Đây có thể là nỗ lực vượt qua bảo mật (rủi ro trung bình)."
+  },
+  "javascriptScheme": {
+    "message": "Liên kết này cố gắng thực thi mã trực tiếp trong trình duyệt của bạn (rủi ro cao)."
+  },
+  "urlFragmentTrick": {
+    "message": "Liên kết chứa một phân đoạn dài bất thường. Đây là kỹ thuật đôi khi được sử dụng để đánh lừa (rủi ro thấp)."
+  },
+  "suspiciousTLD": {
+    "message": "Trang web này sử dụng phần mở rộng tên miền (như .zip hoặc .mov) thường bị lạm dụng cho lừa đảo (rủi ro cao)."
+  },
+  "base64OrHex": {
+    "message": "Liên kết này chứa thông tin được mã hóa nặng. Điều này thường được sử dụng để ẩn mã độc hại (rủi ro cao)."
+  },
+  "similarToLegitimateDomain": {
+    "message": "Trang này trông rất giống với một trang web nổi tiếng, đáng tin cậy. Kiểm tra địa chỉ cẩn thận, nó có thể là bản sao giả."
+  },
+  "youngDomain": {
+    "message": "Tên miền này chỉ mới được đăng ký $AGE$ ngày trước (rủi ro cao). Tên miền mới thường được sử dụng cho lừa đảo.",
+    "placeholders": {
+      "AGE": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "insecureLoginPage": {
+    "message": "Trang đăng nhập này không an toàn (không có HTTPS). Không bao giờ nhập mật khẩu ở đây (rủi ro cao)."
+  },
+  "loginPageNoMX": {
+    "message": "Trang đăng nhập này thuộc về tên miền không thể nhận email. Điều này rất rủi ro (rủi ro cao)."
+  },
+  "malwareExtension": {
+    "message": "Liên kết này dẫn đến một tệp có thể gây hại (như .exe hoặc .zip). Không tải xuống (rủi ro cao)."
+  },
+  "popupTitle": {
+    "message": "LinkShield: Bảo Vệ Bạn Khỏi Lừa Đảo"
+  },
+  "popupSubtitle": {
+    "message": "Giữ an toàn với cảnh báo và bảo vệ theo thời gian thực."
+  },
+  "backgroundAnalysis": {
+    "message": "Quét Nền"
+  },
+  "backgroundAnalysisDescription": {
+    "message": "Bảo vệ theo thời gian thực. Cập nhật mỗi giờ. Phạm vi toàn cầu."
+  },
+  "activationRequired": {
+    "message": "Kích hoạt tính năng này để sử dụng."
+  },
+  "integratedProtection": {
+    "message": "Bảo Vệ Tích Hợp"
+  },
+  "integratedProtectionDescription": {
+    "message": "Kiểm tra trực tiếp các trang web và liên kết về các đặc điểm rủi ro."
+  },
+  "premiumFeaturesActive": {
+    "message": "Bạn đang sử dụng phiên bản cao cấp!"
+  },
+  "upgradePrompt": {
+    "message": "Nâng cấp lên cao cấp để có thêm tính năng."
+  },
+  "saveSettings": {
+    "message": "Lưu Cài Đặt"
+  },
+  "settingsSaved": {
+    "message": "Đã lưu cài đặt!"
+  },
+  "licenseActivate": {
+    "message": "Kích Hoạt Giấy Phép"
+  },
+  "licenseInputPlaceholder": {
+    "message": "Nhập mã giấy phép của bạn"
+  },
+  "licenseCheck": {
+    "message": "Kiểm Tra Giấy Phép"
+  },
+  "licenseInvalid": {
+    "message": "Mã giấy phép không hợp lệ."
+  },
+  "licenseValid": {
+    "message": "Giấy phép đã được kích hoạt thành công!"
+  },
+  "lastRuleUpdate": {
+    "message": "Cập nhật cơ sở dữ liệu cuối: "
+  },
+  "licenseStatus": {
+    "message": "Trạng Thái Giấy Phép:"
+  },
+  "licenseFreemium": {
+    "message": "Phiên Bản Miễn Phí"
+  },
+  "bulkUrlCheck": {
+    "message": "Kiểm Tra Nhiều Liên Kết"
+  },
+  "bulkUrlCheckDescription": {
+    "message": "Tải lên tệp .txt để kiểm tra danh sách liên kết."
+  },
+  "fileChoose": {
+    "message": "Chọn tệp"
+  },
+  "fileCheck": {
+    "message": "Kiểm Tra Tệp"
+  },
+  "fileCheckNoUrls": {
+    "message": "Tệp đã chọn không chứa liên kết nào."
+  },
+  "fileCheckFailed": {
+    "message": "Kiểm tra tệp thất bại."
+  },
+  "safeDomain": {
+    "message": "Đây là trang web an toàn, đã được xác minh."
+  },
+  "allowedProtocol": {
+    "message": "Liên kết này sử dụng giao thức an toàn (như 'mailto:' hoặc 'tel:')."
+  },
+  "invalidUrl": {
+    "message": "Địa chỉ web này không hợp lệ hoặc viết sai chính tả."
+  },
+  "loadingMessage": {
+    "message": "Đang phân tích trang..."
+  },
+  "cannotRetrieveSiteStatus": {
+    "message": "Không thể lấy trạng thái trang web."
+  },
+  "unknownRisk": {
+    "message": "Rủi Ro Không Xác Định"
+  },
+  "highRisk": {
+    "message": "Rủi ro cao: hãy rất cẩn thận."
+  },
+  "mediumRisk": {
+    "message": "Rủi ro trung bình: chú ý kỹ."
+  },
+  "lowRisk": {
+    "message": "Rủi ro thấp: một số điểm đáng lo ngại."
+  },
+  "noSuspiciousFeatures": {
+    "message": "Không tìm thấy đặc điểm rủi ro trực tiếp."
+  },
+  "siteStatusNotAvailable": {
+    "message": "Trạng thái của trang này không khả dụng."
+  },
+  "sslValidationFailed": {
+    "message": "Chứng chỉ bảo mật của trang web này không hợp lệ."
+  },
+  "shortenedUrlError": {
+    "message": "Không thể kiểm tra đích đến cuối cùng của liên kết rút gọn này."
+  },
+  "redirectedShortenedUrl": {
+    "message": "Liên kết rút gọn này chuyển hướng bạn đến một trang web khác."
+  },
+  "cryptoPhishingAd": {
+    "message": "Quảng cáo này có đặc điểm của lừa đảo tiền điện tử (rủi ro cao)."
+  },
+  "suspiciousAdStructure": {
+    "message": "Liên kết của quảng cáo này có cấu trúc bất thường (rủi ro trung bình)."
+  },
+  "suspiciousAdTLD": {
+    "message": "Quảng cáo này sử dụng phần mở rộng tên miền thường bị lạm dụng (rủi ro trung bình)."
+  },
+  "homoglyphAdAttack": {
+    "message": "Quảng cáo sử dụng các ký tự gần giống hệt với một trang web đã biết (rủi ro trung bình)."
+  },
+  "brandMisuse": {
+    "message": "Quảng cáo đang sử dụng sai tên thương hiệu nổi tiếng (rủi ro cao)."
+  },
+  "unknownWarning": {
+    "message": "Đã tìm thấy rủi ro không xác định. Hãy thận trọng hơn."
+  },
+  "typosquattingAttack": {
+    "message": "Địa chỉ web này trông giống một trang web thật nhưng cố ý viết sai chính tả (rủi ro cao). Đây có thể là phiên bản giả."
+  },
+  "downloadKeyword": {
+    "message": "Liên kết chứa các từ liên quan đến tải xuống (rủi ro thấp). Chỉ mở các tệp bạn tin tưởng."
+  },
+  "suspiciousScriptContent": {
+    "message": "Một script trên trang này chứa mã rủi ro. Điều này có thể không an toàn."
+  },
+  "invalidScriptSrc": {
+    "message": "Liên kết đến script trên trang này không chính xác."
+  },
+  "mixedScripts": {
+    "message": "Địa chỉ này sử dụng hỗn hợp các hệ thống chữ viết khác nhau (ví dụ: chữ Latin và Cyrillic). Đây là thủ thuật lừa đảo đã biết (rủi ro cao)."
+  },
+  "introBannerMessage": {
+    "message": "LinkShield đang hoạt động và đánh dấu các liên kết rủi ro bằng ⚠️. Di chuột qua biểu tượng để xem lý do."
+  },
+  "digitHomoglyph": {
+    "message": "Địa chỉ này sử dụng số trông giống chữ cái để bắt chước một thương hiệu đã biết (rủi ro trung bình)."
+  },
+  "trustedTLD": {
+    "message": "Tên miền này có phần mở rộng tên miền tiêu chuẩn (rủi ro thấp)."
+  },
+  "trustedTld": {
+    "message": "Tên miền này có phần mở rộng tên miền tiêu chuẩn (rủi ro thấp)."
+  },
+  "suspiciousPageText": {
+    "message": "Văn bản trên trang này chứa các từ thường được sử dụng trong lừa đảo (rủi ro cao)."
+  },
+  "urgencyTactic": {
+    "message": "Trang này sử dụng ngôn ngữ khẩn cấp để gây áp lực cho bạn (rủi ro cao). Cảnh giác với lừa đảo."
+  },
+  "severityMediumRisk": {
+    "message": "Rủi ro trung bình: liên kết này có thể không an toàn. Hãy cẩn thận."
+  },
+  "allowedQueryParam": {
+    "message": "Liên kết chứa một tham số kỹ thuật an toàn, được cho phép."
+  },
+  "suspiciousIframeAdComponent": {
+    "message": "Trang này tải một thành phần quảng cáo từ trang web khác."
+  },
+  "suspiciousIframeTracking": {
+    "message": "Trang này tải một trình theo dõi có thể giám sát hành vi duyệt web của bạn."
+  },
+  "suspiciousIframeMalicious": {
+    "message": "Đã tìm thấy thành phần có khả năng gây hại trên trang này (như lừa đảo)."
+  },
+  "suspiciousIframeHidden": {
+    "message": "Đã tìm thấy phần tử vô hình rủi ro trên trang."
+  },
+  "mixedContentIframe": {
+    "message": "Trang bảo mật này đang tải một thành phần không bảo mật. Đây là rủi ro bảo mật."
+  },
+  "invalidIframeSrc": {
+    "message": "Một thành phần trên trang này không thể tải đúng cách (nguồn không hợp lệ)."
+  },
+  "iframeHidden": {
+    "message": "Đã tìm thấy phần tử vô hình rủi ro trên trang."
+  },
+  "typosquattingAttack_adobe_com": {
+    "message": "Địa chỉ web này trông giống adobe.com nhưng cố ý viết sai chính tả (rủi ro cao)."
+  },
+  "typosquattingAttack_alibaba_com": {
+    "message": "Địa chỉ web này trông giống alibaba.com nhưng cố ý viết sai chính tả (rủi ro cao)."
+  },
+  "typosquattingAttack_amazon_com": {
+    "message": "Địa chỉ web này trông giống amazon.com nhưng cố ý viết sai chính tả (rủi ro cao)."
+  },
+  "typosquattingAttack_apple_com": {
+    "message": "Địa chỉ web này trông giống apple.com nhưng cố ý viết sai chính tả (rủi ro cao)."
+  },
+  "typosquattingAttack_facebook_com": {
+    "message": "Địa chỉ web này trông giống facebook.com nhưng cố ý viết sai chính tả (rủi ro cao)."
+  },
+  "typosquattingAttack_google_com": {
+    "message": "Địa chỉ web này trông giống google.com nhưng cố ý viết sai chính tả (rủi ro cao)."
+  },
+  "typosquattingAttack_linkedin_com": {
+    "message": "Địa chỉ web này trông giống linkedin.com nhưng cố ý viết sai chính tả (rủi ro cao)."
+  },
+  "typosquattingAttack_microsoft_com": {
+    "message": "Địa chỉ web này trông giống microsoft.com nhưng cố ý viết sai chính tả (rủi ro cao)."
+  },
+  "typosquattingAttack_paypal_com": {
+    "message": "Địa chỉ web này trông giống paypal.com nhưng cố ý viết sai chính tả (rủi ro cao)."
+  },
+  "typosquattingAttack_whatsapp_com": {
+    "message": "Địa chỉ web này trông giống whatsapp.com nhưng cố ý viết sai chính tả (rủi ro cao)."
+  },
+  "typosquattingAttack_x_com": {
+    "message": "Địa chỉ web này trông giống x.com nhưng cố ý viết sai chính tả (rủi ro cao)."
+  },
+  "homoglyphAttack_microsoft_com": {
+    "message": "Địa chỉ này sử dụng các ký tự gần giống hệt microsoft.com (rủi ro cao)."
+  },
+  "homoglyphAttack_apple_com": {
+    "message": "Địa chỉ này sử dụng các ký tự gần giống hệt apple.com (rủi ro cao)."
+  },
+  "homoglyphAttack_google_com": {
+    "message": "Địa chỉ này sử dụng các ký tự gần giống hệt google.com (rủi ro cao)."
+  },
+  "homoglyphAttack_linkedin_com": {
+    "message": "Địa chỉ này sử dụng các ký tự gần giống hệt linkedin.com (rủi ro cao)."
+  },
+  "homoglyphAttack_alibaba_com": {
+    "message": "Địa chỉ này sử dụng các ký tự gần giống hệt alibaba.com (rủi ro cao)."
+  },
+  "homoglyphAttack_whatsapp_com": {
+    "message": "Địa chỉ này sử dụng các ký tự gần giống hệt whatsapp.com (rủi ro cao)."
+  },
+  "homoglyphAttack_amazon_com": {
+    "message": "Địa chỉ này sử dụng các ký tự gần giống hệt amazon.com (rủi ro cao)."
+  },
+  "homoglyphAttack_x_com": {
+    "message": "Địa chỉ này sử dụng các ký tự gần giống hệt x.com (rủi ro cao)."
+  },
+  "homoglyphAttack_facebook_com": {
+    "message": "Địa chỉ này sử dụng các ký tự gần giống hệt facebook.com (rủi ro cao)."
+  },
+  "homoglyphAttack_adobe_com": {
+    "message": "Địa chỉ này sử dụng các ký tự gần giống hệt adobe.com (rủi ro cao)."
+  },
+  "homoglyphAttack_paypal_com": {
+    "message": "Địa chỉ này sử dụng các ký tự gần giống hệt paypal.com (rủi ro cao)."
+  },
+  "typosquatting_microsoft_com": {
+    "message": "Địa chỉ này trông rất giống microsoft.com (rủi ro cao). Có thể là trang giả."
+  },
+  "typosquatting_apple_com": {
+    "message": "Địa chỉ này trông rất giống apple.com (rủi ro cao). Có thể là trang giả."
+  },
+  "typosquatting_google_com": {
+    "message": "Địa chỉ này trông rất giống google.com (rủi ro cao). Có thể là trang giả."
+  },
+  "typosquatting_linkedin_com": {
+    "message": "Địa chỉ này trông rất giống linkedin.com (rủi ro cao). Có thể là trang giả."
+  },
+  "typosquatting_alibaba_com": {
+    "message": "Địa chỉ này trông rất giống alibaba.com (rủi ro cao). Có thể là trang giả."
+  },
+  "typosquatting_whatsapp_com": {
+    "message": "Địa chỉ này trông rất giống whatsapp.com (rủi ro cao). Có thể là trang giả."
+  },
+  "typosquatting_amazon_com": {
+    "message": "Địa chỉ này trông rất giống amazon.com (rủi ro cao). Có thể là trang giả."
+  },
+  "typosquatting_x_com": {
+    "message": "Địa chỉ này trông rất giống x.com (rủi ro cao). Có thể là trang giả."
+  },
+  "typosquatting_facebook_com": {
+    "message": "Địa chỉ này trông rất giống facebook.com (rủi ro cao). Có thể là trang giả."
+  },
+  "typosquatting_adobe_com": {
+    "message": "Địa chỉ này trông rất giống adobe.com (rủi ro cao). Có thể là trang giả."
+  },
+  "typosquatting_paypal_com": {
+    "message": "Địa chỉ này trông rất giống paypal.com (rủi ro cao). Có thể là trang giả."
+  },
+  "similarToLegitimateDomain_microsoft_com": {
+    "message": "Trang này trông giống microsoft.com, hãy kiểm tra địa chỉ cẩn thận."
+  },
+  "similarToLegitimateDomain_apple_com": {
+    "message": "Trang này trông giống apple.com, hãy kiểm tra địa chỉ cẩn thận."
+  },
+  "similarToLegitimateDomain_google_com": {
+    "message": "Trang này trông giống google.com, hãy kiểm tra địa chỉ cẩn thận."
+  },
+  "similarToLegitimateDomain_linkedin_com": {
+    "message": "Trang này trông giống linkedin.com, hãy kiểm tra địa chỉ cẩn thận."
+  },
+  "similarToLegitimateDomain_alibaba_com": {
+    "message": "Trang này trông giống alibaba.com, hãy kiểm tra địa chỉ cẩn thận."
+  },
+  "similarToLegitimateDomain_whatsapp_com": {
+    "message": "Trang này trông giống whatsapp.com, hãy kiểm tra địa chỉ cẩn thận."
+  },
+  "similarToLegitimateDomain_amazon_com": {
+    "message": "Trang này trông giống amazon.com, hãy kiểm tra địa chỉ cẩn thận."
+  },
+  "similarToLegitimateDomain_x_com": {
+    "message": "Trang này trông giống x.com, hãy kiểm tra địa chỉ cẩn thận."
+  },
+  "similarToLegitimateDomain_facebook_com": {
+    "message": "Trang này trông giống facebook.com, hãy kiểm tra địa chỉ cẩn thận."
+  },
+  "similarToLegitimateDomain_adobe_com": {
+    "message": "Trang này trông giống adobe.com, hãy kiểm tra địa chỉ cẩn thận."
+  },
+  "similarToLegitimateDomain_paypal_com": {
+    "message": "Trang này trông giống paypal.com, hãy kiểm tra địa chỉ cẩn thận."
+  },
+  "suspiciousPunycodeDecoding_microsoft_com": {
+    "message": "Liên kết này sử dụng các ký tự bất thường để trông giống microsoft.com (rủi ro cao)."
+  },
+  "suspiciousPunycodeDecoding_apple_com": {
+    "message": "Liên kết này sử dụng các ký tự bất thường để trông giống apple.com (rủi ro cao)."
+  },
+  "suspiciousPunycodeDecoding_google_com": {
+    "message": "Liên kết này sử dụng các ký tự bất thường để trông giống google.com (rủi ro cao)."
+  },
+  "suspiciousPunycodeDecoding_linkedin_com": {
+    "message": "Liên kết này sử dụng các ký tự bất thường để trông giống linkedin.com (rủi ro cao)."
+  },
+  "suspiciousPunycodeDecoding_alibaba_com": {
+    "message": "Liên kết này sử dụng các ký tự bất thường để trông giống alibaba.com (rủi ro cao)."
+  },
+  "suspiciousPunycodeDecoding_whatsapp_com": {
+    "message": "Liên kết này sử dụng các ký tự bất thường để trông giống whatsapp.com (rủi ro cao)."
+  },
+  "suspiciousPunycodeDecoding_amazon_com": {
+    "message": "Liên kết này sử dụng các ký tự bất thường để trông giống amazon.com (rủi ro cao)."
+  },
+  "suspiciousPunycodeDecoding_x_com": {
+    "message": "Liên kết này sử dụng các ký tự bất thường để trông giống x.com (rủi ro cao)."
+  },
+  "suspiciousPunycodeDecoding_facebook_com": {
+    "message": "Liên kết này sử dụng các ký tự bất thường để trông giống facebook.com (rủi ro cao)."
+  },
+  "suspiciousPunycodeDecoding_adobe_com": {
+    "message": "Liên kết này sử dụng các ký tự bất thường để trông giống adobe.com (rủi ro cao)."
+  },
+  "suspiciousPunycodeDecoding_paypal_com": {
+    "message": "Liên kết này sử dụng các ký tự bất thường để trông giống paypal.com (rủi ro cao)."
+  },
+
+  "popupPageTitle": {
+    "message": "Bảng Điều Khiển LinkShield"
+  },
+  "extNameFull": {
+    "message": "LinkShield: Vũ Khí Chống Lừa Đảo Của Bạn"
+  },
+  "extDescriptionFull": {
+    "message": "Tăng cường bảo mật với cảnh báo trực tiếp và bảo vệ nâng cao chống lại các mối đe dọa trực tuyến."
+  },
+
+  "licenseTrialTitle": {
+    "message": "Dùng thử: còn $DAYS$ ngày",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "licenseTrialSubtitle": {
+    "message": "Tất cả tính năng cao cấp đang hoạt động trong thời gian dùng thử"
+  },
+  "licenseUpgradeLink": {
+    "message": "Nâng cấp lên Cao cấp →"
+  },
+  "licenseExpiredTitle": {
+    "message": "Dùng Thử Đã Hết Hạn"
+  },
+  "licenseExpiredSubtitle": {
+    "message": "Kích hoạt Cao cấp để bảo vệ đầy đủ"
+  },
+  "licenseBenefitsLabel": {
+    "message": "Cao cấp bao gồm:"
+  },
+  "licenseBenefitsText": {
+    "message": "Phân tích nền, quét mã QR, bảo vệ liên tục"
+  },
+  "licenseKeyPlaceholder": {
+    "message": "Nhập mã giấy phép của bạn"
+  },
+  "licenseActivateButton": {
+    "message": "Kích Hoạt Cao Cấp"
+  },
+  "licenseBuyLink": {
+    "message": "Chưa có giấy phép? Mua tại đây →"
+  },
+  "licensePremiumTitle": {
+    "message": "Cao Cấp Đang Hoạt Động"
+  },
+  "licensePremiumSubtitle": {
+    "message": "Bảo vệ đầy đủ đã được kích hoạt"
+  },
+
+  "sectionSecuritySettings": {
+    "message": "Cài Đặt Bảo Mật"
+  },
+  "backgroundAnalysisTitle": {
+    "message": "Cài Đặt Bảo Mật"
+  },
+  "backgroundAnalysisFeature": {
+    "message": "Phân Tích Nền"
+  },
+  "premiumBadge": {
+    "message": "CAO CẤP"
+  },
+  "integratedProtectionFeature": {
+    "message": "Bảo Vệ Phần Mềm Độc Hại & Lừa Đảo Tích Hợp"
+  },
+  "confirmationMessage": {
+    "message": "Đã lưu cài đặt thành công!"
+  },
+  "lastRuleUpdateNone": {
+    "message": "Chưa thực hiện cập nhật cơ sở dữ liệu nào"
+  },
+  "errorOccurred": {
+    "message": "Đã xảy ra lỗi"
+  },
+
+  "trialDaysRemaining": {
+    "message": "Còn $DAYS$ ngày dùng thử",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "14"
+      }
+    }
+  },
+  "trialExpired": {
+    "message": "Dùng thử đã hết hạn"
+  },
+  "trialExpiredMessage": {
+    "message": "Thời gian dùng thử 30 ngày của bạn đã hết. Kích hoạt giấy phép để tiếp tục sử dụng tất cả tính năng."
+  },
+  "upgradeNow": {
+    "message": "Nâng cấp ngay"
+  },
+
+  "gumroadErrorUnknown": {
+    "message": "Lỗi không xác định"
+  },
+  "gumroadErrorLicenseNotExistProduct": {
+    "message": "Mã giấy phép này không tồn tại cho sản phẩm này"
+  },
+  "gumroadErrorLicenseNotExist": {
+    "message": "Mã giấy phép này không tồn tại"
+  },
+  "gumroadErrorLicenseRequired": {
+    "message": "Vui lòng nhập mã giấy phép"
+  },
+  "gumroadErrorProductNotFound": {
+    "message": "Không tìm thấy sản phẩm"
+  },
+  "gumroadErrorLicenseDisabled": {
+    "message": "Giấy phép này đã bị vô hiệu hóa"
+  },
+  "gumroadErrorLicenseRefunded": {
+    "message": "Giấy phép này đã được hoàn tiền"
+  },
+  "gumroadErrorLicenseRevoked": {
+    "message": "Giấy phép này đã được hoàn tiền hoặc thu hồi"
+  },
+  "gumroadErrorLicenseInvalid": {
+    "message": "Mã giấy phép không hợp lệ"
+  },
+  "gumroadErrorNetwork": {
+    "message": "Lỗi mạng khi xác thực. Vui lòng kiểm tra kết nối internet."
+  },
+
+  "licenseEmptyError": {
+    "message": "Vui lòng nhập mã giấy phép"
+  },
+  "licenseActivating": {
+    "message": "Đang kích hoạt..."
+  },
+  "licenseActivatedSuccess": {
+    "message": "Cao cấp đã được kích hoạt thành công!"
+  },
+  "licenseConnectionError": {
+    "message": "Lỗi kết nối. Vui lòng thử lại."
+  },
+
+  "debugModeTitle": {
+    "message": "Chế Độ Gỡ Lỗi"
+  },
+  "debugTrial30": {
+    "message": "Dùng thử (30 ngày)"
+  },
+  "debugTrial3": {
+    "message": "Dùng thử (3 ngày)"
+  },
+  "debugExpired": {
+    "message": "Đã hết hạn"
+  },
+  "debugPremium": {
+    "message": "Cao cấp"
+  },
+  "debugReset": {
+    "message": "Đặt lại"
+  },
+  "debugTrialSimulated": {
+    "message": "✓ Đã mô phỏng dùng thử ($DAYS$ ngày)",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "debugExpiredSimulated": {
+    "message": "✓ Đã mô phỏng dùng thử hết hạn"
+  },
+  "debugPremiumSimulated": {
+    "message": "✓ Đã mô phỏng cao cấp"
+  },
+  "debugStorageReset": {
+    "message": "✓ Đã đặt lại bộ nhớ - tải lại tiện ích"
+  },
+  "debugError": {
+    "message": "✗ Lỗi: $ERROR$",
+    "placeholders": {
+      "ERROR": {
+        "content": "$1",
+        "example": "Lỗi không xác định"
+      }
+    }
+  },
+  "reason_redirectChain": {
+    "message": "Phát hiện chuỗi chuyển hướng đáng ngờ. Liên kết đi qua nhiều máy chủ trước khi đến đích."
+  },
+  "reason_excessiveRedirects": {
+    "message": "Quá nhiều chuyển hướng trong chuỗi (rủi ro cao). Liên kết này chuyển hướng hơn 5 lần, thường được sử dụng để ẩn đích đến thực sự."
+  },
+  "reason_domainHopping": {
+    "message": "Nhiều lần chuyển đổi tên miền trong chuỗi chuyển hướng (rủi ro cao). Liên kết nhảy giữa nhiều trang web khác nhau."
+  },
+  "reason_chainedShorteners": {
+    "message": "Nhiều dịch vụ rút gọn URL được nối chuỗi (rủi ro trung bình). Liên kết hợp pháp hiếm khi sử dụng nhiều dịch vụ rút gọn."
+  },
+  "reason_suspiciousFinalTLD": {
+    "message": "Đích đến cuối cùng có phần mở rộng tên miền đáng ngờ (rủi ro cao). Điểm cuối thực sự sử dụng TLD rủi ro."
+  },
+  "reason_redirectToIP": {
+    "message": "Chuyển hướng dẫn đến địa chỉ IP (rủi ro cao). Đích đến cuối cùng là địa chỉ IP thô thay vì tên miền."
+  },
+  "reason_redirectTimeout": {
+    "message": "Phân tích chuyển hướng hết thời gian (rủi ro trung bình). Không thể truy vết đầy đủ chuỗi chuyển hướng trong giới hạn thời gian."
+  },
+  "atSymbolPhishing": {
+    "message": "NGUY HIỂM: Liên kết này sử dụng ký hiệu @ để ẩn đích đến thực sự (rủi ro cao). Địa chỉ trước @ là giả - bạn sẽ thực sự đến một trang web khác."
+  },
+  "atSymbolInPath": {
+    "message": "Liên kết chứa ký hiệu @ trong đường dẫn có thể được sử dụng để che giấu (rủi ro trung bình)."
+  },
+  "doubleEncoding": {
+    "message": "Liên kết này sử dụng mã hóa URL kép để ẩn nội dung thực sự (rủi ro cao). Đây là kỹ thuật phổ biến để vượt qua bộ lọc bảo mật."
+  },
+  "fullwidthCharacters": {
+    "message": "Liên kết này sử dụng các ký tự Unicode toàn chiều trông giống chữ bình thường (rủi ro cao). Đây là thủ thuật làm cho trang web giả trông hợp pháp."
+  },
+  "nullByteInjection": {
+    "message": "Liên kết này chứa ký tự null byte (rủi ro cao). Đây là kỹ thuật hack có thể được sử dụng để vượt qua kiểm tra bảo mật."
+  },
+  "reason_atSymbolPhishing": {
+    "message": "NGUY HIỂM: Phát hiện tấn công URL thông tin xác thực. Tên miền hiển thị là giả - bạn sẽ bị chuyển hướng đến một trang web khác."
+  },
+  "reason_doubleEncoding": {
+    "message": "Phát hiện mã hóa URL kép (rủi ro cao). Kỹ thuật che giấu này được sử dụng để ẩn nội dung độc hại."
+  },
+  "reason_fullwidthCharacters": {
+    "message": "Phát hiện ký tự Unicode toàn chiều (rủi ro cao). Các ký tự đặc biệt này bắt chước chữ cái bình thường để đánh lừa người dùng."
+  },
+  "reason_nullByteInjection": {
+    "message": "Phát hiện tiêm null byte (rủi ro cao). Kỹ thuật này được sử dụng để vượt qua bộ lọc bảo mật và có thể chỉ ra liên kết độc hại."
+  },
+
+  "formActionHijacking": {
+    "message": "Form đăng nhập này gửi thông tin xác thực của bạn đến trang web bên ngoài (rủi ro nghiêm trọng). Tên người dùng và mật khẩu của bạn có thể bị đánh cắp."
+  },
+  "formActionExternal": {
+    "message": "Form đăng nhập gửi dữ liệu đến tên miền bên ngoài: $DOMAIN$ (rủi ro nghiêm trọng). Đây là nỗ lực đánh cắp thông tin xác thực.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "trang-xau.com"
+      }
+    }
+  },
+  "formActionInvalid": {
+    "message": "Form đăng nhập có URL hành động không hợp lệ hoặc đáng ngờ (rủi ro cao). Thông tin xác thực của bạn có thể không được gửi an toàn."
+  },
+
+  "hiddenIframeZeroSize": {
+    "message": "Phát hiện iframe ẩn có kích thước bằng không (rủi ro cao). Điều này có thể được sử dụng để tải nội dung độc hại vô hình."
+  },
+  "hiddenIframeOffScreen": {
+    "message": "Phát hiện iframe được đặt ngoài màn hình (rủi ro cao). Nội dung ẩn có thể đang theo dõi bạn hoặc đánh cắp dữ liệu."
+  },
+  "hiddenIframeCSSHidden": {
+    "message": "Phát hiện iframe ẩn bằng CSS (rủi ro cao). Khung vô hình có thể ghi nhận phím bấm hoặc tải phần mềm độc hại."
+  },
+  "hiddenIframeNegativePos": {
+    "message": "Phát hiện iframe có vị trí âm (rủi ro trung bình). Kỹ thuật này được sử dụng để ẩn nội dung khỏi người dùng."
+  },
+
+  "nrdCritical": {
+    "message": "NGUY HIỂM: Tên miền được đăng ký $DAYS$ ngày trước (rủi ro nghiêm trọng). Tên miền hoàn toàn mới cực kỳ có khả năng là độc hại.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "0"
+      }
+    }
+  },
+  "nrdHigh": {
+    "message": "Tên miền chỉ mới được đăng ký $DAYS$ ngày trước (rủi ro cao). Tên miền rất mới thường được sử dụng cho lừa đảo.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "nrdMedium": {
+    "message": "Tên miền được đăng ký $DAYS$ ngày trước (rủi ro trung bình). Tên miền mới dưới 30 ngày cần thận trọng hơn.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "15"
+      }
+    }
+  },
+  "nrdLow": {
+    "message": "Tên miền được đăng ký $DAYS$ ngày trước (rủi ro thấp). Tên miền tương đối mới, hãy thận trọng.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "60"
+      }
+    }
+  },
+
+  "licenseErrorNotFound": {
+    "message": "Không tìm thấy mã giấy phép. Vui lòng kiểm tra đầu vào của bạn."
+  },
+  "licenseErrorDisabled": {
+    "message": "Giấy phép này đã bị vô hiệu hóa."
+  },
+  "licenseErrorExpired": {
+    "message": "Giấy phép này đã hết hạn."
+  },
+  "licenseErrorActivationLimit": {
+    "message": "Đã đạt giới hạn kích hoạt. Vui lòng hủy kích hoạt thiết bị khác trước."
+  },
+  "licenseErrorInstanceNotFound": {
+    "message": "Không tìm thấy phiên bản cài đặt."
+  },
+  "licenseErrorInvalid": {
+    "message": "Mã giấy phép không hợp lệ."
+  },
+  "licenseErrorNetwork": {
+    "message": "Lỗi mạng. Vui lòng kiểm tra kết nối và thử lại."
+  },
+  "licenseErrorUnknown": {
+    "message": "Đã xảy ra lỗi không xác định trong quá trình xác thực."
+  },
+
+  "invalidUrlFormat": {
+    "message": "Định dạng URL không hợp lệ. Không thể phân tích địa chỉ web chính xác."
+  },
+  "invalidDomain": {
+    "message": "Tên miền không hợp lệ. Địa chỉ trang web bị lỗi hoặc không đầy đủ."
+  },
+  "trustedDomain": {
+    "message": "Đây là tên miền đáng tin cậy đã được xác minh là an toàn."
+  },
+  "errorCalculatingRisk": {
+    "message": "Lỗi khi tính điểm rủi ro. Vui lòng thử lại."
+  },
+  "punycodeDecodingError": {
+    "message": "Lỗi khi giải mã các ký tự quốc tế trong tên miền."
+  },
+  "fileProtocol": {
+    "message": "Liên kết này sử dụng giao thức file:// để truy cập các tệp cục bộ."
+  },
+  "invalidHostname": {
+    "message": "Tên máy chủ không hợp lệ. Định dạng tên miền không chính xác."
+  },
+  "urlTooLong": {
+    "message": "URL này dài bất thường (rủi ro trung bình). URL rất dài có thể được sử dụng để ẩn nội dung độc hại."
+  },
+  "nonAscii": {
+    "message": "URL này chứa các ký tự không phải ASCII có thể được sử dụng để đánh lừa."
+  },
+  "typosquattingPattern": {
+    "message": "Tên miền này khớp với mẫu typosquatting (rủi ro cao). Nó có vẻ đang mạo danh một trang web hợp pháp."
+  },
+  "suspiciousIframes": {
+    "message": "Phát hiện các phần tử iframe đáng ngờ trên trang này."
+  },
+  "suspiciousScripts": {
+    "message": "Phát hiện các script đáng ngờ trên trang này."
+  },
+  "hiddenIframes": {
+    "message": "Phát hiện các phần tử iframe ẩn trên trang này có thể được sử dụng cho mục đích độc hại."
+  },
+  "unifiedCheckError": {
+    "message": "Lỗi trong quá trình kiểm tra bảo mật. Một số kiểm tra có thể chưa hoàn thành."
+  },
+  "initializationError": {
+    "message": "Lỗi khởi tạo trình quét bảo mật. Vui lòng tải lại trang."
+  },
+  "checkCurrentUrlError": {
+    "message": "Lỗi kiểm tra bảo mật URL hiện tại."
+  },
+  "ocrDangerTitle": {
+    "message": "Phát Hiện Liên Kết Nguy Hiểm Trong Hình Ảnh"
+  },
+  "ocrCautionTitle": {
+    "message": "Phát Hiện Liên Kết Đáng Ngờ Trong Hình Ảnh"
+  },
+  "suspiciousDomainDetected": {
+    "message": "Phát hiện tên miền đáng ngờ"
+  },
+  "extractedText": {
+    "message": "Văn bản trích xuất"
+  },
+  "reasons": {
+    "message": "Lý do"
+  },
+  "asciiQrDangerTitle": {
+    "message": "Liên Kết Nguy Hiểm Trong Mã QR ASCII"
+  },
+  "asciiQrCautionTitle": {
+    "message": "Liên Kết Đáng Ngờ Trong Mã QR ASCII"
+  },
+  "hiddenUrl": {
+    "message": "URL ẩn"
+  },
+  "qrDangerTitle": {
+    "message": "Phát Hiện Mã QR Nguy Hiểm"
+  },
+  "qrCautionTitle": {
+    "message": "Phát Hiện Mã QR Đáng Ngờ"
+  },
+  "fullUrl": {
+    "message": "URL đầy đủ"
+  },
+  "neutralIconTitle": {
+    "message": "LinkShield - Bảo Vệ Đang Hoạt Động"
+  },
+  "installNotificationTitle": {
+    "message": "LinkShield Đã Được Cài Đặt"
+  },
+  "installNotificationMessage": {
+    "message": "Bạn hiện đã được bảo vệ khỏi các trang web lừa đảo và độc hại."
+  },
+  "not_eligible": {
+    "message": "Không đủ điều kiện cho tính năng này"
+  },
+  "trial_expired": {
+    "message": "Thời gian dùng thử của bạn đã hết hạn"
+  },
+  "Error": {
+    "message": "Lỗi"
+  },
+
+  "siteSafeTitle": {
+    "message": "Trang web có vẻ an toàn"
+  },
+  "siteCautionTitle": {
+    "message": "Tiến hành cẩn thận"
+  },
+  "siteAlertTitle": {
+    "message": "Cảnh báo: Phát hiện mối đe dọa tiềm ẩn"
+  },
+
+  "clipboardHijackingCryptoTitle": {
+    "message": "Phát Hiện Chiếm Đoạt Địa Chỉ Tiền Điện Tử!"
+  },
+  "clipboardHijackingTitle": {
+    "message": "Phát Hiện Thao Túng Clipboard!"
+  },
+  "clipboardHijackingMessage": {
+    "message": "Trang này đang cố gắng sửa đổi clipboard của bạn. Hãy cẩn thận khi dán địa chỉ ví hoặc dữ liệu nhạy cảm."
+  },
+  "reason_clipboardHijackingCrypto": {
+    "message": "NGUY HIỂM: Trang này chiếm đoạt clipboard của bạn với địa chỉ tiền điện tử (rủi ro nghiêm trọng). Địa chỉ ví đã sao chép có thể bị thay thế bằng địa chỉ của kẻ tấn công."
+  },
+  "reason_clipboardHijackingDetected": {
+    "message": "Trang này thao túng nội dung clipboard của bạn (rủi ro cao). Nội dung dán có thể khác với những gì bạn đã sao chép."
+  },
+
+  "brandSubdomainPhishing": {
+    "message": "Phát hiện từ khóa thương hiệu trên nền tảng lưu trữ miễn phí (rủi ro cao). Các công ty hợp pháp không sử dụng lưu trữ miễn phí cho dịch vụ chính thức."
+  },
+  "reason_brandSubdomainPhishing": {
+    "message": "Phát hiện từ khóa thương hiệu trên nền tảng lưu trữ miễn phí (rủi ro cao). Các công ty hợp pháp không sử dụng lưu trữ miễn phí cho dịch vụ chính thức."
+  },
+
+  "nrdTelCombo": {
+    "message": "Số điện thoại trên tên miền mới đăng ký với từ khóa lừa đảo (rủi ro trung bình). Đây có thể là nỗ lực vishing (lừa đảo qua điện thoại)."
+  },
+  "reason_nrdTelCombo": {
+    "message": "Số điện thoại trên tên miền mới đăng ký với từ khóa lừa đảo (rủi ro trung bình). Đây có thể là nỗ lực vishing (lừa đảo qua điện thoại)."
+  },
+
+  "reason_opaqueRedirectChain": {
+    "message": "Phát hiện chuyển hướng không rõ ràng (rủi ro thấp). Không thể truy vết đầy đủ đích đến chuyển hướng."
+  },
+  "reason_opaqueRedirectToIP": {
+    "message": "Chuyển hướng không rõ ràng đến địa chỉ IP (rủi ro cao). Chuyển hướng ẩn dẫn đến địa chỉ IP thô thay vì tên miền."
+  },
+  "reason_opaqueRedirectSuspiciousTLD": {
+    "message": "Chuyển hướng không rõ ràng đến phần mở rộng tên miền đáng ngờ (rủi ro trung bình). Chuyển hướng ẩn dẫn đến TLD rủi ro."
+  },
+  "reason_opaqueRedirectNRD": {
+    "message": "Chuyển hướng không rõ ràng đến tên miền mới đăng ký (rủi ro cao). Chuyển hướng ẩn dẫn đến tên miền rất mới."
+  },
+
+  "bitbWarningTitle": {
+    "message": "Phát Hiện Cửa Sổ Đăng Nhập Giả!"
+  },
+  "bitbWarningMessage": {
+    "message": "Trang này đang hiển thị một cửa sổ trình duyệt mô phỏng bắt chước popup đăng nhập thực. Đây là tấn công Browser-in-the-Browser (BitB) được thiết kế để đánh cắp thông tin xác thực của bạn. 'Popup' thực ra chỉ là HTML/CSS được tạo để trông giống cửa sổ trình duyệt thực."
+  },
+  "reason_bitbAttackDetected": {
+    "message": "Phát hiện tấn công Browser-in-the-Browser (rủi ro nghiêm trọng). Trang này hiển thị cửa sổ trình duyệt giả để đánh cắp thông tin đăng nhập của bạn."
+  },
+  "reason_bitbFakeUrlBar": {
+    "message": "Phát hiện thanh URL giả hiển thị tên miền đáng tin cậy (rủi ro nghiêm trọng). Địa chỉ hiển thị là giả và được thiết kế để đánh lừa bạn."
+  },
+  "reason_bitbWindowControls": {
+    "message": "Phát hiện các nút điều khiển cửa sổ giả (rủi ro cao). Các nút đóng/thu nhỏ được mô phỏng để trông giống popup thực."
+  },
+  "reason_bitbLoginFormInOverlay": {
+    "message": "Phát hiện form đăng nhập bên trong overlay (rủi ro cao). Popup đăng nhập thực mở trong cửa sổ trình duyệt riêng, không phải overlay."
+  },
+  "reason_bitbOAuthBranding": {
+    "message": "Thương hiệu OAuth với form đăng nhập trong overlay (rủi ro cao). Các nút 'Đăng nhập bằng Google/Microsoft' trong popup giả là đánh cắp thông tin xác thực."
+  },
+  "reason_bitbPadlockIcon": {
+    "message": "Phát hiện biểu tượng ổ khóa bảo mật giả (rủi ro trung bình). Ổ khóa thực xuất hiện trong thanh địa chỉ trình duyệt, không phải trong nội dung trang."
+  },
+  "reason_bitbWindowChrome": {
+    "message": "Phát hiện kiểu dáng cửa sổ trình duyệt mô phỏng (rủi ro trung bình). Overlay được tạo kiểu để trông giống cửa sổ hệ điều hành."
+  },
+  "reason_bitbIframeInModal": {
+    "message": "Phát hiện iframe bên trong modal overlay (rủi ro thấp). Điều này có thể được sử dụng để tải nội dung đăng nhập bên ngoài."
+  },
+
+  "clickFixPowerShellTitle": {
+    "message": "Phát Hiện Lệnh PowerShell!"
+  },
+  "clickFixCommandTitle": {
+    "message": "Phát Hiện Tiêm Lệnh!"
+  },
+  "clickFixMessage": {
+    "message": "Trang này chứa lệnh đáng ngờ có thể gây hại cho máy tính của bạn. Không sao chép hoặc thực thi lệnh này."
+  },
+  "clickFixSubMessage": {
+    "message": "Kẻ tấn công thường ngụy trang lệnh độc hại dưới dạng 'bản sửa lỗi' hoặc 'bước xác minh'. Không bao giờ chạy lệnh từ nguồn không đáng tin cậy."
+  },
+  "bitbAttackCriticalTitle": {
+    "message": "Nguy Hiểm: Cửa Sổ Đăng Nhập Giả!"
+  },
+  "bitbAttackWarningTitle": {
+    "message": "Cảnh báo: Popup Đăng Nhập Đáng Ngờ"
+  },
+  "bitbAttackMessage": {
+    "message": "Trang này đang hiển thị cửa sổ trình duyệt giả được thiết kế để đánh cắp thông tin xác thực của bạn. Popup đăng nhập thực mở trong cửa sổ trình duyệt riêng."
+  },
+  "bitbAttackTip": {
+    "message": "Luôn kiểm tra thanh địa chỉ trình duyệt để biết URL thực, không phải văn bản hiển thị trong trang."
+  },
+  "shadowDomLoginForm": {
+    "message": "Phát hiện form đăng nhập ẩn trong Shadow DOM (rủi ro cao). Kỹ thuật này được sử dụng để né tránh trình quét bảo mật."
+  },
+  "shadowDomPhishingOverlay": {
+    "message": "Phát hiện overlay lừa đảo ẩn trong Shadow DOM (rủi ro nghiêm trọng). Shadow DOM đang được sử dụng để ẩn nội dung độc hại."
+  },
+  "shadowDomIframe": {
+    "message": "Phát hiện iframe đáng ngờ ẩn trong Shadow DOM (rủi ro cao). Iframe ẩn có thể được sử dụng để đánh cắp thông tin xác thực."
+  },
+  "urlCredentialsAttack": {
+    "message": "URL chứa thông tin xác thực ở định dạng tấn công (rủi ro nghiêm trọng). Tên miền hiển thị là giả - bạn sẽ bị chuyển hướng đến nơi khác."
+  },
+  "nrdUltraCritical": {
+    "message": "Tên miền chỉ mới được đăng ký vài giờ trước (rủi ro nghiêm trọng). Điều này cực kỳ đáng ngờ và thường được sử dụng cho lừa đảo."
+  },
+  "nrdVishingCombo": {
+    "message": "Số điện thoại trên tên miền mới đăng ký với các dấu hiệu lừa đảo (rủi ro cao). Đây có thể là nỗ lực vishing (lừa đảo qua điện thoại)."
+  },
+  "tableBasedQR": {
+    "message": "Phát hiện mã QR ẩn trong bảng HTML (rủi ro trung bình). Kỹ thuật này được sử dụng để vượt qua phát hiện QR dựa trên hình ảnh."
+  },
+  "tableQrDangerTitle": {
+    "message": "Liên Kết Nguy Hiểm Trong Mã QR Ẩn"
+  },
+  "tableQrCautionTitle": {
+    "message": "Liên Kết Đáng Ngờ Trong Mã QR Ẩn"
+  },
+  "hiddenQrDetected": {
+    "message": "Phát hiện mã QR ẩn trong nội dung trang. Có thể chứa URL độc hại."
+  },
+
+  "bitbAttackCritical": {
+    "message": "NGUY HIỂM: Phát hiện tấn công Browser-in-the-Browser! Trang này hiển thị cửa sổ đăng nhập giả được thiết kế để đánh cắp thông tin xác thực của bạn."
+  },
+  "bitbAttackWarning": {
+    "message": "Cảnh báo: Phát hiện popup đáng ngờ có thể là tấn công Browser-in-the-Browser. Kiểm tra URL cẩn thận."
+  },
+  "clickFixDetected": {
+    "message": "Phát hiện tấn công ClickFix! Trang này chứa lệnh độc hại được ngụy trang dưới dạng bản sửa lỗi hoặc bước xác minh. Không sao chép hoặc thực thi nó."
+  },
+  "clipboardHijacking": {
+    "message": "Phát hiện chiếm đoạt clipboard! Trang này đang cố gắng sửa đổi nội dung clipboard của bạn mà không được phép."
+  },
+  "hiddenIframe": {
+    "message": "Phát hiện iframe ẩn trên trang này. Khung vô hình có thể được sử dụng để theo dõi, đánh cắp thông tin xác thực, hoặc phân phối phần mềm độc hại."
+  },
+  "typosquatting": {
+    "message": "Phát hiện typosquatting! Tên miền này cố ý viết sai chính tả để mạo danh một trang web hợp pháp."
+  },
+  "ipAddressDomain": {
+    "message": "Trang web này sử dụng địa chỉ IP thay vì tên miền. Điều này rất bất thường và thường chỉ ra ý định độc hại."
+  },
+  "extremeSubdomains": {
+    "message": "Phát hiện số lượng tên miền phụ cực kỳ lớn. Kỹ thuật này thường được sử dụng để ẩn URL độc hại hoặc mạo danh các trang hợp pháp."
+  },
+  "vishingDetected": {
+    "message": "Phát hiện khả năng tấn công vishing (lừa đảo qua điện thoại). Trang này kết hợp số điện thoại với các dấu hiệu lừa đảo."
+  },
+  "punycodeDetected": {
+    "message": "Phát hiện tên miền Punycode! Địa chỉ này sử dụng các ký tự quốc tế có thể đang mạo danh một trang web hợp pháp."
+  },
+
+  "reason_nonAscii": {
+    "message": "Phát hiện ký tự đáng ngờ (homoglyph)"
+  },
+  "reason_brandKeywordHomoglyph": {
+    "message": "Phát hiện bắt chước thương hiệu"
+  },
+  "reason_noHttps": {
+    "message": "Không có kết nối an toàn (HTTPS)"
+  },
+  "reason_suspiciousTLD": {
+    "message": "Phần mở rộng tên miền đáng ngờ"
+  },
+  "reason_ipAsDomain": {
+    "message": "Địa chỉ IP làm tên miền"
+  },
+  "reason_tooManySubdomains": {
+    "message": "Quá nhiều tên miền phụ"
+  },
+  "reason_shortenedUrl": {
+    "message": "Phát hiện URL rút gọn"
+  },
+  "reason_suspiciousKeywords": {
+    "message": "Từ khóa đáng ngờ trong URL"
+  },
+  "reason_malwareExtension": {
+    "message": "Phần mở rộng tệp có thể gây hại"
+  },
+  "reason_urlTooLong": {
+    "message": "URL dài bất thường"
+  },
+  "reason_encodedCharacters": {
+    "message": "Ký tự được mã hóa trong URL"
+  },
+  "reason_homoglyphAttack": {
+    "message": "Phát hiện tấn công homoglyph"
+  },
+  "reason_typosquatting": {
+    "message": "Phát hiện typosquatting"
+  },
+  "reason_suspiciousBrandPattern": {
+    "message": "Mẫu thương hiệu đáng ngờ"
+  },
+  "reason_unusualPort": {
+    "message": "Cổng bất thường"
+  },
+  "reason_punycode": {
+    "message": "Phát hiện tên miền Punycode"
+  },
+  "reason_loginPageNoMX": {
+    "message": "Trang đăng nhập không có máy chủ email"
+  },
+  "reason_insecureLoginPage": {
+    "message": "Trang đăng nhập không an toàn"
+  },
+  "reason_sslValidationFailed": {
+    "message": "Xác thực SSL thất bại"
+  },
+  "reason_similarToLegitimateDomain": {
+    "message": "Trông giống tên miền hợp pháp"
+  },
+  "trialPeriodActive": {
+    "message": "Thời gian dùng thử đang hoạt động"
+  }
+}

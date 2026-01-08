@@ -1409,23 +1409,9 @@ async function checkSslLabs(domain) {
 // Laad cache bij startup
 loadSslCacheFromStorage();
 
-// Cache-schoonmaak en opslag (elke 30 minuten)
-setInterval(() => {
-    const now = Date.now();
-    let cleanedCount = 0;
-    for (const [domain, data] of sslCache) {
-        const ttl = data.isError ? SSL_LABS_ERROR_CACHE_TTL : SSL_LABS_CACHE_TTL;
-        if (now - data.timestamp >= ttl) {
-            sslCache.delete(domain);
-            cleanedCount++;
-        }
-    }
-    if (cleanedCount > 0 && globalThresholds.DEBUG_MODE) {
-        console.log(`[SSL Cache] ${cleanedCount} verlopen entries verwijderd`);
-    }
-    // Sla cache op
-    saveSslCacheToStorage();
-}, 30 * 60 * 1000);
+// MV3 FIX: Cache-schoonmaak via chrome.alarms (elke 30 minuten)
+// setInterval werkt niet betrouwbaar in Service Workers - alarm wordt aangemaakt in onInstalled
+// Handler: zie chrome.alarms.onAlarm listener voor "cleanSSLCache"
 
 
 // ==== Installation and Alarms ====
@@ -1481,6 +1467,13 @@ chrome.runtime.onInstalled.addListener(async (details) => {
         });
         if (globalThresholds.DEBUG_MODE) console.log("License revalidation alarm created (12h interval).");
 
+        // MV3 FIX: SSL cache cleanup alarm (every 30 minutes)
+        // Vervangt setInterval die niet werkt in Service Workers
+        chrome.alarms.create("cleanSSLCache", {
+            periodInMinutes: 30
+        });
+        if (globalThresholds.DEBUG_MODE) console.log("SSL cache cleanup alarm created (30min interval).");
+
     } catch (error) {
         console.error("Error during extension installation or update:", error);
     }
@@ -1522,6 +1515,25 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
                 console.error("[ERROR] Error in license revalidation alarm:", error.message);
             }
         })();
+    }
+
+    // MV3 FIX: SSL cache cleanup (replaces setInterval)
+    if (alarm.name === "cleanSSLCache") {
+        const now = Date.now();
+        let cleanedCount = 0;
+        for (const [domain, data] of sslCache) {
+            const ttl = data.isError ? SSL_LABS_ERROR_CACHE_TTL : SSL_LABS_CACHE_TTL;
+            if (now - data.timestamp >= ttl) {
+                sslCache.delete(domain);
+                cleanedCount++;
+            }
+        }
+        if (cleanedCount > 0 && globalThresholds.DEBUG_MODE) {
+            console.log(`[SSL Cache] ${cleanedCount} verlopen entries verwijderd`);
+        }
+        // Sla cache op
+        saveSslCacheToStorage();
+        if (globalThresholds.DEBUG_MODE) console.log("SSL cache cleanup completed via alarm.");
     }
 
     // MV3 FIX: Clear alert badge after delay (replaces setInterval animation)

@@ -1009,5 +1009,55 @@
   },
   "reason_opaqueRedirectNRD": {
     "message": "Ondoorzichtige redirect naar nieuw geregistreerd domein (hoog risico). De verborgen redirect leidt naar een zeer nieuw domein."
-  }
+  },
+
+  "bitbWarningTitle": {
+    "message": "Nep Login-venster Gedetecteerd!"
+  },
+  "bitbWarningMessage": {
+    "message": "Deze pagina toont een gesimuleerd browservenster dat een echte login-popup nabootst. Dit is een Browser-in-the-Browser (BitB) aanval ontworpen om je inloggegevens te stelen. De 'popup' is eigenlijk gewoon HTML/CSS die eruit ziet als een echt browservenster."
+  },
+  "reason_bitbAttackDetected": {
+    "message": "Browser-in-the-Browser aanval gedetecteerd (kritiek risico). Deze pagina toont een nep browservenster om je inloggegevens te stelen."
+  },
+  "reason_bitbFakeUrlBar": {
+    "message": "Nep URL-balk gedetecteerd met vertrouwd domein (kritiek risico). Het getoonde adres is nep en ontworpen om je te misleiden."
+  },
+  "reason_bitbWindowControls": {
+    "message": "Nep vensterknoppen gedetecteerd (hoog risico). Sluiten/minimaliseren knoppen zijn gesimuleerd om op een echte popup te lijken."
+  },
+  "reason_bitbLoginFormInOverlay": {
+    "message": "Loginformulier in overlay gedetecteerd (hoog risico). Echte login-popups openen in aparte browservensters, niet in overlays."
+  },
+  "reason_bitbOAuthBranding": {
+    "message": "OAuth branding met loginformulier in overlay (hoog risico). 'Inloggen met Google/Microsoft' knoppen in nep-popups zijn credential diefstal."
+  },
+  "reason_bitbPadlockIcon": {
+    "message": "Nep beveiligings-hangslot icoon gedetecteerd (gemiddeld risico). Echte hangsloten verschijnen in de browser adresbalk, niet in pagina-inhoud."
+  },
+  "reason_bitbWindowChrome": {
+    "message": "Gesimuleerde browservenster styling gedetecteerd (gemiddeld risico). De overlay is gestyled om op een besturingssysteem venster te lijken."
+  },
+  "reason_bitbIframeInModal": {
+    "message": "Iframe in modal overlay gedetecteerd (laag risico). Dit kan worden gebruikt om externe login-inhoud te laden."
+  },
+
+  "clickFixPowerShellTitle": { "message": "PowerShell Commando Gedetecteerd!" },
+  "clickFixCommandTitle": { "message": "Commando Injectie Gedetecteerd!" },
+  "clickFixMessage": { "message": "Deze pagina bevat een verdacht commando dat uw computer kan beschadigen. Kopieer of voer dit commando niet uit." },
+  "clickFixSubMessage": { "message": "Aanvallers vermommen schadelijke commando's vaak als 'fixes' of 'verificatiestappen'. Voer nooit commando's uit van onbetrouwbare bronnen." },
+  "bitbAttackCriticalTitle": { "message": "Kritiek: Nep Login Venster!" },
+  "bitbAttackWarningTitle": { "message": "Waarschuwing: Verdachte Login Popup" },
+  "bitbAttackMessage": { "message": "Deze pagina toont een nep browservenster ontworpen om uw inloggegevens te stelen. Echte login popups openen in aparte browservensters." },
+  "bitbAttackTip": { "message": "Controleer altijd de browser adresbalk voor de echte URL, niet tekst die in de pagina wordt weergegeven." },
+  "shadowDomLoginForm": { "message": "Loginformulier verborgen in Shadow DOM gedetecteerd (hoog risico). Deze techniek wordt gebruikt om beveiligingsscanners te omzeilen." },
+  "shadowDomPhishingOverlay": { "message": "Phishing overlay verborgen in Shadow DOM gedetecteerd (kritiek risico). Shadow DOM wordt gebruikt om schadelijke inhoud te verbergen." },
+  "shadowDomIframe": { "message": "Verdachte iframe verborgen in Shadow DOM gedetecteerd (hoog risico). Verborgen iframes kunnen worden gebruikt voor credential diefstal." },
+  "urlCredentialsAttack": { "message": "URL bevat credentials in aanvalsformaat (kritiek risico). Het zichtbare domein is nep - u wordt doorgestuurd naar elders." },
+  "nrdUltraCritical": { "message": "Domein slechts uren geleden geregistreerd (kritiek risico). Dit is zeer verdacht en wordt vaak gebruikt voor phishing." },
+  "nrdVishingCombo": { "message": "Telefoonnummer op nieuw geregistreerd domein met phishing indicatoren (hoog risico). Dit kan een vishing (voice phishing) poging zijn." },
+  "tableBasedQR": { "message": "QR-code verborgen in HTML-tabel gedetecteerd (gemiddeld risico). Deze techniek wordt gebruikt om image-gebaseerde QR-detectie te omzeilen." },
+  "tableQrDangerTitle": { "message": "Gevaarlijke Link in Verborgen QR-code" },
+  "tableQrCautionTitle": { "message": "Verdachte Link in Verborgen QR-code" },
+  "hiddenQrDetected": { "message": "Verborgen QR-code gedetecteerd in pagina-inhoud. Dit kan een schadelijke URL bevatten." }
 }

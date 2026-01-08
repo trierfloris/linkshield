@@ -945,5 +945,91 @@
   },
   "reason_opaqueRedirectNRD": {
     "message": "Opaque redirect to newly registered domain (high risk). The hidden redirect leads to a very new domain."
+  },
+
+  "bitbWarningTitle": {
+    "message": "Fake Login Window Detected!"
+  },
+  "bitbWarningMessage": {
+    "message": "This page is displaying a simulated browser window that mimics a real login popup. This is a Browser-in-the-Browser (BitB) attack designed to steal your credentials. The 'popup' is actually just HTML/CSS made to look like a real browser window."
+  },
+  "reason_bitbAttackDetected": {
+    "message": "Browser-in-the-Browser attack detected (critical risk). This page displays a fake browser window to steal your login credentials."
+  },
+  "reason_bitbFakeUrlBar": {
+    "message": "Fake URL bar detected showing trusted domain (critical risk). The displayed address is fake and designed to deceive you."
+  },
+  "reason_bitbWindowControls": {
+    "message": "Fake window controls detected (high risk). Close/minimize buttons are simulated to appear like a real popup."
+  },
+  "reason_bitbLoginFormInOverlay": {
+    "message": "Login form inside overlay detected (high risk). Real login popups open in separate browser windows, not overlays."
+  },
+  "reason_bitbOAuthBranding": {
+    "message": "OAuth branding with login form in overlay (high risk). 'Sign in with Google/Microsoft' buttons in fake popups are credential theft."
+  },
+  "reason_bitbPadlockIcon": {
+    "message": "Fake security padlock icon detected (medium risk). Real padlocks appear in browser address bar, not in page content."
+  },
+  "reason_bitbWindowChrome": {
+    "message": "Simulated browser window styling detected (medium risk). The overlay is styled to look like an operating system window."
+  },
+  "reason_bitbIframeInModal": {
+    "message": "Iframe inside modal overlay detected (low risk). This may be used to load external login content."
+  },
+
+  "clickFixPowerShellTitle": {
+    "message": "PowerShell Command Detected!"
+  },
+  "clickFixCommandTitle": {
+    "message": "Command Injection Detected!"
+  },
+  "clickFixMessage": {
+    "message": "This page contains a suspicious command that could harm your computer. Do not copy or execute this command."
+  },
+  "clickFixSubMessage": {
+    "message": "Attackers often disguise malicious commands as 'fixes' or 'verification steps'. Never run commands from untrusted sources."
+  },
+  "bitbAttackCriticalTitle": {
+    "message": "Critical: Fake Login Window!"
+  },
+  "bitbAttackWarningTitle": {
+    "message": "Warning: Suspicious Login Popup"
+  },
+  "bitbAttackMessage": {
+    "message": "This page is showing a fake browser window designed to steal your credentials. Real login popups open in separate browser windows."
+  },
+  "bitbAttackTip": {
+    "message": "Always check the browser address bar for the real URL, not text displayed within the page."
+  },
+  "shadowDomLoginForm": {
+    "message": "Login form hidden in Shadow DOM detected (high risk). This technique is used to evade security scanners."
+  },
+  "shadowDomPhishingOverlay": {
+    "message": "Phishing overlay hidden in Shadow DOM detected (critical risk). Shadow DOM is being used to hide malicious content."
+  },
+  "shadowDomIframe": {
+    "message": "Suspicious iframe hidden in Shadow DOM detected (high risk). Hidden iframes can be used for credential theft."
+  },
+  "urlCredentialsAttack": {
+    "message": "URL contains credentials in an attack format (critical risk). The visible domain is fake - you will be redirected elsewhere."
+  },
+  "nrdUltraCritical": {
+    "message": "Domain registered only hours ago (critical risk). This is extremely suspicious and commonly used for phishing."
+  },
+  "nrdVishingCombo": {
+    "message": "Phone number on newly registered domain with phishing indicators (high risk). This may be a vishing (voice phishing) attempt."
+  },
+  "tableBasedQR": {
+    "message": "QR code hidden in HTML table detected (medium risk). This technique is used to bypass image-based QR detection."
+  },
+  "tableQrDangerTitle": {
+    "message": "Dangerous Link in Hidden QR Code"
+  },
+  "tableQrCautionTitle": {
+    "message": "Suspicious Link in Hidden QR Code"
+  },
+  "hiddenQrDetected": {
+    "message": "Hidden QR code detected in page content. This may contain a malicious URL."
   }
 }

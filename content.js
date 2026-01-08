@@ -615,6 +615,576 @@ function showClickFixWarning(patterns, score) {
     });
 }
 
+// =============================
+// BROWSER-IN-THE-BROWSER (BitB) ATTACK DETECTION
+// Detecteert nep browser popups die OAuth/SSO logins simuleren
+// Deze aanvallen creëren fake browser vensters met nep URL bars
+// =============================
+
+let bitbDetectionInitialized = false;
+let bitbDetected = false;
+
+/**
+ * Initialiseert BitB Attack detectie
+ */
+function initBitBDetection() {
+    if (bitbDetectionInitialized) return;
+    bitbDetectionInitialized = true;
+
+    // Initiële scan na page load (wacht op dynamische content)
+    setTimeout(() => scanForBitBAttack(), 2000);
+
+    // Observer voor dynamisch geladen modals/overlays
+    const observer = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+            for (const node of mutation.addedNodes) {
+                if (node.nodeType === Node.ELEMENT_NODE) {
+                    if (isPotentialBitBContainer(node)) {
+                        clearTimeout(window._bitbScanTimeout);
+                        window._bitbScanTimeout = setTimeout(() => scanForBitBAttack(), 400);
+                        return;
+                    }
+                }
+            }
+        }
+    });
+
+    if (document.body) {
+        observer.observe(document.body, { childList: true, subtree: true });
+    }
+
+    // Click listener voor popup triggers (OAuth buttons etc.)
+    document.addEventListener('click', () => {
+        clearTimeout(window._bitbClickTimeout);
+        window._bitbClickTimeout = setTimeout(() => scanForBitBAttack(), 600);
+    }, true);
+
+    logDebug('[BitB] Detection initialized');
+}
+
+/**
+ * Check of een element een potentiële BitB container zou kunnen zijn
+ */
+function isPotentialBitBContainer(element) {
+    if (!element || !element.style) return false;
+
+    try {
+        const style = window.getComputedStyle(element);
+        const classList = (element.className || '').toLowerCase();
+
+        // Check voor fixed/absolute positioning met hoge z-index
+        if (style.position === 'fixed' || style.position === 'absolute') {
+            const zIndex = parseInt(style.zIndex) || 0;
+            if (zIndex > 1000) return true;
+        }
+
+        // Check class names voor modal/overlay indicators
+        if (/modal|popup|overlay|dialog|lightbox|signin|login/i.test(classList)) return true;
+
+        // Check role attribute
+        if (element.getAttribute('role') === 'dialog') return true;
+        if (element.getAttribute('aria-modal') === 'true') return true;
+
+    } catch (e) {
+        // Ignore errors voor elementen zonder computed style
+    }
+
+    return false;
+}
+
+/**
+ * Hoofd scan functie voor BitB detectie
+ */
+function scanForBitBAttack() {
+    if (bitbDetected) return;
+
+    try {
+        const config = globalConfig?.BITB_DETECTION;
+        if (!config) {
+            logDebug('[BitB] No config available');
+            return;
+        }
+
+        const indicators = [];
+        let totalScore = 0;
+
+        // 1. Zoek alle potentiële modal/overlay containers
+        const overlays = findOverlayContainers();
+
+        for (const overlay of overlays) {
+            const result = analyzeOverlayForBitB(overlay, config);
+            if (result.score > 0) {
+                indicators.push(...result.indicators);
+                totalScore += result.score;
+            }
+        }
+
+        // 2. Globale check voor fake URL bars (ook buiten overlays)
+        const fakeUrlBars = detectFakeUrlBarsGlobal(config);
+        if (fakeUrlBars.length > 0) {
+            indicators.push({ type: 'fakeUrlBarGlobal', count: fakeUrlBars.length });
+            totalScore += fakeUrlBars.length * config.scores.fakeUrlBar;
+        }
+
+        // Evalueer resultaat
+        const thresholds = config.thresholds;
+        if (totalScore >= thresholds.critical) {
+            bitbDetected = true;
+            reportBitBAttack('critical', indicators, totalScore);
+        } else if (totalScore >= thresholds.warning) {
+            reportBitBAttack('warning', indicators, totalScore);
+        } else if (totalScore >= thresholds.log) {
+            logDebug(`[BitB] Low confidence: ${JSON.stringify(indicators)}, score: ${totalScore}`);
+        }
+
+    } catch (error) {
+        handleError(error, '[BitB] Scan error');
+    }
+}
+
+/**
+ * Vindt alle overlay/modal containers op de pagina
+ */
+function findOverlayContainers() {
+    const candidates = [];
+    const seen = new WeakSet();
+
+    // Selecteer elementen met modal/overlay karakteristieken
+    const selectors = [
+        '[role="dialog"]',
+        '[aria-modal="true"]',
+        '.modal', '.popup', '.overlay', '.dialog', '.lightbox',
+        '[class*="modal"]', '[class*="popup"]', '[class*="overlay"]',
+        '[class*="dialog"]', '[class*="signin"]', '[class*="login-popup"]'
+    ];
+
+    try {
+        const elements = document.querySelectorAll(selectors.join(','));
+
+        elements.forEach(el => {
+            if (seen.has(el)) return;
+            seen.add(el);
+
+            try {
+                const style = window.getComputedStyle(el);
+                if (style.display !== 'none' &&
+                    style.visibility !== 'hidden' &&
+                    parseInt(style.zIndex) > 100 &&
+                    el.offsetWidth > 150 && el.offsetHeight > 150) {
+                    candidates.push(el);
+                }
+            } catch (e) { /* ignore */ }
+        });
+
+        // Ook zoeken naar fixed positioned elements met zeer hoge z-index
+        document.querySelectorAll('div, section, aside').forEach(el => {
+            if (seen.has(el)) return;
+
+            try {
+                const style = window.getComputedStyle(el);
+                if (style.position === 'fixed' &&
+                    parseInt(style.zIndex) > 9000 &&
+                    el.offsetWidth > 200 && el.offsetHeight > 200) {
+                    seen.add(el);
+                    candidates.push(el);
+                }
+            } catch (e) { /* ignore */ }
+        });
+    } catch (e) {
+        handleError(e, '[BitB] findOverlayContainers');
+    }
+
+    return candidates.slice(0, 10); // Limiteer voor performance
+}
+
+/**
+ * Analyseert een overlay container voor BitB indicatoren
+ */
+function analyzeOverlayForBitB(overlay, config) {
+    const indicators = [];
+    let score = 0;
+    const scores = config.scores;
+
+    try {
+        const overlayText = (overlay.innerText || '').toLowerCase();
+
+        // 1. Check voor fake URL bar elementen
+        const fakeUrlBar = findFakeUrlBarInElement(overlay, config);
+        if (fakeUrlBar) {
+            indicators.push({
+                type: 'fakeUrlBar',
+                url: fakeUrlBar.textContent?.substring(0, 60)
+            });
+            score += scores.fakeUrlBar;
+        }
+
+        // 2. Check voor window control buttons (close/minimize/maximize)
+        const windowControls = findWindowControls(overlay, config);
+        if (windowControls.found) {
+            indicators.push({ type: 'windowControls', details: windowControls.details });
+            score += scores.windowControls;
+        }
+
+        // 3. Check voor login form binnen overlay
+        const loginInputs = overlay.querySelectorAll(
+            'input[type="password"], input[type="email"], ' +
+            'input[name*="password"], input[name*="email"], input[name*="user"]'
+        );
+
+        if (loginInputs.length > 0) {
+            indicators.push({ type: 'loginForm', inputs: loginInputs.length });
+            score += scores.loginFormInOverlay;
+
+            // Extra score als er ook OAuth branding is
+            for (const brand of config.oauthBranding || []) {
+                if (overlayText.includes(brand.toLowerCase())) {
+                    indicators.push({ type: 'oauthBranding', brand });
+                    score += scores.oauthBrandingWithForm;
+                    break;
+                }
+            }
+        }
+
+        // 4. Check voor padlock/security icons
+        if (detectPadlockIcon(overlay)) {
+            indicators.push({ type: 'padlockIcon' });
+            score += scores.padlockIcon;
+        }
+
+        // 5. Check voor OS-achtige window chrome styling
+        if (hasWindowChromeStyle(overlay)) {
+            indicators.push({ type: 'windowChromeStyle' });
+            score += scores.windowChromeStyle;
+        }
+
+        // 6. Check voor iframe binnen modal met login
+        const iframes = overlay.querySelectorAll('iframe');
+        if (iframes.length > 0 && loginInputs.length > 0) {
+            indicators.push({ type: 'iframeInModal', count: iframes.length });
+            score += scores.iframeInModal;
+        }
+
+    } catch (error) {
+        handleError(error, '[BitB] analyzeOverlay');
+    }
+
+    return { score, indicators };
+}
+
+/**
+ * Zoekt naar elementen die eruitzien als een URL bar
+ */
+function findFakeUrlBarInElement(container, config) {
+    try {
+        const allElements = container.querySelectorAll('span, div, p, a, input[readonly]');
+        const currentHost = window.location.hostname.toLowerCase();
+
+        for (const el of allElements) {
+            // Skip grote containers
+            if (el.children.length > 3) continue;
+
+            const text = (el.textContent || '').trim();
+
+            // Check of tekst eruitziet als een URL (15-100 karakters)
+            if (text.length >= 15 && text.length <= 100) {
+                // Check tegen bekende OAuth URLs
+                for (const pattern of config.fakeUrlBarPatterns || []) {
+                    if (pattern.test(text)) {
+                        // Verifieer dat dit NIET de echte pagina URL is
+                        const textHost = text.replace(/^https?:\/\//, '').split('/')[0].toLowerCase();
+                        if (textHost !== currentHost && !currentHost.endsWith('.' + textHost)) {
+                            return el;
+                        }
+                    }
+                }
+            }
+        }
+    } catch (e) {
+        handleError(e, '[BitB] findFakeUrlBar');
+    }
+
+    return null;
+}
+
+/**
+ * Zoekt naar fake window control buttons
+ */
+function findWindowControls(container, config) {
+    const details = [];
+    const indicators = config.windowControlIndicators || {};
+
+    try {
+        const textContent = container.innerText || '';
+        const innerHTML = container.innerHTML || '';
+
+        // Check voor macOS traffic lights (● ○ ○)
+        if (indicators.trafficLights?.test(textContent)) {
+            details.push('trafficLights');
+        }
+
+        // Check voor close button karakters (× ✕ etc.)
+        if (indicators.closeButtons?.test(textContent)) {
+            details.push('closeButton');
+        }
+
+        // Check voor window control CSS classes
+        if (indicators.controlClasses?.test(innerHTML)) {
+            details.push('controlClasses');
+        }
+
+        // Check voor elementen met typische window control styling
+        const smallButtons = container.querySelectorAll('button, [role="button"], .btn');
+        let roundButtonCount = 0;
+
+        smallButtons.forEach(btn => {
+            if (btn.offsetWidth > 0 && btn.offsetWidth < 25 &&
+                btn.offsetHeight > 0 && btn.offsetHeight < 25) {
+                try {
+                    const style = window.getComputedStyle(btn);
+                    if (style.borderRadius === '50%' || parseInt(style.borderRadius) >= 10) {
+                        roundButtonCount++;
+                    }
+                } catch (e) { /* ignore */ }
+            }
+        });
+
+        if (roundButtonCount >= 2) {
+            details.push('roundButtons');
+        }
+
+    } catch (e) {
+        handleError(e, '[BitB] findWindowControls');
+    }
+
+    return { found: details.length > 0, details };
+}
+
+/**
+ * Detecteert padlock/security icons
+ */
+function detectPadlockIcon(container) {
+    try {
+        const text = container.innerText || '';
+        const html = container.innerHTML || '';
+
+        // Unicode padlock characters
+        if (/[🔒🔐🔓🛡️🔏]/.test(text)) return true;
+
+        // Images/SVGs met lock in naam
+        const lockImages = container.querySelectorAll(
+            'img[src*="lock"], img[src*="secure"], img[alt*="lock"], ' +
+            'svg[class*="lock"], [class*="padlock"], [class*="secure-icon"]'
+        );
+        if (lockImages.length > 0) return true;
+
+        // SVG paths die lijken op een lock (heuristic)
+        if (/<svg[^>]*>.*<path[^>]*d="[^"]*[Aa]\s*\d+[^"]*[Vv][^"]*".*<\/svg>/i.test(html)) {
+            // Mogelijke lock SVG - check of het klein is (icon-size)
+            const svgs = container.querySelectorAll('svg');
+            for (const svg of svgs) {
+                if (svg.offsetWidth > 10 && svg.offsetWidth < 30 &&
+                    svg.offsetHeight > 10 && svg.offsetHeight < 30) {
+                    return true;
+                }
+            }
+        }
+
+    } catch (e) { /* ignore */ }
+
+    return false;
+}
+
+/**
+ * Check of element OS-achtige window chrome styling heeft
+ */
+function hasWindowChromeStyle(element) {
+    try {
+        const style = window.getComputedStyle(element);
+
+        // Check voor typische window styling combinaties
+        const boxShadow = style.boxShadow || '';
+        const borderRadius = parseInt(style.borderRadius) || 0;
+        const backgroundColor = style.backgroundColor || '';
+
+        // macOS/Windows window-achtige shadows (diep, soft)
+        const hasDeepShadow = /rgba?\([^)]+\)\s+\d+px\s+\d+px\s+(2[0-9]|[3-9][0-9])px/.test(boxShadow);
+
+        // Window-achtige border radius (8-12px typisch voor OS windows)
+        const hasWindowRadius = borderRadius >= 8 && borderRadius <= 16;
+
+        // Heeft een "title bar" achtig kind element
+        const hasHeader = element.querySelector(
+            '[class*="header"], [class*="title"], [class*="toolbar"], [class*="top-bar"]'
+        );
+
+        // Combinatie van factoren
+        if (hasDeepShadow && hasWindowRadius) return true;
+        if (hasWindowRadius && hasHeader) return true;
+
+    } catch (e) { /* ignore */ }
+
+    return false;
+}
+
+/**
+ * Globale detectie van fake URL bars (buiten overlays)
+ */
+function detectFakeUrlBarsGlobal(config) {
+    const fakeUrlBars = [];
+    const currentHost = window.location.hostname.toLowerCase();
+
+    try {
+        // Zoek elementen die URL-tekst bevatten
+        const candidates = document.querySelectorAll(
+            '[class*="url"], [class*="address"], [class*="location-bar"], ' +
+            'input[readonly][value*="http"], span[class*="domain"]'
+        );
+
+        candidates.forEach(el => {
+            const text = (el.textContent || el.value || '').trim();
+
+            if (text.length >= 15 && text.length <= 100) {
+                for (const pattern of config.fakeUrlBarPatterns || []) {
+                    if (pattern.test(text)) {
+                        const textHost = text.replace(/^https?:\/\//, '').split('/')[0].toLowerCase();
+                        if (textHost !== currentHost) {
+                            fakeUrlBars.push({ text, element: el });
+                        }
+                        break;
+                    }
+                }
+            }
+        });
+
+    } catch (e) {
+        handleError(e, '[BitB] detectFakeUrlBarsGlobal');
+    }
+
+    return fakeUrlBars.slice(0, 5); // Limiteer resultaten
+}
+
+/**
+ * Rapporteert BitB aanval detectie
+ */
+function reportBitBAttack(severity, indicators, score) {
+    const hostname = window.location.hostname;
+    const reason = severity === 'critical' ? 'bitbAttackCritical' : 'bitbAttackWarning';
+
+    logDebug(`[BitB] Attack detected! Severity: ${severity}, Score: ${score}`);
+    logDebug(`[BitB] Indicators: ${JSON.stringify(indicators)}`);
+
+    // Stuur naar background voor icon update en logging
+    chrome.runtime.sendMessage({
+        action: 'bitbDetected',
+        data: {
+            hostname,
+            severity,
+            score,
+            indicators: indicators.map(i => i.type),
+            reason
+        }
+    }).catch(() => {});
+
+    // Toon waarschuwing aan gebruiker
+    showBitBWarning(severity, indicators, score);
+}
+
+/**
+ * Toont waarschuwing voor BitB aanval
+ */
+function showBitBWarning(severity, indicators, score) {
+    // Verwijder bestaande waarschuwing
+    document.getElementById('linkshield-bitb-warning')?.remove();
+
+    const isCritical = severity === 'critical';
+
+    const warning = document.createElement('div');
+    warning.id = 'linkshield-bitb-warning';
+    warning.style.cssText = `
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: ${isCritical
+            ? 'linear-gradient(135deg, #dc2626 0%, #7f1d1d 100%)'
+            : 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)'};
+        color: white;
+        padding: 20px 28px;
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        z-index: 2147483647;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-size: 14px;
+        max-width: 520px;
+        text-align: center;
+        animation: bitbSlideIn 0.3s ease-out;
+    `;
+
+    const title = isCritical
+        ? (chrome.i18n.getMessage('bitbAttackCriticalTitle') || '🚨 FAKE LOGIN VENSTER GEDETECTEERD!')
+        : (chrome.i18n.getMessage('bitbAttackWarningTitle') || '⚠️ Verdacht Login Venster');
+
+    const message = chrome.i18n.getMessage('bitbAttackMessage') ||
+        'Dit is mogelijk een NEPPE browser popup die probeert uw inloggegevens te stelen. Het "venster" dat u ziet is GEEN echt browser venster!';
+
+    const tip = chrome.i18n.getMessage('bitbAttackTip') ||
+        'TIP: Probeer het "venster" buiten de pagina te slepen. Een echt popup kan buiten de browser, een neppe niet.';
+
+    warning.innerHTML = `
+        <div style="font-size: 28px; margin-bottom: 12px;">${isCritical ? '🚨' : '⚠️'}</div>
+        <div style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">${title}</div>
+        <div style="margin-bottom: 12px; line-height: 1.5;">${message}</div>
+        <div style="font-size: 12px; opacity: 0.9; margin-bottom: 16px; font-style: italic; padding: 8px; background: rgba(255,255,255,0.1); border-radius: 6px;">${tip}</div>
+        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+            <button id="linkshield-bitb-close-page" style="
+                background: white;
+                color: ${isCritical ? '#dc2626' : '#d97706'};
+                border: none;
+                padding: 10px 20px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-weight: bold;
+                font-size: 13px;
+            ">Sluit deze pagina</button>
+            <button id="linkshield-bitb-dismiss" style="
+                background: transparent;
+                color: white;
+                border: 1px solid rgba(255,255,255,0.5);
+                padding: 10px 20px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 13px;
+            ">Ik begrijp het risico</button>
+        </div>
+    `;
+
+    // Voeg animatie toe
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes bitbSlideIn {
+            from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+    `;
+    document.head.appendChild(style);
+    document.body.appendChild(warning);
+
+    // Event listeners
+    document.getElementById('linkshield-bitb-close-page')?.addEventListener('click', () => {
+        window.history.back();
+        setTimeout(() => { window.location.href = 'about:blank'; }, 100);
+    });
+
+    document.getElementById('linkshield-bitb-dismiss')?.addEventListener('click', () => {
+        warning.remove();
+    });
+
+    // Auto-remove na 30 seconden voor warnings (niet voor critical)
+    if (!isCritical) {
+        setTimeout(() => warning.remove(), 30000);
+    }
+}
+
 /**
  * Hoofd-functie die alle subsector-helpers aanroept.
  * @param {object} config
@@ -6251,6 +6821,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Initialiseer ClickFix Attack detectie voor PowerShell/CMD injectie via nep-CAPTCHA
     initClickFixDetection();
+
+    // Initialiseer Browser-in-the-Browser (BitB) detectie voor nep OAuth popups
+    initBitBDetection();
 
     // Initialiseer Table QR Scanner voor imageless QR-code detectie (AI-phishing kits)
     initTableQRScanner();

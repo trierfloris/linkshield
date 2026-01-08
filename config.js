@@ -379,6 +379,64 @@ SUSPICIOUS_URL_PATTERNS: [
         ]
     },
 
+    // Browser-in-the-Browser (BitB) Attack Detection
+    // Detecteert nep browser popups die OAuth/SSO logins simuleren
+    BITB_DETECTION: {
+        // Fake URL bar patterns - bekende OAuth/login URLs die in nep vensters verschijnen
+        fakeUrlBarPatterns: [
+            /^https?:\/\/(accounts\.google\.com|myaccount\.google\.com)/i,
+            /^https?:\/\/(login\.microsoftonline\.com|login\.microsoft\.com|login\.live\.com)/i,
+            /^https?:\/\/(appleid\.apple\.com|idmsa\.apple\.com)/i,
+            /^https?:\/\/(www\.facebook\.com\/login|facebook\.com\/login)/i,
+            /^https?:\/\/(twitter\.com\/login|x\.com\/login)/i,
+            /^https?:\/\/(github\.com\/login|github\.com\/session)/i,
+            /^https?:\/\/(.*\.okta\.com)/i,
+            /^https?:\/\/(.*\.auth0\.com)/i,
+            /^https?:\/\/(accounts\.zoho\.com|accounts\.zoho\.eu)/i,
+            /^https?:\/\/(login\.yahoo\.com|login\.aol\.com)/i
+        ],
+
+        // OAuth provider branding keywords (case-insensitive matching)
+        oauthBranding: [
+            'sign in with google', 'continue with google', 'google sign-in', 'inloggen met google',
+            'sign in with microsoft', 'continue with microsoft', 'microsoft sign-in',
+            'sign in with apple', 'continue with apple', 'apple sign-in',
+            'sign in with facebook', 'continue with facebook', 'log in with facebook',
+            'sign in with twitter', 'sign in with x', 'continue with x',
+            'sign in with github', 'continue with github',
+            'single sign-on', 'sso login', 'federated login',
+            'sign in with okta', 'sign in with auth0'
+        ],
+
+        // Window control indicators (CSS classes en tekst patterns)
+        windowControlIndicators: {
+            // macOS traffic light buttons
+            trafficLights: /[●○◯].*[●○◯].*[●○◯]|[🔴🟡🟢]|•\s*•\s*•/,
+            // Close button characters
+            closeButtons: /[×✕✖✗⨉]|&times;/,
+            // Window control classes
+            controlClasses: /\b(close|minimize|maximize|window-control|btn-close|modal-close|title-?bar|window-?header|traffic-?light)\b/i
+        },
+
+        // Score thresholds voor alert levels
+        thresholds: {
+            log: 6,       // Alleen loggen, geen waarschuwing
+            warning: 10,  // Lichte waarschuwing tonen
+            critical: 16  // Kritieke waarschuwing - zeer waarschijnlijk BitB
+        },
+
+        // Risk scores per indicator type
+        scores: {
+            fakeUrlBar: 10,           // URL tekst van OAuth provider in overlay
+            windowControls: 6,        // Nep window controls (close/min/max)
+            loginFormInOverlay: 5,    // Login form in fixed overlay
+            oauthBrandingWithForm: 6, // OAuth branding + login form
+            padlockIcon: 3,           // Fake security/lock icon
+            windowChromeStyle: 3,     // OS-achtige window styling
+            iframeInModal: 2          // iframe binnen modal
+        }
+    },
+
     COMPOUND_TLDS: [
         'co.uk', 'org.uk', 'gov.uk', 'ac.uk', 'com.au', 'org.au', 'co.nz'
     ],

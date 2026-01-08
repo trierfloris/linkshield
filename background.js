@@ -1818,6 +1818,28 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         }
         // --- EINDE VAN DE VERNIEUWDE 'checkSslLabs' CASE ---
 
+        case 'bitbDetected':
+            // Browser-in-the-Browser (BitB) aanval gedetecteerd door content script
+            if (globalThresholds.DEBUG_MODE) {
+                console.log(`[BitB Detection] Attack detected on tab ${sender.tab?.id}:`, request.data);
+            }
+
+            // Toon alert badge op de extensie-icon voor deze tab
+            if (sender.tab?.id) {
+                chrome.action.setBadgeText({ text: '!', tabId: sender.tab.id });
+                chrome.action.setBadgeBackgroundColor({ color: '#dc2626', tabId: sender.tab.id });
+                chrome.action.setTitle({
+                    title: chrome.i18n.getMessage('bitbWarningTitle') || 'Fake Login Window Detected!',
+                    tabId: sender.tab.id
+                });
+
+                // Log de aanval voor debugging/analytics
+                console.warn(`[BitB Detection] BitB attack detected on ${sender.tab.url || 'unknown URL'}. Score: ${request.data?.score || 'N/A'}. Indicators: ${JSON.stringify(request.data?.indicators || [])}`);
+            }
+
+            sendResponse({ received: true, action: 'bitb_warning_shown' });
+            return true;
+
         default:
             console.warn("[onMessage] Onbekend berichttype:", request.type || request.action);
             sendResponse({ success: false, error: "Unknown message type" });

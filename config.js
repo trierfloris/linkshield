@@ -140,10 +140,12 @@ window.CONFIG = {
         // GitHub/GitLab/Azure
         'github.io', 'gitlab.io', 'azurewebsites.net', 'azurestaticapps.net',
         'blob.core.windows.net', 'privatelink.blob.core.windows.net', // Azure Blob Storage (veel misbruikt voor phishing met geldige TLS)
+        'web.core.windows.net', // Azure Static Website hosting (PhishTank 2026-01)
         // AWS
         's3.amazonaws.com', 'amplifyapp.com', 'execute-api.amazonaws.com',
         // Andere moderne platforms
-        'webflow.io', 'framer.website', 'framercanvas.com',
+        'webflow.io', 'framer.website', 'framer.app', 'framercanvas.com', // framer.app toegevoegd (PhishTank 2026-01)
+        'canva.site', // Canva Sites (PhishTank 2026-01)
         'bubbleapps.io', 'typedream.app', 'codeanyapp.com', 'carrd.co',
         'surge.sh', 'replit.dev', 'repl.co',
         // Edge/CDN platforms

@@ -1,0 +1,1130 @@
+{
+  "extName": {
+    "message": "LinkShield"
+  },
+  "extDescription": {
+    "message": "LinkShield, güvenli olmayan web sitelerini ve bağlantıları belirlemenize yardımcı olarak çevrimiçi güvenliğinizi artırır."
+  },
+  "alertTitle": {
+    "message": "Uyarı!"
+  },
+  "alertMessage": {
+    "message": "Bu web sitesi şu bağlantıyı içeriyor:"
+  },
+  "severityLabel": {
+    "message": "Risk:"
+  },
+  "reasonLabel": {
+    "message": "Neden:"
+  },
+  "adviceMessage": {
+    "message": "Ne yapabilirsiniz?"
+  },
+  "adviceCheckUrl": {
+    "message": "Bu bağlantıyı yalnızca gönderene tamamen güveniyorsanız açın. Şüphe duyduğunuzda tıklamayın. Güvenmediğiniz bir sitede asla şifrenizi girmeyin."
+  },
+  "noHttps": {
+    "message": "Bu web sitesine bağlantı güvenli değil (HTTPS yok). Başkaları bilgilerinizi görebilir."
+  },
+  "ipAsDomain": {
+    "message": "Bu web sitesi alan adı yerine IP adresi kullanıyor. Bu olağandışı ve çok riskli."
+  },
+  "tooManySubdomains": {
+    "message": "Bu web adresi çok fazla alt alan adına sahip (örn. bolum1.bolum2.site.com). Bu güvenli olmayan bir siteyi gösterebilir (orta risk)."
+  },
+  "suspiciousKeywords": {
+    "message": "Bağlantı genellikle dolandırıcılıkla ilişkilendirilen kelimeler içeriyor (düşük risk)."
+  },
+  "suspiciousPattern": {
+    "message": "Bu web adresinin yapısı olağandışı görünüyor (orta risk)."
+  },
+  "shortenedUrl": {
+    "message": "Bu kısaltılmış bir bağlantı (bit.ly gibi). Gerçek hedef hemen görünmüyor (orta risk)."
+  },
+  "downloadPage": {
+    "message": "Bu bağlantı bir dosya indiriyor gibi görünüyor. Yalnızca tamamen güvendiğiniz dosyaları açın (orta risk)."
+  },
+  "freeHosting": {
+    "message": "Bu web sitesi ücretsiz bir barındırma platformu kullanıyor. Dolandırıcılar bazen bundan yararlanır (orta risk)."
+  },
+  "encodedCharacters": {
+    "message": "Bağlantı olağandışı karakterler içeriyor (düşük risk). Bu gerçek hedefi gizlemek için kullanılabilir."
+  },
+  "homoglyphAttack": {
+    "message": "Bu web adresi bilinen bir web sitesiyle neredeyse aynı görünen karakterler kullanıyor (yüksek risk). Bu sizi yanıltmak için bir hile."
+  },
+  "metaRedirect": {
+    "message": "Bu web sitesi sizi otomatik olarak yönlendiriyor. Bu güvenli olmayan bir siteye yol açabilir (orta risk)."
+  },
+  "cryptoPhishing": {
+    "message": "Bu bağlantı bir kripto dolandırıcılığı gibi görünüyor (yüksek risk). Cüzdanınız ve kimlik bilgileriniz konusunda ekstra dikkatli olun."
+  },
+  "externalScripts": {
+    "message": "Bu site riskli olarak işaretlenmiş harici bir kaynaktan kod yüklüyor."
+  },
+  "suspiciousParams": {
+    "message": "Bağlantı bazen güvenli olmayan eylemler için kullanılan teknik parametreler içeriyor (düşük risk)."
+  },
+  "mixedContent": {
+    "message": "Bu güvenli sayfa aynı zamanda güvenli olmayan içerik yüklüyor. Bu bir güvenlik riski (orta risk)."
+  },
+  "unusualPort": {
+    "message": "Bu site olağandışı bir teknik port kullanıyor. Bu güvenliği atlamaya yönelik bir girişim olabilir (orta risk)."
+  },
+  "javascriptScheme": {
+    "message": "Bu bağlantı doğrudan tarayıcınızda kod çalıştırmaya çalışıyor (yüksek risk)."
+  },
+  "urlFragmentTrick": {
+    "message": "Bağlantı olağandışı uzunlukta bir parça içeriyor. Bu bazen yanıltmak için kullanılan bir teknik (düşük risk)."
+  },
+  "suspiciousTLD": {
+    "message": "Bu web sitesi genellikle dolandırıcılık için kötüye kullanılan bir alan uzantısı kullanıyor (.zip veya .mov gibi) (yüksek risk)."
+  },
+  "base64OrHex": {
+    "message": "Bu bağlantı yoğun şekilde kodlanmış bilgi içeriyor. Bu genellikle kötü amaçlı kodu gizlemek için kullanılır (yüksek risk)."
+  },
+  "similarToLegitimateDomain": {
+    "message": "Bu site tanınmış, güvenilir bir siteye çok benziyor. Adresi dikkatlice kontrol edin, sahte bir kopya olabilir."
+  },
+  "youngDomain": {
+    "message": "Bu alan adı yalnızca $AGE$ gün önce kaydedilmiş (yüksek risk). Yeni alan adları daha sık dolandırıcılık için kullanılır.",
+    "placeholders": {
+      "AGE": {
+        "content": "$1",
+        "example": "3"
+      }
+    }
+  },
+  "insecureLoginPage": {
+    "message": "Bu giriş sayfası güvenli değil (HTTPS yok). Şifrenizi asla buraya girmeyin (yüksek risk)."
+  },
+  "loginPageNoMX": {
+    "message": "Bu giriş sayfası e-posta alamayan bir alan adına ait. Bu çok riskli (yüksek risk)."
+  },
+  "malwareExtension": {
+    "message": "Bu bağlantı zararlı olabilecek bir dosyaya yönlendiriyor (.exe veya .zip gibi). İndirmeyin (yüksek risk)."
+  },
+  "popupTitle": {
+    "message": "LinkShield: Kimlik Avına Karşı Korumanız"
+  },
+  "popupSubtitle": {
+    "message": "Gerçek zamanlı uyarılar ve koruma ile güvende kalın."
+  },
+  "backgroundAnalysis": {
+    "message": "Arka Plan Taraması"
+  },
+  "backgroundAnalysisDescription": {
+    "message": "Gerçek zamanlı koruma. Her saat güncellenir. Dünya çapında kapsama."
+  },
+  "activationRequired": {
+    "message": "Bu özelliği kullanmak için etkinleştirin."
+  },
+  "integratedProtection": {
+    "message": "Entegre Koruma"
+  },
+  "integratedProtectionDescription": {
+    "message": "Web sitelerini ve bağlantıları doğrudan riskli özellikler için kontrol eder."
+  },
+  "premiumFeaturesActive": {
+    "message": "Artık premium sürümü kullanıyorsunuz!"
+  },
+  "upgradePrompt": {
+    "message": "Ekstra özellikler için premium'a yükseltin."
+  },
+  "saveSettings": {
+    "message": "Ayarları Kaydet"
+  },
+  "settingsSaved": {
+    "message": "Ayarlar kaydedildi!"
+  },
+  "licenseActivate": {
+    "message": "Lisansı Etkinleştir"
+  },
+  "licenseInputPlaceholder": {
+    "message": "Lisans anahtarınızı girin"
+  },
+  "licenseCheck": {
+    "message": "Lisansı Kontrol Et"
+  },
+  "licenseInvalid": {
+    "message": "Geçersiz lisans anahtarı."
+  },
+  "licenseValid": {
+    "message": "Lisans başarıyla etkinleştirildi!"
+  },
+  "lastRuleUpdate": {
+    "message": "Son veritabanı güncellemesi: "
+  },
+  "licenseStatus": {
+    "message": "Lisans Durumu:"
+  },
+  "licenseFreemium": {
+    "message": "Ücretsiz Sürüm"
+  },
+  "bulkUrlCheck": {
+    "message": "Birden Fazla Bağlantı Kontrol Et"
+  },
+  "bulkUrlCheckDescription": {
+    "message": "Bağlantı listesini kontrol etmek için bir .txt dosyası yükleyin."
+  },
+  "fileChoose": {
+    "message": "Dosya seç"
+  },
+  "fileCheck": {
+    "message": "Dosyayı Kontrol Et"
+  },
+  "fileCheckNoUrls": {
+    "message": "Seçilen dosya herhangi bir bağlantı içermiyor."
+  },
+  "fileCheckFailed": {
+    "message": "Dosya kontrolü başarısız oldu."
+  },
+  "safeDomain": {
+    "message": "Bu bilinen, güvenli bir web sitesi."
+  },
+  "allowedProtocol": {
+    "message": "Bu bağlantı güvenli bir protokol kullanıyor ('mailto:' veya 'tel:' gibi)."
+  },
+  "invalidUrl": {
+    "message": "Bu web adresi geçersiz veya yanlış yazılmış."
+  },
+  "loadingMessage": {
+    "message": "Sayfa analiz ediliyor..."
+  },
+  "cannotRetrieveSiteStatus": {
+    "message": "Site durumu alınamıyor."
+  },
+  "unknownRisk": {
+    "message": "Bilinmeyen Risk"
+  },
+  "highRisk": {
+    "message": "Yüksek risk: çok dikkatli olun."
+  },
+  "mediumRisk": {
+    "message": "Orta risk: dikkat edin."
+  },
+  "lowRisk": {
+    "message": "Düşük risk: bazı endişe noktaları."
+  },
+  "noSuspiciousFeatures": {
+    "message": "Doğrudan riskli özellik bulunamadı."
+  },
+  "siteStatusNotAvailable": {
+    "message": "Bu sitenin durumu mevcut değil."
+  },
+  "sslValidationFailed": {
+    "message": "Bu web sitesinin güvenlik sertifikası geçersiz."
+  },
+  "shortenedUrlError": {
+    "message": "Bu kısaltılmış bağlantının son hedefi kontrol edilemedi."
+  },
+  "redirectedShortenedUrl": {
+    "message": "Bu kısaltılmış bağlantı sizi başka bir web sitesine yönlendiriyor."
+  },
+  "cryptoPhishingAd": {
+    "message": "Bu reklam kripto dolandırıcılığı özelliklerine sahip (yüksek risk)."
+  },
+  "suspiciousAdStructure": {
+    "message": "Bu reklamın bağlantısı olağandışı bir yapıya sahip (orta risk)."
+  },
+  "suspiciousAdTLD": {
+    "message": "Bu reklam genellikle kötüye kullanılan bir alan uzantısı kullanıyor (orta risk)."
+  },
+  "homoglyphAdAttack": {
+    "message": "Reklam, bilinen bir web sitesiyle neredeyse aynı görünen karakterler kullanıyor (orta risk)."
+  },
+  "brandMisuse": {
+    "message": "Reklam, tanınmış bir marka adını haksız yere kullanıyor (yüksek risk)."
+  },
+  "unknownWarning": {
+    "message": "Bilinmeyen bir risk bulundu. Ekstra dikkatli olun."
+  },
+  "typosquattingAttack": {
+    "message": "Bu web adresi gerçek bir web sitesine benziyor ancak kasıtlı olarak yanlış yazılmış (yüksek risk). Bu sahte bir sürüm olabilir."
+  },
+  "downloadKeyword": {
+    "message": "Bağlantı indirmeyle ilgili kelimeler içeriyor (düşük risk). Yalnızca güvendiğiniz dosyaları açın."
+  },
+  "suspiciousScriptContent": {
+    "message": "Bu sayfadaki bir betik riskli kod içeriyor. Bu güvenli olmayabilir."
+  },
+  "invalidScriptSrc": {
+    "message": "Bu sayfadaki bir betiğin bağlantısı yanlış."
+  },
+  "mixedScripts": {
+    "message": "Bu adres farklı yazı sistemlerinin bir karışımını kullanıyor (örn. Latin ve Kiril harfler). Bu bilinen bir kimlik avı hilesi (yüksek risk)."
+  },
+  "introBannerMessage": {
+    "message": "LinkShield aktif ve riskli bağlantıları ⚠️ ile işaretliyor. Nedenini görmek için simgenin üzerine gelin."
+  },
+  "digitHomoglyph": {
+    "message": "Bu adres, bilinen bir markayı taklit etmek için harflere benzeyen rakamlar kullanıyor (orta risk)."
+  },
+  "trustedTLD": {
+    "message": "Bu alan adı standart bir alan uzantısına sahip (düşük risk)."
+  },
+  "trustedTld": {
+    "message": "Bu alan adı standart bir alan uzantısına sahip (düşük risk)."
+  },
+  "suspiciousPageText": {
+    "message": "Bu sayfadaki metin genellikle dolandırıcılıkta kullanılan kelimeler içeriyor (yüksek risk)."
+  },
+  "urgencyTactic": {
+    "message": "Bu sayfa sizi baskı altına almak için acil dil kullanıyor (yüksek risk). Dolandırıcılığa dikkat edin."
+  },
+  "severityMediumRisk": {
+    "message": "Orta risk: bu bağlantı güvenli olmayabilir. Dikkatli olun."
+  },
+  "allowedQueryParam": {
+    "message": "Bağlantı güvenli, izin verilen bir teknik parametre içeriyor."
+  },
+  "suspiciousIframeAdComponent": {
+    "message": "Bu sayfa başka bir web sitesinden reklam bileşeni yüklüyor."
+  },
+  "suspiciousIframeTracking": {
+    "message": "Bu sayfa gezinme davranışınızı izleyebilen bir takipçi yüklüyor."
+  },
+  "suspiciousIframeMalicious": {
+    "message": "Bu sayfada potansiyel olarak zararlı bir bileşen bulundu (kimlik avı gibi)."
+  },
+  "suspiciousIframeHidden": {
+    "message": "Sayfada riskli, görünmez bir öğe bulundu."
+  },
+  "mixedContentIframe": {
+    "message": "Bu güvenli sayfa güvenli olmayan bir bileşen yüklüyor. Bu bir güvenlik riski."
+  },
+  "invalidIframeSrc": {
+    "message": "Bu sayfadaki bir bileşen doğru yüklenemedi (geçersiz kaynak)."
+  },
+  "iframeHidden": {
+    "message": "Sayfada riskli, görünmez bir öğe bulundu."
+  },
+  "typosquattingAttack_adobe_com": {
+    "message": "Bu web adresi adobe.com'a benziyor ancak kasıtlı olarak yanlış yazılmış (yüksek risk)."
+  },
+  "typosquattingAttack_alibaba_com": {
+    "message": "Bu web adresi alibaba.com'a benziyor ancak kasıtlı olarak yanlış yazılmış (yüksek risk)."
+  },
+  "typosquattingAttack_amazon_com": {
+    "message": "Bu web adresi amazon.com'a benziyor ancak kasıtlı olarak yanlış yazılmış (yüksek risk)."
+  },
+  "typosquattingAttack_apple_com": {
+    "message": "Bu web adresi apple.com'a benziyor ancak kasıtlı olarak yanlış yazılmış (yüksek risk)."
+  },
+  "typosquattingAttack_facebook_com": {
+    "message": "Bu web adresi facebook.com'a benziyor ancak kasıtlı olarak yanlış yazılmış (yüksek risk)."
+  },
+  "typosquattingAttack_google_com": {
+    "message": "Bu web adresi google.com'a benziyor ancak kasıtlı olarak yanlış yazılmış (yüksek risk)."
+  },
+  "typosquattingAttack_linkedin_com": {
+    "message": "Bu web adresi linkedin.com'a benziyor ancak kasıtlı olarak yanlış yazılmış (yüksek risk)."
+  },
+  "typosquattingAttack_microsoft_com": {
+    "message": "Bu web adresi microsoft.com'a benziyor ancak kasıtlı olarak yanlış yazılmış (yüksek risk)."
+  },
+  "typosquattingAttack_paypal_com": {
+    "message": "Bu web adresi paypal.com'a benziyor ancak kasıtlı olarak yanlış yazılmış (yüksek risk)."
+  },
+  "typosquattingAttack_whatsapp_com": {
+    "message": "Bu web adresi whatsapp.com'a benziyor ancak kasıtlı olarak yanlış yazılmış (yüksek risk)."
+  },
+  "typosquattingAttack_x_com": {
+    "message": "Bu web adresi x.com'a benziyor ancak kasıtlı olarak yanlış yazılmış (yüksek risk)."
+  },
+  "homoglyphAttack_microsoft_com": {
+    "message": "Bu adres microsoft.com ile neredeyse aynı görünen karakterler kullanıyor (yüksek risk)."
+  },
+  "homoglyphAttack_apple_com": {
+    "message": "Bu adres apple.com ile neredeyse aynı görünen karakterler kullanıyor (yüksek risk)."
+  },
+  "homoglyphAttack_google_com": {
+    "message": "Bu adres google.com ile neredeyse aynı görünen karakterler kullanıyor (yüksek risk)."
+  },
+  "homoglyphAttack_linkedin_com": {
+    "message": "Bu adres linkedin.com ile neredeyse aynı görünen karakterler kullanıyor (yüksek risk)."
+  },
+  "homoglyphAttack_alibaba_com": {
+    "message": "Bu adres alibaba.com ile neredeyse aynı görünen karakterler kullanıyor (yüksek risk)."
+  },
+  "homoglyphAttack_whatsapp_com": {
+    "message": "Bu adres whatsapp.com ile neredeyse aynı görünen karakterler kullanıyor (yüksek risk)."
+  },
+  "homoglyphAttack_amazon_com": {
+    "message": "Bu adres amazon.com ile neredeyse aynı görünen karakterler kullanıyor (yüksek risk)."
+  },
+  "homoglyphAttack_x_com": {
+    "message": "Bu adres x.com ile neredeyse aynı görünen karakterler kullanıyor (yüksek risk)."
+  },
+  "homoglyphAttack_facebook_com": {
+    "message": "Bu adres facebook.com ile neredeyse aynı görünen karakterler kullanıyor (yüksek risk)."
+  },
+  "homoglyphAttack_adobe_com": {
+    "message": "Bu adres adobe.com ile neredeyse aynı görünen karakterler kullanıyor (yüksek risk)."
+  },
+  "homoglyphAttack_paypal_com": {
+    "message": "Bu adres paypal.com ile neredeyse aynı görünen karakterler kullanıyor (yüksek risk)."
+  },
+  "typosquatting_microsoft_com": {
+    "message": "Bu adres microsoft.com'a çok benziyor (yüksek risk). Sahte bir sayfa olabilir."
+  },
+  "typosquatting_apple_com": {
+    "message": "Bu adres apple.com'a çok benziyor (yüksek risk). Sahte bir sayfa olabilir."
+  },
+  "typosquatting_google_com": {
+    "message": "Bu adres google.com'a çok benziyor (yüksek risk). Sahte bir sayfa olabilir."
+  },
+  "typosquatting_linkedin_com": {
+    "message": "Bu adres linkedin.com'a çok benziyor (yüksek risk). Sahte bir sayfa olabilir."
+  },
+  "typosquatting_alibaba_com": {
+    "message": "Bu adres alibaba.com'a çok benziyor (yüksek risk). Sahte bir sayfa olabilir."
+  },
+  "typosquatting_whatsapp_com": {
+    "message": "Bu adres whatsapp.com'a çok benziyor (yüksek risk). Sahte bir sayfa olabilir."
+  },
+  "typosquatting_amazon_com": {
+    "message": "Bu adres amazon.com'a çok benziyor (yüksek risk). Sahte bir sayfa olabilir."
+  },
+  "typosquatting_x_com": {
+    "message": "Bu adres x.com'a çok benziyor (yüksek risk). Sahte bir sayfa olabilir."
+  },
+  "typosquatting_facebook_com": {
+    "message": "Bu adres facebook.com'a çok benziyor (yüksek risk). Sahte bir sayfa olabilir."
+  },
+  "typosquatting_adobe_com": {
+    "message": "Bu adres adobe.com'a çok benziyor (yüksek risk). Sahte bir sayfa olabilir."
+  },
+  "typosquatting_paypal_com": {
+    "message": "Bu adres paypal.com'a çok benziyor (yüksek risk). Sahte bir sayfa olabilir."
+  },
+  "similarToLegitimateDomain_microsoft_com": {
+    "message": "Bu site microsoft.com'a benziyor, adresi dikkatlice kontrol edin."
+  },
+  "similarToLegitimateDomain_apple_com": {
+    "message": "Bu site apple.com'a benziyor, adresi dikkatlice kontrol edin."
+  },
+  "similarToLegitimateDomain_google_com": {
+    "message": "Bu site google.com'a benziyor, adresi dikkatlice kontrol edin."
+  },
+  "similarToLegitimateDomain_linkedin_com": {
+    "message": "Bu site linkedin.com'a benziyor, adresi dikkatlice kontrol edin."
+  },
+  "similarToLegitimateDomain_alibaba_com": {
+    "message": "Bu site alibaba.com'a benziyor, adresi dikkatlice kontrol edin."
+  },
+  "similarToLegitimateDomain_whatsapp_com": {
+    "message": "Bu site whatsapp.com'a benziyor, adresi dikkatlice kontrol edin."
+  },
+  "similarToLegitimateDomain_amazon_com": {
+    "message": "Bu site amazon.com'a benziyor, adresi dikkatlice kontrol edin."
+  },
+  "similarToLegitimateDomain_x_com": {
+    "message": "Bu site x.com'a benziyor, adresi dikkatlice kontrol edin."
+  },
+  "similarToLegitimateDomain_facebook_com": {
+    "message": "Bu site facebook.com'a benziyor, adresi dikkatlice kontrol edin."
+  },
+  "similarToLegitimateDomain_adobe_com": {
+    "message": "Bu site adobe.com'a benziyor, adresi dikkatlice kontrol edin."
+  },
+  "similarToLegitimateDomain_paypal_com": {
+    "message": "Bu site paypal.com'a benziyor, adresi dikkatlice kontrol edin."
+  },
+  "suspiciousPunycodeDecoding_microsoft_com": {
+    "message": "Bu bağlantı microsoft.com'a benzemek için olağandışı karakterler kullanıyor (yüksek risk)."
+  },
+  "suspiciousPunycodeDecoding_apple_com": {
+    "message": "Bu bağlantı apple.com'a benzemek için olağandışı karakterler kullanıyor (yüksek risk)."
+  },
+  "suspiciousPunycodeDecoding_google_com": {
+    "message": "Bu bağlantı google.com'a benzemek için olağandışı karakterler kullanıyor (yüksek risk)."
+  },
+  "suspiciousPunycodeDecoding_linkedin_com": {
+    "message": "Bu bağlantı linkedin.com'a benzemek için olağandışı karakterler kullanıyor (yüksek risk)."
+  },
+  "suspiciousPunycodeDecoding_alibaba_com": {
+    "message": "Bu bağlantı alibaba.com'a benzemek için olağandışı karakterler kullanıyor (yüksek risk)."
+  },
+  "suspiciousPunycodeDecoding_whatsapp_com": {
+    "message": "Bu bağlantı whatsapp.com'a benzemek için olağandışı karakterler kullanıyor (yüksek risk)."
+  },
+  "suspiciousPunycodeDecoding_amazon_com": {
+    "message": "Bu bağlantı amazon.com'a benzemek için olağandışı karakterler kullanıyor (yüksek risk)."
+  },
+  "suspiciousPunycodeDecoding_x_com": {
+    "message": "Bu bağlantı x.com'a benzemek için olağandışı karakterler kullanıyor (yüksek risk)."
+  },
+  "suspiciousPunycodeDecoding_facebook_com": {
+    "message": "Bu bağlantı facebook.com'a benzemek için olağandışı karakterler kullanıyor (yüksek risk)."
+  },
+  "suspiciousPunycodeDecoding_adobe_com": {
+    "message": "Bu bağlantı adobe.com'a benzemek için olağandışı karakterler kullanıyor (yüksek risk)."
+  },
+  "suspiciousPunycodeDecoding_paypal_com": {
+    "message": "Bu bağlantı paypal.com'a benzemek için olağandışı karakterler kullanıyor (yüksek risk)."
+  },
+
+  "popupPageTitle": {
+    "message": "LinkShield Kontrol Paneli"
+  },
+  "extNameFull": {
+    "message": "LinkShield: Kimlik Avına Karşı Silahınız"
+  },
+  "extDescriptionFull": {
+    "message": "Doğrudan uyarılar ve çevrimiçi tehditlere karşı gelişmiş koruma ile güvenliğinizi artırın."
+  },
+
+  "licenseTrialTitle": {
+    "message": "Deneme: $DAYS$ gün kaldı",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "licenseTrialSubtitle": {
+    "message": "Deneme süreniz boyunca tüm premium özellikler aktif"
+  },
+  "licenseUpgradeLink": {
+    "message": "Premium'a Yükselt →"
+  },
+  "licenseExpiredTitle": {
+    "message": "Deneme Süresi Doldu"
+  },
+  "licenseExpiredSubtitle": {
+    "message": "Tam koruma için Premium'u etkinleştirin"
+  },
+  "licenseBenefitsLabel": {
+    "message": "Premium şunları içerir:"
+  },
+  "licenseBenefitsText": {
+    "message": "Arka plan analizi, QR kod tarama, sürekli koruma"
+  },
+  "licenseKeyPlaceholder": {
+    "message": "Lisans kodunuzu girin"
+  },
+  "licenseActivateButton": {
+    "message": "Premium'u Etkinleştir"
+  },
+  "licenseBuyLink": {
+    "message": "Henüz lisansınız yok mu? Buradan satın alın →"
+  },
+  "licensePremiumTitle": {
+    "message": "Premium Aktif"
+  },
+  "licensePremiumSubtitle": {
+    "message": "Tam koruma etkinleştirildi"
+  },
+
+  "sectionSecuritySettings": {
+    "message": "Güvenlik Ayarları"
+  },
+  "backgroundAnalysisTitle": {
+    "message": "Güvenlik Ayarları"
+  },
+  "backgroundAnalysisFeature": {
+    "message": "Arka Plan Analizi"
+  },
+  "premiumBadge": {
+    "message": "PREMİUM"
+  },
+  "integratedProtectionFeature": {
+    "message": "Entegre Kötü Amaçlı Yazılım ve Kimlik Avı Koruması"
+  },
+  "integratedProtectionDescription": {
+    "message": "Kapsamlı koruma için birden fazla güvenlik hizmetini birleştirir."
+  },
+  "confirmationMessage": {
+    "message": "Ayarlar başarıyla kaydedildi!"
+  },
+  "lastRuleUpdateNone": {
+    "message": "Henüz veritabanı güncellemesi yapılmadı"
+  },
+  "errorOccurred": {
+    "message": "Bir hata oluştu"
+  },
+
+  "trialDaysRemaining": {
+    "message": "Denemede $DAYS$ gün kaldı",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "14"
+      }
+    }
+  },
+  "trialExpired": {
+    "message": "Deneme süresi doldu"
+  },
+  "trialExpiredMessage": {
+    "message": "30 günlük deneme süreniz doldu. Tüm özellikleri kullanmaya devam etmek için lisans etkinleştirin."
+  },
+  "upgradeNow": {
+    "message": "Şimdi yükselt"
+  },
+
+  "gumroadErrorUnknown": {
+    "message": "Bilinmeyen hata"
+  },
+  "gumroadErrorLicenseNotExistProduct": {
+    "message": "Bu lisans anahtarı bu ürün için mevcut değil"
+  },
+  "gumroadErrorLicenseNotExist": {
+    "message": "Bu lisans anahtarı mevcut değil"
+  },
+  "gumroadErrorLicenseRequired": {
+    "message": "Lütfen bir lisans anahtarı girin"
+  },
+  "gumroadErrorProductNotFound": {
+    "message": "Ürün bulunamadı"
+  },
+  "gumroadErrorLicenseDisabled": {
+    "message": "Bu lisans devre dışı bırakılmış"
+  },
+  "gumroadErrorLicenseRefunded": {
+    "message": "Bu lisans iade edilmiş"
+  },
+  "gumroadErrorLicenseRevoked": {
+    "message": "Bu lisans iade edilmiş veya iptal edilmiş"
+  },
+  "gumroadErrorLicenseInvalid": {
+    "message": "Geçersiz lisans anahtarı"
+  },
+  "gumroadErrorNetwork": {
+    "message": "Doğrulama sırasında ağ hatası. Lütfen internet bağlantınızı kontrol edin."
+  },
+
+  "licenseEmptyError": {
+    "message": "Lütfen bir lisans kodu girin"
+  },
+  "licenseActivating": {
+    "message": "Etkinleştiriliyor..."
+  },
+  "licenseActivatedSuccess": {
+    "message": "Premium başarıyla etkinleştirildi!"
+  },
+  "licenseConnectionError": {
+    "message": "Bağlantı hatası. Lütfen tekrar deneyin."
+  },
+
+  "debugModeTitle": {
+    "message": "Hata Ayıklama Modu"
+  },
+  "debugTrial30": {
+    "message": "Deneme (30g)"
+  },
+  "debugTrial3": {
+    "message": "Deneme (3g)"
+  },
+  "debugExpired": {
+    "message": "Süresi Dolmuş"
+  },
+  "debugPremium": {
+    "message": "Premium"
+  },
+  "debugReset": {
+    "message": "Sıfırla"
+  },
+  "debugTrialSimulated": {
+    "message": "✓ Deneme ($DAYS$ gün) simüle edildi",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "debugExpiredSimulated": {
+    "message": "✓ Süresi dolmuş deneme simüle edildi"
+  },
+  "debugPremiumSimulated": {
+    "message": "✓ Premium simüle edildi"
+  },
+  "debugStorageReset": {
+    "message": "✓ Depolama sıfırlandı - uzantıyı yeniden yükleyin"
+  },
+  "debugError": {
+    "message": "✗ Hata: $ERROR$",
+    "placeholders": {
+      "ERROR": {
+        "content": "$1",
+        "example": "Bilinmeyen hata"
+      }
+    }
+  },
+  "reason_redirectChain": {
+    "message": "Şüpheli yönlendirme zinciri tespit edildi. Bağlantı hedefine ulaşmadan önce birden fazla sunucudan geçiyor."
+  },
+  "reason_excessiveRedirects": {
+    "message": "Zincirde çok fazla yönlendirme var (yüksek risk). Bu bağlantı 5'ten fazla yönlendirme yapıyor, bu genellikle gerçek hedefi gizlemek için kullanılır."
+  },
+  "reason_domainHopping": {
+    "message": "Yönlendirme zincirinde birden fazla alan değişikliği (yüksek risk). Bağlantı birçok farklı web sitesi arasında atlıyor."
+  },
+  "reason_chainedShorteners": {
+    "message": "Birden fazla URL kısaltıcı birbirine zincirlenmiş (orta risk). Meşru bağlantılar nadiren birden fazla kısaltma hizmeti kullanır."
+  },
+  "reason_suspiciousFinalTLD": {
+    "message": "Son hedef şüpheli bir alan uzantısına sahip (yüksek risk). Gerçek uç nokta riskli bir TLD kullanıyor."
+  },
+  "reason_redirectToIP": {
+    "message": "Yönlendirme IP adresine yol açıyor (yüksek risk). Son hedef alan adı yerine ham IP adresi."
+  },
+  "reason_redirectTimeout": {
+    "message": "Yönlendirme analizi zaman aşımına uğradı (orta risk). Yönlendirme zinciri zaman sınırı içinde tam olarak takip edilemedi."
+  },
+  "atSymbolPhishing": {
+    "message": "KRİTİK: Bu bağlantı gerçek hedefi gizlemek için @ sembolü kullanıyor (yüksek risk). @ öncesindeki adres sahte - aslında farklı bir web sitesine gideceksiniz."
+  },
+  "atSymbolInPath": {
+    "message": "Bağlantı yolda gizleme için kullanılabilecek bir @ sembolü içeriyor (orta risk)."
+  },
+  "doubleEncoding": {
+    "message": "Bu bağlantı gerçek içeriğini gizlemek için çift URL kodlaması kullanıyor (yüksek risk). Bu güvenlik filtrelerini atlamak için yaygın bir teknik."
+  },
+  "fullwidthCharacters": {
+    "message": "Bu bağlantı normal harflere benzeyen tam genişlikli Unicode karakterler kullanıyor (yüksek risk). Bu sahte web sitelerini meşru göstermek için bir hile."
+  },
+  "nullByteInjection": {
+    "message": "Bu bağlantı boş bayt karakteri içeriyor (yüksek risk). Bu güvenlik kontrollerini atlamak için kullanılabilen bir hackleme tekniği."
+  },
+  "reason_atSymbolPhishing": {
+    "message": "KRİTİK: Kimlik bilgisi URL saldırısı tespit edildi. Görünen alan adı sahte - farklı bir web sitesine yönlendirileceksiniz."
+  },
+  "reason_doubleEncoding": {
+    "message": "Çift URL kodlaması tespit edildi (yüksek risk). Bu gizleme tekniği kötü amaçlı içeriği saklamak için kullanılır."
+  },
+  "reason_fullwidthCharacters": {
+    "message": "Tam genişlikli Unicode karakterler tespit edildi (yüksek risk). Bu özel karakterler kullanıcıları aldatmak için normal harfleri taklit eder."
+  },
+  "reason_nullByteInjection": {
+    "message": "Boş bayt enjeksiyonu tespit edildi (yüksek risk). Bu teknik güvenlik filtrelerini atlamak için kullanılır ve kötü amaçlı bir bağlantıya işaret edebilir."
+  },
+
+  "formActionHijacking": {
+    "message": "Bu giriş formu kimlik bilgilerinizi harici bir web sitesine gönderiyor (kritik risk). Kullanıcı adınız ve şifreniz çalınabilir."
+  },
+  "formActionExternal": {
+    "message": "Giriş formu verileri harici alana gönderiyor: $DOMAIN$ (kritik risk). Bu bir kimlik bilgisi hırsızlığı girişimi.",
+    "placeholders": {
+      "DOMAIN": {
+        "content": "$1",
+        "example": "kotu-site.com"
+      }
+    }
+  },
+  "formActionInvalid": {
+    "message": "Giriş formunun geçersiz veya şüpheli eylem URL'si var (yüksek risk). Kimlik bilgileriniz güvenli bir şekilde gönderilmeyebilir."
+  },
+
+  "hiddenIframeZeroSize": {
+    "message": "Sıfır boyutlu gizli iframe tespit edildi (yüksek risk). Bu, kötü amaçlı içeriği görünmez şekilde yüklemek için kullanılabilir."
+  },
+  "hiddenIframeOffScreen": {
+    "message": "Ekran dışında konumlandırılmış iframe tespit edildi (yüksek risk). Gizli içerik sizi takip edebilir veya veri çalabilir."
+  },
+  "hiddenIframeCSSHidden": {
+    "message": "CSS ile gizlenmiş iframe tespit edildi (yüksek risk). Görünmez çerçeveler tuş vuruşlarını yakalayabilir veya kötü amaçlı yazılım yükleyebilir."
+  },
+  "hiddenIframeNegativePos": {
+    "message": "Negatif konumlandırmalı iframe tespit edildi (orta risk). Bu teknik kullanıcılardan içeriği gizlemek için kullanılır."
+  },
+
+  "nrdCritical": {
+    "message": "KRİTİK: Alan adı $DAYS$ gün önce kaydedilmiş (kritik risk). Yepyeni alan adlarının kötü amaçlı olma olasılığı son derece yüksek.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "0"
+      }
+    }
+  },
+  "nrdHigh": {
+    "message": "Alan adı yalnızca $DAYS$ gün önce kaydedilmiş (yüksek risk). Çok yeni alan adları sıklıkla dolandırıcılık için kullanılır.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "nrdMedium": {
+    "message": "Alan adı $DAYS$ gün önce kaydedilmiş (orta risk). 30 günden az yeni alan adları ekstra dikkat gerektirir.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "15"
+      }
+    }
+  },
+  "nrdLow": {
+    "message": "Alan adı $DAYS$ gün önce kaydedilmiş (düşük risk). Nispeten yeni alan adı, biraz dikkat edin.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "60"
+      }
+    }
+  },
+
+  "licenseErrorNotFound": {
+    "message": "Lisans anahtarı bulunamadı. Lütfen girişinizi kontrol edin."
+  },
+  "licenseErrorDisabled": {
+    "message": "Bu lisans devre dışı bırakılmış."
+  },
+  "licenseErrorExpired": {
+    "message": "Bu lisansın süresi dolmuş."
+  },
+  "licenseErrorActivationLimit": {
+    "message": "Etkinleştirme sınırına ulaşıldı. Lütfen önce başka bir cihazı devre dışı bırakın."
+  },
+  "licenseErrorInstanceNotFound": {
+    "message": "Kurulum örneği bulunamadı."
+  },
+  "licenseErrorInvalid": {
+    "message": "Geçersiz lisans anahtarı."
+  },
+  "licenseErrorNetwork": {
+    "message": "Ağ hatası. Lütfen bağlantınızı kontrol edin ve tekrar deneyin."
+  },
+  "licenseErrorUnknown": {
+    "message": "Doğrulama sırasında bilinmeyen bir hata oluştu."
+  },
+
+  "invalidUrlFormat": {
+    "message": "Geçersiz URL formatı. Web adresi doğru şekilde ayrıştırılamadı."
+  },
+  "invalidDomain": {
+    "message": "Geçersiz alan adı. Web sitesi adresi hatalı veya eksik."
+  },
+  "trustedDomain": {
+    "message": "Bu güvenli olarak doğrulanmış güvenilir bir alan adı."
+  },
+  "errorCalculatingRisk": {
+    "message": "Risk puanı hesaplanırken hata oluştu. Lütfen tekrar deneyin."
+  },
+  "punycodeDecodingError": {
+    "message": "Alan adındaki uluslararası karakterler çözülürken hata."
+  },
+  "fileProtocol": {
+    "message": "Bu bağlantı yerel dosyalara erişen file:// protokolünü kullanıyor."
+  },
+  "invalidHostname": {
+    "message": "Geçersiz ana bilgisayar adı. Alan adı formatı yanlış."
+  },
+  "urlTooLong": {
+    "message": "Bu URL alışılmadık şekilde uzun (orta risk). Çok uzun URL'ler kötü amaçlı içeriği gizlemek için kullanılabilir."
+  },
+  "nonAscii": {
+    "message": "Bu URL aldatma için kullanılabilecek ASCII olmayan karakterler içeriyor."
+  },
+  "typosquattingPattern": {
+    "message": "Bu alan adı bir typosquatting kalıbıyla eşleşiyor (yüksek risk). Meşru bir web sitesini taklit ediyor gibi görünüyor."
+  },
+  "suspiciousIframes": {
+    "message": "Bu sayfada şüpheli iframe öğeleri tespit edildi."
+  },
+  "suspiciousScripts": {
+    "message": "Bu sayfada şüpheli betikler tespit edildi."
+  },
+  "hiddenIframes": {
+    "message": "Bu sayfada kötü amaçlar için kullanılabilecek gizli iframe öğeleri tespit edildi."
+  },
+  "unifiedCheckError": {
+    "message": "Güvenlik kontrolü sırasında hata. Bazı kontroller tamamlanmamış olabilir."
+  },
+  "initializationError": {
+    "message": "Güvenlik tarayıcısı başlatılırken hata. Lütfen sayfayı yeniden yükleyin."
+  },
+  "checkCurrentUrlError": {
+    "message": "Geçerli URL güvenliği kontrol edilirken hata."
+  },
+  "ocrDangerTitle": {
+    "message": "Resimde Tehlikeli Bağlantı Tespit Edildi"
+  },
+  "ocrCautionTitle": {
+    "message": "Resimde Şüpheli Bağlantı Tespit Edildi"
+  },
+  "suspiciousDomainDetected": {
+    "message": "Şüpheli alan adı tespit edildi"
+  },
+  "extractedText": {
+    "message": "Çıkarılan metin"
+  },
+  "reasons": {
+    "message": "Nedenler"
+  },
+  "asciiQrDangerTitle": {
+    "message": "ASCII QR Kodunda Tehlikeli Bağlantı"
+  },
+  "asciiQrCautionTitle": {
+    "message": "ASCII QR Kodunda Şüpheli Bağlantı"
+  },
+  "hiddenUrl": {
+    "message": "Gizli URL"
+  },
+  "qrDangerTitle": {
+    "message": "Tehlikeli QR Kodu Tespit Edildi"
+  },
+  "qrCautionTitle": {
+    "message": "Şüpheli QR Kodu Tespit Edildi"
+  },
+  "fullUrl": {
+    "message": "Tam URL"
+  },
+  "neutralIconTitle": {
+    "message": "LinkShield - Koruma Aktif"
+  },
+  "installNotificationTitle": {
+    "message": "LinkShield Yüklendi"
+  },
+  "installNotificationMessage": {
+    "message": "Artık kimlik avı ve kötü amaçlı web sitelerine karşı korunuyorsunuz."
+  },
+  "not_eligible": {
+    "message": "Bu özellik için uygun değil"
+  },
+  "trial_expired": {
+    "message": "Deneme süreniz doldu"
+  },
+  "Error": {
+    "message": "Hata"
+  },
+
+  "siteSafeTitle": {
+    "message": "Site güvenli görünüyor"
+  },
+  "siteCautionTitle": {
+    "message": "Dikkatli ilerleyin"
+  },
+  "siteAlertTitle": {
+    "message": "Uyarı: Potansiyel tehdit tespit edildi"
+  },
+
+  "clipboardHijackingCryptoTitle": {
+    "message": "Kripto Adresi Kaçırma Tespit Edildi!"
+  },
+  "clipboardHijackingTitle": {
+    "message": "Pano Manipülasyonu Tespit Edildi!"
+  },
+  "clipboardHijackingMessage": {
+    "message": "Bu sayfa panonuzu değiştirmeye çalışıyor. Cüzdan adreslerini veya hassas verileri yapıştırırken dikkatli olun."
+  },
+  "reason_clipboardHijackingCrypto": {
+    "message": "KRİTİK: Bu sayfa panonuzu kripto adresleriyle ele geçiriyor (kritik risk). Kopyalanan cüzdan adresleri saldırgan adresleriyle değiştirilebilir."
+  },
+  "reason_clipboardHijackingDetected": {
+    "message": "Bu sayfa pano içeriğinizi manipüle ediyor (yüksek risk). Yapıştırılan içerik kopyaladığınızdan farklı olabilir."
+  },
+
+  "brandSubdomainPhishing": {
+    "message": "Ücretsiz barındırma platformunda marka anahtar kelimesi tespit edildi (yüksek risk). Meşru şirketler resmi hizmetler için ücretsiz barındırma kullanmaz."
+  },
+  "reason_brandSubdomainPhishing": {
+    "message": "Ücretsiz barındırma platformunda marka anahtar kelimesi tespit edildi (yüksek risk). Meşru şirketler resmi hizmetler için ücretsiz barındırma kullanmaz."
+  },
+
+  "nrdTelCombo": {
+    "message": "Kimlik avı anahtar kelimeleri ile yeni kayıtlı alan adında telefon numarası (orta risk). Bu bir sesli kimlik avı (vishing) girişimi olabilir."
+  },
+  "reason_nrdTelCombo": {
+    "message": "Kimlik avı anahtar kelimeleri ile yeni kayıtlı alan adında telefon numarası (orta risk). Bu bir sesli kimlik avı (vishing) girişimi olabilir."
+  },
+
+  "reason_opaqueRedirectChain": {
+    "message": "Opak yönlendirme tespit edildi (düşük risk). Yönlendirme hedefi tam olarak takip edilemedi."
+  },
+  "reason_opaqueRedirectToIP": {
+    "message": "IP adresine opak yönlendirme (yüksek risk). Gizli yönlendirme alan adı yerine ham IP adresine yol açıyor."
+  },
+  "reason_opaqueRedirectSuspiciousTLD": {
+    "message": "Şüpheli alan uzantısına opak yönlendirme (orta risk). Gizli yönlendirme riskli bir TLD'ye yol açıyor."
+  },
+  "reason_opaqueRedirectNRD": {
+    "message": "Yeni kayıtlı alan adına opak yönlendirme (yüksek risk). Gizli yönlendirme çok yeni bir alan adına yol açıyor."
+  },
+
+  "bitbWarningTitle": {
+    "message": "Sahte Giriş Penceresi Tespit Edildi!"
+  },
+  "bitbWarningMessage": {
+    "message": "Bu sayfa gerçek bir giriş popup'ını taklit eden simüle edilmiş bir tarayıcı penceresi gösteriyor. Bu, kimlik bilgilerinizi çalmak için tasarlanmış bir Tarayıcı-içinde-Tarayıcı (BitB) saldırısı. 'Popup' aslında sadece gerçek bir tarayıcı penceresi gibi görünmek üzere yapılmış HTML/CSS."
+  },
+  "reason_bitbAttackDetected": {
+    "message": "Tarayıcı-içinde-Tarayıcı saldırısı tespit edildi (kritik risk). Bu sayfa giriş kimlik bilgilerinizi çalmak için sahte bir tarayıcı penceresi gösteriyor."
+  },
+  "reason_bitbFakeUrlBar": {
+    "message": "Güvenilir alan adı gösteren sahte URL çubuğu tespit edildi (kritik risk). Görüntülenen adres sahte ve sizi aldatmak için tasarlanmış."
+  },
+  "reason_bitbWindowControls": {
+    "message": "Sahte pencere kontrolleri tespit edildi (yüksek risk). Kapat/küçült düğmeleri gerçek bir popup gibi görünmek üzere simüle edilmiş."
+  },
+  "reason_bitbLoginFormInOverlay": {
+    "message": "Overlay içinde giriş formu tespit edildi (yüksek risk). Gerçek giriş popup'ları overlay'lerde değil, ayrı tarayıcı pencerelerinde açılır."
+  },
+  "reason_bitbOAuthBranding": {
+    "message": "Overlay'de giriş formuyla OAuth markalama (yüksek risk). Sahte popup'lardaki 'Google/Microsoft ile giriş yap' düğmeleri kimlik bilgisi hırsızlığı."
+  },
+  "reason_bitbPadlockIcon": {
+    "message": "Sahte güvenlik asma kilit simgesi tespit edildi (orta risk). Gerçek asma kilitler sayfa içeriğinde değil, tarayıcı adres çubuğunda görünür."
+  },
+  "reason_bitbWindowChrome": {
+    "message": "Simüle edilmiş tarayıcı penceresi stili tespit edildi (orta risk). Overlay bir işletim sistemi penceresi gibi görünmek üzere stillendirilmiş."
+  },
+  "reason_bitbIframeInModal": {
+    "message": "Modal overlay içinde iframe tespit edildi (düşük risk). Bu harici giriş içeriği yüklemek için kullanılabilir."
+  },
+
+  "clickFixPowerShellTitle": {
+    "message": "PowerShell Komutu Tespit Edildi!"
+  },
+  "clickFixCommandTitle": {
+    "message": "Komut Enjeksiyonu Tespit Edildi!"
+  },
+  "clickFixMessage": {
+    "message": "Bu sayfa bilgisayarınıza zarar verebilecek şüpheli bir komut içeriyor. Bu komutu kopyalamayın veya çalıştırmayın."
+  },
+  "clickFixSubMessage": {
+    "message": "Saldırganlar genellikle kötü amaçlı komutları 'düzeltmeler' veya 'doğrulama adımları' olarak gizler. Güvenilmeyen kaynaklardan asla komut çalıştırmayın."
+  },
+  "bitbAttackCriticalTitle": {
+    "message": "Kritik: Sahte Giriş Penceresi!"
+  },
+  "bitbAttackWarningTitle": {
+    "message": "Uyarı: Şüpheli Giriş Popup'ı"
+  },
+  "bitbAttackMessage": {
+    "message": "Bu sayfa kimlik bilgilerinizi çalmak için tasarlanmış sahte bir tarayıcı penceresi gösteriyor. Gerçek giriş popup'ları ayrı tarayıcı pencerelerinde açılır."
+  },
+  "bitbAttackTip": {
+    "message": "Her zaman gerçek URL için tarayıcı adres çubuğunu kontrol edin, sayfa içinde görüntülenen metni değil."
+  },
+  "shadowDomLoginForm": {
+    "message": "Shadow DOM'da gizlenmiş giriş formu tespit edildi (yüksek risk). Bu teknik güvenlik tarayıcılarından kaçmak için kullanılır."
+  },
+  "shadowDomPhishingOverlay": {
+    "message": "Shadow DOM'da gizlenmiş kimlik avı overlay'i tespit edildi (kritik risk). Shadow DOM kötü amaçlı içeriği gizlemek için kullanılıyor."
+  },
+  "shadowDomIframe": {
+    "message": "Shadow DOM'da gizlenmiş şüpheli iframe tespit edildi (yüksek risk). Gizli iframe'ler kimlik bilgisi hırsızlığı için kullanılabilir."
+  },
+  "urlCredentialsAttack": {
+    "message": "URL saldırı formatında kimlik bilgileri içeriyor (kritik risk). Görünen alan adı sahte - başka bir yere yönlendirileceksiniz."
+  },
+  "nrdUltraCritical": {
+    "message": "Alan adı yalnızca saatler önce kaydedilmiş (kritik risk). Bu son derece şüpheli ve genellikle kimlik avı için kullanılır."
+  },
+  "nrdVishingCombo": {
+    "message": "Kimlik avı göstergeleri ile yeni kayıtlı alan adında telefon numarası (yüksek risk). Bu bir sesli kimlik avı (vishing) girişimi olabilir."
+  },
+  "tableBasedQR": {
+    "message": "HTML tablosunda gizlenmiş QR kodu tespit edildi (orta risk). Bu teknik görüntü tabanlı QR tespitini atlamak için kullanılır."
+  },
+  "tableQrDangerTitle": {
+    "message": "Gizli QR Kodunda Tehlikeli Bağlantı"
+  },
+  "tableQrCautionTitle": {
+    "message": "Gizli QR Kodunda Şüpheli Bağlantı"
+  },
+  "hiddenQrDetected": {
+    "message": "Sayfa içeriğinde gizli QR kodu tespit edildi. Bu kötü amaçlı bir URL içerebilir."
+  },
+
+  "bitbAttackCritical": {
+    "message": "KRİTİK: Tarayıcı-içinde-Tarayıcı saldırısı tespit edildi! Bu sayfa kimlik bilgilerinizi çalmak için tasarlanmış sahte bir giriş penceresi gösteriyor."
+  },
+  "bitbAttackWarning": {
+    "message": "Uyarı: Tarayıcı-içinde-Tarayıcı saldırısı olabilecek şüpheli popup tespit edildi. URL'yi dikkatlice doğrulayın."
+  },
+  "clickFixDetected": {
+    "message": "ClickFix saldırısı tespit edildi! Bu sayfa düzeltme veya doğrulama adımı gibi gizlenmiş kötü amaçlı bir komut içeriyor. Kopyalamayın veya çalıştırmayın."
+  },
+  "clipboardHijacking": {
+    "message": "Pano kaçırma tespit edildi! Bu sayfa izniniz olmadan pano içeriğinizi değiştirmeye çalışıyor."
+  },
+  "hiddenIframe": {
+    "message": "Bu sayfada gizli iframe tespit edildi. Görünmez çerçeveler takip, kimlik bilgisi hırsızlığı veya kötü amaçlı yazılım dağıtımı için kullanılabilir."
+  },
+  "typosquatting": {
+    "message": "Typosquatting tespit edildi! Bu alan adı meşru bir web sitesini taklit etmek için kasıtlı olarak yanlış yazılmış."
+  },
+  "ipAddressDomain": {
+    "message": "Bu web sitesi alan adı yerine IP adresi kullanıyor. Bu son derece alışılmadık ve genellikle kötü niyetli olduğunu gösterir."
+  },
+  "extremeSubdomains": {
+    "message": "Aşırı sayıda alt alan adı tespit edildi. Bu teknik genellikle kötü amaçlı URL'leri gizlemek veya meşru siteleri taklit etmek için kullanılır."
+  },
+  "vishingDetected": {
+    "message": "Potansiyel sesli kimlik avı (vishing) saldırısı tespit edildi. Bu sayfa telefon numaralarını kimlik avı göstergeleriyle birleştiriyor."
+  },
+  "punycodeDetected": {
+    "message": "Punycode alan adı tespit edildi! Bu adres meşru bir web sitesini taklit edebilecek uluslararası karakterler kullanıyor."
+  },
+
+  "reason_nonAscii": {
+    "message": "Şüpheli karakterler tespit edildi (homoglyph'ler)"
+  },
+  "reason_brandKeywordHomoglyph": {
+    "message": "Marka taklidi tespit edildi"
+  },
+  "reason_noHttps": {
+    "message": "Güvenli bağlantı yok (HTTPS)"
+  },
+  "reason_suspiciousTLD": {
+    "message": "Şüpheli alan uzantısı"
+  },
+  "reason_ipAsDomain": {
+    "message": "Alan adı olarak IP adresi"
+  },
+  "reason_tooManySubdomains": {
+    "message": "Çok fazla alt alan adı"
+  },
+  "reason_shortenedUrl": {
+    "message": "Kısaltılmış URL tespit edildi"
+  },
+  "reason_suspiciousKeywords": {
+    "message": "URL'de şüpheli anahtar kelimeler"
+  },
+  "reason_malwareExtension": {
+    "message": "Potansiyel olarak zararlı dosya uzantısı"
+  },
+  "reason_urlTooLong": {
+    "message": "Alışılmadık uzunlukta URL"
+  },
+  "reason_encodedCharacters": {
+    "message": "URL'de kodlanmış karakterler"
+  },
+  "reason_homoglyphAttack": {
+    "message": "Homoglyph saldırısı tespit edildi"
+  },
+  "reason_typosquatting": {
+    "message": "Typosquatting tespit edildi"
+  },
+  "reason_suspiciousBrandPattern": {
+    "message": "Şüpheli marka kalıbı"
+  },
+  "reason_unusualPort": {
+    "message": "Olağandışı port"
+  },
+  "reason_punycode": {
+    "message": "Punycode alan adı tespit edildi"
+  },
+  "reason_loginPageNoMX": {
+    "message": "E-posta sunucusu olmayan giriş sayfası"
+  },
+  "reason_insecureLoginPage": {
+    "message": "Güvensiz giriş sayfası"
+  },
+  "reason_sslValidationFailed": {
+    "message": "SSL doğrulaması başarısız"
+  },
+  "reason_similarToLegitimateDomain": {
+    "message": "Meşru alan adına benziyor"
+  },
+  "trialPeriodActive": {
+    "message": "Deneme süresi aktif"
+  }
+}

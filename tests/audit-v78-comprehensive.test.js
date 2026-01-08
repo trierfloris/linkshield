@@ -881,7 +881,7 @@ describe('4. POPUP, DYNAMIC FLOW & I18N', () => {
       expect(missing.length).toBe(0);
     });
 
-    test('All 13 locales have required keys', () => {
+    test('All 14 locales have required keys', () => {
       const localeList = Object.keys(localeData);
       const issues = [];
 
@@ -918,11 +918,11 @@ describe('4. POPUP, DYNAMIC FLOW & I18N', () => {
       expect(undefinedFound.length).toBe(0);
     });
 
-    test('Locale count is 13', () => {
+    test('Locale count is 14', () => {
       const count = Object.keys(localeData).length;
-      const result = count >= 13 ? 'PASS' : 'FAIL';
+      const result = count >= 14 ? 'PASS' : 'FAIL';
       trackTest('i18n', 'Locale count', true, result, 'M');
-      expect(count).toBeGreaterThanOrEqual(13);
+      expect(count).toBeGreaterThanOrEqual(14);
     });
   });
 

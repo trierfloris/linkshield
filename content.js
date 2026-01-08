@@ -379,6 +379,242 @@ function showClipboardWarning(type, score) {
     // Auto-remove na 15 seconden
     setTimeout(() => warning.remove(), 15000);
 }
+
+// =============================
+// CLICKFIX ATTACK DETECTION
+// Detecteert ClickFix aanvallen waar gebruikers misleid worden om
+// PowerShell/CMD commando's te kopiëren en plakken via nep-CAPTCHA of "Fix it" prompts
+// =============================
+
+let clickFixDetectionInitialized = false;
+let clickFixDetected = false;
+
+/**
+ * Initialiseert ClickFix Attack detectie
+ * Scant de pagina voor verdachte PowerShell/CMD commando's en nep UI patronen
+ */
+function initClickFixDetection() {
+    if (clickFixDetectionInitialized) return;
+    clickFixDetectionInitialized = true;
+
+    // Initiële scan
+    setTimeout(() => scanForClickFixAttack(), 1000);
+
+    // Observer voor dynamisch geladen content
+    const observer = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+            if (mutation.addedNodes.length > 0) {
+                // Debounce de scan
+                clearTimeout(window._clickFixScanTimeout);
+                window._clickFixScanTimeout = setTimeout(() => scanForClickFixAttack(), 500);
+                break;
+            }
+        }
+    });
+
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+
+    logDebug('[ClickFix] Detection initialized');
+}
+
+/**
+ * Scant de pagina voor ClickFix aanval indicatoren
+ */
+function scanForClickFixAttack() {
+    if (clickFixDetected) return; // Voorkom herhaalde waarschuwingen
+
+    try {
+        const patterns = globalConfig?.CLICKFIX_PATTERNS;
+        if (!patterns) {
+            logDebug('[ClickFix] No patterns configured');
+            return;
+        }
+
+        const textContent = document.body?.innerText || '';
+        const htmlContent = document.body?.innerHTML || '';
+
+        // Check voor pre/code/textarea elementen met verdachte commando's
+        const codeElements = document.querySelectorAll('pre, code, textarea, .code, .command, [class*="terminal"], [class*="console"]');
+        let codeContent = '';
+        codeElements.forEach(el => {
+            codeContent += ' ' + (el.textContent || '');
+        });
+
+        const allContent = textContent + ' ' + codeContent;
+        const detectedPatterns = [];
+        let totalScore = 0;
+
+        // Check PowerShell patterns
+        for (const pattern of patterns.powershell || []) {
+            if (pattern.test(allContent)) {
+                detectedPatterns.push({ type: 'powershell', pattern: pattern.toString() });
+                totalScore += 10; // PowerShell is zeer verdacht
+            }
+        }
+
+        // Check CMD patterns
+        for (const pattern of patterns.cmd || []) {
+            if (pattern.test(allContent)) {
+                detectedPatterns.push({ type: 'cmd', pattern: pattern.toString() });
+                totalScore += 8;
+            }
+        }
+
+        // Check Fake UI patterns (versterkt risico bij combinatie met commando's)
+        for (const pattern of patterns.fakeUI || []) {
+            if (pattern.test(textContent)) {
+                detectedPatterns.push({ type: 'fakeUI', pattern: pattern.toString() });
+                totalScore += (detectedPatterns.some(p => p.type === 'powershell' || p.type === 'cmd')) ? 5 : 2;
+            }
+        }
+
+        // Check voor "copy" buttons nabij verdachte code
+        const copyButtons = document.querySelectorAll('button, [role="button"], .btn, [class*="copy"]');
+        copyButtons.forEach(btn => {
+            const btnText = (btn.textContent || '').toLowerCase();
+            const nearbyCode = btn.closest('div, section, article')?.querySelector('pre, code, textarea');
+            if ((btnText.includes('copy') || btnText.includes('kopieer')) && nearbyCode) {
+                const codeText = nearbyCode.textContent || '';
+                // Check of nearby code PowerShell/CMD bevat
+                for (const pattern of [...(patterns.powershell || []), ...(patterns.cmd || [])]) {
+                    if (pattern.test(codeText)) {
+                        detectedPatterns.push({ type: 'copyButtonNearMaliciousCode', pattern: pattern.toString() });
+                        totalScore += 8;
+                        break;
+                    }
+                }
+            }
+        });
+
+        // Alleen waarschuwen bij significante score
+        if (totalScore >= 10) {
+            clickFixDetected = true;
+            reportClickFixAttack(detectedPatterns, totalScore);
+        } else if (detectedPatterns.length > 0) {
+            logDebug(`[ClickFix] Low confidence detection: ${JSON.stringify(detectedPatterns)}, score: ${totalScore}`);
+        }
+
+    } catch (error) {
+        handleError(error, '[ClickFix] Scan error');
+    }
+}
+
+/**
+ * Rapporteert een gedetecteerde ClickFix aanval
+ */
+function reportClickFixAttack(patterns, score) {
+    const hostname = window.location.hostname;
+    const reason = patterns.some(p => p.type === 'powershell') ? 'clickFixPowerShell' : 'clickFixCommand';
+
+    logDebug(`[ClickFix] Attack detected! Score: ${score}, Patterns: ${JSON.stringify(patterns)}`);
+
+    // Stuur naar background voor icon update
+    chrome.runtime.sendMessage({
+        action: 'clickFixDetected',
+        data: {
+            hostname,
+            patterns: patterns.map(p => p.type),
+            score,
+            reason
+        }
+    }).catch(() => {});
+
+    // Toon waarschuwing
+    showClickFixWarning(patterns, score);
+}
+
+/**
+ * Toont een waarschuwing voor ClickFix aanval
+ */
+function showClickFixWarning(patterns, score) {
+    // Verwijder bestaande waarschuwing
+    document.getElementById('linkshield-clickfix-warning')?.remove();
+
+    const hasPowerShell = patterns.some(p => p.type === 'powershell');
+
+    const warning = document.createElement('div');
+    warning.id = 'linkshield-clickfix-warning';
+    warning.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(135deg, #dc2626 0%, #7f1d1d 100%);
+        color: white;
+        padding: 24px 32px;
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        z-index: 2147483647;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-size: 14px;
+        max-width: 480px;
+        text-align: center;
+        animation: pulse 2s infinite;
+    `;
+
+    const title = hasPowerShell
+        ? (chrome.i18n.getMessage('clickFixPowerShellTitle') || '⚠️ GEVAAR: PowerShell Aanval Gedetecteerd!')
+        : (chrome.i18n.getMessage('clickFixCommandTitle') || '⚠️ GEVAAR: Verdacht Commando Gedetecteerd!');
+
+    const message = chrome.i18n.getMessage('clickFixMessage') ||
+        'Deze pagina probeert u te misleiden om een kwaadaardig commando uit te voeren. KOPIEER EN PLAK NIETS van deze pagina!';
+
+    const subMessage = chrome.i18n.getMessage('clickFixSubMessage') ||
+        'Legitieme websites vragen NOOIT om PowerShell of CMD commando\'s te kopiëren.';
+
+    warning.innerHTML = `
+        <div style="font-size: 48px; margin-bottom: 16px;">🚨</div>
+        <div style="font-size: 18px; font-weight: bold; margin-bottom: 12px;">${title}</div>
+        <div style="margin-bottom: 16px; line-height: 1.5;">${message}</div>
+        <div style="font-size: 12px; opacity: 0.9; margin-bottom: 20px;">${subMessage}</div>
+        <div style="display: flex; gap: 12px; justify-content: center;">
+            <button id="linkshield-clickfix-leave" style="
+                background: white;
+                color: #dc2626;
+                border: none;
+                padding: 12px 24px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-weight: bold;
+                font-size: 14px;
+            ">Verlaat deze pagina</button>
+            <button id="linkshield-clickfix-close" style="
+                background: transparent;
+                color: white;
+                border: 1px solid white;
+                padding: 12px 24px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 14px;
+            ">Ik begrijp het risico</button>
+        </div>
+    `;
+
+    // Voeg animatie toe
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 8px 32px rgba(220, 38, 38, 0.4); }
+            50% { box-shadow: 0 8px 48px rgba(220, 38, 38, 0.6); }
+        }
+    `;
+    document.head.appendChild(style);
+    document.body.appendChild(warning);
+
+    // Event listeners
+    document.getElementById('linkshield-clickfix-leave')?.addEventListener('click', () => {
+        window.history.back();
+        setTimeout(() => { window.location.href = 'about:blank'; }, 100);
+    });
+
+    document.getElementById('linkshield-clickfix-close')?.addEventListener('click', () => {
+        warning.remove();
+    });
+}
+
 /**
  * Hoofd-functie die alle subsector-helpers aanroept.
  * @param {object} config
@@ -3623,6 +3859,12 @@ function isValidURL(string) {
       return false;
     }
 
+    // Blokkeer blob: URLs (Blob URI Phishing - lokaal gegenereerde phishing pagina's)
+    if (string.trim().toLowerCase().startsWith('blob:')) {
+      logDebug(`isValidURL: blob: URL geblokkeerd: ${string.substring(0, 50)}...`);
+      return false;
+    }
+
     const url = new URL(string, window.location.href);
     const protocol = url.protocol;
     const allowedProtocols = ['http:', 'https:', 'mailto:', 'tel:', 'ftp:'];
@@ -6006,6 +6248,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Initialiseer Clipboard Guard voor crypto hijacking detectie
     initClipboardGuard();
+
+    // Initialiseer ClickFix Attack detectie voor PowerShell/CMD injectie via nep-CAPTCHA
+    initClickFixDetection();
 
     // Initialiseer Table QR Scanner voor imageless QR-code detectie (AI-phishing kits)
     initTableQRScanner();

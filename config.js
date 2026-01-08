@@ -139,6 +139,7 @@ window.CONFIG = {
         'appspot.com', 'sites.google.com',
         // GitHub/GitLab/Azure
         'github.io', 'gitlab.io', 'azurewebsites.net', 'azurestaticapps.net',
+        'blob.core.windows.net', 'privatelink.blob.core.windows.net', // Azure Blob Storage (veel misbruikt voor phishing met geldige TLS)
         // AWS
         's3.amazonaws.com', 'amplifyapp.com', 'execute-api.amazonaws.com',
         // Andere moderne platforms
@@ -337,6 +338,45 @@ SUSPICIOUS_URL_PATTERNS: [
         solana: /^[1-9A-HJ-NP-Za-km-z]{32,44}$/,
         // Generieke pattern voor detectie in clipboard content
         any: /(bc1|0x[a-fA-F0-9]{40}|[13][a-zA-HJ-NP-Z0-9]{25,39}|[1-9A-HJ-NP-Za-km-z]{32,44})/
+    },
+
+    // ClickFix Attack Detection (PowerShell/Command injection via fake CAPTCHA - +517% toename in 2025)
+    CLICKFIX_PATTERNS: {
+        // PowerShell execution patterns
+        powershell: [
+            /powershell\s*[\-\/]e(nc(odedcommand)?)?/i,           // powershell -e, -enc, -encodedcommand
+            /powershell\s*[\-\/]w(indowstyle)?\s*h(idden)?/i,     // powershell -w hidden
+            /powershell\s*[\-\/]nop(rofile)?/i,                   // powershell -noprofile
+            /powershell\s*[\-\/]ep\s*bypass/i,                    // powershell -ep bypass
+            /Invoke-Expression/i,                                  // IEX
+            /IEX\s*[\(\$]/i,                                       // IEX( or IEX$
+            /Invoke-WebRequest/i,                                  // Download cradle
+            /Invoke-RestMethod/i,                                  // Download cradle
+            /\[System\.Net\.WebClient\]/i,                        // .NET download
+            /DownloadString\s*\(/i,                               // DownloadString()
+            /DownloadFile\s*\(/i,                                 // DownloadFile()
+            /Start-Process/i,                                      // Process execution
+            /Set-ExecutionPolicy\s*(Bypass|Unrestricted)/i,       // Execution policy bypass
+            /\-exec\s*bypass/i                                     // -exec bypass
+        ],
+        // CMD/Windows command patterns
+        cmd: [
+            /cmd\s*\/c/i,                                          // cmd /c
+            /cmd\s*\/k/i,                                          // cmd /k
+            /mshta\s+(http|vbscript)/i,                           // MSHTA attacks
+            /certutil\s*[\-\/]urlcache/i,                         // Certutil download
+            /bitsadmin\s*\/transfer/i,                            // BITS download
+            /regsvr32\s*\/s\s*\/n\s*\/u/i                         // Regsvr32 bypass
+        ],
+        // Fake UI patterns that trick users into running commands
+        fakeUI: [
+            /press\s*(win(dows)?|⊞)\s*\+\s*r/i,                   // "Press Win+R"
+            /open\s*(run|terminal|cmd|powershell)/i,              // "Open Run dialog"
+            /paste\s*(and\s*)?(press\s*)?(enter|run)/i,           // "Paste and press Enter"
+            /copy\s*(this|the)?\s*(code|command|script)/i,        // "Copy this code"
+            /ctrl\s*\+\s*v.*enter/i,                              // "Ctrl+V then Enter"
+            /right[\-\s]?click.*paste/i                           // "Right-click and paste"
+        ]
     },
 
     COMPOUND_TLDS: [

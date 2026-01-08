@@ -952,5 +952,16 @@
   "tableBasedQR": { "message": "QR code caché dans une table HTML détecté (risque moyen). Cette technique est utilisée pour contourner la détection QR basée sur l'image." },
   "tableQrDangerTitle": { "message": "Lien dangereux dans un QR code caché" },
   "tableQrCautionTitle": { "message": "Lien suspect dans un QR code caché" },
-  "hiddenQrDetected": { "message": "QR code caché détecté dans le contenu de la page. Cela peut contenir une URL malveillante." }
+  "hiddenQrDetected": { "message": "QR code caché détecté dans le contenu de la page. Cela peut contenir une URL malveillante." },
+
+  "bitbAttackCritical": { "message": "CRITIQUE : Attaque Browser-in-the-Browser détectée ! Cette page affiche une fausse fenêtre de connexion pour voler vos identifiants." },
+  "bitbAttackWarning": { "message": "Attention : Popup suspect détecté qui pourrait être une attaque Browser-in-the-Browser. Vérifiez l'URL attentivement." },
+  "clickFixDetected": { "message": "Attaque ClickFix détectée ! Cette page contient une commande malveillante déguisée en correctif ou étape de vérification. Ne pas copier ou exécuter." },
+  "clipboardHijacking": { "message": "Détournement du presse-papiers détecté ! Cette page tente de modifier le contenu de votre presse-papiers sans autorisation." },
+  "hiddenIframe": { "message": "Iframe caché détecté sur cette page. Les frames invisibles peuvent être utilisées pour le suivi, le vol d'identifiants ou la diffusion de malware." },
+  "typosquatting": { "message": "Typosquatting détecté ! Ce domaine est délibérément mal orthographié pour imiter un site web légitime." },
+  "ipAddressDomain": { "message": "Ce site utilise une adresse IP au lieu d'un nom de domaine. C'est très inhabituel et indique souvent une intention malveillante." },
+  "extremeSubdomains": { "message": "Nombre extrême de sous-domaines détecté. Cette technique est souvent utilisée pour masquer des URLs malveillantes ou imiter des sites légitimes." },
+  "vishingDetected": { "message": "Attaque potentielle de vishing (hameçonnage vocal) détectée. Cette page combine des numéros de téléphone avec des indicateurs de phishing." },
+  "punycodeDetected": { "message": "Domaine Punycode détecté ! Cette adresse utilise des caractères internationaux qui pourraient usurper l'identité d'un site web légitime." }
 }

@@ -1031,5 +1031,36 @@
   },
   "hiddenQrDetected": {
     "message": "Hidden QR code detected in page content. This may contain a malicious URL."
+  },
+
+  "bitbAttackCritical": {
+    "message": "CRITICAL: Browser-in-the-Browser attack detected! This page displays a fake login window designed to steal your credentials."
+  },
+  "bitbAttackWarning": {
+    "message": "Warning: Suspicious popup detected that may be a Browser-in-the-Browser attack. Verify the URL carefully."
+  },
+  "clickFixDetected": {
+    "message": "ClickFix attack detected! This page contains a malicious command disguised as a fix or verification step. Do not copy or execute it."
+  },
+  "clipboardHijacking": {
+    "message": "Clipboard hijacking detected! This page is attempting to modify your clipboard content without permission."
+  },
+  "hiddenIframe": {
+    "message": "Hidden iframe detected on this page. Invisible frames can be used for tracking, credential theft, or malware delivery."
+  },
+  "typosquatting": {
+    "message": "Typosquatting detected! This domain is deliberately misspelled to impersonate a legitimate website."
+  },
+  "ipAddressDomain": {
+    "message": "This website uses an IP address instead of a domain name. This is highly unusual and often indicates malicious intent."
+  },
+  "extremeSubdomains": {
+    "message": "Extreme number of subdomains detected. This technique is often used to hide malicious URLs or impersonate legitimate sites."
+  },
+  "vishingDetected": {
+    "message": "Potential vishing (voice phishing) attack detected. This page combines phone numbers with phishing indicators."
+  },
+  "punycodeDetected": {
+    "message": "Punycode domain detected! This address uses international characters that may be impersonating a legitimate website."
   }
 }

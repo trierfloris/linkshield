@@ -952,5 +952,16 @@
   "tableBasedQR": { "message": "HTMLテーブルに隠されたQRコードを検出（中リスク）。この技術は画像ベースのQR検出をバイパスするために使用されます。" },
   "tableQrDangerTitle": { "message": "隠されたQRコードに危険なリンク" },
   "tableQrCautionTitle": { "message": "隠されたQRコードに疑わしいリンク" },
-  "hiddenQrDetected": { "message": "ページコンテンツに隠されたQRコードを検出。悪意のあるURLが含まれている可能性があります。" }
+  "hiddenQrDetected": { "message": "ページコンテンツに隠されたQRコードを検出。悪意のあるURLが含まれている可能性があります。" },
+
+  "bitbAttackCritical": { "message": "重大: Browser-in-the-Browser攻撃を検出しました！このページは資格情報を盗むために偽のログインウィンドウを表示しています。" },
+  "bitbAttackWarning": { "message": "警告: Browser-in-the-Browser攻撃の可能性がある疑わしいポップアップを検出しました。URLを注意深く確認してください。" },
+  "clickFixDetected": { "message": "ClickFix攻撃を検出しました！このページには修正または確認手順に偽装した悪意のあるコマンドが含まれています。コピーまたは実行しないでください。" },
+  "clipboardHijacking": { "message": "クリップボードハイジャックを検出しました！このページは許可なくクリップボードの内容を変更しようとしています。" },
+  "hiddenIframe": { "message": "このページで隠されたiframeを検出しました。不可視のフレームはトラッキング、資格情報の盗難、マルウェアの配信に使用される可能性があります。" },
+  "typosquatting": { "message": "タイポスクワッティングを検出しました！このドメインは正規のウェブサイトを偽装するために意図的にスペルミスされています。" },
+  "ipAddressDomain": { "message": "このウェブサイトはドメイン名の代わりにIPアドレスを使用しています。これは非常に珍しく、悪意のある意図を示すことが多いです。" },
+  "extremeSubdomains": { "message": "極端な数のサブドメインを検出しました。この技術は悪意のあるURLを隠したり、正規サイトを偽装するためによく使用されます。" },
+  "vishingDetected": { "message": "潜在的なビッシング（音声フィッシング）攻撃を検出しました。このページは電話番号とフィッシング指標を組み合わせています。" },
+  "punycodeDetected": { "message": "Punycodeドメインを検出しました！このアドレスは正規のウェブサイトを偽装している可能性のある国際文字を使用しています。" }
 }

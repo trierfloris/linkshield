@@ -952,5 +952,16 @@
   "tableBasedQR": { "message": "检测到隐藏在HTML表格中的QR码（中等风险）。此技术用于绕过基于图像的QR检测。" },
   "tableQrDangerTitle": { "message": "隐藏QR码中的危险链接" },
   "tableQrCautionTitle": { "message": "隐藏QR码中的可疑链接" },
-  "hiddenQrDetected": { "message": "检测到页面内容中隐藏的QR码。可能包含恶意URL。" }
+  "hiddenQrDetected": { "message": "检测到页面内容中隐藏的QR码。可能包含恶意URL。" },
+
+  "bitbAttackCritical": { "message": "严重：检测到Browser-in-the-Browser攻击！此页面显示虚假登录窗口以窃取您的凭证。" },
+  "bitbAttackWarning": { "message": "警告：检测到可能是Browser-in-the-Browser攻击的可疑弹窗。请仔细验证URL。" },
+  "clickFixDetected": { "message": "检测到ClickFix攻击！此页面包含伪装成修复或验证步骤的恶意命令。请勿复制或执行。" },
+  "clipboardHijacking": { "message": "检测到剪贴板劫持！此页面正在尝试未经许可修改您的剪贴板内容。" },
+  "hiddenIframe": { "message": "在此页面上检测到隐藏的iframe。不可见的框架可用于跟踪、凭证盗窃或恶意软件传播。" },
+  "typosquatting": { "message": "检测到域名仿冒！此域名被故意拼写错误以冒充合法网站。" },
+  "ipAddressDomain": { "message": "此网站使用IP地址而非域名。这非常不寻常，通常表示恶意意图。" },
+  "extremeSubdomains": { "message": "检测到极端数量的子域名。此技术通常用于隐藏恶意URL或冒充合法网站。" },
+  "vishingDetected": { "message": "检测到潜在的语音钓鱼攻击。此页面将电话号码与钓鱼指标相结合。" },
+  "punycodeDetected": { "message": "检测到Punycode域名！此地址使用可能冒充合法网站的国际字符。" }
 }

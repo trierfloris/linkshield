@@ -1059,5 +1059,36 @@
   "tableBasedQR": { "message": "QR-code verborgen in HTML-tabel gedetecteerd (gemiddeld risico). Deze techniek wordt gebruikt om image-gebaseerde QR-detectie te omzeilen." },
   "tableQrDangerTitle": { "message": "Gevaarlijke Link in Verborgen QR-code" },
   "tableQrCautionTitle": { "message": "Verdachte Link in Verborgen QR-code" },
-  "hiddenQrDetected": { "message": "Verborgen QR-code gedetecteerd in pagina-inhoud. Dit kan een schadelijke URL bevatten." }
+  "hiddenQrDetected": { "message": "Verborgen QR-code gedetecteerd in pagina-inhoud. Dit kan een schadelijke URL bevatten." },
+
+  "bitbAttackCritical": {
+    "message": "KRITIEK: Browser-in-the-Browser aanval gedetecteerd! Deze pagina toont een nep inlogvenster om je inloggegevens te stelen."
+  },
+  "bitbAttackWarning": {
+    "message": "Waarschuwing: Verdachte popup gedetecteerd die mogelijk een Browser-in-the-Browser aanval is. Controleer de URL zorgvuldig."
+  },
+  "clickFixDetected": {
+    "message": "ClickFix aanval gedetecteerd! Deze pagina bevat een kwaadaardig commando vermomd als fix of verificatiestap. Kopieer of voer het niet uit."
+  },
+  "clipboardHijacking": {
+    "message": "Klembord-kaping gedetecteerd! Deze pagina probeert je klembordinhoud zonder toestemming te wijzigen."
+  },
+  "hiddenIframe": {
+    "message": "Verborgen iframe gedetecteerd op deze pagina. Onzichtbare frames kunnen worden gebruikt voor tracking, credential-diefstal of malware."
+  },
+  "typosquatting": {
+    "message": "Typosquatting gedetecteerd! Dit domein is opzettelijk verkeerd gespeld om een legitieme website na te bootsen."
+  },
+  "ipAddressDomain": {
+    "message": "Deze website gebruikt een IP-adres in plaats van een domeinnaam. Dit is zeer ongebruikelijk en duidt vaak op kwaadaardige bedoelingen."
+  },
+  "extremeSubdomains": {
+    "message": "Extreem aantal subdomeinen gedetecteerd. Deze techniek wordt vaak gebruikt om kwaadaardige URLs te verbergen of legitieme sites na te bootsen."
+  },
+  "vishingDetected": {
+    "message": "Mogelijke vishing (voice phishing) aanval gedetecteerd. Deze pagina combineert telefoonnummers met phishing-indicatoren."
+  },
+  "punycodeDetected": {
+    "message": "Punycode-domein gedetecteerd! Dit adres gebruikt internationale tekens die mogelijk een legitieme website nabootsen."
+  }
 }

@@ -952,5 +952,16 @@
   "tableBasedQR": { "message": "HTML 테이블에 숨겨진 QR 코드 감지됨 (중간 위험). 이 기술은 이미지 기반 QR 감지를 우회하는 데 사용됩니다." },
   "tableQrDangerTitle": { "message": "숨겨진 QR 코드의 위험한 링크" },
   "tableQrCautionTitle": { "message": "숨겨진 QR 코드의 의심스러운 링크" },
-  "hiddenQrDetected": { "message": "페이지 콘텐츠에 숨겨진 QR 코드 감지됨. 악성 URL이 포함되어 있을 수 있습니다." }
+  "hiddenQrDetected": { "message": "페이지 콘텐츠에 숨겨진 QR 코드 감지됨. 악성 URL이 포함되어 있을 수 있습니다." },
+
+  "bitbAttackCritical": { "message": "심각: Browser-in-the-Browser 공격 감지됨! 이 페이지는 자격 증명을 훔치기 위해 가짜 로그인 창을 표시하고 있습니다." },
+  "bitbAttackWarning": { "message": "경고: Browser-in-the-Browser 공격일 수 있는 의심스러운 팝업이 감지되었습니다. URL을 주의 깊게 확인하세요." },
+  "clickFixDetected": { "message": "ClickFix 공격 감지됨! 이 페이지에는 수정 또는 확인 단계로 위장한 악성 명령이 포함되어 있습니다. 복사하거나 실행하지 마세요." },
+  "clipboardHijacking": { "message": "클립보드 하이재킹 감지됨! 이 페이지가 권한 없이 클립보드 내용을 수정하려고 합니다." },
+  "hiddenIframe": { "message": "이 페이지에서 숨겨진 iframe이 감지되었습니다. 보이지 않는 프레임은 추적, 자격 증명 도용 또는 맬웨어 배포에 사용될 수 있습니다." },
+  "typosquatting": { "message": "타이포스쿼팅 감지됨! 이 도메인은 합법적인 웹사이트를 사칭하기 위해 의도적으로 철자가 틀립니다." },
+  "ipAddressDomain": { "message": "이 웹사이트는 도메인 이름 대신 IP 주소를 사용합니다. 이는 매우 비정상적이며 종종 악의적인 의도를 나타냅니다." },
+  "extremeSubdomains": { "message": "극단적인 수의 하위 도메인이 감지되었습니다. 이 기술은 악성 URL을 숨기거나 합법적인 사이트를 사칭하는 데 자주 사용됩니다." },
+  "vishingDetected": { "message": "잠재적인 비싱(음성 피싱) 공격 감지됨. 이 페이지는 전화번호와 피싱 지표를 결합합니다." },
+  "punycodeDetected": { "message": "Punycode 도메인 감지됨! 이 주소는 합법적인 웹사이트를 사칭할 수 있는 국제 문자를 사용합니다." }
 }

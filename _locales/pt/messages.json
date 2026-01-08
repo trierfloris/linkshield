@@ -952,5 +952,16 @@
   "tableBasedQR": { "message": "Código QR escondido em tabela HTML detectado (risco médio). Esta técnica é usada para contornar detecção de QR baseada em imagem." },
   "tableQrDangerTitle": { "message": "Link perigoso em código QR escondido" },
   "tableQrCautionTitle": { "message": "Link suspeito em código QR escondido" },
-  "hiddenQrDetected": { "message": "Código QR escondido detectado no conteúdo da página. Pode conter uma URL maliciosa." }
+  "hiddenQrDetected": { "message": "Código QR escondido detectado no conteúdo da página. Pode conter uma URL maliciosa." },
+
+  "bitbAttackCritical": { "message": "CRÍTICO: Ataque Browser-in-the-Browser detectado! Esta página exibe uma janela de login falsa para roubar suas credenciais." },
+  "bitbAttackWarning": { "message": "Aviso: Popup suspeito detectado que pode ser um ataque Browser-in-the-Browser. Verifique a URL cuidadosamente." },
+  "clickFixDetected": { "message": "Ataque ClickFix detectado! Esta página contém um comando malicioso disfarçado de correção ou etapa de verificação. Não copie ou execute." },
+  "clipboardHijacking": { "message": "Sequestro da área de transferência detectado! Esta página está tentando modificar o conteúdo da sua área de transferência sem permissão." },
+  "hiddenIframe": { "message": "Iframe oculto detectado nesta página. Frames invisíveis podem ser usados para rastreamento, roubo de credenciais ou distribuição de malware." },
+  "typosquatting": { "message": "Typosquatting detectado! Este domínio está deliberadamente escrito incorretamente para se passar por um site legítimo." },
+  "ipAddressDomain": { "message": "Este site usa um endereço IP em vez de um nome de domínio. Isso é muito incomum e frequentemente indica intenção maliciosa." },
+  "extremeSubdomains": { "message": "Número extremo de subdomínios detectado. Esta técnica é frequentemente usada para esconder URLs maliciosas ou imitar sites legítimos." },
+  "vishingDetected": { "message": "Potencial ataque de vishing (phishing por voz) detectado. Esta página combina números de telefone com indicadores de phishing." },
+  "punycodeDetected": { "message": "Domínio Punycode detectado! Este endereço usa caracteres internacionais que podem estar se passando por um site legítimo." }
 }

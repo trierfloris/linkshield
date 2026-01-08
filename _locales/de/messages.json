@@ -952,5 +952,16 @@
   "tableBasedQR": { "message": "QR-Code in HTML-Tabelle versteckt erkannt (mittleres Risiko). Diese Technik wird verwendet, um bildbasierte QR-Erkennung zu umgehen." },
   "tableQrDangerTitle": { "message": "Gefährlicher Link in verstecktem QR-Code" },
   "tableQrCautionTitle": { "message": "Verdächtiger Link in verstecktem QR-Code" },
-  "hiddenQrDetected": { "message": "Versteckter QR-Code im Seiteninhalt erkannt. Dieser könnte eine bösartige URL enthalten." }
+  "hiddenQrDetected": { "message": "Versteckter QR-Code im Seiteninhalt erkannt. Dieser könnte eine bösartige URL enthalten." },
+
+  "bitbAttackCritical": { "message": "KRITISCH: Browser-in-the-Browser-Angriff erkannt! Diese Seite zeigt ein gefälschtes Anmeldefenster, um Ihre Anmeldedaten zu stehlen." },
+  "bitbAttackWarning": { "message": "Warnung: Verdächtiges Popup erkannt, das ein Browser-in-the-Browser-Angriff sein könnte. Überprüfen Sie die URL sorgfältig." },
+  "clickFixDetected": { "message": "ClickFix-Angriff erkannt! Diese Seite enthält einen bösartigen Befehl, der als Fix oder Verifizierungsschritt getarnt ist. Nicht kopieren oder ausführen." },
+  "clipboardHijacking": { "message": "Zwischenablage-Hijacking erkannt! Diese Seite versucht, Ihre Zwischenablage ohne Erlaubnis zu ändern." },
+  "hiddenIframe": { "message": "Versteckter Iframe auf dieser Seite erkannt. Unsichtbare Frames können für Tracking, Credential-Diebstahl oder Malware verwendet werden." },
+  "typosquatting": { "message": "Typosquatting erkannt! Diese Domain ist absichtlich falsch geschrieben, um eine legitime Website nachzuahmen." },
+  "ipAddressDomain": { "message": "Diese Website verwendet eine IP-Adresse anstelle eines Domainnamens. Dies ist sehr ungewöhnlich und deutet oft auf böswillige Absichten hin." },
+  "extremeSubdomains": { "message": "Extreme Anzahl von Subdomains erkannt. Diese Technik wird oft verwendet, um bösartige URLs zu verbergen oder legitime Seiten nachzuahmen." },
+  "vishingDetected": { "message": "Möglicher Vishing (Voice-Phishing) Angriff erkannt. Diese Seite kombiniert Telefonnummern mit Phishing-Indikatoren." },
+  "punycodeDetected": { "message": "Punycode-Domain erkannt! Diese Adresse verwendet internationale Zeichen, die möglicherweise eine legitime Website imitieren." }
 }

@@ -881,7 +881,7 @@ describe('4. POPUP, DYNAMIC FLOW & I18N', () => {
       expect(missing.length).toBe(0);
     });
 
-    test('All 14 locales have required keys', () => {
+    test('All 16 locales have required keys', () => {
       const localeList = Object.keys(localeData);
       const issues = [];
 

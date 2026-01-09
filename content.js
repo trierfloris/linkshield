@@ -4078,7 +4078,34 @@ function detectAtSymbolAttack(urlString) {
       };
     }
     // Check voor @ in het pad (URL-encoded of niet) - kan duiden op obfuscatie
+    // MAAR: whitelist platforms die @ legitiem gebruiken voor user handles
     if (url.pathname.includes('@') || url.pathname.includes('%40')) {
+      // Platforms die @ gebruiken voor handles/usernames in URLs
+      const platformsWithAtHandles = [
+        'youtube.com',
+        'www.youtube.com',
+        'm.youtube.com',
+        'medium.com',
+        'www.medium.com',
+        'threads.net',
+        'www.threads.net',
+        'substack.com',
+        'instagram.com',      // Instagram gebruikt @ in sommige embed URLs
+        'www.instagram.com'
+      ];
+
+      // Check ook voor Mastodon instances (*.social, mastodon.*)
+      const isMastodonInstance = /^(.*\.social|mastodon\..*)$/i.test(url.hostname);
+
+      const isWhitelistedPlatform = platformsWithAtHandles.some(domain =>
+        url.hostname === domain || url.hostname.endsWith('.' + domain)
+      );
+
+      // Als het een legitiem platform is met @ handles, geen alert
+      if (isWhitelistedPlatform || isMastodonInstance) {
+        return { detected: false };
+      }
+
       return {
         detected: true,
         reason: 'atSymbolInPath'

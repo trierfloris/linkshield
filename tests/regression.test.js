@@ -42,6 +42,32 @@ describe('Regression Tests: New Security Functions', () => {
                     };
                 }
                 if (url.pathname.includes('@') || url.pathname.includes('%40')) {
+                    // Platforms die @ gebruiken voor handles/usernames in URLs
+                    const platformsWithAtHandles = [
+                        'youtube.com',
+                        'www.youtube.com',
+                        'm.youtube.com',
+                        'medium.com',
+                        'www.medium.com',
+                        'threads.net',
+                        'www.threads.net',
+                        'substack.com',
+                        'instagram.com',
+                        'www.instagram.com'
+                    ];
+
+                    // Check ook voor Mastodon instances (*.social, mastodon.*)
+                    const isMastodonInstance = /^(.*\.social|mastodon\..*)$/i.test(url.hostname);
+
+                    const isWhitelistedPlatform = platformsWithAtHandles.some(domain =>
+                        url.hostname === domain || url.hostname.endsWith('.' + domain)
+                    );
+
+                    // Als het een legitiem platform is met @ handles, geen alert
+                    if (isWhitelistedPlatform || isMastodonInstance) {
+                        return { detected: false };
+                    }
+
                     return {
                         detected: true,
                         reason: 'atSymbolInPath'
@@ -76,10 +102,41 @@ describe('Regression Tests: New Security Functions', () => {
             expect(result.detected).toBe(false);
         });
 
-        test('URL with %40 in path should be flagged', () => {
+        test('URL with %40 in path should be flagged on unknown sites', () => {
             const result = detectAtSymbolAttack('https://example.com/path%40evil');
             expect(result.detected).toBe(true);
             expect(result.reason).toBe('atSymbolInPath');
+        });
+
+        // YouTube @ handle tests - should NOT trigger (legitimate use)
+        test('YouTube channel handle should NOT trigger', () => {
+            const result = detectAtSymbolAttack('https://www.youtube.com/@yaraeggenhuizen532');
+            expect(result.detected).toBe(false);
+        });
+
+        test('YouTube mobile channel handle should NOT trigger', () => {
+            const result = detectAtSymbolAttack('https://m.youtube.com/@MrBeast');
+            expect(result.detected).toBe(false);
+        });
+
+        test('Medium user profile should NOT trigger', () => {
+            const result = detectAtSymbolAttack('https://medium.com/@username/article');
+            expect(result.detected).toBe(false);
+        });
+
+        test('Threads profile should NOT trigger', () => {
+            const result = detectAtSymbolAttack('https://www.threads.net/@zaborona');
+            expect(result.detected).toBe(false);
+        });
+
+        test('Mastodon instance should NOT trigger', () => {
+            const result = detectAtSymbolAttack('https://mastodon.social/@user');
+            expect(result.detected).toBe(false);
+        });
+
+        test('Other .social Mastodon instances should NOT trigger', () => {
+            const result = detectAtSymbolAttack('https://infosec.social/@security');
+            expect(result.detected).toBe(false);
         });
     });
 

@@ -743,6 +743,7 @@ function scanForBitBAttack() {
 
         const indicators = [];
         let totalScore = 0;
+        const allFoundTypes = new Set();
 
         // 1. Zoek alle potentiële modal/overlay containers
         const overlays = findOverlayContainers();
@@ -752,6 +753,8 @@ function scanForBitBAttack() {
             if (result.score > 0) {
                 indicators.push(...result.indicators);
                 totalScore += result.score;
+                // Verzamel alle gevonden indicator types
+                result.foundTypes.forEach(type => allFoundTypes.add(type));
             }
         }
 
@@ -760,17 +763,63 @@ function scanForBitBAttack() {
         if (fakeUrlBars.length > 0) {
             indicators.push({ type: 'fakeUrlBarGlobal', count: fakeUrlBars.length });
             totalScore += fakeUrlBars.length * config.scores.fakeUrlBar;
+            allFoundTypes.add('fakeUrlBar');
         }
 
-        // Evalueer resultaat
-        const thresholds = config.thresholds;
-        if (totalScore >= thresholds.critical) {
-            bitbDetected = true;
-            reportBitBAttack('critical', indicators, totalScore);
-        } else if (totalScore >= thresholds.warning) {
-            reportBitBAttack('warning', indicators, totalScore);
-        } else if (totalScore >= thresholds.log) {
-            logDebug(`[BitB] Low confidence: ${JSON.stringify(indicators)}, score: ${totalScore}`);
+        // === NIEUWE DETECTIE LOGICA ===
+        // Een BitB attack vereist:
+        // 1. Een fake URL bar (sterke indicator alleen) OF
+        // 2. Meerdere sterke indicatoren samen (bijv. loginForm + windowControls)
+
+        const hasFakeUrlBar = allFoundTypes.has('fakeUrlBar');
+        const hasLoginForm = allFoundTypes.has('loginForm');
+        const hasWindowControls = allFoundTypes.has('windowControls');
+        const hasOAuthBranding = allFoundTypes.has('oauthBranding');
+        const hasWindowChrome = allFoundTypes.has('windowChromeStyle');
+        const hasPadlock = allFoundTypes.has('padlockIcon');
+
+        // Bepaal of dit een echte BitB attack is
+        let isLikelyBitB = false;
+        let severity = null;
+
+        if (hasFakeUrlBar) {
+            // Fake URL bar is zeer sterke indicator - altijd alert
+            isLikelyBitB = true;
+            severity = 'critical';
+            logDebug('[BitB] Fake URL bar detected - strong BitB indicator');
+        } else if (hasLoginForm && hasWindowControls) {
+            // Login form + window controls = waarschijnlijk BitB
+            isLikelyBitB = true;
+            severity = 'critical';
+            logDebug('[BitB] Login form + window controls detected');
+        } else if (hasLoginForm && hasOAuthBranding) {
+            // Login form + OAuth branding = waarschijnlijk BitB
+            isLikelyBitB = true;
+            severity = 'critical';
+            logDebug('[BitB] Login form + OAuth branding detected');
+        } else if (hasLoginForm && hasWindowChrome && hasPadlock) {
+            // Login form + window chrome + padlock = waarschijnlijk BitB
+            isLikelyBitB = true;
+            severity = 'warning';
+            logDebug('[BitB] Login form + window chrome + padlock detected');
+        } else if (hasWindowControls && hasWindowChrome && hasPadlock) {
+            // Window controls + chrome + padlock zonder login = mogelijk BitB
+            isLikelyBitB = true;
+            severity = 'warning';
+            logDebug('[BitB] Window simulation detected without login form');
+        }
+
+        // Evalueer resultaat met nieuwe logica
+        if (isLikelyBitB && indicators.length > 0) {
+            if (severity === 'critical') {
+                bitbDetected = true;
+                reportBitBAttack('critical', indicators, totalScore);
+            } else if (severity === 'warning') {
+                reportBitBAttack('warning', indicators, totalScore);
+            }
+        } else if (totalScore >= config.thresholds.log) {
+            // Alleen loggen als score hoog genoeg is maar geen BitB pattern matcht
+            logDebug(`[BitB] Indicators found but no BitB pattern: ${JSON.stringify(indicators)}, score: ${totalScore}`);
         }
 
     } catch (error) {
@@ -841,10 +890,13 @@ function analyzeOverlayForBitB(overlay, config) {
     let score = 0;
     const scores = config.scores;
 
+    // Track welke indicator types gevonden zijn voor de nieuwe detectie logica
+    const foundTypes = new Set();
+
     try {
         const overlayText = (overlay.innerText || '').toLowerCase();
 
-        // 1. Check voor fake URL bar elementen
+        // 1. Check voor fake URL bar elementen (STERKE indicator)
         const fakeUrlBar = findFakeUrlBarInElement(overlay, config);
         if (fakeUrlBar) {
             indicators.push({
@@ -852,32 +904,54 @@ function analyzeOverlayForBitB(overlay, config) {
                 url: fakeUrlBar.textContent?.substring(0, 60)
             });
             score += scores.fakeUrlBar;
+            foundTypes.add('fakeUrlBar');
         }
 
-        // 2. Check voor window control buttons (close/minimize/maximize)
+        // 2. Check voor window control buttons (close/minimize/maximize) (STERKE indicator)
         const windowControls = findWindowControls(overlay, config);
         if (windowControls.found) {
             indicators.push({ type: 'windowControls', details: windowControls.details });
             score += scores.windowControls;
+            foundTypes.add('windowControls');
         }
 
-        // 3. Check voor login form binnen overlay
+        // 3. Check voor login form binnen overlay (STERKE indicator)
         const loginInputs = overlay.querySelectorAll(
             'input[type="password"], input[type="email"], ' +
             'input[name*="password"], input[name*="email"], input[name*="user"]'
         );
 
         if (loginInputs.length > 0) {
-            indicators.push({ type: 'loginForm', inputs: loginInputs.length });
-            score += scores.loginFormInOverlay;
+            // Check of login form naar same-domain post (legitieme login)
+            const form = overlay.querySelector('form');
+            const formAction = form?.getAttribute('action');
+            let isSameDomainLogin = false;
 
-            // Extra score als er ook OAuth branding is
-            for (const brand of config.oauthBranding || []) {
-                if (overlayText.includes(brand.toLowerCase())) {
-                    indicators.push({ type: 'oauthBranding', brand });
-                    score += scores.oauthBrandingWithForm;
-                    break;
+            if (formAction) {
+                try {
+                    const actionHost = new URL(formAction, window.location.href).hostname;
+                    isSameDomainLogin = actionHost === window.location.hostname;
+                } catch (e) { /* ignore URL parse errors */ }
+            }
+
+            // Alleen als indicator tellen als het NIET same-domain is
+            if (!isSameDomainLogin) {
+                indicators.push({ type: 'loginForm', inputs: loginInputs.length });
+                score += scores.loginFormInOverlay;
+                foundTypes.add('loginForm');
+
+                // Extra score als er ook OAuth branding is (STERKE indicator)
+                for (const brand of config.oauthBranding || []) {
+                    if (overlayText.includes(brand.toLowerCase())) {
+                        indicators.push({ type: 'oauthBranding', brand });
+                        score += scores.oauthBrandingWithForm;
+                        foundTypes.add('oauthBranding');
+                        break;
+                    }
                 }
+            } else {
+                // Log same-domain login maar tel niet als indicator
+                logDebug('[BitB] Same-domain login form detected, skipping as indicator');
             }
         }
 
@@ -885,12 +959,14 @@ function analyzeOverlayForBitB(overlay, config) {
         if (detectPadlockIcon(overlay)) {
             indicators.push({ type: 'padlockIcon' });
             score += scores.padlockIcon;
+            foundTypes.add('padlockIcon');
         }
 
         // 5. Check voor OS-achtige window chrome styling
         if (hasWindowChromeStyle(overlay)) {
             indicators.push({ type: 'windowChromeStyle' });
             score += scores.windowChromeStyle;
+            foundTypes.add('windowChromeStyle');
         }
 
         // 6. Check voor iframe binnen modal met login
@@ -898,13 +974,14 @@ function analyzeOverlayForBitB(overlay, config) {
         if (iframes.length > 0 && loginInputs.length > 0) {
             indicators.push({ type: 'iframeInModal', count: iframes.length });
             score += scores.iframeInModal;
+            foundTypes.add('iframeInModal');
         }
 
     } catch (error) {
         handleError(error, '[BitB] analyzeOverlay');
     }
 
-    return { score, indicators };
+    return { score, indicators, foundTypes };
 }
 
 /**

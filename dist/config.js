@@ -383,6 +383,16 @@ SUSPICIOUS_URL_PATTERNS: [
 
     // Browser-in-the-Browser (BitB) Attack Detection
     // Detecteert nep browser popups die OAuth/SSO logins simuleren
+    //
+    // DETECTIE LOGICA (v2.0):
+    // Alert wordt alleen getriggerd als:
+    // 1. Fake URL bar aanwezig (sterke indicator alleen) OF
+    // 2. Login form + window controls OF
+    // 3. Login form + OAuth branding OF
+    // 4. Login form + window chrome + padlock (warning) OF
+    // 5. Window controls + window chrome + padlock (warning)
+    //
+    // Same-domain login forms worden automatisch genegeerd (legitieme logins)
     BITB_DETECTION: {
         // Fake URL bar patterns - bekende OAuth/login URLs die in nep vensters verschijnen
         fakeUrlBarPatterns: [

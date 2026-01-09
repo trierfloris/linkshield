@@ -1132,5 +1132,8 @@
   },
   "bitbDismissButton": {
     "message": "I understand the risk"
+  },
+  "trustedDomainSkipped": {
+    "message": "This domain has been marked as trusted by you."
   }
 }

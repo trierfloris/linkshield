@@ -92,8 +92,16 @@
       "AGE": {
         "content": "$1",
         "example": "3"
-      }
-    }
+      ,
+  "trustedDomainSkipped": {
+    "message": "This domain has been marked as trusted by you."
+  }
+}
+    ,
+  "trustedDomainSkipped": {
+    "message": "This domain has been marked as trusted by you."
+  }
+}
   },
   "insecureLoginPage": {
     "message": "Diese Anmeldeseite ist nicht gesichert (kein HTTPS). Gib hier niemals dein Passwort ein (hohes Risiko)."
@@ -566,8 +574,16 @@
       "DAYS": {
         "content": "$1",
         "example": "14"
-      }
-    }
+      ,
+  "trustedDomainSkipped": {
+    "message": "This domain has been marked as trusted by you."
+  }
+}
+    ,
+  "trustedDomainSkipped": {
+    "message": "This domain has been marked as trusted by you."
+  }
+}
   },
   "trialExpired": {
     "message": "Testphase abgelaufen"
@@ -593,8 +609,16 @@
       "DAYS": {
         "content": "$1",
         "example": "30"
-      }
-    }
+      ,
+  "trustedDomainSkipped": {
+    "message": "This domain has been marked as trusted by you."
+  }
+}
+    ,
+  "trustedDomainSkipped": {
+    "message": "This domain has been marked as trusted by you."
+  }
+}
   },
   "licenseTrialSubtitle": {
     "message": "Alle Premium-Funktionen sind während deiner Testphase aktiv"
@@ -719,8 +743,16 @@
       "DAYS": {
         "content": "$1",
         "example": "30"
-      }
-    }
+      ,
+  "trustedDomainSkipped": {
+    "message": "This domain has been marked as trusted by you."
+  }
+}
+    ,
+  "trustedDomainSkipped": {
+    "message": "This domain has been marked as trusted by you."
+  }
+}
   },
   "debugExpiredSimulated": {
     "message": "✓ Abgelaufene Testphase simuliert"
@@ -737,8 +769,16 @@
       "ERROR": {
         "content": "$1",
         "example": "Unknown error"
-      }
-    }
+      ,
+  "trustedDomainSkipped": {
+    "message": "This domain has been marked as trusted by you."
+  }
+}
+    ,
+  "trustedDomainSkipped": {
+    "message": "This domain has been marked as trusted by you."
+  }
+}
   },
   "reason_redirectChain": {
     "message": "Verdächtige Weiterleitungskette erkannt. Der Link durchläuft mehrere Server, bevor er sein Ziel erreicht."
@@ -782,8 +822,16 @@
       "DOMAIN": {
         "content": "$1",
         "example": "evil-site.com"
-      }
-    }
+      ,
+  "trustedDomainSkipped": {
+    "message": "This domain has been marked as trusted by you."
+  }
+}
+    ,
+  "trustedDomainSkipped": {
+    "message": "This domain has been marked as trusted by you."
+  }
+}
   },
   "formActionInvalid": {
     "message": "Anmeldeformular hat eine ungültige oder verdächtige Aktions-URL (hohes Risiko). Ihre Daten werden möglicherweise nicht sicher gesendet."
@@ -806,8 +854,16 @@
       "DAYS": {
         "content": "$1",
         "example": "0"
-      }
-    }
+      ,
+  "trustedDomainSkipped": {
+    "message": "This domain has been marked as trusted by you."
+  }
+}
+    ,
+  "trustedDomainSkipped": {
+    "message": "This domain has been marked as trusted by you."
+  }
+}
   },
   "nrdHigh": {
     "message": "Domain erst vor $DAYS$ Tagen registriert (hohes Risiko). Sehr neue Domains werden häufig für Betrug verwendet.",
@@ -815,8 +871,16 @@
       "DAYS": {
         "content": "$1",
         "example": "5"
-      }
-    }
+      ,
+  "trustedDomainSkipped": {
+    "message": "This domain has been marked as trusted by you."
+  }
+}
+    ,
+  "trustedDomainSkipped": {
+    "message": "This domain has been marked as trusted by you."
+  }
+}
   },
   "nrdMedium": {
     "message": "Domain vor $DAYS$ Tagen registriert (mittleres Risiko). Neue Domains unter 30 Tagen erfordern besondere Vorsicht.",
@@ -824,8 +888,16 @@
       "DAYS": {
         "content": "$1",
         "example": "15"
-      }
-    }
+      ,
+  "trustedDomainSkipped": {
+    "message": "This domain has been marked as trusted by you."
+  }
+}
+    ,
+  "trustedDomainSkipped": {
+    "message": "This domain has been marked as trusted by you."
+  }
+}
   },
   "nrdLow": {
     "message": "Domain vor $DAYS$ Tagen registriert (niedriges Risiko). Relativ neue Domain, seien Sie etwas vorsichtig.",
@@ -833,8 +905,16 @@
       "DAYS": {
         "content": "$1",
         "example": "60"
-      }
-    }
+      ,
+  "trustedDomainSkipped": {
+    "message": "This domain has been marked as trusted by you."
+  }
+}
+    ,
+  "trustedDomainSkipped": {
+    "message": "This domain has been marked as trusted by you."
+  }
+}
   },
   "licenseErrorNotFound": {
     "message": "Lizenzschlüssel nicht gefunden. Bitte überprüfen Sie Ihre Eingabe."
@@ -1108,5 +1188,13 @@
   },
   "bitbDismissButton": {
     "message": "Ich verstehe das Risiko"
+  ,
+  "trustedDomainSkipped": {
+    "message": "This domain has been marked as trusted by you."
+  }
+}
+,
+  "trustedDomainSkipped": {
+    "message": "This domain has been marked as trusted by you."
   }
 }

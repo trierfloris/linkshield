@@ -6,6 +6,9 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
+    "test:i18n": "jest tests/i18n-reasons.test.js",
+    "test:url": "jest tests/url-analysis.test.js",
+    "test:core": "jest tests/core-functions.test.js",
     "test:e2e": "jest --config jest.e2e.config.js",
     "validate:i18n": "node scripts/validate-i18n.js"
   },

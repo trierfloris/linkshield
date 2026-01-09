@@ -18,7 +18,7 @@ window.CONFIG = {
         'rodeo', 'sbs', 'site', 'skin', 'space', 'store', 'stream', 'surf', 'tech',
         'today', 'vip', 'wang', 'webcam', 'website', 'work', 'world', 'wtf', 'yachts',
         // AI/Tech gerelateerde TLD's (hoog risico in 2026)
-        'ai', 'bot', 'chat', 'crypto', 'dao', 'data', 'dex', 'eth', 'gpt', 'llm',
+        'ai', 'bot', 'chat', 'crypto', 'dao', 'data', 'dex', 'eth', 'gpt', 'link', 'llm',
         'metaverse', 'nft', 'sol', 'token', 'wallet', 'web3'
     ])).sort().join('|') + ')$', 'i'),
 
@@ -88,16 +88,68 @@ window.CONFIG = {
     SUSPICION_THRESHOLD: 0.1, // 10% van de links moet verdacht zijn
 
     // Domeinen waarvan we weten dat ze legitieme embeds/advertenties leveren
+    // SECURITY NOTE: Google Docs/Drive/Forms verwijderd - worden veel misbruikt voor phishing
     TRUSTED_IFRAME_DOMAINS: [
-        'youtube.com', 'www.youtube.com', 'youtu.be', 'vimeo.com', 'player.vimeo.com', 'dailymotion.com', 'www.dailymotion.com', 'twitch.tv', 'player.twitch.tv', 'soundcloud.com', 'w.soundcloud.com', 'spotify.com', 'open.spotify.com', 'maps.google.com', 'www.google.com/maps', 'docs.google.com', 'drive.google.com', 'calendar.google.com', 'forms.google.com', 'openstreetmap.org', 'www.openstreetmap.org', 'facebook.com', 'www.facebook.com', 'facebook.net', 'instagram.com', 'www.instagram.com', 'twitter.com', 'www.twitter.com', 'platform.twitter.com', 'linkedin.com', 'www.linkedin.com', 'platform.linkedin.com', 'pinterest.com', 'assets.pinterest.com', 'tiktok.com', 'embed.tiktok.com', 'paypal.com', 'www.paypal.com', 'stripe.com', 'js.stripe.com', 'checkout.stripe.com', 'adyen.com', 'checkoutshopper-live.adyen.com', 'discord.com', 'discordapp.com', 'slack.com', 'app.slack.com', 'intercom.io', 'widget.intercom.io', 'crisp.chat', 'webchat.livechatinc.com', 'js.zendesk.com', 'gist.github.com', 'codesandbox.io', 'stackblitz.com', 'repl.it', 'embed.replit.com', 'doubleclick.net', 'fls.doubleclick.net', 'googleadservices.com', 'googlesyndication.com', 'adservice.google.com', 'ads.pubmatic.com', 'hb.pubmatic.com', 'ads.rubiconproject.com', 'ads.adnxs.com', 'secure.adnxs.com', 'servedby.flashtalking.com', 'ads.yahoo.com', 'ads.openx.net', 'a.openx.net', 'indexexchange.com', 'sync.crwdcntrl.net', 'ads.coinzilla.com', 'adsafeprotected.com', 'segment.com', 'analytics.twitter.com', 'analytics.tiktok.com', 'bat.bing.com', 'cm.g.doubleclick.net', 'widget.buqer.com', 'widget.trustpilot.com', 'consent.cookiebot.com', 'consentcdn.cookiebot.com'
+        // Video platforms
+        'youtube.com', 'www.youtube.com', 'youtu.be', 'vimeo.com', 'player.vimeo.com',
+        'dailymotion.com', 'www.dailymotion.com', 'twitch.tv', 'player.twitch.tv',
+        // Audio platforms
+        'soundcloud.com', 'w.soundcloud.com', 'spotify.com', 'open.spotify.com',
+        // Maps (alleen embed)
+        'maps.google.com', 'www.google.com/maps', 'openstreetmap.org', 'www.openstreetmap.org',
+        // Google Calendar (relatief veilig voor embeds)
+        'calendar.google.com',
+        // Social media (alleen officiële embeds)
+        'platform.twitter.com', 'platform.linkedin.com', 'assets.pinterest.com',
+        'embed.tiktok.com', 'facebook.net',
+        // Payment providers (gevalideerde checkout flows)
+        'js.stripe.com', 'checkout.stripe.com', 'checkoutshopper-live.adyen.com',
+        // Chat widgets
+        'widget.intercom.io', 'crisp.chat', 'webchat.livechatinc.com', 'js.zendesk.com',
+        // Dev tools (sandbox)
+        'gist.github.com', 'codesandbox.io', 'stackblitz.com', 'embed.replit.com',
+        // Advertising (analytics/tracking)
+        'fls.doubleclick.net', 'cm.g.doubleclick.net', 'googleadservices.com',
+        'googlesyndication.com', 'adservice.google.com', 'ads.pubmatic.com',
+        'hb.pubmatic.com', 'ads.rubiconproject.com', 'secure.adnxs.com',
+        'adsafeprotected.com', 'segment.com', 'bat.bing.com',
+        // Trust & consent
+        'widget.trustpilot.com', 'consent.cookiebot.com', 'consentcdn.cookiebot.com'
     ],
 
     // Inlogpatronen
     LOGIN_PATTERNS: /(login|account|auth|authenticate|signin|wp-login|sign-in|log-in|dashboard|portal|session|user|profile)/i,
 
-    // Gratis Hosting Domeinen
+    // Gratis Hosting Domeinen (uitgebreid 2026 - veel misbruikt door AI phishing kits)
     FREE_HOSTING_DOMAINS: [
-        'sites.net', 'angelfire.com', 'geocities.ws', '000a.biz', '000webhostapp.com', 'weebly.com', 'wixsite.com', 'freehosting.com', 'glitch.me', 'firebaseapp.com', 'herokuapp.com', 'freehostia.com', 'netlify.app', 'webs.com', 'yolasite.com', 'github.io', 'bravenet.com', 'zyro.com', 'altervista.org', 'tripod.com', 'jimdo.com', 'ucoz.com', 'blogspot.com', 'square.site', 'pages.dev', 'r2.dev', 'mybluehost.me', '000space.com', 'awardspace.com', 'byethost.com', 'biz.nf', 'hyperphp.com', 'infinityfree.net', '50webs.com', 'tripod.lycos.com', 'site123.me', 'webflow.io', 'strikingly.com', 'x10hosting.com', 'freehostingnoads.net', '000freewebhost.com', 'mystrikingly.com', 'sites.google.com', 'appspot.com', 'vercel.app', 'weeblysite.com', 's3.amazonaws.com', 'bubbleapps.io', 'typedream.app', 'codeanyapp.com', 'carrd.co', 'surge.sh', 'replit.dev', 'fly.dev', 'render.com', 'onrender.com', 'fly.io', 'workers.dev'
+        // Klassieke gratis hosting
+        'sites.net', 'angelfire.com', 'geocities.ws', '000a.biz', '000webhostapp.com', 'weebly.com',
+        'wixsite.com', 'freehosting.com', 'glitch.me', 'freehostia.com', 'webs.com', 'yolasite.com',
+        'bravenet.com', 'zyro.com', 'altervista.org', 'tripod.com', 'jimdo.com', 'ucoz.com',
+        'blogspot.com', 'square.site', 'mybluehost.me', '000space.com', 'awardspace.com',
+        'byethost.com', 'biz.nf', 'hyperphp.com', 'infinityfree.net', '50webs.com',
+        'tripod.lycos.com', 'site123.me', 'strikingly.com', 'x10hosting.com',
+        'freehostingnoads.net', '000freewebhost.com', 'mystrikingly.com', 'weeblysite.com',
+        // Moderne cloud/serverless hosting (veel misbruikt voor AI-phishing in 2026)
+        'vercel.app', 'netlify.app', 'pages.dev', 'workers.dev', 'r2.dev',
+        'herokuapp.com', 'fly.dev', 'fly.io', 'render.com', 'onrender.com',
+        'railway.app', 'deno.dev', 'val.run', 'val.town',
+        // Firebase/Google Cloud
+        'firebaseapp.com', 'web.app', 'firebaseio.com', 'cloudfunctions.net',
+        'appspot.com', 'sites.google.com',
+        // GitHub/GitLab/Azure
+        'github.io', 'gitlab.io', 'azurewebsites.net', 'azurestaticapps.net',
+        'blob.core.windows.net', 'privatelink.blob.core.windows.net', // Azure Blob Storage (veel misbruikt voor phishing met geldige TLS)
+        'web.core.windows.net', // Azure Static Website hosting (PhishTank 2026-01)
+        // AWS
+        's3.amazonaws.com', 'amplifyapp.com', 'execute-api.amazonaws.com',
+        // Andere moderne platforms
+        'webflow.io', 'framer.website', 'framer.app', 'framercanvas.com', // framer.app toegevoegd (PhishTank 2026-01)
+        'canva.site', // Canva Sites (PhishTank 2026-01)
+        'bubbleapps.io', 'typedream.app', 'codeanyapp.com', 'carrd.co',
+        'surge.sh', 'replit.dev', 'repl.co',
+        // Edge/CDN platforms
+        'edgecompute.app', 'durable.co', 'liveblocks.io'
     ],
 
     // Verkorte URL Domeinen
@@ -288,6 +340,103 @@ SUSPICIOUS_URL_PATTERNS: [
         solana: /^[1-9A-HJ-NP-Za-km-z]{32,44}$/,
         // Generieke pattern voor detectie in clipboard content
         any: /(bc1|0x[a-fA-F0-9]{40}|[13][a-zA-HJ-NP-Z0-9]{25,39}|[1-9A-HJ-NP-Za-km-z]{32,44})/
+    },
+
+    // ClickFix Attack Detection (PowerShell/Command injection via fake CAPTCHA - +517% toename in 2025)
+    CLICKFIX_PATTERNS: {
+        // PowerShell execution patterns
+        powershell: [
+            /powershell\s*[\-\/]e(nc(odedcommand)?)?/i,           // powershell -e, -enc, -encodedcommand
+            /powershell\s*[\-\/]w(indowstyle)?\s*h(idden)?/i,     // powershell -w hidden
+            /powershell\s*[\-\/]nop(rofile)?/i,                   // powershell -noprofile
+            /powershell\s*[\-\/]ep\s*bypass/i,                    // powershell -ep bypass
+            /Invoke-Expression/i,                                  // IEX
+            /IEX\s*[\(\$]/i,                                       // IEX( or IEX$
+            /Invoke-WebRequest/i,                                  // Download cradle
+            /Invoke-RestMethod/i,                                  // Download cradle
+            /\[System\.Net\.WebClient\]/i,                        // .NET download
+            /DownloadString\s*\(/i,                               // DownloadString()
+            /DownloadFile\s*\(/i,                                 // DownloadFile()
+            /Start-Process/i,                                      // Process execution
+            /Set-ExecutionPolicy\s*(Bypass|Unrestricted)/i,       // Execution policy bypass
+            /\-exec\s*bypass/i                                     // -exec bypass
+        ],
+        // CMD/Windows command patterns
+        cmd: [
+            /cmd\s*\/c/i,                                          // cmd /c
+            /cmd\s*\/k/i,                                          // cmd /k
+            /mshta\s+(http|vbscript)/i,                           // MSHTA attacks
+            /certutil\s*[\-\/]urlcache/i,                         // Certutil download
+            /bitsadmin\s*\/transfer/i,                            // BITS download
+            /regsvr32\s*\/s\s*\/n\s*\/u/i                         // Regsvr32 bypass
+        ],
+        // Fake UI patterns that trick users into running commands
+        fakeUI: [
+            /press\s*(win(dows)?|⊞)\s*\+\s*r/i,                   // "Press Win+R"
+            /open\s*(run|terminal|cmd|powershell)/i,              // "Open Run dialog"
+            /paste\s*(and\s*)?(press\s*)?(enter|run)/i,           // "Paste and press Enter"
+            /copy\s*(this|the)?\s*(code|command|script)/i,        // "Copy this code"
+            /ctrl\s*\+\s*v.*enter/i,                              // "Ctrl+V then Enter"
+            /right[\-\s]?click.*paste/i                           // "Right-click and paste"
+        ]
+    },
+
+    // Browser-in-the-Browser (BitB) Attack Detection
+    // Detecteert nep browser popups die OAuth/SSO logins simuleren
+    BITB_DETECTION: {
+        // Fake URL bar patterns - bekende OAuth/login URLs die in nep vensters verschijnen
+        fakeUrlBarPatterns: [
+            /^https?:\/\/(accounts\.google\.com|myaccount\.google\.com)/i,
+            /^https?:\/\/(login\.microsoftonline\.com|login\.microsoft\.com|login\.live\.com)/i,
+            /^https?:\/\/(appleid\.apple\.com|idmsa\.apple\.com)/i,
+            /^https?:\/\/(www\.facebook\.com\/login|facebook\.com\/login)/i,
+            /^https?:\/\/(twitter\.com\/login|x\.com\/login)/i,
+            /^https?:\/\/(github\.com\/login|github\.com\/session)/i,
+            /^https?:\/\/(.*\.okta\.com)/i,
+            /^https?:\/\/(.*\.auth0\.com)/i,
+            /^https?:\/\/(accounts\.zoho\.com|accounts\.zoho\.eu)/i,
+            /^https?:\/\/(login\.yahoo\.com|login\.aol\.com)/i
+        ],
+
+        // OAuth provider branding keywords (case-insensitive matching)
+        oauthBranding: [
+            'sign in with google', 'continue with google', 'google sign-in', 'inloggen met google',
+            'sign in with microsoft', 'continue with microsoft', 'microsoft sign-in',
+            'sign in with apple', 'continue with apple', 'apple sign-in',
+            'sign in with facebook', 'continue with facebook', 'log in with facebook',
+            'sign in with twitter', 'sign in with x', 'continue with x',
+            'sign in with github', 'continue with github',
+            'single sign-on', 'sso login', 'federated login',
+            'sign in with okta', 'sign in with auth0'
+        ],
+
+        // Window control indicators (CSS classes en tekst patterns)
+        windowControlIndicators: {
+            // macOS traffic light buttons
+            trafficLights: /[●○◯].*[●○◯].*[●○◯]|[🔴🟡🟢]|•\s*•\s*•/,
+            // Close button characters
+            closeButtons: /[×✕✖✗⨉]|&times;/,
+            // Window control classes
+            controlClasses: /\b(close|minimize|maximize|window-control|btn-close|modal-close|title-?bar|window-?header|traffic-?light)\b/i
+        },
+
+        // Score thresholds voor alert levels
+        thresholds: {
+            log: 6,       // Alleen loggen, geen waarschuwing
+            warning: 10,  // Lichte waarschuwing tonen
+            critical: 16  // Kritieke waarschuwing - zeer waarschijnlijk BitB
+        },
+
+        // Risk scores per indicator type
+        scores: {
+            fakeUrlBar: 10,           // URL tekst van OAuth provider in overlay
+            windowControls: 6,        // Nep window controls (close/min/max)
+            loginFormInOverlay: 5,    // Login form in fixed overlay
+            oauthBrandingWithForm: 6, // OAuth branding + login form
+            padlockIcon: 3,           // Fake security/lock icon
+            windowChromeStyle: 3,     // OS-achtige window styling
+            iframeInModal: 2          // iframe binnen modal
+        }
     },
 
     COMPOUND_TLDS: [

@@ -1409,23 +1409,9 @@ async function checkSslLabs(domain) {
 // Laad cache bij startup
 loadSslCacheFromStorage();
 
-// Cache-schoonmaak en opslag (elke 30 minuten)
-setInterval(() => {
-    const now = Date.now();
-    let cleanedCount = 0;
-    for (const [domain, data] of sslCache) {
-        const ttl = data.isError ? SSL_LABS_ERROR_CACHE_TTL : SSL_LABS_CACHE_TTL;
-        if (now - data.timestamp >= ttl) {
-            sslCache.delete(domain);
-            cleanedCount++;
-        }
-    }
-    if (cleanedCount > 0 && globalThresholds.DEBUG_MODE) {
-        console.log(`[SSL Cache] ${cleanedCount} verlopen entries verwijderd`);
-    }
-    // Sla cache op
-    saveSslCacheToStorage();
-}, 30 * 60 * 1000);
+// MV3 FIX: Cache-schoonmaak via chrome.alarms (elke 30 minuten)
+// setInterval werkt niet betrouwbaar in Service Workers - alarm wordt aangemaakt in onInstalled
+// Handler: zie chrome.alarms.onAlarm listener voor "cleanSSLCache"
 
 
 // ==== Installation and Alarms ====
@@ -1481,6 +1467,13 @@ chrome.runtime.onInstalled.addListener(async (details) => {
         });
         if (globalThresholds.DEBUG_MODE) console.log("License revalidation alarm created (12h interval).");
 
+        // MV3 FIX: SSL cache cleanup alarm (every 30 minutes)
+        // Vervangt setInterval die niet werkt in Service Workers
+        chrome.alarms.create("cleanSSLCache", {
+            periodInMinutes: 30
+        });
+        if (globalThresholds.DEBUG_MODE) console.log("SSL cache cleanup alarm created (30min interval).");
+
     } catch (error) {
         console.error("Error during extension installation or update:", error);
     }
@@ -1522,6 +1515,25 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
                 console.error("[ERROR] Error in license revalidation alarm:", error.message);
             }
         })();
+    }
+
+    // MV3 FIX: SSL cache cleanup (replaces setInterval)
+    if (alarm.name === "cleanSSLCache") {
+        const now = Date.now();
+        let cleanedCount = 0;
+        for (const [domain, data] of sslCache) {
+            const ttl = data.isError ? SSL_LABS_ERROR_CACHE_TTL : SSL_LABS_CACHE_TTL;
+            if (now - data.timestamp >= ttl) {
+                sslCache.delete(domain);
+                cleanedCount++;
+            }
+        }
+        if (cleanedCount > 0 && globalThresholds.DEBUG_MODE) {
+            console.log(`[SSL Cache] ${cleanedCount} verlopen entries verwijderd`);
+        }
+        // Sla cache op
+        saveSslCacheToStorage();
+        if (globalThresholds.DEBUG_MODE) console.log("SSL cache cleanup completed via alarm.");
     }
 
     // MV3 FIX: Clear alert badge after delay (replaces setInterval animation)
@@ -1647,9 +1659,18 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             return true;
 
         case 'analyzeRedirectChain': {
-            // Redirect Chain Analysis (v7.1)
+            // Redirect Chain Analysis (v7.1) - Enhanced for QR code URLs
             const targetUrl = request.url;
-            const shouldAnalyze = request.force || isKnownShortener(targetUrl) || request.level === 'caution';
+            const source = request.source || 'unknown';
+
+            // QR-code URLs worden ALTIJD geanalyseerd (AI-proxy redirect detectie)
+            // Dit is cruciaal voor het ontmaskeren van AI-phishing redirects
+            const isQRSource = source === 'table-qr' || source === 'image-qr' || source === 'qr' || source === 'ascii-qr';
+            const shouldAnalyze = request.force || isQRSource || isKnownShortener(targetUrl) || request.level === 'caution';
+
+            if (globalThresholds.DEBUG_MODE && isQRSource) {
+                console.log(`[RedirectChain] QR-code URL detected (source: ${source}), forcing analysis: ${targetUrl}`);
+            }
 
             if (!shouldAnalyze) {
                 sendResponse({
@@ -1662,7 +1683,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 return true;
             }
 
-            traceRedirectChain(targetUrl, 3000)
+            // Langere timeout voor QR URLs (kunnen meer redirects hebben)
+            const timeout = isQRSource ? 5000 : 3000;
+            traceRedirectChain(targetUrl, timeout)
                 .then(result => {
                     sendResponse({
                         analyzed: true,
@@ -1806,6 +1829,28 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             return true; // houd port open voor async
         }
         // --- EINDE VAN DE VERNIEUWDE 'checkSslLabs' CASE ---
+
+        case 'bitbDetected':
+            // Browser-in-the-Browser (BitB) aanval gedetecteerd door content script
+            if (globalThresholds.DEBUG_MODE) {
+                console.log(`[BitB Detection] Attack detected on tab ${sender.tab?.id}:`, request.data);
+            }
+
+            // Toon alert badge op de extensie-icon voor deze tab
+            if (sender.tab?.id) {
+                chrome.action.setBadgeText({ text: '!', tabId: sender.tab.id });
+                chrome.action.setBadgeBackgroundColor({ color: '#dc2626', tabId: sender.tab.id });
+                chrome.action.setTitle({
+                    title: chrome.i18n.getMessage('bitbWarningTitle') || 'Fake Login Window Detected!',
+                    tabId: sender.tab.id
+                });
+
+                // Log de aanval voor debugging/analytics
+                console.warn(`[BitB Detection] BitB attack detected on ${sender.tab.url || 'unknown URL'}. Score: ${request.data?.score || 'N/A'}. Indicators: ${JSON.stringify(request.data?.indicators || [])}`);
+            }
+
+            sendResponse({ received: true, action: 'bitb_warning_shown' });
+            return true;
 
         default:
             console.warn("[onMessage] Onbekend berichttype:", request.type || request.action);

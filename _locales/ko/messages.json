@@ -1108,5 +1108,11 @@
   },
   "bitbDismissButton": {
     "message": "위험을 이해합니다"
+  },
+  "trustDomainButton": {
+    "message": "이 도메인 신뢰"
+  },
+  "trustedDomainSkipped": {
+    "message": "이 도메인은 신뢰할 수 있는 것으로 표시되었습니다."
   }
 }

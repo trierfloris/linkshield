@@ -157,6 +157,42 @@ if (!window.linkSafetyCache) {
 if (!window.linkRiskCache) {
   window.linkRiskCache = new Map();
 }
+
+// ============================================================================
+// TRUSTED DOMAINS WHITELIST - User-defined trusted domains
+// ============================================================================
+
+/**
+ * Controleert of een domein door de gebruiker als vertrouwd is gemarkeerd
+ * @param {string} domain - Het te controleren domein (hostname)
+ * @returns {Promise<boolean>} - true als het domein vertrouwd is
+ */
+async function isDomainTrusted(domain) {
+  if (!domain) return false;
+  try {
+    const { trustedDomains = [] } = await chrome.storage.sync.get('trustedDomains');
+    // Check exact match of subdomein van vertrouwd domein
+    return trustedDomains.some(trusted =>
+      domain === trusted || domain.endsWith('.' + trusted)
+    );
+  } catch (error) {
+    logError('[Whitelist] Fout bij ophalen vertrouwde domeinen:', error);
+    return false;
+  }
+}
+
+/**
+ * Haalt het domein uit een URL
+ * @param {string} url - De URL
+ * @returns {string|null} - Het domein of null bij fout
+ */
+function getDomainFromUrl(url) {
+  try {
+    return new URL(url).hostname;
+  } catch {
+    return null;
+  }
+}
 // Throttle tracking variables (global scope for persistence)
 let lastIframeCheck = 0;
 let lastScriptCheck = 0;
@@ -379,6 +415,880 @@ function showClipboardWarning(type, score) {
     // Auto-remove na 15 seconden
     setTimeout(() => warning.remove(), 15000);
 }
+
+// =============================
+// CLICKFIX ATTACK DETECTION
+// Detecteert ClickFix aanvallen waar gebruikers misleid worden om
+// PowerShell/CMD commando's te kopiëren en plakken via nep-CAPTCHA of "Fix it" prompts
+// =============================
+
+let clickFixDetectionInitialized = false;
+let clickFixDetected = false;
+
+/**
+ * Initialiseert ClickFix Attack detectie
+ * Scant de pagina voor verdachte PowerShell/CMD commando's en nep UI patronen
+ */
+function initClickFixDetection() {
+    if (clickFixDetectionInitialized) return;
+    clickFixDetectionInitialized = true;
+
+    // Initiële scan
+    setTimeout(() => scanForClickFixAttack(), 1000);
+
+    // Observer voor dynamisch geladen content
+    const observer = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+            if (mutation.addedNodes.length > 0) {
+                // Debounce de scan
+                clearTimeout(window._clickFixScanTimeout);
+                window._clickFixScanTimeout = setTimeout(() => scanForClickFixAttack(), 500);
+                break;
+            }
+        }
+    });
+
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
+
+    logDebug('[ClickFix] Detection initialized');
+}
+
+/**
+ * Scant de pagina voor ClickFix aanval indicatoren
+ */
+function scanForClickFixAttack() {
+    if (clickFixDetected) return; // Voorkom herhaalde waarschuwingen
+
+    try {
+        const patterns = globalConfig?.CLICKFIX_PATTERNS;
+        if (!patterns) {
+            logDebug('[ClickFix] No patterns configured');
+            return;
+        }
+
+        const textContent = document.body?.innerText || '';
+        const htmlContent = document.body?.innerHTML || '';
+
+        // Check voor pre/code/textarea elementen met verdachte commando's
+        const codeElements = document.querySelectorAll('pre, code, textarea, .code, .command, [class*="terminal"], [class*="console"]');
+        let codeContent = '';
+        codeElements.forEach(el => {
+            codeContent += ' ' + (el.textContent || '');
+        });
+
+        const allContent = textContent + ' ' + codeContent;
+        const detectedPatterns = [];
+        let totalScore = 0;
+
+        // Check PowerShell patterns
+        for (const pattern of patterns.powershell || []) {
+            if (pattern.test(allContent)) {
+                detectedPatterns.push({ type: 'powershell', pattern: pattern.toString() });
+                totalScore += 10; // PowerShell is zeer verdacht
+            }
+        }
+
+        // Check CMD patterns
+        for (const pattern of patterns.cmd || []) {
+            if (pattern.test(allContent)) {
+                detectedPatterns.push({ type: 'cmd', pattern: pattern.toString() });
+                totalScore += 8;
+            }
+        }
+
+        // Check Fake UI patterns (versterkt risico bij combinatie met commando's)
+        for (const pattern of patterns.fakeUI || []) {
+            if (pattern.test(textContent)) {
+                detectedPatterns.push({ type: 'fakeUI', pattern: pattern.toString() });
+                totalScore += (detectedPatterns.some(p => p.type === 'powershell' || p.type === 'cmd')) ? 5 : 2;
+            }
+        }
+
+        // Check voor "copy" buttons nabij verdachte code
+        const copyButtons = document.querySelectorAll('button, [role="button"], .btn, [class*="copy"]');
+        copyButtons.forEach(btn => {
+            const btnText = (btn.textContent || '').toLowerCase();
+            const nearbyCode = btn.closest('div, section, article')?.querySelector('pre, code, textarea');
+            if ((btnText.includes('copy') || btnText.includes('kopieer')) && nearbyCode) {
+                const codeText = nearbyCode.textContent || '';
+                // Check of nearby code PowerShell/CMD bevat
+                for (const pattern of [...(patterns.powershell || []), ...(patterns.cmd || [])]) {
+                    if (pattern.test(codeText)) {
+                        detectedPatterns.push({ type: 'copyButtonNearMaliciousCode', pattern: pattern.toString() });
+                        totalScore += 8;
+                        break;
+                    }
+                }
+            }
+        });
+
+        // Alleen waarschuwen bij significante score
+        if (totalScore >= 10) {
+            clickFixDetected = true;
+            reportClickFixAttack(detectedPatterns, totalScore);
+        } else if (detectedPatterns.length > 0) {
+            logDebug(`[ClickFix] Low confidence detection: ${JSON.stringify(detectedPatterns)}, score: ${totalScore}`);
+        }
+
+    } catch (error) {
+        handleError(error, '[ClickFix] Scan error');
+    }
+}
+
+/**
+ * Rapporteert een gedetecteerde ClickFix aanval
+ */
+function reportClickFixAttack(patterns, score) {
+    const hostname = window.location.hostname;
+    const reason = patterns.some(p => p.type === 'powershell') ? 'clickFixPowerShell' : 'clickFixCommand';
+
+    logDebug(`[ClickFix] Attack detected! Score: ${score}, Patterns: ${JSON.stringify(patterns)}`);
+
+    // Stuur naar background voor icon update
+    chrome.runtime.sendMessage({
+        action: 'clickFixDetected',
+        data: {
+            hostname,
+            patterns: patterns.map(p => p.type),
+            score,
+            reason
+        }
+    }).catch(() => {});
+
+    // Toon waarschuwing
+    showClickFixWarning(patterns, score);
+}
+
+/**
+ * Toont een waarschuwing voor ClickFix aanval
+ */
+function showClickFixWarning(patterns, score) {
+    // Verwijder bestaande waarschuwing
+    document.getElementById('linkshield-clickfix-warning')?.remove();
+
+    const hasPowerShell = patterns.some(p => p.type === 'powershell');
+
+    const warning = document.createElement('div');
+    warning.id = 'linkshield-clickfix-warning';
+    warning.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(135deg, #dc2626 0%, #7f1d1d 100%);
+        color: white;
+        padding: 24px 32px;
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        z-index: 2147483647;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-size: 14px;
+        max-width: 480px;
+        text-align: center;
+        animation: pulse 2s infinite;
+    `;
+
+    const title = hasPowerShell
+        ? (chrome.i18n.getMessage('clickFixPowerShellTitle') || '⚠️ GEVAAR: PowerShell Aanval Gedetecteerd!')
+        : (chrome.i18n.getMessage('clickFixCommandTitle') || '⚠️ GEVAAR: Verdacht Commando Gedetecteerd!');
+
+    const message = chrome.i18n.getMessage('clickFixMessage') ||
+        'Deze pagina probeert u te misleiden om een kwaadaardig commando uit te voeren. KOPIEER EN PLAK NIETS van deze pagina!';
+
+    const subMessage = chrome.i18n.getMessage('clickFixSubMessage') ||
+        'Legitieme websites vragen NOOIT om PowerShell of CMD commando\'s te kopiëren.';
+
+    warning.innerHTML = `
+        <div style="font-size: 48px; margin-bottom: 16px;">🚨</div>
+        <div style="font-size: 18px; font-weight: bold; margin-bottom: 12px;">${title}</div>
+        <div style="margin-bottom: 16px; line-height: 1.5;">${message}</div>
+        <div style="font-size: 12px; opacity: 0.9; margin-bottom: 20px;">${subMessage}</div>
+        <div style="display: flex; gap: 12px; justify-content: center;">
+            <button id="linkshield-clickfix-leave" style="
+                background: white;
+                color: #dc2626;
+                border: none;
+                padding: 12px 24px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-weight: bold;
+                font-size: 14px;
+            ">Verlaat deze pagina</button>
+            <button id="linkshield-clickfix-close" style="
+                background: transparent;
+                color: white;
+                border: 1px solid white;
+                padding: 12px 24px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 14px;
+            ">Ik begrijp het risico</button>
+        </div>
+    `;
+
+    // Voeg animatie toe
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 8px 32px rgba(220, 38, 38, 0.4); }
+            50% { box-shadow: 0 8px 48px rgba(220, 38, 38, 0.6); }
+        }
+    `;
+    document.head.appendChild(style);
+    document.body.appendChild(warning);
+
+    // Event listeners
+    document.getElementById('linkshield-clickfix-leave')?.addEventListener('click', () => {
+        window.history.back();
+        setTimeout(() => { window.location.href = 'about:blank'; }, 100);
+    });
+
+    document.getElementById('linkshield-clickfix-close')?.addEventListener('click', () => {
+        warning.remove();
+    });
+}
+
+// =============================
+// BROWSER-IN-THE-BROWSER (BitB) ATTACK DETECTION
+// Detecteert nep browser popups die OAuth/SSO logins simuleren
+// Deze aanvallen creëren fake browser vensters met nep URL bars
+// =============================
+
+let bitbDetectionInitialized = false;
+let bitbDetected = false;
+
+/**
+ * Initialiseert BitB Attack detectie
+ */
+function initBitBDetection() {
+    if (bitbDetectionInitialized) return;
+    bitbDetectionInitialized = true;
+
+    // Initiële scan na page load (wacht op dynamische content)
+    setTimeout(() => scanForBitBAttack(), 2000);
+
+    // Observer voor dynamisch geladen modals/overlays
+    const observer = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+            for (const node of mutation.addedNodes) {
+                if (node.nodeType === Node.ELEMENT_NODE) {
+                    if (isPotentialBitBContainer(node)) {
+                        clearTimeout(window._bitbScanTimeout);
+                        window._bitbScanTimeout = setTimeout(() => scanForBitBAttack(), 400);
+                        return;
+                    }
+                }
+            }
+        }
+    });
+
+    if (document.body) {
+        observer.observe(document.body, { childList: true, subtree: true });
+    }
+
+    // Click listener voor popup triggers (OAuth buttons etc.)
+    document.addEventListener('click', () => {
+        clearTimeout(window._bitbClickTimeout);
+        window._bitbClickTimeout = setTimeout(() => scanForBitBAttack(), 600);
+    }, true);
+
+    logDebug('[BitB] Detection initialized');
+}
+
+/**
+ * Check of een element een potentiële BitB container zou kunnen zijn
+ */
+function isPotentialBitBContainer(element) {
+    if (!element || !element.style) return false;
+
+    try {
+        const style = window.getComputedStyle(element);
+        const classList = (element.className || '').toLowerCase();
+
+        // Check voor fixed/absolute positioning met hoge z-index
+        if (style.position === 'fixed' || style.position === 'absolute') {
+            const zIndex = parseInt(style.zIndex) || 0;
+            if (zIndex > 1000) return true;
+        }
+
+        // Check class names voor modal/overlay indicators
+        if (/modal|popup|overlay|dialog|lightbox|signin|login/i.test(classList)) return true;
+
+        // Check role attribute
+        if (element.getAttribute('role') === 'dialog') return true;
+        if (element.getAttribute('aria-modal') === 'true') return true;
+
+    } catch (e) {
+        // Ignore errors voor elementen zonder computed style
+    }
+
+    return false;
+}
+
+/**
+ * Hoofd scan functie voor BitB detectie
+ */
+function scanForBitBAttack() {
+    if (bitbDetected) return;
+
+    try {
+        const config = globalConfig?.BITB_DETECTION;
+        if (!config) {
+            logDebug('[BitB] No config available');
+            return;
+        }
+
+        const indicators = [];
+        let totalScore = 0;
+
+        // 1. Zoek alle potentiële modal/overlay containers
+        const overlays = findOverlayContainers();
+
+        for (const overlay of overlays) {
+            const result = analyzeOverlayForBitB(overlay, config);
+            if (result.score > 0) {
+                indicators.push(...result.indicators);
+                totalScore += result.score;
+            }
+        }
+
+        // 2. Globale check voor fake URL bars (ook buiten overlays)
+        const fakeUrlBars = detectFakeUrlBarsGlobal(config);
+        if (fakeUrlBars.length > 0) {
+            indicators.push({ type: 'fakeUrlBarGlobal', count: fakeUrlBars.length });
+            totalScore += fakeUrlBars.length * config.scores.fakeUrlBar;
+        }
+
+        // Evalueer resultaat
+        const thresholds = config.thresholds;
+        if (totalScore >= thresholds.critical) {
+            bitbDetected = true;
+            reportBitBAttack('critical', indicators, totalScore);
+        } else if (totalScore >= thresholds.warning) {
+            reportBitBAttack('warning', indicators, totalScore);
+        } else if (totalScore >= thresholds.log) {
+            logDebug(`[BitB] Low confidence: ${JSON.stringify(indicators)}, score: ${totalScore}`);
+        }
+
+    } catch (error) {
+        handleError(error, '[BitB] Scan error');
+    }
+}
+
+/**
+ * Vindt alle overlay/modal containers op de pagina
+ */
+function findOverlayContainers() {
+    const candidates = [];
+    const seen = new WeakSet();
+
+    // Selecteer elementen met modal/overlay karakteristieken
+    const selectors = [
+        '[role="dialog"]',
+        '[aria-modal="true"]',
+        '.modal', '.popup', '.overlay', '.dialog', '.lightbox',
+        '[class*="modal"]', '[class*="popup"]', '[class*="overlay"]',
+        '[class*="dialog"]', '[class*="signin"]', '[class*="login-popup"]'
+    ];
+
+    try {
+        const elements = document.querySelectorAll(selectors.join(','));
+
+        elements.forEach(el => {
+            if (seen.has(el)) return;
+            seen.add(el);
+
+            try {
+                const style = window.getComputedStyle(el);
+                if (style.display !== 'none' &&
+                    style.visibility !== 'hidden' &&
+                    parseInt(style.zIndex) > 100 &&
+                    el.offsetWidth > 150 && el.offsetHeight > 150) {
+                    candidates.push(el);
+                }
+            } catch (e) { /* ignore */ }
+        });
+
+        // Ook zoeken naar fixed positioned elements met zeer hoge z-index
+        document.querySelectorAll('div, section, aside').forEach(el => {
+            if (seen.has(el)) return;
+
+            try {
+                const style = window.getComputedStyle(el);
+                if (style.position === 'fixed' &&
+                    parseInt(style.zIndex) > 9000 &&
+                    el.offsetWidth > 200 && el.offsetHeight > 200) {
+                    seen.add(el);
+                    candidates.push(el);
+                }
+            } catch (e) { /* ignore */ }
+        });
+    } catch (e) {
+        handleError(e, '[BitB] findOverlayContainers');
+    }
+
+    return candidates.slice(0, 10); // Limiteer voor performance
+}
+
+/**
+ * Analyseert een overlay container voor BitB indicatoren
+ */
+function analyzeOverlayForBitB(overlay, config) {
+    const indicators = [];
+    let score = 0;
+    const scores = config.scores;
+
+    try {
+        const overlayText = (overlay.innerText || '').toLowerCase();
+
+        // 1. Check voor fake URL bar elementen
+        const fakeUrlBar = findFakeUrlBarInElement(overlay, config);
+        if (fakeUrlBar) {
+            indicators.push({
+                type: 'fakeUrlBar',
+                url: fakeUrlBar.textContent?.substring(0, 60)
+            });
+            score += scores.fakeUrlBar;
+        }
+
+        // 2. Check voor window control buttons (close/minimize/maximize)
+        const windowControls = findWindowControls(overlay, config);
+        if (windowControls.found) {
+            indicators.push({ type: 'windowControls', details: windowControls.details });
+            score += scores.windowControls;
+        }
+
+        // 3. Check voor login form binnen overlay
+        const loginInputs = overlay.querySelectorAll(
+            'input[type="password"], input[type="email"], ' +
+            'input[name*="password"], input[name*="email"], input[name*="user"]'
+        );
+
+        if (loginInputs.length > 0) {
+            indicators.push({ type: 'loginForm', inputs: loginInputs.length });
+            score += scores.loginFormInOverlay;
+
+            // Extra score als er ook OAuth branding is
+            for (const brand of config.oauthBranding || []) {
+                if (overlayText.includes(brand.toLowerCase())) {
+                    indicators.push({ type: 'oauthBranding', brand });
+                    score += scores.oauthBrandingWithForm;
+                    break;
+                }
+            }
+        }
+
+        // 4. Check voor padlock/security icons
+        if (detectPadlockIcon(overlay)) {
+            indicators.push({ type: 'padlockIcon' });
+            score += scores.padlockIcon;
+        }
+
+        // 5. Check voor OS-achtige window chrome styling
+        if (hasWindowChromeStyle(overlay)) {
+            indicators.push({ type: 'windowChromeStyle' });
+            score += scores.windowChromeStyle;
+        }
+
+        // 6. Check voor iframe binnen modal met login
+        const iframes = overlay.querySelectorAll('iframe');
+        if (iframes.length > 0 && loginInputs.length > 0) {
+            indicators.push({ type: 'iframeInModal', count: iframes.length });
+            score += scores.iframeInModal;
+        }
+
+    } catch (error) {
+        handleError(error, '[BitB] analyzeOverlay');
+    }
+
+    return { score, indicators };
+}
+
+/**
+ * Zoekt naar elementen die eruitzien als een URL bar
+ */
+function findFakeUrlBarInElement(container, config) {
+    try {
+        const allElements = container.querySelectorAll('span, div, p, a, input[readonly]');
+        const currentHost = window.location.hostname.toLowerCase();
+
+        for (const el of allElements) {
+            // Skip grote containers
+            if (el.children.length > 3) continue;
+
+            const text = (el.textContent || '').trim();
+
+            // Check of tekst eruitziet als een URL (15-100 karakters)
+            if (text.length >= 15 && text.length <= 100) {
+                // Check tegen bekende OAuth URLs
+                for (const pattern of config.fakeUrlBarPatterns || []) {
+                    if (pattern.test(text)) {
+                        // Verifieer dat dit NIET de echte pagina URL is
+                        const textHost = text.replace(/^https?:\/\//, '').split('/')[0].toLowerCase();
+                        if (textHost !== currentHost && !currentHost.endsWith('.' + textHost)) {
+                            return el;
+                        }
+                    }
+                }
+            }
+        }
+    } catch (e) {
+        handleError(e, '[BitB] findFakeUrlBar');
+    }
+
+    return null;
+}
+
+/**
+ * Zoekt naar fake window control buttons
+ */
+function findWindowControls(container, config) {
+    const details = [];
+    const indicators = config.windowControlIndicators || {};
+
+    try {
+        const textContent = container.innerText || '';
+        const innerHTML = container.innerHTML || '';
+
+        // Check voor macOS traffic lights (● ○ ○)
+        if (indicators.trafficLights?.test(textContent)) {
+            details.push('trafficLights');
+        }
+
+        // Check voor close button karakters (× ✕ etc.)
+        if (indicators.closeButtons?.test(textContent)) {
+            details.push('closeButton');
+        }
+
+        // Check voor window control CSS classes
+        if (indicators.controlClasses?.test(innerHTML)) {
+            details.push('controlClasses');
+        }
+
+        // Check voor elementen met typische window control styling
+        const smallButtons = container.querySelectorAll('button, [role="button"], .btn');
+        let roundButtonCount = 0;
+
+        smallButtons.forEach(btn => {
+            if (btn.offsetWidth > 0 && btn.offsetWidth < 25 &&
+                btn.offsetHeight > 0 && btn.offsetHeight < 25) {
+                try {
+                    const style = window.getComputedStyle(btn);
+                    if (style.borderRadius === '50%' || parseInt(style.borderRadius) >= 10) {
+                        roundButtonCount++;
+                    }
+                } catch (e) { /* ignore */ }
+            }
+        });
+
+        if (roundButtonCount >= 2) {
+            details.push('roundButtons');
+        }
+
+    } catch (e) {
+        handleError(e, '[BitB] findWindowControls');
+    }
+
+    return { found: details.length > 0, details };
+}
+
+/**
+ * Detecteert padlock/security icons
+ */
+function detectPadlockIcon(container) {
+    try {
+        const text = container.innerText || '';
+        const html = container.innerHTML || '';
+
+        // Unicode padlock characters
+        if (/[🔒🔐🔓🛡️🔏]/.test(text)) return true;
+
+        // Images/SVGs met lock in naam
+        const lockImages = container.querySelectorAll(
+            'img[src*="lock"], img[src*="secure"], img[alt*="lock"], ' +
+            'svg[class*="lock"], [class*="padlock"], [class*="secure-icon"]'
+        );
+        if (lockImages.length > 0) return true;
+
+        // SVG paths die lijken op een lock (heuristic)
+        if (/<svg[^>]*>.*<path[^>]*d="[^"]*[Aa]\s*\d+[^"]*[Vv][^"]*".*<\/svg>/i.test(html)) {
+            // Mogelijke lock SVG - check of het klein is (icon-size)
+            const svgs = container.querySelectorAll('svg');
+            for (const svg of svgs) {
+                if (svg.offsetWidth > 10 && svg.offsetWidth < 30 &&
+                    svg.offsetHeight > 10 && svg.offsetHeight < 30) {
+                    return true;
+                }
+            }
+        }
+
+    } catch (e) { /* ignore */ }
+
+    return false;
+}
+
+/**
+ * Check of element OS-achtige window chrome styling heeft
+ */
+function hasWindowChromeStyle(element) {
+    try {
+        const style = window.getComputedStyle(element);
+
+        // Check voor typische window styling combinaties
+        const boxShadow = style.boxShadow || '';
+        const borderRadius = parseInt(style.borderRadius) || 0;
+        const backgroundColor = style.backgroundColor || '';
+
+        // macOS/Windows window-achtige shadows (diep, soft)
+        const hasDeepShadow = /rgba?\([^)]+\)\s+\d+px\s+\d+px\s+(2[0-9]|[3-9][0-9])px/.test(boxShadow);
+
+        // Window-achtige border radius (8-12px typisch voor OS windows)
+        const hasWindowRadius = borderRadius >= 8 && borderRadius <= 16;
+
+        // Heeft een "title bar" achtig kind element
+        const hasHeader = element.querySelector(
+            '[class*="header"], [class*="title"], [class*="toolbar"], [class*="top-bar"]'
+        );
+
+        // Combinatie van factoren
+        if (hasDeepShadow && hasWindowRadius) return true;
+        if (hasWindowRadius && hasHeader) return true;
+
+    } catch (e) { /* ignore */ }
+
+    return false;
+}
+
+/**
+ * Globale detectie van fake URL bars (buiten overlays)
+ */
+function detectFakeUrlBarsGlobal(config) {
+    const fakeUrlBars = [];
+    const currentHost = window.location.hostname.toLowerCase();
+
+    try {
+        // Zoek elementen die URL-tekst bevatten
+        const candidates = document.querySelectorAll(
+            '[class*="url"], [class*="address"], [class*="location-bar"], ' +
+            'input[readonly][value*="http"], span[class*="domain"]'
+        );
+
+        candidates.forEach(el => {
+            const text = (el.textContent || el.value || '').trim();
+
+            if (text.length >= 15 && text.length <= 100) {
+                for (const pattern of config.fakeUrlBarPatterns || []) {
+                    if (pattern.test(text)) {
+                        const textHost = text.replace(/^https?:\/\//, '').split('/')[0].toLowerCase();
+                        if (textHost !== currentHost) {
+                            fakeUrlBars.push({ text, element: el });
+                        }
+                        break;
+                    }
+                }
+            }
+        });
+
+    } catch (e) {
+        handleError(e, '[BitB] detectFakeUrlBarsGlobal');
+    }
+
+    return fakeUrlBars.slice(0, 5); // Limiteer resultaten
+}
+
+/**
+ * Rapporteert BitB aanval detectie
+ */
+function reportBitBAttack(severity, indicators, score) {
+    const hostname = window.location.hostname;
+    const reason = severity === 'critical' ? 'bitbAttackCritical' : 'bitbAttackWarning';
+
+    logDebug(`[BitB] Attack detected! Severity: ${severity}, Score: ${score}`);
+    logDebug(`[BitB] Indicators: ${JSON.stringify(indicators)}`);
+
+    // Stuur naar background voor icon update en logging
+    chrome.runtime.sendMessage({
+        action: 'bitbDetected',
+        data: {
+            hostname,
+            severity,
+            score,
+            indicators: indicators.map(i => i.type),
+            reason
+        }
+    }).catch(() => {});
+
+    // Toon waarschuwing aan gebruiker
+    showBitBWarning(severity, indicators, score);
+}
+
+/**
+ * Toont waarschuwing voor BitB aanval
+ * Design consistent met alert.html/caution.html
+ */
+function showBitBWarning(severity, indicators, score) {
+    // Verwijder bestaande waarschuwing
+    document.getElementById('linkshield-bitb-warning')?.remove();
+
+    const isCritical = severity === 'critical';
+
+    // Design tokens (matching shared.css)
+    const colors = {
+        danger: '#dc2626',
+        dangerLight: '#fef2f2',
+        dangerBorder: '#fecaca',
+        dangerText: '#991b1b',
+        warning: '#d97706',
+        warningLight: '#fffbeb',
+        warningBorder: '#fde68a',
+        warningText: '#92400e',
+        textSecondary: '#6b7280',
+        surface: '#ffffff',
+        border: 'rgba(0, 0, 0, 0.08)'
+    };
+
+    const themeColor = isCritical ? colors.danger : colors.warning;
+    const themeBg = isCritical ? colors.dangerLight : colors.warningLight;
+    const themeBorder = isCritical ? colors.dangerBorder : colors.warningBorder;
+    const themeText = isCritical ? colors.dangerText : colors.warningText;
+
+    const warning = document.createElement('div');
+    warning.id = 'linkshield-bitb-warning';
+    warning.style.cssText = `
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: ${colors.surface};
+        color: #1f1f1f;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+        border: 1px solid ${colors.border};
+        z-index: 2147483647;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 14px;
+        max-width: 520px;
+        min-width: 320px;
+        animation: bitbSlideIn 0.3s ease-out;
+    `;
+
+    const title = isCritical
+        ? (chrome.i18n.getMessage('bitbAttackCriticalTitle') || 'Critical: Fake Login Window!')
+        : (chrome.i18n.getMessage('bitbAttackWarningTitle') || 'Warning: Suspicious Login Popup');
+
+    const message = chrome.i18n.getMessage('bitbAttackMessage') ||
+        'This page is showing a fake browser window designed to steal your credentials. Real login popups open in separate browser windows.';
+
+    const tip = chrome.i18n.getMessage('bitbAttackTip') ||
+        'Always check the browser address bar for the real URL, not text displayed within the page.';
+
+    const closeButtonText = chrome.i18n.getMessage('bitbClosePageButton') || 'Close this page';
+    const dismissButtonText = chrome.i18n.getMessage('bitbDismissButton') || 'I understand the risk';
+
+    warning.innerHTML = `
+        <div style="
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding-bottom: 12px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid ${colors.border};
+        ">
+            <svg style="width: 20px; height: 20px; color: ${colors.textSecondary};" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            <span style="font-size: 13px; font-weight: 500; color: ${colors.textSecondary}; letter-spacing: 0.3px;">LinkShield Security</span>
+        </div>
+        <h1 style="
+            font-size: 18px;
+            text-align: center;
+            margin-bottom: 12px;
+            font-weight: 600;
+            color: ${themeColor};
+        ">${isCritical ? '🚨 ' : '⚠️ '}${title}</h1>
+        <p style="
+            text-align: center;
+            color: ${colors.textSecondary};
+            margin-bottom: 16px;
+            font-size: 14px;
+            line-height: 1.5;
+        ">${message}</p>
+        <div style="
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 14px;
+            background-color: ${themeBg};
+            color: ${themeText};
+            border: 1px solid ${themeBorder};
+            margin-bottom: 16px;
+        ">
+            <strong style="display: block; margin-bottom: 4px;">💡 Tip:</strong>
+            ${tip}
+        </div>
+        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+            <button id="linkshield-bitb-close-page" style="
+                background-color: ${themeColor};
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-weight: 500;
+                font-size: 14px;
+                transition: filter 0.2s ease;
+            ">${closeButtonText}</button>
+            <button id="linkshield-bitb-dismiss" style="
+                background-color: ${colors.textSecondary};
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 6px;
+                cursor: pointer;
+                font-size: 14px;
+                transition: filter 0.2s ease;
+            ">${dismissButtonText}</button>
+        </div>
+    `;
+
+    // Voeg animatie en hover styles toe
+    const style = document.createElement('style');
+    style.id = 'linkshield-bitb-styles';
+    style.textContent = `
+        @keyframes bitbSlideIn {
+            from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+        #linkshield-bitb-close-page:hover,
+        #linkshield-bitb-dismiss:hover {
+            filter: brightness(90%);
+        }
+    `;
+    if (!document.getElementById('linkshield-bitb-styles')) {
+        document.head.appendChild(style);
+    }
+    document.body.appendChild(warning);
+
+    // Event listeners
+    document.getElementById('linkshield-bitb-close-page')?.addEventListener('click', () => {
+        window.history.back();
+        setTimeout(() => { window.location.href = 'about:blank'; }, 100);
+    });
+
+    document.getElementById('linkshield-bitb-dismiss')?.addEventListener('click', () => {
+        warning.remove();
+    });
+
+    // Auto-remove na 30 seconden voor warnings (niet voor critical)
+    if (!isCritical) {
+        setTimeout(() => warning.remove(), 30000);
+    }
+}
+
 /**
  * Hoofd-functie die alle subsector-helpers aanroept.
  * @param {object} config
@@ -1703,6 +2613,112 @@ class LinkScannerOptimized {
     }
 
     return links;
+  }
+
+  /**
+   * Scant Shadow DOM specifiek voor verborgen login forms en phishing overlays
+   * AI-phishing kits injecteren vaak login forms in Shadow DOM om detectie te omzeilen
+   *
+   * @param {Element|Document} root - Root element om te scannen
+   * @param {number} depth - Huidige recursie diepte
+   * @returns {{detected: boolean, forms: Array, overlays: Array, reasons: string[]}}
+   */
+  scanShadowDOMForPhishing(root, depth = 0) {
+    const MAX_SHADOW_DEPTH = 5;
+    const result = {
+      detected: false,
+      forms: [],
+      overlays: [],
+      reasons: []
+    };
+
+    if (!root || depth >= MAX_SHADOW_DEPTH) return result;
+
+    try {
+      const allElements = root.querySelectorAll ? root.querySelectorAll('*') : [];
+
+      allElements.forEach(el => {
+        if (el.shadowRoot) {
+          // 1. Zoek naar login forms in Shadow DOM
+          const shadowForms = el.shadowRoot.querySelectorAll('form');
+          shadowForms.forEach(form => {
+            const hasPassword = form.querySelector('input[type="password"]');
+            const hasEmail = form.querySelector('input[type="email"], input[name*="email"], input[name*="user"]');
+
+            if (hasPassword || hasEmail) {
+              result.forms.push({
+                element: form,
+                hasPassword: !!hasPassword,
+                hasEmail: !!hasEmail,
+                action: form.action || form.getAttribute('action')
+              });
+              result.detected = true;
+              result.reasons.push('shadowDomLoginForm');
+              logDebug(`[ShadowDOM] Login form gevonden in Shadow DOM: ${form.action || 'geen action'}`);
+            }
+          });
+
+          // 2. Zoek naar verdachte overlays (login modals, fake pop-ups)
+          const shadowOverlays = el.shadowRoot.querySelectorAll(
+            '[class*="modal"], [class*="overlay"], [class*="popup"], [class*="dialog"], ' +
+            '[id*="modal"], [id*="overlay"], [id*="popup"], [id*="login"]'
+          );
+          shadowOverlays.forEach(overlay => {
+            // Check of overlay password/login velden bevat
+            const hasCredentialInputs = overlay.querySelector(
+              'input[type="password"], input[type="email"], input[name*="password"], input[name*="user"]'
+            );
+
+            if (hasCredentialInputs) {
+              // Check of het element verborgen is maar nog steeds in DOM (phishing techniek)
+              const style = window.getComputedStyle(overlay);
+              const isHidden = style.display === 'none' ||
+                              style.visibility === 'hidden' ||
+                              style.opacity === '0' ||
+                              parseInt(style.height) === 0;
+
+              result.overlays.push({
+                element: overlay,
+                isHidden,
+                hasCredentialInputs: true,
+                className: overlay.className
+              });
+
+              if (!isHidden) {
+                result.detected = true;
+                result.reasons.push('shadowDomPhishingOverlay');
+                logDebug(`[ShadowDOM] Phishing overlay gevonden: ${overlay.className || overlay.id || 'unknown'}`);
+              }
+            }
+          });
+
+          // 3. Zoek naar iframes in Shadow DOM (extra verdacht)
+          const shadowIframes = el.shadowRoot.querySelectorAll('iframe');
+          shadowIframes.forEach(iframe => {
+            if (iframe.src) {
+              result.detected = true;
+              result.reasons.push('shadowDomIframe');
+              logDebug(`[ShadowDOM] Iframe in Shadow DOM: ${iframe.src}`);
+            }
+          });
+
+          // 4. Recursief scannen
+          const nestedResult = this.scanShadowDOMForPhishing(el.shadowRoot, depth + 1);
+          if (nestedResult.detected) {
+            result.detected = true;
+            result.forms.push(...nestedResult.forms);
+            result.overlays.push(...nestedResult.overlays);
+            result.reasons.push(...nestedResult.reasons);
+          }
+        }
+      });
+    } catch (error) {
+      logDebug(`[ShadowDOM] Phishing scan error: ${error.message}`);
+    }
+
+    // Deduplicate reasons
+    result.reasons = [...new Set(result.reasons)];
+    return result;
   }
 
   /**
@@ -3280,17 +4296,31 @@ function detectHiddenIframes() {
  */
 function analyzeNRDRisk(creationDate) {
   if (!creationDate || !(creationDate instanceof Date) || isNaN(creationDate.getTime())) {
-    return { isNRD: false, ageDays: null, riskLevel: 'none', reason: null };
+    return { isNRD: false, ageDays: null, ageHours: null, riskLevel: 'none', reason: null };
   }
 
-  const ageDays = Math.floor((Date.now() - creationDate.getTime()) / (1000 * 60 * 60 * 24));
+  const ageMs = Date.now() - creationDate.getTime();
+  const ageHours = Math.floor(ageMs / (1000 * 60 * 60));
+  const ageDays = Math.floor(ageMs / (1000 * 60 * 60 * 24));
 
   // Risico classificatie gebaseerd op domein leeftijd
-  if (ageDays <= 1) {
-    // Domein vandaag of gisteren geregistreerd - KRITIEK
+  // AI-phishing kits registreren domeinen vlak voor aanvallen - ultra-jonge domeinen zijn hoogste risico
+  if (ageHours < 24) {
+    // Domein minder dan 24 uur oud - ULTRA KRITIEK (AI-phishing indicator)
+    // Dit is de primaire indicator voor agentic AI aanvallen
     return {
       isNRD: true,
       ageDays,
+      ageHours,
+      riskLevel: 'critical',
+      reason: 'nrdUltraCritical' // < 24 uur - hoogste risico
+    };
+  } else if (ageDays <= 1) {
+    // Domein 24-48 uur oud - KRITIEK
+    return {
+      isNRD: true,
+      ageDays,
+      ageHours,
       riskLevel: 'critical',
       reason: 'nrdCritical' // < 2 dagen
     };
@@ -3299,6 +4329,7 @@ function analyzeNRDRisk(creationDate) {
     return {
       isNRD: true,
       ageDays,
+      ageHours,
       riskLevel: 'high',
       reason: 'nrdHigh' // < 7 dagen
     };
@@ -3307,6 +4338,7 @@ function analyzeNRDRisk(creationDate) {
     return {
       isNRD: true,
       ageDays,
+      ageHours,
       riskLevel: 'medium',
       reason: 'nrdMedium' // < 30 dagen
     };
@@ -3315,12 +4347,13 @@ function analyzeNRDRisk(creationDate) {
     return {
       isNRD: true,
       ageDays,
+      ageHours,
       riskLevel: 'low',
       reason: 'nrdLow' // < 90 dagen
     };
   }
 
-  return { isNRD: false, ageDays, riskLevel: 'none', reason: null };
+  return { isNRD: false, ageDays, ageHours, riskLevel: 'none', reason: null };
 }
 
 /**
@@ -3342,67 +4375,153 @@ function getNRDRiskScore(riskLevel) {
  * NRD + tel: combo detectie (Vishing Indicator)
  * Detecteert tel: links op pagina's die:
  * 1. Een NRD zijn (<7 dagen oud)
- * 2. Phishing keywords bevatten
- * Dit is een sterke indicator voor vishing (voice phishing) aanvallen.
+ * 2. tel: links bevatten OF telefoonnummer-gerelateerde CTA's
+ * 3. Optioneel: phishing keywords bevatten
  *
- * @returns {Promise<{detected: boolean, score: number, reason: string|null}>}
+ * Dit is een sterke indicator voor vishing (voice phishing) aanvallen,
+ * waarbij AI-gegenereerde stemmen worden gebruikt om slachtoffers te bellen.
+ *
+ * @returns {Promise<{detected: boolean, score: number, reason: string|null, indicators: string[]}>}
  */
 async function checkNRDTelCombo() {
   try {
     const pageUrl = window.location.href;
     const pageHostname = window.location.hostname;
+    const indicators = [];
 
     // Haal domein leeftijd op via bestaande RDAP functie
     const domain = getRegistrableDomain(pageUrl);
     if (!domain) {
-      return { detected: false, score: 0, reason: null };
+      return { detected: false, score: 0, reason: null, indicators: [] };
     }
 
     const created = await fetchDomainCreationDate(domain);
     if (!created) {
-      return { detected: false, score: 0, reason: null };
+      return { detected: false, score: 0, reason: null, indicators: [] };
     }
 
     // Check of domein NRD is (<7 dagen)
     const nrdAnalysis = analyzeNRDRisk(created);
     if (!nrdAnalysis.isNRD || nrdAnalysis.ageDays > 7) {
-      return { detected: false, score: 0, reason: null };
+      return { detected: false, score: 0, reason: null, indicators: [] };
     }
 
-    // Check of pagina phishing keywords bevat
-    const phishingKeywords = globalConfig?.PHISHING_KEYWORDS || new Set([
-      'verify', 'login', 'bank', 'secure', 'account', 'update', 'confirm',
-      'password', 'credential', 'suspend', 'unlock', 'urgent'
-    ]);
+    // Indicator 1: tel: links aanwezig
+    const telLinks = document.querySelectorAll('a[href^="tel:"]');
+    const hasTelLinks = telLinks.length > 0;
+    if (hasTelLinks) {
+      indicators.push(`tel:links(${telLinks.length})`);
+    }
 
-    // Check URL en pagina content
-    const urlLower = pageUrl.toLowerCase();
-    const bodyText = document.body?.innerText?.toLowerCase() || '';
-    const titleText = document.title?.toLowerCase() || '';
+    // Indicator 2: Telefoonnummer patronen in tekst (internationale formaten)
+    const phonePatterns = [
+      /\+\d{1,4}[\s.-]?\(?\d{1,4}\)?[\s.-]?\d{1,4}[\s.-]?\d{1,9}/g, // Internationaal: +31 6 12345678
+      /\(?\d{2,4}\)?[\s.-]?\d{3,4}[\s.-]?\d{3,4}/g, // Lokaal: (020) 123-4567
+      /\d{3}[\s.-]\d{3}[\s.-]\d{4}/g, // US format: 123-456-7890
+      /0\d{9,10}/g, // NL mobiel: 0612345678
+    ];
 
-    let hasPhishingKeyword = false;
-    let foundKeyword = '';
+    const bodyText = document.body?.innerText || '';
+    let phoneMatches = 0;
+    for (const pattern of phonePatterns) {
+      const matches = bodyText.match(pattern);
+      if (matches) phoneMatches += matches.length;
+    }
+    const hasPhoneNumbers = phoneMatches > 0;
+    if (hasPhoneNumbers) {
+      indicators.push(`phoneNumbers(${phoneMatches})`);
+    }
 
-    for (const keyword of phishingKeywords) {
-      if (urlLower.includes(keyword) || bodyText.includes(keyword) || titleText.includes(keyword)) {
-        hasPhishingKeyword = true;
-        foundKeyword = keyword;
+    // Indicator 3: Vishing-specifieke CTA keywords
+    const vishingKeywords = [
+      'call us', 'bel ons', 'call now', 'bel nu', 'call immediately', 'bel direct',
+      'phone support', 'telefonische hulp', 'call back', 'terugbellen',
+      'speak to', 'spreek met', 'contact by phone', 'telefonisch contact',
+      'our agents', 'onze medewerkers', 'customer service', 'klantenservice',
+      'helpdesk', 'support line', 'hotline', 'toll free', 'gratis nummer',
+      'verify by phone', 'telefonisch verifiëren', 'confirm by call', 'bevestig telefonisch',
+      'we will call', 'wij bellen', 'expect a call', 'verwacht een telefoontje'
+    ];
+
+    const bodyTextLower = bodyText.toLowerCase();
+    const titleTextLower = document.title?.toLowerCase() || '';
+    let foundVishingKeywords = [];
+
+    for (const keyword of vishingKeywords) {
+      if (bodyTextLower.includes(keyword) || titleTextLower.includes(keyword)) {
+        foundVishingKeywords.push(keyword);
+      }
+    }
+    const hasVishingKeywords = foundVishingKeywords.length > 0;
+    if (hasVishingKeywords) {
+      indicators.push(`vishingCTA(${foundVishingKeywords.slice(0, 3).join(',')})`);
+    }
+
+    // Indicator 4: Urgentie keywords (verhogen risico bij combinatie)
+    const urgencyKeywords = [
+      'urgent', 'immediately', 'right now', 'nu meteen', 'direct actie',
+      'within 24 hours', 'binnen 24 uur', 'expires', 'verloopt', 'deadline',
+      'suspended', 'opgeschort', 'blocked', 'geblokkeerd', 'unauthorized',
+      'unusual activity', 'ongebruikelijke activiteit', 'security alert'
+    ];
+
+    let hasUrgency = false;
+    for (const keyword of urgencyKeywords) {
+      if (bodyTextLower.includes(keyword) || titleTextLower.includes(keyword)) {
+        hasUrgency = true;
+        indicators.push('urgency');
         break;
       }
     }
 
-    if (hasPhishingKeyword) {
+    // Bereken score gebaseerd op indicatoren
+    let score = 0;
+    const nrdAge = nrdAnalysis.ageHours !== undefined
+      ? `${nrdAnalysis.ageHours}h`
+      : `${nrdAnalysis.ageDays}d`;
+
+    // NRD basis score
+    if (nrdAnalysis.ageHours !== undefined && nrdAnalysis.ageHours < 24) {
+      score += 5; // Ultra-kritiek NRD
+    } else {
+      score += 3; // Kritiek NRD
+    }
+
+    // Tel links of telefoonnummers
+    if (hasTelLinks) score += 4;
+    if (hasPhoneNumbers && phoneMatches >= 2) score += 2;
+
+    // Vishing keywords
+    if (hasVishingKeywords) score += 3;
+
+    // Urgentie verhoogt risico
+    if (hasUrgency) score += 2;
+
+    // Detectie drempel: minimaal NRD + (tel links OF vishing keywords)
+    const isVishingIndicator = hasTelLinks || hasVishingKeywords || (hasPhoneNumbers && phoneMatches >= 2);
+
+    if (isVishingIndicator) {
+      logDebug(`[NRDTelCombo] Vishing indicator detected: NRD(${nrdAge}), indicators: ${indicators.join(', ')}, score: ${score}`);
+
       return {
         detected: true,
-        score: 3,
-        reason: `NRD (${nrdAnalysis.ageDays.toFixed(0)}d) + tel: + keyword "${foundKeyword}"`
+        score,
+        reason: 'nrdVishingCombo',
+        indicators,
+        details: {
+          nrdAge,
+          telLinks: telLinks.length,
+          phoneNumbers: phoneMatches,
+          vishingKeywords: foundVishingKeywords.slice(0, 5),
+          hasUrgency
+        }
       };
     }
 
-    return { detected: false, score: 0, reason: null };
+    return { detected: false, score: 0, reason: null, indicators: [] };
   } catch (error) {
     logError('[NRDTelCombo] Error:', error);
-    return { detected: false, score: 0, reason: null };
+    return { detected: false, score: 0, reason: null, indicators: [] };
   }
 }
 
@@ -3411,6 +4530,12 @@ function isValidURL(string) {
     // Blokkeer data: URLs expliciet (XSS vector)
     if (string.trim().toLowerCase().startsWith('data:')) {
       logDebug(`isValidURL: data: URL geblokkeerd: ${string.substring(0, 50)}...`);
+      return false;
+    }
+
+    // Blokkeer blob: URLs (Blob URI Phishing - lokaal gegenereerde phishing pagina's)
+    if (string.trim().toLowerCase().startsWith('blob:')) {
+      logDebug(`isValidURL: blob: URL geblokkeerd: ${string.substring(0, 50)}...`);
       return false;
     }
 
@@ -5795,8 +6920,44 @@ document.addEventListener('DOMContentLoaded', async () => {
     logDebug("🚀 Initializing content script...");
     await initContentScript(); // Wacht op configuratie en veilige domeinen
 
-    // Initialiseer Clipboard Guard voor crypto hijacking detectie
-    initClipboardGuard();
+    // Check of protection is ingeschakeld voordat speciale detectie features worden gestart
+    const protectionEnabled = await isProtectionEnabled();
+
+    // WHITELIST CHECK: Skip alle checks als domein vertrouwd is door gebruiker
+    const currentDomain = getDomainFromUrl(window.location.href);
+    if (currentDomain && await isDomainTrusted(currentDomain)) {
+      logDebug(`[Content] Domein ${currentDomain} is vertrouwd door gebruiker, skip alle security checks`);
+      // Stuur 'safe' status naar background
+      chrome.runtime.sendMessage({
+        action: 'checkResult',
+        url: window.location.href,
+        level: 'safe',
+        isSafe: true,
+        risk: 0,
+        reasons: ['trustedDomainSkipped'],
+        trustedByUser: true
+      });
+      return; // Stop hier, voer geen verdere checks uit
+    }
+
+    if (protectionEnabled) {
+      // Initialiseer Clipboard Guard voor crypto hijacking detectie
+      initClipboardGuard();
+
+      // Initialiseer ClickFix Attack detectie voor PowerShell/CMD injectie via nep-CAPTCHA
+      initClickFixDetection();
+
+      // Initialiseer Browser-in-the-Browser (BitB) detectie voor nep OAuth popups
+      initBitBDetection();
+
+      // Initialiseer Table QR Scanner voor imageless QR-code detectie (AI-phishing kits)
+      initTableQRScanner();
+      if (tableQRScanner) {
+        tableQRScanner.scanAllTables(); // Initial scan bij page load
+      }
+    } else {
+      logDebug("Protection disabled, skipping special detection features initialization");
+    }
     const currentUrl = window.location.href;
     logDebug(`🔍 Checking the current page: ${currentUrl}`);
     // --- 1. Pagina-brede checks ---
@@ -6018,6 +7179,29 @@ async function checkLinksLegacy() {
 // 2) checkCurrentUrl stuurt nu precies één bericht, incl. de uitkomst van checkLinks()
 let lastCheckedUrl = null;
 async function checkCurrentUrl() {
+  // Check of protection is ingeschakeld
+  if (!(await isProtectionEnabled())) {
+    logDebug('Protection disabled, skipping checkCurrentUrl');
+    return;
+  }
+
+  // Check of domein door gebruiker als vertrouwd is gemarkeerd
+  const currentDomain = getDomainFromUrl(window.location.href);
+  if (currentDomain && await isDomainTrusted(currentDomain)) {
+    logDebug(`[Content] Domein ${currentDomain} is vertrouwd door gebruiker, skip security checks`);
+    // Stuur 'safe' status naar background
+    chrome.runtime.sendMessage({
+      action: 'checkResult',
+      url: window.location.href,
+      level: 'safe',
+      isSafe: true,
+      risk: 0,
+      reasons: ['trustedDomainSkipped'],
+      trustedByUser: true
+    });
+    return;
+  }
+
   await ensureConfigReady();
   try {
     const currentUrl = window.location.href;
@@ -6260,6 +7444,12 @@ const observer = new MutationObserver(debounce(async (mutations) => {
   // Specifieke afhandeling voor Google zoekresultaten
   if (linksAdded && isSearchResultPage()) {
     debounceCheckGoogleSearchResults();
+  }
+
+  // Table QR Scanner: Scan voor imageless QR-codes in nieuw toegevoegde tabellen
+  // Dit detecteert AI-phishing kits die QR-codes via HTML tables renderen
+  if (tableQRScanner) {
+    debouncedTableScan();
   }
 }, 500)); // Debounce om te voorkomen dat het te vaak afvuurt
 observer.observe(document.documentElement, { childList: true, subtree: true });
@@ -6504,6 +7694,369 @@ class ImageScannerOptimized {
 // Global image scanner instance
 let imageScanner = null;
 
+// =============================================================================
+// TABLE-BASED QR CODE SCANNER (Imageless QR Detection)
+// Detecteert QR-codes die via HTML <table> elementen worden gerenderd
+// AI-phishing kits gebruiken deze techniek om image-scanning te omzeilen
+// =============================================================================
+
+const TABLE_QR_CACHE = new Map();
+const TABLE_QR_CACHE_TTL_MS = 1800000; // 30 minuten cache
+const TABLE_QR_MIN_SIZE = 21; // Minimale QR-code grootte (21x21 modules)
+const TABLE_QR_MAX_SIZE = 177; // Maximale QR-code grootte (version 40)
+
+/**
+ * TableQRScanner - Scant <table> elementen voor QR-code patronen
+ * AI-phishing kits gebruiken tables met bgcolor om QR-codes te renderen zonder images
+ */
+class TableQRScanner {
+  constructor(options = {}) {
+    this.minSize = options.minSize || TABLE_QR_MIN_SIZE;
+    this.maxSize = options.maxSize || TABLE_QR_MAX_SIZE;
+    this.cacheTTL = options.cacheTTL || TABLE_QR_CACHE_TTL_MS;
+    this.pendingTables = new Set();
+    this.isProcessing = false;
+    this.scannedTables = new WeakSet();
+
+    logDebug('[TableQR] TableQRScanner initialized');
+  }
+
+  /**
+   * Controleert of een tabel een QR-code patroon zou kunnen zijn
+   * @param {HTMLTableElement} table - Het table element om te controleren
+   * @returns {boolean} True als de tabel een potentiële QR-code is
+   */
+  isPotentialQRTable(table) {
+    if (!table || this.scannedTables.has(table)) return false;
+
+    const rows = table.querySelectorAll('tr');
+    if (rows.length < this.minSize || rows.length > this.maxSize) return false;
+
+    // Check consistentie: alle rijen moeten ongeveer evenveel cellen hebben
+    const firstRowCells = rows[0]?.querySelectorAll('td, th').length || 0;
+    if (firstRowCells < this.minSize || firstRowCells > this.maxSize) return false;
+
+    // Controleer of de tabel vierkant is (±3 cellen tolerantie)
+    if (Math.abs(rows.length - firstRowCells) > 3) return false;
+
+    // Check of minstens 30% van de cellen een achtergrondkleur heeft
+    let coloredCells = 0;
+    let totalCells = 0;
+
+    for (const row of rows) {
+      const cells = row.querySelectorAll('td, th');
+      for (const cell of cells) {
+        totalCells++;
+        const bgColor = cell.getAttribute('bgcolor') ||
+                        cell.style.backgroundColor ||
+                        window.getComputedStyle(cell).backgroundColor;
+
+        if (bgColor && bgColor !== 'transparent' && bgColor !== 'rgba(0, 0, 0, 0)') {
+          coloredCells++;
+        }
+      }
+    }
+
+    const colorRatio = coloredCells / totalCells;
+    return colorRatio >= 0.3 && colorRatio <= 0.7; // QR-codes hebben typisch 30-70% zwarte modules
+  }
+
+  /**
+   * Rendert een tabel naar een canvas en scant voor QR-code
+   * @param {HTMLTableElement} table - Het table element
+   * @returns {Promise<{detected: boolean, url: string|null, level: string, reasons: string[]}>}
+   */
+  async scanTable(table) {
+    if (typeof jsQR === 'undefined') {
+      logDebug('[TableQR] jsQR not available, skipping table scan');
+      return null;
+    }
+
+    const cacheKey = this.getTableHash(table);
+    const cached = TABLE_QR_CACHE.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < this.cacheTTL) {
+      return cached.result;
+    }
+
+    this.scannedTables.add(table);
+
+    try {
+      const rows = table.querySelectorAll('tr');
+      const rowCount = rows.length;
+      const colCount = rows[0]?.querySelectorAll('td, th').length || 0;
+
+      // Maak een off-screen canvas
+      const cellSize = 4; // Pixels per cel
+      const canvas = document.createElement('canvas');
+      canvas.width = colCount * cellSize;
+      canvas.height = rowCount * cellSize;
+      const ctx = canvas.getContext('2d');
+
+      // Witte achtergrond
+      ctx.fillStyle = 'white';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Render elke cel
+      ctx.fillStyle = 'black';
+      rows.forEach((row, y) => {
+        const cells = row.querySelectorAll('td, th');
+        cells.forEach((cell, x) => {
+          if (this.isCellDark(cell)) {
+            ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+          }
+        });
+      });
+
+      // Scan met jsQR
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const qrResult = jsQR(imageData.data, imageData.width, imageData.height);
+
+      if (qrResult && qrResult.data) {
+        const decodedUrl = qrResult.data;
+        logDebug(`[TableQR] Decoded URL from table: ${decodedUrl}`);
+
+        if (isValidURL(decodedUrl)) {
+          // Voer security checks uit op de gedecodeerde URL
+          const securityResult = await this.analyzeDecodedUrl(decodedUrl, table);
+
+          const result = {
+            detected: true,
+            type: 'table-qr',
+            url: decodedUrl,
+            ...securityResult
+          };
+
+          TABLE_QR_CACHE.set(cacheKey, { result, timestamp: Date.now() });
+          return result;
+        }
+      }
+
+      const noQrResult = { detected: false, url: null, level: 'safe', reasons: [] };
+      TABLE_QR_CACHE.set(cacheKey, { result: noQrResult, timestamp: Date.now() });
+      return noQrResult;
+
+    } catch (error) {
+      handleError(error, '[TableQR] Error scanning table');
+      return null;
+    }
+  }
+
+  /**
+   * Bepaalt of een cel "donker" is (zwart module in QR-code)
+   * @param {HTMLTableCellElement} cell - De tabel cel
+   * @returns {boolean}
+   */
+  isCellDark(cell) {
+    const bgColor = cell.getAttribute('bgcolor') ||
+                    cell.style.backgroundColor ||
+                    window.getComputedStyle(cell).backgroundColor;
+
+    if (!bgColor || bgColor === 'transparent' || bgColor === 'rgba(0, 0, 0, 0)') {
+      return false;
+    }
+
+    // Parse kleur naar RGB
+    let r = 255, g = 255, b = 255;
+    if (bgColor.startsWith('#')) {
+      const hex = bgColor.slice(1);
+      r = parseInt(hex.slice(0, 2), 16) || 255;
+      g = parseInt(hex.slice(2, 4), 16) || 255;
+      b = parseInt(hex.slice(4, 6), 16) || 255;
+    } else if (bgColor.startsWith('rgb')) {
+      const match = bgColor.match(/\d+/g);
+      if (match && match.length >= 3) {
+        [r, g, b] = match.slice(0, 3).map(Number);
+      }
+    } else {
+      // Benoemde kleuren
+      const darkColors = ['black', 'darkblue', 'darkgreen', 'darkred', 'navy', 'maroon'];
+      return darkColors.includes(bgColor.toLowerCase());
+    }
+
+    // Bereken luminantie - donker = < 128
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b);
+    return luminance < 128;
+  }
+
+  /**
+   * Genereert een simpele hash voor caching
+   */
+  getTableHash(table) {
+    const rows = table.querySelectorAll('tr');
+    let hash = `${rows.length}x${rows[0]?.querySelectorAll('td, th').length || 0}:`;
+
+    // Sample eerste, middelste en laatste rij voor hash
+    const sampleIndices = [0, Math.floor(rows.length / 2), rows.length - 1];
+    for (const idx of sampleIndices) {
+      const row = rows[idx];
+      if (row) {
+        const cells = row.querySelectorAll('td, th');
+        cells.forEach(cell => {
+          hash += this.isCellDark(cell) ? '1' : '0';
+        });
+      }
+    }
+    return hash;
+  }
+
+  /**
+   * Analyseert de gedecodeerde URL voor security threats
+   */
+  async analyzeDecodedUrl(url, tableElement) {
+    const reasons = [];
+    let totalRisk = 0;
+
+    // Basis URL checks
+    const result = await performSuspiciousChecks(url);
+    reasons.push(...result.reasons);
+    totalRisk += result.risk || 0;
+
+    // Extra risico: Table-gebaseerde QR is inherent verdacht (anti-detection techniek)
+    reasons.push('tableBasedQR');
+    totalRisk += 3;
+
+    // Check redirect chain via background script
+    try {
+      const redirectResult = await new Promise((resolve, reject) => {
+        const timeoutId = setTimeout(() => reject(new Error('Timeout')), 5000);
+        chrome.runtime.sendMessage({
+          action: 'analyzeRedirectChain',
+          url: url,
+          source: 'table-qr'
+        }, response => {
+          clearTimeout(timeoutId);
+          resolve(response || { threats: [] });
+        });
+      });
+
+      if (redirectResult.threats && redirectResult.threats.length > 0) {
+        reasons.push(...redirectResult.threats);
+        totalRisk += redirectResult.threats.length * 3;
+      }
+    } catch (e) {
+      logDebug(`[TableQR] Redirect analysis failed: ${e.message}`);
+    }
+
+    // Bepaal risico level
+    let level = 'safe';
+    if (totalRisk >= globalConfig.HIGH_THRESHOLD) {
+      level = 'alert';
+    } else if (totalRisk >= globalConfig.LOW_THRESHOLD) {
+      level = 'caution';
+    }
+
+    return { level, reasons: [...new Set(reasons)], risk: totalRisk };
+  }
+
+  /**
+   * Scant alle tabellen op de pagina (debounced)
+   */
+  async scanAllTables() {
+    const tables = document.querySelectorAll('table');
+    let scannedCount = 0;
+
+    for (const table of tables) {
+      if (this.isPotentialQRTable(table)) {
+        const result = await this.scanTable(table);
+        scannedCount++;
+
+        if (result && result.detected && result.level !== 'safe') {
+          this.warnTableQR(table, result);
+        }
+      }
+    }
+
+    if (scannedCount > 0) {
+      logDebug(`[TableQR] Scanned ${scannedCount} potential QR tables`);
+    }
+  }
+
+  /**
+   * Toont waarschuwing bij verdachte table QR-code
+   */
+  warnTableQR(table, { level, reasons = [], url }) {
+    if (table.dataset.qrWarned === 'true') return;
+    table.dataset.qrWarned = 'true';
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'linkshield-warning';
+    wrapper.style.position = 'relative';
+    wrapper.style.display = 'inline-block';
+    table.parentNode?.insertBefore(wrapper, table);
+    wrapper.appendChild(table);
+
+    const isAlert = level === 'alert';
+    const bgColor = isAlert ? 'rgba(220, 38, 38, 0.9)' : 'rgba(234, 179, 8, 0.9)';
+    const borderColor = isAlert ? '#dc2626' : '#eab308';
+    const emoji = isAlert ? '⚠️' : '⚡';
+    const title = isAlert
+      ? (chrome.i18n.getMessage('tableQrDangerTitle') || 'GEVAAR: Verborgen QR-code!')
+      : (chrome.i18n.getMessage('tableQrCautionTitle') || 'Let op: Verborgen QR-code');
+
+    const translatedReasons = Array.isArray(reasons) && reasons.length > 0
+      ? reasons.slice(0, 3).map(r => translateReason(r)).join(', ')
+      : (chrome.i18n.getMessage('hiddenQrDetected') || 'Verborgen QR-code gedetecteerd');
+
+    const displayUrl = url && url.length > 50 ? url.substring(0, 50) + '...' : url;
+
+    const overlay = document.createElement('div');
+    overlay.className = 'linkshield-overlay table-qr-warning';
+    overlay.innerHTML = `
+      <div style="font-weight:bold;font-size:14px;margin-bottom:4px;">${emoji} ${title}</div>
+      <div style="font-size:11px;margin-bottom:4px;">URL: ${displayUrl || 'Verborgen'}</div>
+      <div style="font-size:10px;opacity:0.9;">${translatedReasons}</div>
+    `;
+
+    overlay.style.cssText = `
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: ${bgColor};
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 10px;
+      z-index: 10000;
+      border: 3px solid ${borderColor};
+      border-radius: 4px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    `;
+
+    wrapper.appendChild(overlay);
+    logDebug(`[TableQR] Warning displayed for table QR: ${url}`);
+  }
+}
+
+// Global table QR scanner instance
+let tableQRScanner = null;
+
+/**
+ * Initialiseert de Table QR Scanner
+ */
+function initTableQRScanner() {
+  if (!tableQRScanner) {
+    tableQRScanner = new TableQRScanner();
+  }
+  return tableQRScanner;
+}
+
+// Debounced table scan voor MutationObserver
+const debouncedTableScan = debounce(async () => {
+  if (tableQRScanner) {
+    await tableQRScanner.scanAllTables();
+  }
+}, 500);
+
+// =============================================================================
+// END TABLE-BASED QR CODE SCANNER
+// =============================================================================
+
 /**
  * Scan image for QR codes using jsQR library (IIFE, MV3 compatible)
  */
@@ -6552,6 +8105,30 @@ async function scanImageForQR(imgEl) {
         // Perform suspicious checks
         let result = await performSuspiciousChecks(decodedUrl);
 
+        // ENHANCED: Redirect chain analyse voor QR-code URLs (AI-proxy detectie)
+        // QR-codes worden vaak gebruikt door AI-phishing kits met meerdere redirects
+        try {
+          const redirectResult = await new Promise((resolve, reject) => {
+            const timeoutId = setTimeout(() => reject(new Error('Timeout')), 6000);
+            chrome.runtime.sendMessage({
+              action: 'analyzeRedirectChain',
+              url: decodedUrl,
+              source: 'image-qr' // Markeer als QR-code bron voor prioritaire analyse
+            }, response => {
+              clearTimeout(timeoutId);
+              resolve(response || { threats: [] });
+            });
+          });
+
+          if (redirectResult.analyzed && redirectResult.threats && redirectResult.threats.length > 0) {
+            result.reasons.push(...redirectResult.threats);
+            result.risk = (result.risk || 0) + (redirectResult.threats.length * 3);
+            logDebug(`[LinkShield OCR] Redirect threats found: ${redirectResult.threats.join(', ')}`);
+          }
+        } catch (e) {
+          logDebug(`[LinkShield OCR] Redirect analysis skipped: ${e.message}`);
+        }
+
         // Integrate Chrome Safe Browsing if available
         if (chrome.safeBrowsing) {
           try {
@@ -6567,6 +8144,13 @@ async function scanImageForQR(imgEl) {
         if (contextReasons.length > 0) {
           result.reasons = [...result.reasons, ...contextReasons];
           if (result.level === 'safe') result.level = 'caution';
+        }
+
+        // Herbereken level op basis van totale risk
+        if (result.risk >= globalConfig.HIGH_THRESHOLD) {
+          result.level = 'alert';
+        } else if (result.risk >= globalConfig.LOW_THRESHOLD && result.level === 'safe') {
+          result.level = 'caution';
         }
 
         if (result.level !== 'safe') {

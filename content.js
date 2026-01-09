@@ -157,6 +157,42 @@ if (!window.linkSafetyCache) {
 if (!window.linkRiskCache) {
   window.linkRiskCache = new Map();
 }
+
+// ============================================================================
+// TRUSTED DOMAINS WHITELIST - User-defined trusted domains
+// ============================================================================
+
+/**
+ * Controleert of een domein door de gebruiker als vertrouwd is gemarkeerd
+ * @param {string} domain - Het te controleren domein (hostname)
+ * @returns {Promise<boolean>} - true als het domein vertrouwd is
+ */
+async function isDomainTrusted(domain) {
+  if (!domain) return false;
+  try {
+    const { trustedDomains = [] } = await chrome.storage.sync.get('trustedDomains');
+    // Check exact match of subdomein van vertrouwd domein
+    return trustedDomains.some(trusted =>
+      domain === trusted || domain.endsWith('.' + trusted)
+    );
+  } catch (error) {
+    logError('[Whitelist] Fout bij ophalen vertrouwde domeinen:', error);
+    return false;
+  }
+}
+
+/**
+ * Haalt het domein uit een URL
+ * @param {string} url - De URL
+ * @returns {string|null} - Het domein of null bij fout
+ */
+function getDomainFromUrl(url) {
+  try {
+    return new URL(url).hostname;
+  } catch {
+    return null;
+  }
+}
 // Throttle tracking variables (global scope for persistence)
 let lastIframeCheck = 0;
 let lastScriptCheck = 0;
@@ -6887,6 +6923,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Check of protection is ingeschakeld voordat speciale detectie features worden gestart
     const protectionEnabled = await isProtectionEnabled();
 
+    // WHITELIST CHECK: Skip alle checks als domein vertrouwd is door gebruiker
+    const currentDomain = getDomainFromUrl(window.location.href);
+    if (currentDomain && await isDomainTrusted(currentDomain)) {
+      logDebug(`[Content] Domein ${currentDomain} is vertrouwd door gebruiker, skip alle security checks`);
+      // Stuur 'safe' status naar background
+      chrome.runtime.sendMessage({
+        action: 'checkResult',
+        url: window.location.href,
+        level: 'safe',
+        isSafe: true,
+        risk: 0,
+        reasons: ['trustedDomainSkipped'],
+        trustedByUser: true
+      });
+      return; // Stop hier, voer geen verdere checks uit
+    }
+
     if (protectionEnabled) {
       // Initialiseer Clipboard Guard voor crypto hijacking detectie
       initClipboardGuard();
@@ -7131,6 +7184,24 @@ async function checkCurrentUrl() {
     logDebug('Protection disabled, skipping checkCurrentUrl');
     return;
   }
+
+  // Check of domein door gebruiker als vertrouwd is gemarkeerd
+  const currentDomain = getDomainFromUrl(window.location.href);
+  if (currentDomain && await isDomainTrusted(currentDomain)) {
+    logDebug(`[Content] Domein ${currentDomain} is vertrouwd door gebruiker, skip security checks`);
+    // Stuur 'safe' status naar background
+    chrome.runtime.sendMessage({
+      action: 'checkResult',
+      url: window.location.href,
+      level: 'safe',
+      isSafe: true,
+      risk: 0,
+      reasons: ['trustedDomainSkipped'],
+      trustedByUser: true
+    });
+    return;
+  }
+
   await ensureConfigReady();
   try {
     const currentUrl = window.location.href;

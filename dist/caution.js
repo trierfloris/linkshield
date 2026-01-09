@@ -4,6 +4,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const maxRetries = 5;
     let retryCount = 0;
+    let currentDomain = null; // Track het huidige domein voor de trust-button
 
     // Element references
     const el = {
@@ -15,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
         reasons:  document.getElementById('reason-list'),
         advice:   document.getElementById('advice'),
         closeBtn: document.getElementById('close-warning'),
-        markSafe: document.getElementById('mark-safe')
+        trustDomainBtn: document.getElementById('trust-domain')
     };
 
     // Vul statische i18n teksten
@@ -35,10 +36,13 @@ document.addEventListener('DOMContentLoaded', () => {
         // Hostname & URL
         try {
             const u = new URL(url);
+            currentDomain = u.hostname; // Track domein voor trust-button
             el.siteName.textContent = u.hostname;
             el.urlLink.href = url;
             el.urlLink.textContent = url;
-        } catch {}
+        } catch {
+            currentDomain = null;
+        }
 
         // Dynamisch risiconiveau via i18n
         let riskKey;
@@ -90,12 +94,48 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Knoppen
-    el.closeBtn?.addEventListener('click', () => window.close());
-    el.markSafe?.addEventListener('click', () => {
-        chrome.storage.local.get('currentSiteStatus', ({ currentSiteStatus }) => {
-            const newStatus = { ...currentSiteStatus, level: 'safe', isSafe: true };
-            chrome.storage.local.set({ currentSiteStatus: newStatus }, () => window.close());
-        });
+    // Trust Domain Button - voeg domein toe aan whitelist
+    el.trustDomainBtn?.addEventListener('click', async () => {
+        if (!currentDomain) return;
+
+        try {
+            // Haal huidige whitelist op
+            const { trustedDomains = [] } = await chrome.storage.sync.get('trustedDomains');
+
+            // Voeg domein toe als het nog niet bestaat
+            if (!trustedDomains.includes(currentDomain)) {
+                trustedDomains.push(currentDomain);
+                await chrome.storage.sync.set({ trustedDomains });
+            }
+
+            // Reset de huidige site status naar safe
+            const { currentSiteStatus } = await chrome.storage.local.get('currentSiteStatus');
+            if (currentSiteStatus && currentSiteStatus.url) {
+                await chrome.storage.local.set({
+                    currentSiteStatus: {
+                        ...currentSiteStatus,
+                        level: 'safe',
+                        isSafe: true,
+                        trustedByUser: true
+                    }
+                });
+
+                // Navigeer terug naar de originele URL via chrome.tabs API
+                const originalUrl = currentSiteStatus.url;
+                chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+                    if (tabs[0]) {
+                        chrome.tabs.update(tabs[0].id, { url: originalUrl });
+                    }
+                });
+            }
+
+            // Sluit popup
+            window.close();
+        } catch (error) {
+            console.error('[Caution] Fout bij toevoegen aan whitelist:', error);
+        }
     });
+
+    // Close Button
+    el.closeBtn?.addEventListener('click', () => window.close());
 });

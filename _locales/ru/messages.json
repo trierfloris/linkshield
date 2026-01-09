@@ -1108,5 +1108,11 @@
   },
   "bitbDismissButton": {
     "message": "Я понимаю риск"
+  },
+  "trustDomainButton": {
+    "message": "Доверять этому домену"
+  },
+  "trustedDomainSkipped": {
+    "message": "Этот домен был отмечен вами как доверенный."
   }
 }

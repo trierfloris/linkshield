@@ -114,7 +114,7 @@
     "message": "Achtergrondcontrole"
   },
   "backgroundAnalysisDescription": {
-    "message": "Blokkeer gevaarlijke websites nog voordat je ze bezoekt."
+    "message": "Realtime bescherming. Elk uur bijgewerkt. Wereldwijde dekking."
   },
   "activationRequired": {
     "message": "Schakel deze functie in om deze te gebruiken."
@@ -123,7 +123,7 @@
     "message": "Ingebouwde bescherming"
   },
   "integratedProtectionDescription": {
-    "message": "Controleert websites en links direct op risicovolle kenmerken."
+    "message": "Combineert meerdere beveiligingsdiensten voor uitgebreide bescherming."
   },
   "premiumFeaturesActive": {
     "message": "Je gebruikt nu de premiumversie!"
@@ -464,7 +464,6 @@
   "suspiciousPunycodeDecoding_paypal_com": {
     "message": "Deze link gebruikt ongebruikelijke tekens om op paypal.com te lijken (hoog risico)."
   },
-
   "reason_nonAscii": {
     "message": "Verdachte tekens gedetecteerd (homoglyphs)"
   },
@@ -525,7 +524,6 @@
   "reason_similarToLegitimateDomain": {
     "message": "Lijkt op legitiem domein"
   },
-
   "qrDangerTitle": {
     "message": "GEVAAR: Phishing QR-code!"
   },
@@ -559,7 +557,6 @@
   "extractedText": {
     "message": "Geëxtraheerde tekst"
   },
-
   "trialPeriodActive": {
     "message": "Proefperiode actief"
   },
@@ -581,7 +578,6 @@
   "upgradeNow": {
     "message": "Nu upgraden"
   },
-
   "popupPageTitle": {
     "message": "LinkShield Dashboard"
   },
@@ -591,7 +587,6 @@
   "extDescriptionFull": {
     "message": "Verhoog jouw veiligheid met directe alerts en geavanceerde bescherming tegen online bedreigingen."
   },
-
   "licenseTrialTitle": {
     "message": "Proefperiode: $DAYS$ dagen resterend",
     "placeholders": {
@@ -634,7 +629,6 @@
   "licensePremiumSubtitle": {
     "message": "Volledige bescherming ingeschakeld"
   },
-
   "sectionSecuritySettings": {
     "message": "Beveiligingsinstellingen"
   },
@@ -650,9 +644,6 @@
   "integratedProtectionFeature": {
     "message": "Geïntegreerde Malware- en Phishingbescherming"
   },
-  "integratedProtectionDescription": {
-    "message": "Combineert meerdere beveiligingsdiensten voor uitgebreide bescherming."
-  },
   "confirmationMessage": {
     "message": "Instellingen succesvol opgeslagen!"
   },
@@ -662,7 +653,6 @@
   "errorOccurred": {
     "message": "Er is een fout opgetreden"
   },
-
   "gumroadErrorUnknown": {
     "message": "Onbekende fout"
   },
@@ -693,7 +683,6 @@
   "gumroadErrorNetwork": {
     "message": "Netwerkfout tijdens validatie. Controleer je internetverbinding."
   },
-
   "licenseEmptyError": {
     "message": "Voer een licentiecode in"
   },
@@ -706,7 +695,6 @@
   "licenseConnectionError": {
     "message": "Verbindingsfout. Probeer het opnieuw."
   },
-
   "debugModeTitle": {
     "message": "Debug Mode"
   },
@@ -800,7 +788,6 @@
   "reason_nullByteInjection": {
     "message": "Null-byte injectie gedetecteerd (hoog risico). Deze techniek wordt gebruikt om beveiligingsfilters te omzeilen en kan wijzen op een kwaadaardige link."
   },
-
   "formActionHijacking": {
     "message": "Dit inlogformulier stuurt je gegevens naar een externe website (kritiek risico). Je gebruikersnaam en wachtwoord kunnen worden gestolen."
   },
@@ -816,7 +803,6 @@
   "formActionInvalid": {
     "message": "Inlogformulier heeft een ongeldige of verdachte actie-URL (hoog risico). Je gegevens worden mogelijk niet veilig verzonden."
   },
-
   "hiddenIframeZeroSize": {
     "message": "Verborgen iframe met nul-grootte gedetecteerd (hoog risico). Dit kan worden gebruikt om onzichtbaar kwaadaardige inhoud te laden."
   },
@@ -829,7 +815,6 @@
   "hiddenIframeNegativePos": {
     "message": "Iframe met negatieve positionering gedetecteerd (gemiddeld risico). Deze techniek wordt gebruikt om inhoud voor gebruikers te verbergen."
   },
-
   "nrdCritical": {
     "message": "KRITIEK: Domein $DAYS$ dag(en) geleden geregistreerd (kritiek risico). Gloednieuwe domeinen zijn zeer waarschijnlijk kwaadaardig.",
     "placeholders": {
@@ -866,7 +851,6 @@
       }
     }
   },
-
   "licenseErrorNotFound": {
     "message": "Licentiesleutel niet gevonden. Controleer je invoer."
   },
@@ -890,5 +874,239 @@
   },
   "licenseErrorUnknown": {
     "message": "Er is een onbekende fout opgetreden tijdens de validatie."
+  },
+  "invalidUrlFormat": {
+    "message": "Ongeldig URL-formaat. Het webadres kon niet correct worden verwerkt."
+  },
+  "invalidDomain": {
+    "message": "Ongeldig domein. Het website-adres is onjuist of onvolledig."
+  },
+  "trustedDomain": {
+    "message": "Dit is een vertrouwd domein dat als veilig is geverifieerd."
+  },
+  "errorCalculatingRisk": {
+    "message": "Fout bij het berekenen van de risicoscore. Probeer het opnieuw."
+  },
+  "punycodeDecodingError": {
+    "message": "Fout bij het decoderen van internationale tekens in de domeinnaam."
+  },
+  "fileProtocol": {
+    "message": "Deze link gebruikt het file:// protocol dat lokale bestanden opent."
+  },
+  "invalidHostname": {
+    "message": "Ongeldige hostnaam. Het domeinnaamformaat is onjuist."
+  },
+  "urlTooLong": {
+    "message": "Deze URL is ongewoon lang (gemiddeld risico). Zeer lange URLs kunnen worden gebruikt om schadelijke inhoud te verbergen."
+  },
+  "nonAscii": {
+    "message": "Deze URL bevat niet-ASCII tekens die kunnen worden gebruikt voor misleiding."
+  },
+  "typosquattingPattern": {
+    "message": "Dit domein komt overeen met een typosquatting-patroon (hoog risico). Het lijkt een legitieme website na te bootsen."
+  },
+  "suspiciousIframes": {
+    "message": "Verdachte iframe-elementen gedetecteerd op deze pagina."
+  },
+  "suspiciousScripts": {
+    "message": "Verdachte scripts gedetecteerd op deze pagina."
+  },
+  "hiddenIframes": {
+    "message": "Verborgen iframe-elementen gedetecteerd op deze pagina die kunnen worden gebruikt voor kwaadaardige doeleinden."
+  },
+  "unifiedCheckError": {
+    "message": "Fout tijdens beveiligingscontrole. Sommige controles zijn mogelijk niet voltooid."
+  },
+  "initializationError": {
+    "message": "Fout bij initialiseren van beveiligingsscanner. Herlaad de pagina."
+  },
+  "checkCurrentUrlError": {
+    "message": "Fout bij controleren van huidige URL-beveiliging."
+  },
+  "neutralIconTitle": {
+    "message": "LinkShield - Bescherming Actief"
+  },
+  "installNotificationTitle": {
+    "message": "LinkShield Geïnstalleerd"
+  },
+  "installNotificationMessage": {
+    "message": "Je bent nu beschermd tegen phishing en schadelijke websites."
+  },
+  "not_eligible": {
+    "message": "Niet in aanmerking voor deze functie"
+  },
+  "trial_expired": {
+    "message": "Je proefperiode is verlopen"
+  },
+  "Error": {
+    "message": "Fout"
+  },
+  "siteSafeTitle": {
+    "message": "Site lijkt veilig"
+  },
+  "siteCautionTitle": {
+    "message": "Ga voorzichtig verder"
+  },
+  "siteAlertTitle": {
+    "message": "Waarschuwing: Mogelijke bedreiging gedetecteerd"
+  },
+  "clipboardHijackingCryptoTitle": {
+    "message": "Crypto-adres kaping gedetecteerd!"
+  },
+  "clipboardHijackingTitle": {
+    "message": "Klembord manipulatie gedetecteerd!"
+  },
+  "clipboardHijackingMessage": {
+    "message": "Deze pagina probeert je klembord te wijzigen. Wees voorzichtig bij het plakken van wallet-adressen of gevoelige gegevens."
+  },
+  "reason_clipboardHijackingCrypto": {
+    "message": "KRITIEK: Deze pagina kaapt je klembord met crypto-adressen (kritiek risico). Gekopieerde wallet-adressen kunnen worden vervangen door adressen van aanvallers."
+  },
+  "reason_clipboardHijackingDetected": {
+    "message": "Deze pagina manipuleert je klembordinhoud (hoog risico). Geplakte inhoud kan afwijken van wat je hebt gekopieerd."
+  },
+  "brandSubdomainPhishing": {
+    "message": "Merknaam gedetecteerd op gratis hostingplatform (hoog risico). Legitieme bedrijven gebruiken geen gratis hosting voor officiële diensten."
+  },
+  "reason_brandSubdomainPhishing": {
+    "message": "Merknaam gedetecteerd op gratis hostingplatform (hoog risico). Legitieme bedrijven gebruiken geen gratis hosting voor officiële diensten."
+  },
+  "nrdTelCombo": {
+    "message": "Telefoonnummer op nieuw geregistreerd domein met phishing-zoekwoorden (gemiddeld risico). Dit kan een vishing (voice phishing) poging zijn."
+  },
+  "reason_nrdTelCombo": {
+    "message": "Telefoonnummer op nieuw geregistreerd domein met phishing-zoekwoorden (gemiddeld risico). Dit kan een vishing (voice phishing) poging zijn."
+  },
+  "reason_opaqueRedirectChain": {
+    "message": "Ondoorzichtige redirect gedetecteerd (laag risico). De redirect-bestemming kon niet volledig worden getraceerd."
+  },
+  "reason_opaqueRedirectToIP": {
+    "message": "Ondoorzichtige redirect naar IP-adres (hoog risico). De verborgen redirect leidt naar een ruw IP-adres in plaats van een domein."
+  },
+  "reason_opaqueRedirectSuspiciousTLD": {
+    "message": "Ondoorzichtige redirect naar verdachte domeinextensie (gemiddeld risico). De verborgen redirect leidt naar een riskante TLD."
+  },
+  "reason_opaqueRedirectNRD": {
+    "message": "Ondoorzichtige redirect naar nieuw geregistreerd domein (hoog risico). De verborgen redirect leidt naar een zeer nieuw domein."
+  },
+  "bitbWarningTitle": {
+    "message": "Nep Login-venster Gedetecteerd!"
+  },
+  "bitbWarningMessage": {
+    "message": "Deze pagina toont een gesimuleerd browservenster dat een echte login-popup nabootst. Dit is een Browser-in-the-Browser (BitB) aanval ontworpen om je inloggegevens te stelen. De 'popup' is eigenlijk gewoon HTML/CSS die eruit ziet als een echt browservenster."
+  },
+  "reason_bitbAttackDetected": {
+    "message": "Browser-in-the-Browser aanval gedetecteerd (kritiek risico). Deze pagina toont een nep browservenster om je inloggegevens te stelen."
+  },
+  "reason_bitbFakeUrlBar": {
+    "message": "Nep URL-balk gedetecteerd met vertrouwd domein (kritiek risico). Het getoonde adres is nep en ontworpen om je te misleiden."
+  },
+  "reason_bitbWindowControls": {
+    "message": "Nep vensterknoppen gedetecteerd (hoog risico). Sluiten/minimaliseren knoppen zijn gesimuleerd om op een echte popup te lijken."
+  },
+  "reason_bitbLoginFormInOverlay": {
+    "message": "Loginformulier in overlay gedetecteerd (hoog risico). Echte login-popups openen in aparte browservensters, niet in overlays."
+  },
+  "reason_bitbOAuthBranding": {
+    "message": "OAuth branding met loginformulier in overlay (hoog risico). 'Inloggen met Google/Microsoft' knoppen in nep-popups zijn credential diefstal."
+  },
+  "reason_bitbPadlockIcon": {
+    "message": "Nep beveiligings-hangslot icoon gedetecteerd (gemiddeld risico). Echte hangsloten verschijnen in de browser adresbalk, niet in pagina-inhoud."
+  },
+  "reason_bitbWindowChrome": {
+    "message": "Gesimuleerde browservenster styling gedetecteerd (gemiddeld risico). De overlay is gestyled om op een besturingssysteem venster te lijken."
+  },
+  "reason_bitbIframeInModal": {
+    "message": "Iframe in modal overlay gedetecteerd (laag risico). Dit kan worden gebruikt om externe login-inhoud te laden."
+  },
+  "clickFixPowerShellTitle": {
+    "message": "PowerShell Commando Gedetecteerd!"
+  },
+  "clickFixCommandTitle": {
+    "message": "Commando Injectie Gedetecteerd!"
+  },
+  "clickFixMessage": {
+    "message": "Deze pagina bevat een verdacht commando dat uw computer kan beschadigen. Kopieer of voer dit commando niet uit."
+  },
+  "clickFixSubMessage": {
+    "message": "Aanvallers vermommen schadelijke commando's vaak als 'fixes' of 'verificatiestappen'. Voer nooit commando's uit van onbetrouwbare bronnen."
+  },
+  "bitbAttackCriticalTitle": {
+    "message": "Kritiek: Nep Login Venster!"
+  },
+  "bitbAttackWarningTitle": {
+    "message": "Waarschuwing: Verdachte Login Popup"
+  },
+  "bitbAttackMessage": {
+    "message": "Deze pagina toont een nep browservenster ontworpen om uw inloggegevens te stelen. Echte login popups openen in aparte browservensters."
+  },
+  "bitbAttackTip": {
+    "message": "Controleer altijd de browser adresbalk voor de echte URL, niet tekst die in de pagina wordt weergegeven."
+  },
+  "shadowDomLoginForm": {
+    "message": "Loginformulier verborgen in Shadow DOM gedetecteerd (hoog risico). Deze techniek wordt gebruikt om beveiligingsscanners te omzeilen."
+  },
+  "shadowDomPhishingOverlay": {
+    "message": "Phishing overlay verborgen in Shadow DOM gedetecteerd (kritiek risico). Shadow DOM wordt gebruikt om schadelijke inhoud te verbergen."
+  },
+  "shadowDomIframe": {
+    "message": "Verdachte iframe verborgen in Shadow DOM gedetecteerd (hoog risico). Verborgen iframes kunnen worden gebruikt voor credential diefstal."
+  },
+  "urlCredentialsAttack": {
+    "message": "URL bevat credentials in aanvalsformaat (kritiek risico). Het zichtbare domein is nep - u wordt doorgestuurd naar elders."
+  },
+  "nrdUltraCritical": {
+    "message": "Domein slechts uren geleden geregistreerd (kritiek risico). Dit is zeer verdacht en wordt vaak gebruikt voor phishing."
+  },
+  "nrdVishingCombo": {
+    "message": "Telefoonnummer op nieuw geregistreerd domein met phishing indicatoren (hoog risico). Dit kan een vishing (voice phishing) poging zijn."
+  },
+  "tableBasedQR": {
+    "message": "QR-code verborgen in HTML-tabel gedetecteerd (gemiddeld risico). Deze techniek wordt gebruikt om image-gebaseerde QR-detectie te omzeilen."
+  },
+  "tableQrDangerTitle": {
+    "message": "Gevaarlijke Link in Verborgen QR-code"
+  },
+  "tableQrCautionTitle": {
+    "message": "Verdachte Link in Verborgen QR-code"
+  },
+  "hiddenQrDetected": {
+    "message": "Verborgen QR-code gedetecteerd in pagina-inhoud. Dit kan een schadelijke URL bevatten."
+  },
+  "bitbAttackCritical": {
+    "message": "KRITIEK: Browser-in-the-Browser aanval gedetecteerd! Deze pagina toont een nep inlogvenster om je inloggegevens te stelen."
+  },
+  "bitbAttackWarning": {
+    "message": "Waarschuwing: Verdachte popup gedetecteerd die mogelijk een Browser-in-the-Browser aanval is. Controleer de URL zorgvuldig."
+  },
+  "clickFixDetected": {
+    "message": "ClickFix aanval gedetecteerd! Deze pagina bevat een kwaadaardig commando vermomd als fix of verificatiestap. Kopieer of voer het niet uit."
+  },
+  "clipboardHijacking": {
+    "message": "Klembord-kaping gedetecteerd! Deze pagina probeert je klembordinhoud zonder toestemming te wijzigen."
+  },
+  "hiddenIframe": {
+    "message": "Verborgen iframe gedetecteerd op deze pagina. Onzichtbare frames kunnen worden gebruikt voor tracking, credential-diefstal of malware."
+  },
+  "typosquatting": {
+    "message": "Typosquatting gedetecteerd! Dit domein is opzettelijk verkeerd gespeld om een legitieme website na te bootsen."
+  },
+  "ipAddressDomain": {
+    "message": "Deze website gebruikt een IP-adres in plaats van een domeinnaam. Dit is zeer ongebruikelijk en duidt vaak op kwaadaardige bedoelingen."
+  },
+  "extremeSubdomains": {
+    "message": "Extreem aantal subdomeinen gedetecteerd. Deze techniek wordt vaak gebruikt om kwaadaardige URLs te verbergen of legitieme sites na te bootsen."
+  },
+  "vishingDetected": {
+    "message": "Mogelijke vishing (voice phishing) aanval gedetecteerd. Deze pagina combineert telefoonnummers met phishing-indicatoren."
+  },
+  "punycodeDetected": {
+    "message": "Punycode-domein gedetecteerd! Dit adres gebruikt internationale tekens die mogelijk een legitieme website nabootsen."
+  },
+  "bitbClosePageButton": {
+    "message": "Sluit deze pagina"
+  },
+  "bitbDismissButton": {
+    "message": "Ik begrijp het risico"
   }
 }

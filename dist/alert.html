@@ -4,71 +4,46 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title data-i18n="alertTitle"></title>
+  <link rel="stylesheet" href="shared.css">
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    /* Alert-specific: danger theme */
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #F8D7DA; /* lichtroze achtergrond voor alarm */
-      color: #1F1F1F;
-      line-height: 1.5;
-      padding: 20px;
-      display: flex; justify-content: center; align-items: flex-start;
+      background-color: #fef2f2;
     }
-    #warning-container {
-      width: 100%; max-width: 600px; min-width: 280px;
-      background: #FFFFFF;
-      border-radius: 5px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      padding: 20px;
-    }
+
     h1 {
-      color: #721C24;         /* donkerrood */
-      font-size: 1.2rem;
-      text-align: center;
-      margin-bottom: 10px;
+      color: var(--color-danger);
     }
-    #url-info {
-      text-align: center;
-      color: #555555;
-      margin-bottom: 15px;
-      font-size: 0.9rem;
-    }
+
     #url-info a {
-      color: #C82333;
-      text-decoration: underline;
+      color: var(--color-danger);
     }
+
     .risk-level {
-      font-weight: bold;
-      color: #C82333;         /* rood */
-      margin-bottom: 15px;
-      font-size: 0.9rem;
+      color: var(--color-danger);
     }
-    .reasons ul {
-      margin: .5em 0 1em 1.2em;
-      list-style: disc;
-      color: #555555;
-      font-size: 0.9rem;
-    }
-    .reason-label {
-      font-weight: bold;
-      display: block;
-      margin-bottom: 0.3em;
-    }
+
     .advice {
-      background-color: #F5C6CB; /* lichtere rode advise-box */
-      color: #721C24;
-      padding: 10px;
-      border-radius: 4px;
-      font-size: 0.9rem;
+      background-color: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
     }
   </style>
 </head>
 <body>
   <div id="warning-container">
+    <!-- Branded Header -->
+    <div class="brand-header">
+      <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+      </svg>
+      <span class="brand-text">LinkShield Security</span>
+    </div>
+
     <h1 data-i18n="alertTitle"></h1>
     <p id="url-info">
-      <span data-i18n="alertMessage"></span>
-      <strong id="site-name" style="color:#007BFF;"></strong><br>
+      <span data-i18n="alertMessage"></span><br>
+      <strong id="site-name" style="color: var(--color-danger);"></strong><br>
       <a id="url-link" href="#" target="_blank"></a>
     </p>
     <div class="risk-level">
@@ -82,6 +57,10 @@
     <div class="advice">
       <div data-i18n="adviceMessage"></div>
       <div data-i18n="adviceCheckUrl"></div>
+    </div>
+    <div class="action-buttons">
+      <button id="trust-domain" class="button trust-btn" data-i18n="trustDomainButton"></button>
+      <button id="close-warning" class="button close-btn" data-i18n="bitbClosePageButton"></button>
     </div>
   </div>
   <script src="alert.js"></script>

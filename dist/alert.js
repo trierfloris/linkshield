@@ -5,6 +5,7 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const maxRetries = 5;
     let retryCount = 0;
+    let currentDomain = null; // Track het huidige domein voor de trust-button
 
     // DOM-elementen cachen
     const elements = {
@@ -12,7 +13,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         siteName:     document.getElementById('site-name'),
         urlLink:      document.getElementById('url-link'),
         reasonList:   document.getElementById('reason-list'),
-        adviceCheckUrl: document.querySelector('.advice [data-i18n="adviceCheckUrl"]')
+        adviceCheckUrl: document.querySelector('.advice [data-i18n="adviceCheckUrl"]'),
+        trustDomainBtn: document.getElementById('trust-domain'),
+        closeBtn: document.getElementById('close-warning')
     };
 
     // Helper delay
@@ -35,10 +38,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Hostname & URL
         try {
             const u = new URL(url);
+            currentDomain = u.hostname; // Track domein voor trust-button
             elements.siteName.textContent = u.hostname;
             elements.urlLink.href = url;
             elements.urlLink.textContent = url;
         } catch {
+            currentDomain = null;
             elements.siteName.textContent = chrome.i18n.getMessage('invalidUrl');
             elements.urlLink.textContent = url;
             elements.urlLink.href = url;
@@ -96,4 +101,41 @@ document.addEventListener('DOMContentLoaded', async () => {
             updateSiteStatus(changes.currentSiteStatus.newValue);
         }
     });
+
+    // Trust Domain Button - voeg domein toe aan whitelist
+    elements.trustDomainBtn?.addEventListener('click', async () => {
+        if (!currentDomain) return;
+
+        try {
+            // Haal huidige whitelist op
+            const { trustedDomains = [] } = await chrome.storage.sync.get('trustedDomains');
+
+            // Voeg domein toe als het nog niet bestaat
+            if (!trustedDomains.includes(currentDomain)) {
+                trustedDomains.push(currentDomain);
+                await chrome.storage.sync.set({ trustedDomains });
+            }
+
+            // Reset de huidige site status naar safe
+            const { currentSiteStatus } = await chrome.storage.local.get('currentSiteStatus');
+            if (currentSiteStatus) {
+                await chrome.storage.local.set({
+                    currentSiteStatus: {
+                        ...currentSiteStatus,
+                        level: 'safe',
+                        isSafe: true,
+                        trustedByUser: true
+                    }
+                });
+            }
+
+            // Sluit het venster
+            window.close();
+        } catch (error) {
+            console.error('[Alert] Fout bij toevoegen aan whitelist:', error);
+        }
+    });
+
+    // Close Button
+    elements.closeBtn?.addEventListener('click', () => window.close());
 });

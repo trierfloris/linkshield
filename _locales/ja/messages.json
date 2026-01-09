@@ -1108,5 +1108,11 @@
   },
   "bitbDismissButton": {
     "message": "リスクを理解しました"
+  },
+  "trustDomainButton": {
+    "message": "このドメインを信頼する"
+  },
+  "trustedDomainSkipped": {
+    "message": "このドメインは信頼済みとしてマークされています。"
   }
 }

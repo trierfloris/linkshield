@@ -114,7 +114,7 @@
     "message": "后台扫描"
   },
   "backgroundAnalysisDescription": {
-    "message": "在您访问危险网站之前就将其阻止。"
+    "message": "实时保护。每小时更新。全球覆盖。"
   },
   "activationRequired": {
     "message": "请启用此功能以使用它。"
@@ -123,7 +123,7 @@
     "message": "集成保护"
   },
   "integratedProtectionDescription": {
-    "message": "直接检查网站和链接是否存在风险特征。"
+    "message": "结合多种安全服务提供全面保护。"
   },
   "premiumFeaturesActive": {
     "message": "您现在正在使用高级版本！"
@@ -464,7 +464,6 @@
   "suspiciousPunycodeDecoding_paypal_com": {
     "message": "此链接使用不寻常的字符使其看起来像 paypal.com（高风险）。"
   },
-
   "reason_nonAscii": {
     "message": "检测到可疑字符（同形字）"
   },
@@ -525,7 +524,6 @@
   "reason_similarToLegitimateDomain": {
     "message": "与合法域名相似"
   },
-
   "qrDangerTitle": {
     "message": "危险：钓鱼二维码！"
   },
@@ -559,7 +557,6 @@
   "extractedText": {
     "message": "提取的文字"
   },
-
   "trialPeriodActive": {
     "message": "试用期活跃"
   },
@@ -581,7 +578,6 @@
   "upgradeNow": {
     "message": "立即升级"
   },
-
   "popupPageTitle": {
     "message": "LinkShield 控制面板"
   },
@@ -591,7 +587,6 @@
   "extDescriptionFull": {
     "message": "通过即时警报和高级保护来增强您的在线安全。"
   },
-
   "licenseTrialTitle": {
     "message": "试用期：剩余 $DAYS$ 天",
     "placeholders": {
@@ -634,7 +629,6 @@
   "licensePremiumSubtitle": {
     "message": "完整保护已启用"
   },
-
   "sectionSecuritySettings": {
     "message": "安全设置"
   },
@@ -650,9 +644,6 @@
   "integratedProtectionFeature": {
     "message": "集成恶意软件和钓鱼防护"
   },
-  "integratedProtectionDescription": {
-    "message": "结合多种安全服务提供全面保护。"
-  },
   "confirmationMessage": {
     "message": "设置保存成功！"
   },
@@ -662,7 +653,6 @@
   "errorOccurred": {
     "message": "发生错误"
   },
-
   "gumroadErrorUnknown": {
     "message": "未知错误"
   },
@@ -693,7 +683,6 @@
   "gumroadErrorNetwork": {
     "message": "验证期间发生网络错误。请检查您的网络连接。"
   },
-
   "licenseEmptyError": {
     "message": "请输入许可证密钥"
   },
@@ -706,7 +695,6 @@
   "licenseConnectionError": {
     "message": "连接错误，请重试。"
   },
-
   "debugModeTitle": {
     "message": "调试模式"
   },
@@ -785,7 +773,6 @@
   "nullByteInjection": {
     "message": "此链接包含空字节字符（高风险）。这是一种可用于绕过安全检查的黑客技术。"
   },
-
   "formActionHijacking": {
     "message": "此登录表单将您的凭据发送到外部网站（严重风险）。您的用户名和密码可能被盗。"
   },
@@ -801,7 +788,6 @@
   "formActionInvalid": {
     "message": "登录表单具有无效或可疑的操作URL（高风险）。您的凭据可能无法安全发送。"
   },
-
   "hiddenIframeZeroSize": {
     "message": "检测到零尺寸隐藏iframe（高风险）。这可用于隐形加载恶意内容。"
   },
@@ -814,7 +800,6 @@
   "hiddenIframeNegativePos": {
     "message": "检测到负定位iframe（中等风险）。此技术用于向用户隐藏内容。"
   },
-
   "nrdCritical": {
     "message": "严重：域名在$DAYS$天前注册（严重风险）。全新域名极有可能是恶意的。",
     "placeholders": {
@@ -851,7 +836,6 @@
       }
     }
   },
-
   "licenseErrorNotFound": {
     "message": "未找到许可证密钥。请检查您的输入。"
   },
@@ -875,5 +859,260 @@
   },
   "licenseErrorUnknown": {
     "message": "验证过程中发生未知错误。"
+  },
+  "invalidUrlFormat": {
+    "message": "无效的URL格式。无法正确处理网址。"
+  },
+  "invalidDomain": {
+    "message": "无效的域名。网站地址不正确或不完整。"
+  },
+  "trustedDomain": {
+    "message": "这是一个经验证为安全的可信域名。"
+  },
+  "errorCalculatingRisk": {
+    "message": "计算风险时出错。请重试。"
+  },
+  "punycodeDecodingError": {
+    "message": "解码域名中的国际字符时出错。"
+  },
+  "fileProtocol": {
+    "message": "此链接使用file://协议，会打开本地文件。"
+  },
+  "invalidHostname": {
+    "message": "无效的主机名。域名格式不正确。"
+  },
+  "urlTooLong": {
+    "message": "此URL异常长（中等风险）。非常长的URL可能被用来隐藏恶意内容。"
+  },
+  "nonAscii": {
+    "message": "此URL包含可能用于欺骗的非ASCII字符。"
+  },
+  "typosquattingPattern": {
+    "message": "此域名符合域名抢注模式（高风险）。它似乎在模仿一个合法网站。"
+  },
+  "suspiciousIframes": {
+    "message": "在此页面检测到可疑的iframe元素。"
+  },
+  "suspiciousScripts": {
+    "message": "在此页面检测到可疑脚本。"
+  },
+  "hiddenIframes": {
+    "message": "检测到可能用于恶意目的的隐藏iframe元素。"
+  },
+  "unifiedCheckError": {
+    "message": "安全检查过程中出错。某些检查可能未完成。"
+  },
+  "initializationError": {
+    "message": "初始化安全扫描器时出错。请重新加载页面。"
+  },
+  "checkCurrentUrlError": {
+    "message": "检查当前URL安全性时出错。"
+  },
+  "neutralIconTitle": {
+    "message": "LinkShield - 保护已激活"
+  },
+  "installNotificationTitle": {
+    "message": "LinkShield 已安装"
+  },
+  "installNotificationMessage": {
+    "message": "您现在受到钓鱼和恶意网站的保护。"
+  },
+  "not_eligible": {
+    "message": "不符合此功能的使用条件"
+  },
+  "trial_expired": {
+    "message": "您的试用期已过期"
+  },
+  "Error": {
+    "message": "错误"
+  },
+  "siteSafeTitle": {
+    "message": "网站看起来是安全的"
+  },
+  "siteCautionTitle": {
+    "message": "请谨慎继续"
+  },
+  "siteAlertTitle": {
+    "message": "警告：检测到潜在威胁"
+  },
+  "atSymbolInPath": {
+    "message": "链接路径中包含@符号，可能用于混淆（中等风险）。"
+  },
+  "reason_atSymbolPhishing": {
+    "message": "严重：检测到凭证URL攻击。显示的域名是假的 - 您将被重定向到另一个网站。"
+  },
+  "reason_doubleEncoding": {
+    "message": "检测到双重URL编码（高风险）。这种混淆技术用于隐藏恶意内容。"
+  },
+  "reason_fullwidthCharacters": {
+    "message": "检测到全角Unicode字符（高风险）。这些特殊字符模仿普通字母来欺骗用户。"
+  },
+  "reason_nullByteInjection": {
+    "message": "检测到空字节注入（高风险）。这种技术用于绕过安全过滤器，可能表示恶意链接。"
+  },
+  "clipboardHijackingCryptoTitle": {
+    "message": "检测到加密货币地址劫持！"
+  },
+  "clipboardHijackingTitle": {
+    "message": "检测到剪贴板操纵！"
+  },
+  "clipboardHijackingMessage": {
+    "message": "此页面正在尝试修改您的剪贴板。粘贴钱包地址或敏感数据时请小心。"
+  },
+  "reason_clipboardHijackingCrypto": {
+    "message": "严重：此页面用加密货币地址劫持您的剪贴板（严重风险）。复制的钱包地址可能被替换为攻击者地址。"
+  },
+  "reason_clipboardHijackingDetected": {
+    "message": "此页面操纵您的剪贴板内容（高风险）。粘贴的内容可能与您复制的不同。"
+  },
+  "brandSubdomainPhishing": {
+    "message": "在免费托管平台上检测到品牌名称（高风险）。合法公司不会使用免费托管来提供官方服务。"
+  },
+  "reason_brandSubdomainPhishing": {
+    "message": "在免费托管平台上检测到品牌名称（高风险）。合法公司不会使用免费托管来提供官方服务。"
+  },
+  "nrdTelCombo": {
+    "message": "在包含钓鱼关键词的新注册域名上发现电话号码（中等风险）。这可能是语音钓鱼尝试。"
+  },
+  "reason_nrdTelCombo": {
+    "message": "在包含钓鱼关键词的新注册域名上发现电话号码（中等风险）。这可能是语音钓鱼尝试。"
+  },
+  "reason_opaqueRedirectChain": {
+    "message": "检测到不透明重定向（低风险）。无法完全跟踪重定向目标。"
+  },
+  "reason_opaqueRedirectToIP": {
+    "message": "不透明重定向到IP地址（高风险）。隐藏的重定向指向原始IP地址而非域名。"
+  },
+  "reason_opaqueRedirectSuspiciousTLD": {
+    "message": "不透明重定向到可疑域名扩展（中等风险）。隐藏的重定向指向有风险的TLD。"
+  },
+  "reason_opaqueRedirectNRD": {
+    "message": "不透明重定向到新注册域名（高风险）。隐藏的重定向指向非常新的域名。"
+  },
+  "bitbWarningTitle": {
+    "message": "检测到虚假登录窗口！"
+  },
+  "bitbWarningMessage": {
+    "message": "此页面正在显示模拟真实登录弹窗的浏览器窗口。这是一种Browser-in-the-Browser (BitB)攻击，旨在窃取您的凭证。'弹窗'实际上只是看起来像真正浏览器窗口的HTML/CSS。"
+  },
+  "reason_bitbAttackDetected": {
+    "message": "检测到Browser-in-the-Browser攻击（严重风险）。此页面显示虚假浏览器窗口以窃取您的登录凭证。"
+  },
+  "reason_bitbFakeUrlBar": {
+    "message": "检测到显示可信域名的虚假URL栏（严重风险）。显示的地址是假的，旨在欺骗您。"
+  },
+  "reason_bitbWindowControls": {
+    "message": "检测到虚假窗口控件（高风险）。关闭/最小化按钮是模拟的，看起来像真正的弹窗。"
+  },
+  "reason_bitbLoginFormInOverlay": {
+    "message": "检测到覆盖层中的登录表单（高风险）。真正的登录弹窗在单独的浏览器窗口中打开，而不是在覆盖层中。"
+  },
+  "reason_bitbOAuthBranding": {
+    "message": "覆盖层中带有表单的OAuth品牌（高风险）。虚假弹窗中的'使用Google/Microsoft登录'按钮是凭证盗窃。"
+  },
+  "reason_bitbPadlockIcon": {
+    "message": "检测到虚假安全锁图标（中等风险）。真正的锁出现在浏览器地址栏中，而不是页面内容中。"
+  },
+  "reason_bitbWindowChrome": {
+    "message": "检测到模拟的浏览器窗口样式（中等风险）。覆盖层被设计成看起来像操作系统窗口。"
+  },
+  "reason_bitbIframeInModal": {
+    "message": "检测到模态覆盖层中的Iframe（低风险）。这可能用于加载外部登录内容。"
+  },
+  "clickFixPowerShellTitle": {
+    "message": "检测到PowerShell命令！"
+  },
+  "clickFixCommandTitle": {
+    "message": "检测到命令注入！"
+  },
+  "clickFixMessage": {
+    "message": "此页面包含可能损害您计算机的可疑命令。请勿复制或执行此命令。"
+  },
+  "clickFixSubMessage": {
+    "message": "攻击者经常将恶意命令伪装成'修复'或'验证步骤'。切勿运行来自不受信任来源的命令。"
+  },
+  "bitbAttackCriticalTitle": {
+    "message": "严重：虚假登录窗口！"
+  },
+  "bitbAttackWarningTitle": {
+    "message": "警告：可疑登录弹窗"
+  },
+  "bitbAttackMessage": {
+    "message": "此页面显示的是用于窃取您凭证的虚假浏览器窗口。真正的登录弹窗会在单独的浏览器窗口中打开。"
+  },
+  "bitbAttackTip": {
+    "message": "请始终检查浏览器地址栏中的实际URL，而不是页面内显示的文本。"
+  },
+  "shadowDomLoginForm": {
+    "message": "检测到隐藏在Shadow DOM中的登录表单（高风险）。此技术用于规避安全扫描器。"
+  },
+  "shadowDomPhishingOverlay": {
+    "message": "检测到隐藏在Shadow DOM中的钓鱼覆盖层（严重风险）。Shadow DOM被用于隐藏恶意内容。"
+  },
+  "shadowDomIframe": {
+    "message": "检测到隐藏在Shadow DOM中的可疑iframe（高风险）。隐藏的iframe可用于凭证盗窃。"
+  },
+  "urlCredentialsAttack": {
+    "message": "URL包含攻击格式的凭证（严重风险）。可见域名是假的 - 您将被重定向到其他地方。"
+  },
+  "nrdUltraCritical": {
+    "message": "域名仅在几小时前注册（严重风险）。这非常可疑，通常用于钓鱼。"
+  },
+  "nrdVishingCombo": {
+    "message": "在具有钓鱼指标的新注册域名上发现电话号码（高风险）。这可能是语音钓鱼尝试。"
+  },
+  "tableBasedQR": {
+    "message": "检测到隐藏在HTML表格中的QR码（中等风险）。此技术用于绕过基于图像的QR检测。"
+  },
+  "tableQrDangerTitle": {
+    "message": "隐藏QR码中的危险链接"
+  },
+  "tableQrCautionTitle": {
+    "message": "隐藏QR码中的可疑链接"
+  },
+  "hiddenQrDetected": {
+    "message": "检测到页面内容中隐藏的QR码。可能包含恶意URL。"
+  },
+  "bitbAttackCritical": {
+    "message": "严重：检测到Browser-in-the-Browser攻击！此页面显示虚假登录窗口以窃取您的凭证。"
+  },
+  "bitbAttackWarning": {
+    "message": "警告：检测到可能是Browser-in-the-Browser攻击的可疑弹窗。请仔细验证URL。"
+  },
+  "clickFixDetected": {
+    "message": "检测到ClickFix攻击！此页面包含伪装成修复或验证步骤的恶意命令。请勿复制或执行。"
+  },
+  "clipboardHijacking": {
+    "message": "检测到剪贴板劫持！此页面正在尝试未经许可修改您的剪贴板内容。"
+  },
+  "hiddenIframe": {
+    "message": "在此页面上检测到隐藏的iframe。不可见的框架可用于跟踪、凭证盗窃或恶意软件传播。"
+  },
+  "typosquatting": {
+    "message": "检测到域名仿冒！此域名被故意拼写错误以冒充合法网站。"
+  },
+  "ipAddressDomain": {
+    "message": "此网站使用IP地址而非域名。这非常不寻常，通常表示恶意意图。"
+  },
+  "extremeSubdomains": {
+    "message": "检测到极端数量的子域名。此技术通常用于隐藏恶意URL或冒充合法网站。"
+  },
+  "vishingDetected": {
+    "message": "检测到潜在的语音钓鱼攻击。此页面将电话号码与钓鱼指标相结合。"
+  },
+  "punycodeDetected": {
+    "message": "检测到Punycode域名！此地址使用可能冒充合法网站的国际字符。"
+  },
+  "bitbClosePageButton": {
+    "message": "关闭此页面"
+  },
+  "bitbDismissButton": {
+    "message": "我了解风险"
+  },
+  "trustDomainButton": {
+    "message": "信任此域名"
+  },
+  "trustedDomainSkipped": {
+    "message": "此域名已被您标记为可信。"
   }
 }

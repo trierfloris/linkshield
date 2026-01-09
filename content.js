@@ -1612,6 +1612,43 @@ function validateRegexOrSetPatternFields(cfg) {
     Array.from(cfg.SHORTENED_URL_DOMAINS).filter(d => typeof d === 'string' && d.trim().length > 0)
   );
   logDebug(`Validated SHORTENED_URL_DOMAINS: ${Array.from(cfg.SHORTENED_URL_DOMAINS).join(', ')}`);
+
+  // OFFICIAL_SHORTENERS: Set<string> - vertrouwde bedrijfs-shorteners die NIET als verdacht moeten worden gemarkeerd
+  const officialShorteners = cfg.OFFICIAL_SHORTENERS;
+  if (!(officialShorteners instanceof Set) && !Array.isArray(officialShorteners)) {
+    cfg.OFFICIAL_SHORTENERS = new Set([
+      't.co', 'youtu.be', 'fb.me', 'g.co', 'goo.gl', 'lnkd.in', 'amzn.to', 'amzn.eu',
+      'msft.it', 'aka.ms', 'apple.co', 'spoti.fi', 'pin.it', 'redd.it'
+    ]);
+  } else if (Array.isArray(officialShorteners)) {
+    cfg.OFFICIAL_SHORTENERS = new Set(officialShorteners.filter(d => typeof d === 'string' && d.trim().length > 0));
+  }
+  logDebug(`Validated OFFICIAL_SHORTENERS: ${Array.from(cfg.OFFICIAL_SHORTENERS).join(', ')}`);
+
+  // TRUSTED_CDN_DOMAINS: Set<string> - vertrouwde CDN domeinen
+  const trustedCdns = cfg.TRUSTED_CDN_DOMAINS;
+  if (!(trustedCdns instanceof Set) && !Array.isArray(trustedCdns)) {
+    cfg.TRUSTED_CDN_DOMAINS = new Set([
+      'cloudfront.net', 'amazonaws.com', 'azureedge.net', 'googleusercontent.com',
+      'gstatic.com', 'akamaized.net', 'fastly.net', 'jsdelivr.net', 'unpkg.com',
+      'fbcdn.net', 'twimg.com', 'ytimg.com'
+    ]);
+  } else if (Array.isArray(trustedCdns)) {
+    cfg.TRUSTED_CDN_DOMAINS = new Set(trustedCdns.filter(d => typeof d === 'string' && d.trim().length > 0));
+  }
+  logDebug(`Validated TRUSTED_CDN_DOMAINS: ${Array.from(cfg.TRUSTED_CDN_DOMAINS).join(', ')}`);
+
+  // TRUSTED_API_DOMAINS: Set<string> - vertrouwde API domeinen
+  const trustedApis = cfg.TRUSTED_API_DOMAINS;
+  if (!(trustedApis instanceof Set) && !Array.isArray(trustedApis)) {
+    cfg.TRUSTED_API_DOMAINS = new Set([
+      'accounts.google.com', 'login.microsoftonline.com', 'appleid.apple.com',
+      'api.stripe.com', 'api.paypal.com', 'auth0.com', 'okta.com'
+    ]);
+  } else if (Array.isArray(trustedApis)) {
+    cfg.TRUSTED_API_DOMAINS = new Set(trustedApis.filter(d => typeof d === 'string' && d.trim().length > 0));
+  }
+  logDebug(`Validated TRUSTED_API_DOMAINS: ${Array.from(cfg.TRUSTED_API_DOMAINS).join(', ')}`);
 }
 /* --- Helper 6: Suspicious-patternvelden --- */
 function validateSuspiciousPatterns(cfg) {
@@ -6371,7 +6408,17 @@ async function isShortenedUrl(url) {
       return shortenedUrlCache.get(url);
     }
     const shortenedDomains = globalConfig.SHORTENED_URL_DOMAINS;
+    const officialShorteners = globalConfig.OFFICIAL_SHORTENERS;
     const domain = new URL(url).hostname.toLowerCase().replace(/^www\./, "");
+
+    // Check eerst of het een officiële shortener is (t.co, youtu.be, etc.)
+    // Deze worden NIET als verdacht gemarkeerd
+    if (officialShorteners && officialShorteners.has(domain)) {
+      logDebug(`Official shortener detected for ${domain} - not flagging as suspicious`);
+      shortenedUrlCache.set(url, false);
+      return false;
+    }
+
     logDebug(`Checking domain ${domain} against SHORTENED_URL_DOMAINS: ${Array.from(shortenedDomains).join(', ')}`);
     const isShortened = shortenedDomains.has(domain);
     logDebug(`Shortener check for ${url}: ${isShortened ? 'Detected' : 'Not detected'}`);
@@ -6551,6 +6598,25 @@ async function isFreeHostingDomain(url) {
       domain = punycode.toUnicode(domain);
       logDebug(`Checking free hosting voor gede­codeerd domein: ${domain}`);
     }
+
+    // Check eerst of het een vertrouwde CDN is - deze zijn NIET verdacht
+    const trustedCdns = globalConfig.TRUSTED_CDN_DOMAINS || new Set();
+    for (const cdn of trustedCdns) {
+      if (domain === cdn || domain.endsWith('.' + cdn)) {
+        logDebug(`Trusted CDN detected for ${domain} - not flagging as free hosting`);
+        return false;
+      }
+    }
+
+    // Check ook vertrouwde API domeinen
+    const trustedApis = globalConfig.TRUSTED_API_DOMAINS || new Set();
+    for (const api of trustedApis) {
+      if (domain === api || domain.endsWith('.' + api)) {
+        logDebug(`Trusted API domain detected for ${domain} - not flagging as free hosting`);
+        return false;
+      }
+    }
+
     // Splits hostname in labels
     const parts = domain.split('.');
     if (parts.length < 2) {

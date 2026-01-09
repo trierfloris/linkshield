@@ -416,3 +416,189 @@ describe('Regression Tests: MALWARE_EXTENSIONS', () => {
         expect(MALWARE_EXTENSIONS.test('document.doc')).toBe(false);
     });
 });
+
+describe('Regression Tests: Official Shorteners (False Positive Prevention)', () => {
+    // Officiële shorteners die NIET als verdacht moeten worden gemarkeerd
+    const OFFICIAL_SHORTENERS = new Set([
+        't.co', 'youtu.be', 'fb.me', 'g.co', 'goo.gl', 'lnkd.in', 'amzn.to', 'amzn.eu',
+        'msft.it', 'aka.ms', 'apple.co', 'spoti.fi', 'pin.it', 'redd.it'
+    ]);
+
+    // Algemene shorteners die WEL als verdacht moeten worden gemarkeerd
+    const SUSPICIOUS_SHORTENERS = new Set([
+        'bit.ly', 'tinyurl.com', 'is.gd', 'rb.gy', 'cutt.ly', 'short.io'
+    ]);
+
+    function isOfficialShortener(domain) {
+        return OFFICIAL_SHORTENERS.has(domain.toLowerCase().replace(/^www\./, ''));
+    }
+
+    function isSuspiciousShortener(domain) {
+        const cleanDomain = domain.toLowerCase().replace(/^www\./, '');
+        return SUSPICIOUS_SHORTENERS.has(cleanDomain) && !OFFICIAL_SHORTENERS.has(cleanDomain);
+    }
+
+    test('t.co (Twitter) should NOT be flagged as suspicious shortener', () => {
+        expect(isOfficialShortener('t.co')).toBe(true);
+        expect(isSuspiciousShortener('t.co')).toBe(false);
+    });
+
+    test('youtu.be (YouTube) should NOT be flagged as suspicious shortener', () => {
+        expect(isOfficialShortener('youtu.be')).toBe(true);
+        expect(isSuspiciousShortener('youtu.be')).toBe(false);
+    });
+
+    test('lnkd.in (LinkedIn) should NOT be flagged as suspicious shortener', () => {
+        expect(isOfficialShortener('lnkd.in')).toBe(true);
+        expect(isSuspiciousShortener('lnkd.in')).toBe(false);
+    });
+
+    test('amzn.to (Amazon) should NOT be flagged as suspicious shortener', () => {
+        expect(isOfficialShortener('amzn.to')).toBe(true);
+        expect(isSuspiciousShortener('amzn.to')).toBe(false);
+    });
+
+    test('aka.ms (Microsoft Azure) should NOT be flagged as suspicious shortener', () => {
+        expect(isOfficialShortener('aka.ms')).toBe(true);
+        expect(isSuspiciousShortener('aka.ms')).toBe(false);
+    });
+
+    test('bit.ly (generic shortener) SHOULD be flagged as suspicious', () => {
+        expect(isOfficialShortener('bit.ly')).toBe(false);
+        expect(isSuspiciousShortener('bit.ly')).toBe(true);
+    });
+
+    test('tinyurl.com (generic shortener) SHOULD be flagged as suspicious', () => {
+        expect(isOfficialShortener('tinyurl.com')).toBe(false);
+        expect(isSuspiciousShortener('tinyurl.com')).toBe(true);
+    });
+});
+
+describe('Regression Tests: Trusted CDN Domains (False Positive Prevention)', () => {
+    const TRUSTED_CDN_DOMAINS = new Set([
+        'cloudfront.net', 'amazonaws.com', 'azureedge.net', 'googleusercontent.com',
+        'gstatic.com', 'akamaized.net', 'fastly.net', 'jsdelivr.net', 'unpkg.com',
+        'fbcdn.net', 'twimg.com', 'ytimg.com', 'licdn.com'
+    ]);
+
+    function isTrustedCdn(domain) {
+        const cleanDomain = domain.toLowerCase();
+        for (const cdn of TRUSTED_CDN_DOMAINS) {
+            if (cleanDomain === cdn || cleanDomain.endsWith('.' + cdn)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    test('d1234567890.cloudfront.net should be trusted CDN', () => {
+        expect(isTrustedCdn('d1234567890.cloudfront.net')).toBe(true);
+    });
+
+    test('my-bucket.s3.amazonaws.com should be trusted CDN', () => {
+        expect(isTrustedCdn('my-bucket.s3.amazonaws.com')).toBe(true);
+    });
+
+    test('lh3.googleusercontent.com should be trusted CDN', () => {
+        expect(isTrustedCdn('lh3.googleusercontent.com')).toBe(true);
+    });
+
+    test('fonts.gstatic.com should be trusted CDN', () => {
+        expect(isTrustedCdn('fonts.gstatic.com')).toBe(true);
+    });
+
+    test('cdn.jsdelivr.net should be trusted CDN', () => {
+        expect(isTrustedCdn('cdn.jsdelivr.net')).toBe(true);
+    });
+
+    test('pbs.twimg.com (Twitter images) should be trusted CDN', () => {
+        expect(isTrustedCdn('pbs.twimg.com')).toBe(true);
+    });
+
+    test('scontent.fbcdn.net (Facebook CDN) should be trusted CDN', () => {
+        expect(isTrustedCdn('scontent.fbcdn.net')).toBe(true);
+    });
+
+    test('random-phishing.com should NOT be trusted CDN', () => {
+        expect(isTrustedCdn('random-phishing.com')).toBe(false);
+    });
+});
+
+describe('Regression Tests: Legitimate TLDs (False Positive Prevention)', () => {
+    // TLDs die NIET meer als verdacht worden gemarkeerd
+    // .dev, .app, .io zijn legitieme Google TLDs veel gebruikt door developers
+    const SUSPICIOUS_TLDS = /\.(beauty|bond|buzz|cc|cf|club|cn|es|ga|gq|hair|li|live|ml|mov|pro|rest|ru|sbs|shop|tk|top|uno|win|xin|xyz|zip)$/i;
+
+    test('.dev should NOT be flagged as suspicious TLD', () => {
+        expect(SUSPICIOUS_TLDS.test('myapp.dev')).toBe(false);
+    });
+
+    test('.app should NOT be flagged as suspicious TLD', () => {
+        expect(SUSPICIOUS_TLDS.test('myapp.app')).toBe(false);
+    });
+
+    test('.io should NOT be flagged as suspicious TLD', () => {
+        expect(SUSPICIOUS_TLDS.test('github.io')).toBe(false);
+    });
+
+    test('.xyz SHOULD be flagged as suspicious TLD', () => {
+        expect(SUSPICIOUS_TLDS.test('phishing.xyz')).toBe(true);
+    });
+
+    test('.tk SHOULD be flagged as suspicious TLD', () => {
+        expect(SUSPICIOUS_TLDS.test('free-stuff.tk')).toBe(true);
+    });
+
+    test('.ru SHOULD be flagged as suspicious TLD', () => {
+        expect(SUSPICIOUS_TLDS.test('malware.ru')).toBe(true);
+    });
+
+    test('.top SHOULD be flagged as suspicious TLD', () => {
+        expect(SUSPICIOUS_TLDS.test('fake-bank.top')).toBe(true);
+    });
+});
+
+describe('Regression Tests: Trusted API Domains (False Positive Prevention)', () => {
+    const TRUSTED_API_DOMAINS = new Set([
+        'accounts.google.com', 'login.microsoftonline.com', 'appleid.apple.com',
+        'api.stripe.com', 'api.paypal.com', 'auth0.com', 'okta.com', 'api.github.com'
+    ]);
+
+    function isTrustedApi(domain) {
+        const cleanDomain = domain.toLowerCase();
+        for (const api of TRUSTED_API_DOMAINS) {
+            if (cleanDomain === api || cleanDomain.endsWith('.' + api)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    test('accounts.google.com should be trusted API domain', () => {
+        expect(isTrustedApi('accounts.google.com')).toBe(true);
+    });
+
+    test('login.microsoftonline.com should be trusted API domain', () => {
+        expect(isTrustedApi('login.microsoftonline.com')).toBe(true);
+    });
+
+    test('api.stripe.com should be trusted API domain', () => {
+        expect(isTrustedApi('api.stripe.com')).toBe(true);
+    });
+
+    test('api.github.com should be trusted API domain', () => {
+        expect(isTrustedApi('api.github.com')).toBe(true);
+    });
+
+    test('tenant.auth0.com should be trusted API domain', () => {
+        expect(isTrustedApi('tenant.auth0.com')).toBe(true);
+    });
+
+    test('fake-google-login.com should NOT be trusted API domain', () => {
+        expect(isTrustedApi('fake-google-login.com')).toBe(false);
+    });
+
+    test('accounts-google.com.phishing.xyz should NOT be trusted API domain', () => {
+        expect(isTrustedApi('accounts-google.com.phishing.xyz')).toBe(false);
+    });
+});

@@ -741,85 +741,86 @@ function scanForBitBAttack() {
             return;
         }
 
-        const indicators = [];
-        let totalScore = 0;
-        const allFoundTypes = new Set();
+        // 0. Check domain whitelist - skip BitB detectie op legitieme OAuth provider domeinen
+        // Deze domeinen hosten zelf login functionaliteit en zullen geen BitB attacks hosten
+        const currentHost = window.location.hostname.toLowerCase();
+        const whitelist = config.domainWhitelist || [];
+
+        for (const whitelistedDomain of whitelist) {
+            if (currentHost === whitelistedDomain || currentHost.endsWith('.' + whitelistedDomain)) {
+                logDebug(`[BitB] Domain ${currentHost} is whitelisted, skipping BitB detection`);
+                return;
+            }
+        }
 
         // 1. Zoek alle potentiële modal/overlay containers
         const overlays = findOverlayContainers();
 
+        // 2. Analyseer ELKE overlay INDIVIDUEEL voor BitB patterns
+        // Indicatoren van verschillende overlays mogen NIET gecombineerd worden
+        // (voorkomt false positives zoals ClickMate + Facebook login form)
         for (const overlay of overlays) {
             const result = analyzeOverlayForBitB(overlay, config);
-            if (result.score > 0) {
-                indicators.push(...result.indicators);
-                totalScore += result.score;
-                // Verzamel alle gevonden indicator types
-                result.foundTypes.forEach(type => allFoundTypes.add(type));
+            if (result.score === 0) continue;
+
+            const foundTypes = result.foundTypes;
+            const hasFakeUrlBar = foundTypes.has('fakeUrlBar');
+            const hasLoginForm = foundTypes.has('loginForm');
+            const hasWindowControls = foundTypes.has('windowControls');
+            const hasOAuthBranding = foundTypes.has('oauthBranding');
+            const hasWindowChrome = foundTypes.has('windowChromeStyle');
+            const hasPadlock = foundTypes.has('padlockIcon');
+
+            // Bepaal of DEZE SPECIFIEKE overlay een BitB attack is
+            let isLikelyBitB = false;
+            let severity = null;
+
+            if (hasFakeUrlBar) {
+                // Fake URL bar is zeer sterke indicator - altijd alert
+                isLikelyBitB = true;
+                severity = 'critical';
+                logDebug('[BitB] Fake URL bar detected in overlay - strong BitB indicator');
+            } else if (hasLoginForm && hasWindowControls) {
+                // Login form + window controls in DEZELFDE overlay = waarschijnlijk BitB
+                isLikelyBitB = true;
+                severity = 'critical';
+                logDebug('[BitB] Login form + window controls in same overlay');
+            } else if (hasLoginForm && hasOAuthBranding) {
+                // Login form + OAuth branding in DEZELFDE overlay = waarschijnlijk BitB
+                isLikelyBitB = true;
+                severity = 'critical';
+                logDebug('[BitB] Login form + OAuth branding in same overlay');
+            } else if (hasLoginForm && hasWindowChrome && hasPadlock) {
+                // Login form + window chrome + padlock in DEZELFDE overlay
+                isLikelyBitB = true;
+                severity = 'warning';
+                logDebug('[BitB] Login form + window chrome + padlock in same overlay');
+            } else if (hasWindowControls && hasWindowChrome && hasPadlock) {
+                // Window controls + chrome + padlock zonder login = mogelijk BitB
+                isLikelyBitB = true;
+                severity = 'warning';
+                logDebug('[BitB] Window simulation detected in overlay');
+            }
+
+            // Als deze overlay een BitB attack is, rapporteer en stop
+            if (isLikelyBitB) {
+                if (severity === 'critical') {
+                    bitbDetected = true;
+                    reportBitBAttack('critical', result.indicators, result.score);
+                    return; // Stop na eerste critical detection
+                } else if (severity === 'warning') {
+                    reportBitBAttack('warning', result.indicators, result.score);
+                    return; // Stop na eerste warning
+                }
             }
         }
 
-        // 2. Globale check voor fake URL bars (ook buiten overlays)
+        // 3. Globale check voor fake URL bars (buiten overlays) - dit blijft pagina-breed
         const fakeUrlBars = detectFakeUrlBarsGlobal(config);
         if (fakeUrlBars.length > 0) {
-            indicators.push({ type: 'fakeUrlBarGlobal', count: fakeUrlBars.length });
-            totalScore += fakeUrlBars.length * config.scores.fakeUrlBar;
-            allFoundTypes.add('fakeUrlBar');
-        }
-
-        // === NIEUWE DETECTIE LOGICA ===
-        // Een BitB attack vereist:
-        // 1. Een fake URL bar (sterke indicator alleen) OF
-        // 2. Meerdere sterke indicatoren samen (bijv. loginForm + windowControls)
-
-        const hasFakeUrlBar = allFoundTypes.has('fakeUrlBar');
-        const hasLoginForm = allFoundTypes.has('loginForm');
-        const hasWindowControls = allFoundTypes.has('windowControls');
-        const hasOAuthBranding = allFoundTypes.has('oauthBranding');
-        const hasWindowChrome = allFoundTypes.has('windowChromeStyle');
-        const hasPadlock = allFoundTypes.has('padlockIcon');
-
-        // Bepaal of dit een echte BitB attack is
-        let isLikelyBitB = false;
-        let severity = null;
-
-        if (hasFakeUrlBar) {
-            // Fake URL bar is zeer sterke indicator - altijd alert
-            isLikelyBitB = true;
-            severity = 'critical';
-            logDebug('[BitB] Fake URL bar detected - strong BitB indicator');
-        } else if (hasLoginForm && hasWindowControls) {
-            // Login form + window controls = waarschijnlijk BitB
-            isLikelyBitB = true;
-            severity = 'critical';
-            logDebug('[BitB] Login form + window controls detected');
-        } else if (hasLoginForm && hasOAuthBranding) {
-            // Login form + OAuth branding = waarschijnlijk BitB
-            isLikelyBitB = true;
-            severity = 'critical';
-            logDebug('[BitB] Login form + OAuth branding detected');
-        } else if (hasLoginForm && hasWindowChrome && hasPadlock) {
-            // Login form + window chrome + padlock = waarschijnlijk BitB
-            isLikelyBitB = true;
-            severity = 'warning';
-            logDebug('[BitB] Login form + window chrome + padlock detected');
-        } else if (hasWindowControls && hasWindowChrome && hasPadlock) {
-            // Window controls + chrome + padlock zonder login = mogelijk BitB
-            isLikelyBitB = true;
-            severity = 'warning';
-            logDebug('[BitB] Window simulation detected without login form');
-        }
-
-        // Evalueer resultaat met nieuwe logica
-        if (isLikelyBitB && indicators.length > 0) {
-            if (severity === 'critical') {
-                bitbDetected = true;
-                reportBitBAttack('critical', indicators, totalScore);
-            } else if (severity === 'warning') {
-                reportBitBAttack('warning', indicators, totalScore);
-            }
-        } else if (totalScore >= config.thresholds.log) {
-            // Alleen loggen als score hoog genoeg is maar geen BitB pattern matcht
-            logDebug(`[BitB] Indicators found but no BitB pattern: ${JSON.stringify(indicators)}, score: ${totalScore}`);
+            logDebug('[BitB] Global fake URL bar detected');
+            bitbDetected = true;
+            reportBitBAttack('critical', [{ type: 'fakeUrlBarGlobal', count: fakeUrlBars.length }], fakeUrlBars.length * config.scores.fakeUrlBar);
         }
 
     } catch (error) {
@@ -2298,13 +2299,20 @@ async function getFinalUrl(url) {
   }
 }
 function getMetaRefreshUrl() {
-  const metaTag = document.querySelector('meta[http-equiv="refresh"]');
-  if (metaTag) {
-    const content = metaTag.getAttribute('content');
-    const match = content.match(/url=(.+)/i);
-    if (match) return match[1];
+  try {
+    const metaTag = document.querySelector('meta[http-equiv="refresh"]');
+    if (metaTag) {
+      const content = metaTag.getAttribute('content');
+      if (content) {
+        const match = content.match(/url=(.+)/i);
+        if (match) return match[1];
+      }
+    }
+    return null;
+  } catch (error) {
+    handleError(error, 'getMetaRefreshUrl: Fout bij ophalen meta refresh URL');
+    return null;
   }
-  return null;
 }
 function performSingleCheck(condition, riskWeight, reason, severity = "medium") {
   if (condition) {
@@ -2664,34 +2672,44 @@ class LinkScannerOptimized {
   scanAllLinks() {
     let observedCount = 0;
 
-    // 1. Normale document links
-    const links = document.querySelectorAll('a[href]');
-    links.forEach(link => {
-      if (isValidURL(link.href) && !scannedLinks.has(link.href)) {
-        this.observe(link);
-        observedCount++;
-      }
-    });
+    try {
+      // 1. Normale document links
+      const links = document.querySelectorAll('a[href]');
+      links.forEach(link => {
+        try {
+          if (isValidURL(link.href) && !scannedLinks.has(link.href)) {
+            this.observe(link);
+            observedCount++;
+          }
+        } catch (e) { /* ignore individual link errors */ }
+      });
 
-    // 2. Shadow DOM links
-    const shadowLinks = this.scanShadowDOM(document.body);
-    shadowLinks.forEach(link => {
-      if (isValidURL(link.href) && !scannedLinks.has(link.href)) {
-        this.observe(link);
-        observedCount++;
-      }
-    });
+      // 2. Shadow DOM links
+      const shadowLinks = this.scanShadowDOM(document.body);
+      shadowLinks.forEach(link => {
+        try {
+          if (isValidURL(link.href) && !scannedLinks.has(link.href)) {
+            this.observe(link);
+            observedCount++;
+          }
+        } catch (e) { /* ignore individual link errors */ }
+      });
 
-    // 3. Same-origin iframe links
-    const iframeLinks = this.scanIframeLinks();
-    iframeLinks.forEach(link => {
-      if (isValidURL(link.href) && !scannedLinks.has(link.href)) {
-        this.observe(link);
-        observedCount++;
-      }
-    });
+      // 3. Same-origin iframe links
+      const iframeLinks = this.scanIframeLinks();
+      iframeLinks.forEach(link => {
+        try {
+          if (isValidURL(link.href) && !scannedLinks.has(link.href)) {
+            this.observe(link);
+            observedCount++;
+          }
+        } catch (e) { /* ignore individual link errors */ }
+      });
 
-    logDebug(`[LinkScanner] ${observedCount} links worden geobserveerd (incl. Shadow DOM en iframes)`);
+      logDebug(`[LinkScanner] ${observedCount} links worden geobserveerd (incl. Shadow DOM en iframes)`);
+    } catch (error) {
+      handleError(error, 'scanAllLinks: Fout bij scannen van links');
+    }
   }
 
   /**
@@ -7360,15 +7378,19 @@ async function checkCurrentUrl() {
   if (currentDomain && await isDomainTrusted(currentDomain)) {
     logDebug(`[Content] Domein ${currentDomain} is vertrouwd door gebruiker, skip security checks`);
     // Stuur 'safe' status naar background
-    chrome.runtime.sendMessage({
-      action: 'checkResult',
-      url: window.location.href,
-      level: 'safe',
-      isSafe: true,
-      risk: 0,
-      reasons: ['trustedDomainSkipped'],
-      trustedByUser: true
-    });
+    try {
+      chrome.runtime.sendMessage({
+        action: 'checkResult',
+        url: window.location.href,
+        level: 'safe',
+        isSafe: true,
+        risk: 0,
+        reasons: ['trustedDomainSkipped'],
+        trustedByUser: true
+      });
+    } catch (e) {
+      handleError(e, 'checkCurrentUrl: Fout bij verzenden trusted domain status');
+    }
     return;
   }
 
@@ -7436,38 +7458,50 @@ function isValidURLBasic(url) {
 }
 // In de initialisatie wordt checkLinks() alleen aangeroepen als we niet op een Google-zoekpagina zitten
 getStoredSettings().then(settings => {
-  if (settings.integratedProtection && !isSearchResultPage()) {
-    checkLinks();
+  try {
+    if (settings.integratedProtection && !isSearchResultPage()) {
+      checkLinks();
+    }
+  } catch (error) {
+    handleError(error, 'Init: Fout bij initialisatie van checkLinks');
   }
+}).catch(error => {
+  handleError(error, 'Init: Fout bij ophalen van settings');
 });
 function injectWarningStyles() {
-  if (document.head.querySelector("#linkshield-warning-styles")) {
-    logDebug("Warning styles already present, skipping.");
-    return;
+  try {
+    if (document.head?.querySelector("#linkshield-warning-styles")) {
+      logDebug("Warning styles already present, skipping.");
+      return;
+    }
+    const style = document.createElement("style");
+    style.id = "linkshield-warning-styles";
+    style.textContent = `
+      .linkshield-warning {
+        display: inline-block !important;
+        position: relative !important;
+        top: 0 !important;
+        left: 0 !important;
+        background-color: #ff0000 !important;
+        color: #ffffff !important;
+        padding: 2px 5px !important;
+        font-size: 12px !important;
+        border-radius: 50% !important;
+        margin-left: 5px !important;
+        z-index: 1000 !important;
+        cursor: pointer !important;
+      }
+      .suspicious-link {
+        background-color: #ffebee !important;
+        border-bottom: 2px solid #ff0000 !important;
+      }
+    `;
+    if (document.head) {
+      document.head.appendChild(style);
+    }
+  } catch (error) {
+    handleError(error, 'injectWarningStyles: Fout bij injecteren van stijlen');
   }
-  const style = document.createElement("style");
-  style.id = "linkshield-warning-styles";
-  style.textContent = `
-    .linkshield-warning {
-      display: inline-block !important;
-      position: relative !important;
-      top: 0 !important;
-      left: 0 !important;
-      background-color: #ff0000 !important;
-      color: #ffffff !important;
-      padding: 2px 5px !important;
-      font-size: 12px !important;
-      border-radius: 50% !important;
-      margin-left: 5px !important;
-      z-index: 1000 !important;
-      cursor: pointer !important;
-    }
-    .suspicious-link {
-      background-color: #ffebee !important;
-      border-bottom: 2px solid #ff0000 !important;
-    }
-  `;
-  document.head.appendChild(style);
 }
 (async function init() {
   try {

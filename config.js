@@ -519,6 +519,22 @@ SUSPICIOUS_URL_PATTERNS: [
             controlClasses: /\b(close|minimize|maximize|window-control|btn-close|modal-close|title-?bar|window-?header|traffic-?light)\b/i
         },
 
+        // Domeinen waar BitB detectie wordt uitgeschakeld (legitieme OAuth providers)
+        // Deze domeinen hosten zelf login functionaliteit en zullen geen BitB attacks hosten
+        domainWhitelist: [
+            'facebook.com',           // Facebook login & Business Manager
+            'business.facebook.com',  // Meta Business Suite
+            'meta.com',               // Meta platforms
+            'accounts.google.com',    // Google OAuth
+            'login.microsoftonline.com', // Microsoft OAuth
+            'appleid.apple.com',      // Apple ID
+            'github.com',             // GitHub OAuth
+            'auth0.com',              // Auth0 identity
+            'okta.com',               // Okta identity
+            'login.yahoo.com',        // Yahoo login
+            'accounts.zoho.com'       // Zoho accounts
+        ],
+
         // Score thresholds voor alert levels
         thresholds: {
             log: 6,       // Alleen loggen, geen waarschuwing

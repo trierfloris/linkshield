@@ -32,25 +32,26 @@ document.addEventListener('DOMContentLoaded', () => {
         // Valideer de opgehaalde status
         if (!validateSiteStatus(currentSiteStatus)) {
             // Standaard naar normale popup
-            window.location.href = chrome.runtime.getURL('popup.html');
+            window.location.replace(chrome.runtime.getURL('popup.html'));
             return;
         }
 
         // Bepaal actie op basis van level
+        // FIX BUG-001: Gebruik replace() ipv href om back-button escape te voorkomen
         const lvl = currentSiteStatus.level.trim().toLowerCase();
         switch (lvl) {
             case 'alert':
-                // Hoge urgentie
-                window.location.href = chrome.runtime.getURL('alert.html');
+                // Hoge urgentie - replace voorkomt back-navigatie
+                window.location.replace(chrome.runtime.getURL('alert.html'));
                 break;
             case 'caution':
                 // Milde waarschuwing
-                window.location.href = chrome.runtime.getURL('caution.html');
+                window.location.replace(chrome.runtime.getURL('caution.html'));
                 break;
             case 'safe':
             default:
                 // Veilig of onbekend
-                window.location.href = chrome.runtime.getURL('popup.html');
+                window.location.replace(chrome.runtime.getURL('popup.html'));
         }
     });
 });

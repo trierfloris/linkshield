@@ -515,6 +515,12 @@
   "licensePremiumSubtitle": {
     "message": "Perlindungan penuh diaktifkan"
   },
+  "manageSubscription": {
+    "message": "Kelola langganan"
+  },
+  "manageSubscriptionTooltip": {
+    "message": "Ubah metode pembayaran, batalkan atau lihat faktur"
+  },
   "sectionSecuritySettings": {
     "message": "Pengaturan Keamanan"
   },

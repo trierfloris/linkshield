@@ -99,6 +99,8 @@ document.addEventListener('DOMContentLoaded', function () {
         // Licentie - Premium view
         setText('licensePremiumTitle', 'licensePremiumTitle');
         setText('premiumEmail', 'licensePremiumSubtitle');
+        setText('manageSubscriptionText', 'manageSubscription');
+        setText('manageSubscriptionTooltip', 'manageSubscriptionTooltip');
 
         // Debug panel
         setText('debugModeTitle', 'debugModeTitle');

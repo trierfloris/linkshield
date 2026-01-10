@@ -116,6 +116,73 @@
             color: var(--color-text-primary);
         }
 
+        /* Manage subscription link with tooltip */
+        .manage-subscription-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: var(--gap-md);
+            font-size: var(--font-size-xs);
+            color: var(--color-primary);
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .manage-subscription-link:hover {
+            text-decoration: underline;
+        }
+
+        .manage-subscription-link svg {
+            width: 14px;
+            height: 14px;
+            flex-shrink: 0;
+        }
+
+        /* Tooltip styling */
+        .tooltip-wrapper {
+            position: relative;
+            display: inline-flex;
+        }
+
+        .tooltip-wrapper .tooltip-text {
+            visibility: hidden;
+            opacity: 0;
+            width: 200px;
+            background-color: #1f2937;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px 10px;
+            position: absolute;
+            z-index: 100;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 11px;
+            font-weight: 400;
+            line-height: 1.4;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+        }
+
+        .tooltip-wrapper .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #1f2937 transparent transparent transparent;
+        }
+
+        .tooltip-wrapper:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
         .risk-level {
             font-weight: bold;
             color: var(--color-success);
@@ -189,6 +256,16 @@
                 </div>
                 <div class="license-status-title" id="licensePremiumTitle"></div>
                 <div class="license-status-subtitle" id="premiumEmail"></div>
+                <div class="tooltip-wrapper">
+                    <a href="https://app.lemonsqueezy.com/my-orders" target="_blank" class="manage-subscription-link" id="manageSubscriptionLink">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="3"/>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                        </svg>
+                        <span id="manageSubscriptionText"></span>
+                    </a>
+                    <span class="tooltip-text" id="manageSubscriptionTooltip"></span>
+                </div>
             </div>
         </div>
 

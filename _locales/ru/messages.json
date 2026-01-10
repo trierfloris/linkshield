@@ -629,6 +629,12 @@
   "licensePremiumSubtitle": {
     "message": "Полная защита включена"
   },
+  "manageSubscription": {
+    "message": "Управление подпиской"
+  },
+  "manageSubscriptionTooltip": {
+    "message": "Изменить способ оплаты, отменить или просмотреть счета"
+  },
   "sectionSecuritySettings": {
     "message": "Настройки безопасности"
   },

@@ -517,6 +517,12 @@
   "licensePremiumSubtitle": {
     "message": "Full protection enabled"
   },
+  "manageSubscription": {
+    "message": "Manage subscription"
+  },
+  "manageSubscriptionTooltip": {
+    "message": "Change payment method, cancel or view invoices"
+  },
 
   "sectionSecuritySettings": {
     "message": "Security Settings"

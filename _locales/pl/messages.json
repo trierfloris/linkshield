@@ -515,6 +515,12 @@
   "licensePremiumSubtitle": {
     "message": "Pełna ochrona włączona"
   },
+  "manageSubscription": {
+    "message": "Zarządzaj subskrypcją"
+  },
+  "manageSubscriptionTooltip": {
+    "message": "Zmień metodę płatności, anuluj lub zobacz faktury"
+  },
   "sectionSecuritySettings": {
     "message": "Ustawienia Bezpieczeństwa"
   },

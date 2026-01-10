@@ -629,6 +629,12 @@
   "licensePremiumSubtitle": {
     "message": "완전한 보호가 활성화되었습니다"
   },
+  "manageSubscription": {
+    "message": "구독 관리"
+  },
+  "manageSubscriptionTooltip": {
+    "message": "결제 수단 변경, 취소 또는 청구서 보기"
+  },
   "sectionSecuritySettings": {
     "message": "보안 설정"
   },

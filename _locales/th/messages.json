@@ -515,6 +515,12 @@
   "licensePremiumSubtitle": {
     "message": "เปิดใช้งานการป้องกันเต็มรูปแบบแล้ว"
   },
+  "manageSubscription": {
+    "message": "จัดการการสมัครสมาชิก"
+  },
+  "manageSubscriptionTooltip": {
+    "message": "เปลี่ยนวิธีการชำระเงิน ยกเลิก หรือดูใบแจ้งหนี้"
+  },
   "sectionSecuritySettings": {
     "message": "การตั้งค่าความปลอดภัย"
   },

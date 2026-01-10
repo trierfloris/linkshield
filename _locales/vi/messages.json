@@ -515,6 +515,12 @@
   "licensePremiumSubtitle": {
     "message": "Bảo vệ đầy đủ đã được kích hoạt"
   },
+  "manageSubscription": {
+    "message": "Quản lý đăng ký"
+  },
+  "manageSubscriptionTooltip": {
+    "message": "Thay đổi phương thức thanh toán, hủy bỏ hoặc xem hóa đơn"
+  },
   "sectionSecuritySettings": {
     "message": "Cài Đặt Bảo Mật"
   },

@@ -515,6 +515,12 @@
   "licensePremiumSubtitle": {
     "message": "Plná ochrana povolena"
   },
+  "manageSubscription": {
+    "message": "Spravovat předplatné"
+  },
+  "manageSubscriptionTooltip": {
+    "message": "Změnit platební metodu, zrušit nebo zobrazit faktury"
+  },
   "sectionSecuritySettings": {
     "message": "Nastavení zabezpečení"
   },

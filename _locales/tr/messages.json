@@ -515,6 +515,12 @@
   "licensePremiumSubtitle": {
     "message": "Tam koruma etkinleştirildi"
   },
+  "manageSubscription": {
+    "message": "Aboneliği yönet"
+  },
+  "manageSubscriptionTooltip": {
+    "message": "Ödeme yöntemini değiştir, iptal et veya faturaları görüntüle"
+  },
   "sectionSecuritySettings": {
     "message": "Güvenlik Ayarları"
   },

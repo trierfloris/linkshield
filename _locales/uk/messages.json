@@ -515,6 +515,12 @@
   "licensePremiumSubtitle": {
     "message": "Повний захист увімкнено"
   },
+  "manageSubscription": {
+    "message": "Керувати підпискою"
+  },
+  "manageSubscriptionTooltip": {
+    "message": "Змінити спосіб оплати, скасувати або переглянути рахунки"
+  },
   "sectionSecuritySettings": {
     "message": "Налаштування безпеки"
   },

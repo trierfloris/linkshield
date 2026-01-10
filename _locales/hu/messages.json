@@ -515,6 +515,12 @@
   "licensePremiumSubtitle": {
     "message": "Teljes védelem engedélyezve"
   },
+  "manageSubscription": {
+    "message": "Előfizetés kezelése"
+  },
+  "manageSubscriptionTooltip": {
+    "message": "Fizetési mód módosítása, lemondás vagy számlák megtekintése"
+  },
   "sectionSecuritySettings": {
     "message": "Biztonsági beállítások"
   },

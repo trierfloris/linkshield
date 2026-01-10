@@ -629,6 +629,12 @@
   "licensePremiumSubtitle": {
     "message": "完全な保護が有効化されました"
   },
+  "manageSubscription": {
+    "message": "サブスクリプションを管理"
+  },
+  "manageSubscriptionTooltip": {
+    "message": "支払い方法の変更、解約、請求書の確認"
+  },
   "sectionSecuritySettings": {
     "message": "セキュリティ設定"
   },

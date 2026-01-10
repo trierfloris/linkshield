@@ -515,6 +515,12 @@
   "licensePremiumSubtitle": {
     "message": "Protecție completă activată"
   },
+  "manageSubscription": {
+    "message": "Gestionează abonamentul"
+  },
+  "manageSubscriptionTooltip": {
+    "message": "Schimbă metoda de plată, anulează sau vezi facturile"
+  },
   "sectionSecuritySettings": {
     "message": "Setări de securitate"
   },

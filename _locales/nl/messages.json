@@ -629,6 +629,12 @@
   "licensePremiumSubtitle": {
     "message": "Volledige bescherming ingeschakeld"
   },
+  "manageSubscription": {
+    "message": "Abonnement beheren"
+  },
+  "manageSubscriptionTooltip": {
+    "message": "Wijzig betaalmethode, annuleer of bekijk facturen"
+  },
   "sectionSecuritySettings": {
     "message": "Beveiligingsinstellingen"
   },

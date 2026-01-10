@@ -515,6 +515,12 @@
   "licensePremiumSubtitle": {
     "message": "Proteção completa ativada"
   },
+  "manageSubscription": {
+    "message": "Gerenciar assinatura"
+  },
+  "manageSubscriptionTooltip": {
+    "message": "Alterar forma de pagamento, cancelar ou ver faturas"
+  },
   "sectionSecuritySettings": {
     "message": "Configurações de Segurança"
   },

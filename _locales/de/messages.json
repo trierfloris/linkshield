@@ -629,6 +629,12 @@
   "licensePremiumSubtitle": {
     "message": "Voller Schutz aktiviert"
   },
+  "manageSubscription": {
+    "message": "Abonnement verwalten"
+  },
+  "manageSubscriptionTooltip": {
+    "message": "Zahlungsmethode ändern, kündigen oder Rechnungen anzeigen"
+  },
   "sectionSecuritySettings": {
     "message": "Sicherheitseinstellungen"
   },

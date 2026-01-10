@@ -515,6 +515,12 @@
   "licensePremiumSubtitle": {
     "message": "Πλήρης προστασία ενεργοποιημένη"
   },
+  "manageSubscription": {
+    "message": "Διαχείριση συνδρομής"
+  },
+  "manageSubscriptionTooltip": {
+    "message": "Αλλαγή μεθόδου πληρωμής, ακύρωση ή προβολή τιμολογίων"
+  },
   "sectionSecuritySettings": {
     "message": "Ρυθμίσεις ασφαλείας"
   },

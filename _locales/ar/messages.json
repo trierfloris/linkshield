@@ -629,6 +629,12 @@
   "licensePremiumSubtitle": {
     "message": "الحماية الكاملة مفعلة"
   },
+  "manageSubscription": {
+    "message": "إدارة الاشتراك"
+  },
+  "manageSubscriptionTooltip": {
+    "message": "تغيير طريقة الدفع، إلغاء أو عرض الفواتير"
+  },
   "sectionSecuritySettings": {
     "message": "إعدادات الأمان"
   },

@@ -629,6 +629,12 @@
   "licensePremiumSubtitle": {
     "message": "完整保护已启用"
   },
+  "manageSubscription": {
+    "message": "管理订阅"
+  },
+  "manageSubscriptionTooltip": {
+    "message": "更改付款方式、取消订阅或查看发票"
+  },
   "sectionSecuritySettings": {
     "message": "安全设置"
   },

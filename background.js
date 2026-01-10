@@ -261,15 +261,19 @@ function startSmoothIconAnimation(duration = 30000, interval = 500) {
 
 /** Resets the icon to a neutral state (green) */
 function resetIconToNeutral() {
-    chrome.action.setIcon({
-        path: {
-            "16": "icons/green-circle-16.png",
-            "48": "icons/green-circle-48.png",
-            "128": "icons/green-circle-128.png"
-        }
-    });
-    clearBadge();
-    chrome.action.setTitle({ title: chrome.i18n.getMessage("neutralIconTitle") || "Performing safety check..." });
+    try {
+        chrome.action.setIcon({
+            path: {
+                "16": "icons/green-circle-16.png",
+                "48": "icons/green-circle-48.png",
+                "128": "icons/green-circle-128.png"
+            }
+        });
+        clearBadge();
+        chrome.action.setTitle({ title: chrome.i18n.getMessage("neutralIconTitle") || "Performing safety check..." });
+    } catch (error) {
+        console.error("[ERROR] resetIconToNeutral error:", error);
+    }
 }
 
 
@@ -1870,18 +1874,26 @@ chrome.runtime.setUninstallURL("https://linkshield.nl/#uninstall");
 
 // Luister naar tab updates en activatie om de status te resetten
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-    // Reageer alleen als de URL daadwerkelijk is veranderd (en het een volledige URL is)
-    if (changeInfo.url && tab.url && tab.url.startsWith('http')) {
-        stopIconAnimation(); // Stop animatie bij navigatie
-        await resetCurrentSiteStatus(); // Reset de opgeslagen status voor de nieuwe URL
-        resetIconToNeutral(); // Zet icoon naar neutraal (groen)
+    try {
+        // Reageer alleen als de URL daadwerkelijk is veranderd (en het een volledige URL is)
+        if (changeInfo.url && tab?.url && tab.url.startsWith('http')) {
+            stopIconAnimation(); // Stop animatie bij navigatie
+            await resetCurrentSiteStatus(); // Reset de opgeslagen status voor de nieuwe URL
+            resetIconToNeutral(); // Zet icoon naar neutraal (groen)
+        }
+    } catch (error) {
+        console.error("[ERROR] chrome.tabs.onUpdated error:", error);
     }
 });
 
 chrome.tabs.onActivated.addListener(async ({ tabId }) => {
-    stopIconAnimation(); // Stop animatie bij tab-switch
-    await resetCurrentSiteStatus(); // Reset de opgeslagen status
-    resetIconToNeutral(); // Zet icoon naar neutraal (groen)
+    try {
+        stopIconAnimation(); // Stop animatie bij tab-switch
+        await resetCurrentSiteStatus(); // Reset de opgeslagen status
+        resetIconToNeutral(); // Zet icoon naar neutraal (groen)
+    } catch (error) {
+        console.error("[ERROR] chrome.tabs.onActivated error:", error);
+    }
 });
 
 
@@ -1907,93 +1919,105 @@ let lastStatusKey = null;
 // Listener voor wijzigingen in storage.
 // Reageert op wijzigingen in sync (voor rules fetch) en local (voor icon updates).
 chrome.storage.onChanged.addListener(async (changes, area) => {
-  if (area === "sync") {
-    // Update thresholds als sync config verandert
-    if (
-      'LOW_THRESHOLD' in changes ||
-      'MEDIUM_THRESHOLD' in changes ||
-      'HIGH_THRESHOLD' in changes ||
-      'DOMAIN_AGE_MIN_RISK' in changes ||
-      'YOUNG_DOMAIN_RISK' in changes ||
-      'YOUNG_DOMAIN_THRESHOLD_DAYS' in changes ||
-      'DEBUG_MODE' in changes
-    ) {
-      await loadThresholdsFromStorage();
-    }
-
-    // LICENTIE/TRIAL SYNCHRONISATIE: Reageer op wijzigingen in licentie of trial status
-    if ('licenseValid' in changes || 'installDate' in changes || 'trialDays' in changes) {
-      invalidateTrialCache();
-
-      // Controleer of achtergrondbeveiliging (de)geactiveerd moet worden
-      const isAllowed = await isBackgroundSecurityAllowed();
-
-      // Update DNR regels op basis van nieuwe status
-      await manageDNRules();
-
-      // Als licentie nu geldig is (was ongeldig), herlaad regels
-      if ('licenseValid' in changes && changes.licenseValid.newValue === true) {
-        await fetchAndLoadRules();
+  try {
+    if (area === "sync") {
+      // Update thresholds als sync config verandert
+      if (
+        'LOW_THRESHOLD' in changes ||
+        'MEDIUM_THRESHOLD' in changes ||
+        'HIGH_THRESHOLD' in changes ||
+        'DOMAIN_AGE_MIN_RISK' in changes ||
+        'YOUNG_DOMAIN_RISK' in changes ||
+        'YOUNG_DOMAIN_THRESHOLD_DAYS' in changes ||
+        'DEBUG_MODE' in changes
+      ) {
+        await loadThresholdsFromStorage();
       }
 
-      // Als licentie nu ongeldig is (was geldig) of trial verlopen, verwijder regels
-      if (!isAllowed) {
-        await clearDynamicRules();
-      }
-    }
+      // LICENTIE/TRIAL SYNCHRONISATIE: Reageer op wijzigingen in licentie of trial status
+      if ('licenseValid' in changes || 'installDate' in changes || 'trialDays' in changes) {
+        invalidateTrialCache();
 
-    // Regel updates als backgroundSecurity verandert
-    if ("backgroundSecurity" in changes) {
-      const now = Date.now();
-      if (now - lastUpdate < 300000) { // 5 minuten debounce
+        // Controleer of achtergrondbeveiliging (de)geactiveerd moet worden
+        const isAllowed = await isBackgroundSecurityAllowed();
+
+        // Update DNR regels op basis van nieuwe status
+        await manageDNRules();
+
+        // Als licentie nu geldig is (was ongeldig), herlaad regels
+        if ('licenseValid' in changes && changes.licenseValid.newValue === true) {
+          await fetchAndLoadRules();
+        }
+
+        // Als licentie nu ongeldig is (was geldig) of trial verlopen, verwijder regels
+        if (!isAllowed) {
+          await clearDynamicRules();
+        }
+      }
+
+      // Regel updates als backgroundSecurity verandert
+      if ("backgroundSecurity" in changes) {
+        const now = Date.now();
+        if (now - lastUpdate < 300000) { // 5 minuten debounce
+          if (globalThresholds.DEBUG_MODE) {
+            console.log("Too soon for another rules update. Skipping.");
+          }
+          return;
+        }
+        lastUpdate = now;
         if (globalThresholds.DEBUG_MODE) {
-          console.log("Too soon for another rules update. Skipping.");
+          console.log("backgroundSecurity changed. Updating DNR rules.");
+        }
+        await fetchAndLoadRules();
+        await manageDNRules();
+      }
+    }
+
+    // Reageer op veranderingen in currentSiteStatus om het icoon bij te werken
+    if (area === "local" && changes.currentSiteStatus) {
+      const { oldValue, newValue } = changes.currentSiteStatus;
+
+      // Negeer deletes, duplicate writes en writes vanuit updateIcon (aanwezigheid van isSafe)
+      if (
+        !newValue ||
+        JSON.stringify(oldValue) === JSON.stringify(newValue) ||
+        newValue.hasOwnProperty('isSafe')
+      ) {
+        if (globalThresholds.DEBUG_MODE) {
+          console.log("[STORAGE LISTENER] currentSiteStatus ignored:", { oldValue, newValue });
         }
         return;
       }
-      lastUpdate = now;
-      if (globalThresholds.DEBUG_MODE) {
-        console.log("backgroundSecurity changed. Updating DNR rules.");
-      }
-      await fetchAndLoadRules();
-      await manageDNRules();
+
+      const { level, reasons, risk, url } = newValue;
+      await updateIconBasedOnSafety(level, reasons, risk, url);
     }
-  }
-
-  // Reageer op veranderingen in currentSiteStatus om het icoon bij te werken
-  if (area === "local" && changes.currentSiteStatus) {
-    const { oldValue, newValue } = changes.currentSiteStatus;
-
-    // Negeer deletes, duplicate writes en writes vanuit updateIcon (aanwezigheid van isSafe)
-    if (
-      !newValue ||
-      JSON.stringify(oldValue) === JSON.stringify(newValue) ||
-      newValue.hasOwnProperty('isSafe')
-    ) {
-      if (globalThresholds.DEBUG_MODE) {
-        console.log("[STORAGE LISTENER] currentSiteStatus ignored:", { oldValue, newValue });
-      }
-      return;
-    }
-
-    const { level, reasons, risk, url } = newValue;
-    await updateIconBasedOnSafety(level, reasons, risk, url);
+  } catch (error) {
+    console.error("[ERROR] chrome.storage.onChanged error:", error);
   }
 });
 
 
 
 chrome.runtime.onStartup.addListener(async () => {
-  await restoreIconState();
-  // Voer licentie check uit bij browser startup
-  await performStartupLicenseCheck();
+  try {
+    await restoreIconState();
+    // Voer licentie check uit bij browser startup
+    await performStartupLicenseCheck();
+  } catch (error) {
+    console.error("[ERROR] chrome.runtime.onStartup error:", error);
+  }
 });
 
 chrome.runtime.onInstalled.addListener(async (details) => {
-  if (details.reason === "install" || details.reason === "update") {
-    await restoreIconState();
-    // Voer licentie check uit na installatie of update
-    await performStartupLicenseCheck();
+  try {
+    if (details.reason === "install" || details.reason === "update") {
+      await restoreIconState();
+      // Voer licentie check uit na installatie of update
+      await performStartupLicenseCheck();
+    }
+  } catch (error) {
+    console.error("[ERROR] chrome.runtime.onInstalled (second) error:", error);
   }
 });
 

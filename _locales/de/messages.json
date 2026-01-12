@@ -51,7 +51,7 @@
     "message": "Der Link enthält ungewöhnliche Zeichen (geringes Risiko). Diese können verwendet werden, um das wahre Ziel zu verschleiern."
   },
   "homoglyphAttack": {
-    "message": "Diese Webadresse verwendet Zeichen, die einer bekannten Webseite fast identisch sind (hohes Risiko). Dies ist ein Trick, um dich in die Irre zu führen."
+    "message": "Diese Adresse enthält ähnlich aussehende Zeichen (hohes Risiko). Überprüfen Sie, ob Sie auf der richtigen Website sind, bevor Sie Informationen eingeben."
   },
   "metaRedirect": {
     "message": "Diese Webseite leitet dich automatisch weiter. Dies kann zu einer unsicheren Seite führen (mittleres Risiko)."
@@ -114,7 +114,7 @@
     "message": "Hintergrund-Analyse"
   },
   "backgroundAnalysisDescription": {
-    "message": "Echtzeitschutz. Stündlich aktualisiert. Weltweite Abdeckung."
+    "message": "Blockiert die neuesten Phishing-Seiten. Datenbank wird stündlich aktualisiert."
   },
   "activationRequired": {
     "message": "Aktiviere diese Funktion, um sie zu nutzen."
@@ -123,7 +123,7 @@
     "message": "Integrierter Schutz"
   },
   "integratedProtectionDescription": {
-    "message": "Kombiniert mehrere Sicherheitsdienste für umfassenden Schutz."
+    "message": "Prüft jeden Link auf der Seite und warnt dich vor verdächtigen Websites."
   },
   "premiumFeaturesActive": {
     "message": "Du nutzt jetzt die Premium-Version!"
@@ -198,13 +198,13 @@
     "message": "Unbekanntes Risiko"
   },
   "highRisk": {
-    "message": "Hohes Risiko: Sei sehr vorsichtig."
+    "message": "Achtung! Diese Seite ist wahrscheinlich gefährlich."
   },
   "mediumRisk": {
-    "message": "Mittleres Risiko: Pass gut auf."
+    "message": "Vorsicht. Verdächtige Merkmale gefunden."
   },
   "lowRisk": {
-    "message": "Geringes Risiko: Einige bedenkliche Punkte."
+    "message": "Leichte Warnung. Prüfe, ob du dieser Seite vertraust."
   },
   "noSuspiciousFeatures": {
     "message": "Keine direkt riskanten Merkmale gefunden."
@@ -240,7 +240,7 @@
     "message": "Ein unbekanntes Risiko wurde gefunden. Sei besonders vorsichtig."
   },
   "typosquattingAttack": {
-    "message": "Diese Webadresse ähnelt einer echten Webseite, ist aber absichtlich falsch geschrieben (hohes Risiko). Dies könnte eine gefälschte Version sein."
+    "message": "Diese Adresse sieht fast wie eine bekannte Website aus, enthält aber einen kleinen Schreibfehler. Zum Beispiel: 'arnazon.com' statt 'amazon.com'. Überprüfen Sie immer die Schreibweise, bevor Sie sich anmelden."
   },
   "downloadKeyword": {
     "message": "Der Link enthält Wörter, die sich auf Downloads beziehen (geringes Risiko). Öffne nur Dateien, denen du vertraust."
@@ -252,7 +252,7 @@
     "message": "Der Link zu einem Skript auf dieser Seite ist fehlerhaft."
   },
   "mixedScripts": {
-    "message": "Diese Adresse verwendet eine Mischung aus verschiedenen Schriftsystemen (z. B. lateinische und kyrillische Buchstaben). Dies ist ein bekannter Phishing-Trick (hohes Risiko)."
+    "message": "Diese Adresse mischt Buchstaben aus verschiedenen Alphabeten (wie Englisch und Russisch). Obwohl sie gleich aussehen, erzeugen sie eine völlig andere Webadresse."
   },
   "introBannerMessage": {
     "message": "LinkShield ist aktiv und markiert riskante Links mit ⚠️. Fahre mit der Maus über das Symbol, um den Grund zu sehen."
@@ -261,9 +261,6 @@
     "message": "Diese Adresse verwendet Ziffern, die wie Buchstaben aussehen, um eine bekannte Marke nachzuahmen (mittleres Risiko)."
   },
   "trustedTLD": {
-    "message": "Diese Domain hat eine Standard-Domainendung (geringes Risiko)."
-  },
-  "trustedTld": {
     "message": "Diese Domain hat eine Standard-Domainendung (geringes Risiko)."
   },
   "suspiciousPageText": {
@@ -573,7 +570,7 @@
     "message": "Testphase abgelaufen"
   },
   "trialExpiredMessage": {
-    "message": "Deine 30-tägige Testphase ist abgelaufen. Aktiviere eine Lizenz, um alle Funktionen weiterhin nutzen zu können."
+    "message": "Ihre Testphase ist beendet. Sie haben weiterhin Basisschutz — upgraden Sie jederzeit, um alle Funktionen wiederherzustellen."
   },
   "upgradeNow": {
     "message": "Jetzt upgraden"
@@ -582,10 +579,10 @@
     "message": "LinkShield Dashboard"
   },
   "extNameFull": {
-    "message": "LinkShield: Deine Waffe gegen Phishing"
+    "message": "LinkShield: Sicher online unterwegs"
   },
   "extDescriptionFull": {
-    "message": "Erhöhe deine Sicherheit mit sofortigen Warnungen und fortschrittlichem Schutz vor Online-Bedrohungen."
+    "message": "Schützt dich vor gefälschten Websites, Phishing und Online-Betrug. Damit du sorgenfrei surfen kannst."
   },
   "licenseTrialTitle": {
     "message": "Testphase: $DAYS$ Tage verbleibend",
@@ -597,22 +594,25 @@
     }
   },
   "licenseTrialSubtitle": {
-    "message": "Alle Premium-Funktionen sind während deiner Testphase aktiv"
+    "message": "Du bist vollständig geschützt. Alle Funktionen sind aktiv."
   },
   "licenseUpgradeLink": {
-    "message": "Auf Premium upgraden →"
+    "message": "Geschützt bleiben für 1,99€/Monat (3 Geräte) →"
+  },
+  "licenseAlreadyHaveCode": {
+    "message": "Schon einen Lizenzcode?"
   },
   "licenseExpiredTitle": {
-    "message": "Testphase abgelaufen"
+    "message": "Ihre Premium-Funktionen sind pausiert"
   },
   "licenseExpiredSubtitle": {
-    "message": "Aktiviere Premium für vollen Schutz"
+    "message": "Der Basisschutz ist weiterhin aktiv. Reaktivieren Sie Premium für erweiterte Scans und stündliche Updates."
   },
   "licenseBenefitsLabel": {
-    "message": "Premium enthält:"
+    "message": "Mit Premium erhältst du:"
   },
   "licenseBenefitsText": {
-    "message": "Hintergrundanalysen, QR-Code-Scanning, kontinuierlicher Schutz"
+    "message": "Neueste Phishing-Seiten blockiert (stündlich aktualisiert), QR-Codes gescannt, 24/7 Schutz"
   },
   "licenseKeyPlaceholder": {
     "message": "Gib deinen Lizenzcode ein"
@@ -621,19 +621,37 @@
     "message": "Premium aktivieren"
   },
   "licenseBuyLink": {
-    "message": "Noch keine Lizenz? Hier kaufen →"
+    "message": "Jetzt schützen →"
   },
   "licensePremiumTitle": {
-    "message": "Premium Aktiv"
+    "message": "Du bist geschützt"
   },
   "licensePremiumSubtitle": {
-    "message": "Voller Schutz aktiviert"
+    "message": "Alle Sicherheitsfunktionen sind aktiv. Danke für dein Vertrauen!"
   },
   "manageSubscription": {
     "message": "Abonnement verwalten"
   },
   "manageSubscriptionTooltip": {
     "message": "Zahlungsmethode ändern, kündigen oder Rechnungen anzeigen"
+  },
+  "licenseDeactivateButton": {
+    "message": "Lizenzschlüssel auf anderem Gerät verwenden"
+  },
+  "licenseDeactivateConfirm": {
+    "message": "Dein Abonnement bleibt aktiv. Dieses Gerät wechselt zur kostenlosen Version, damit du auf einem anderen Gerät aktivieren kannst."
+  },
+  "licenseDeactivateCancel": {
+    "message": "Abbrechen"
+  },
+  "licenseDeactivateConfirmBtn": {
+    "message": "Deaktivieren"
+  },
+  "licenseDeactivating": {
+    "message": "Wird deaktiviert..."
+  },
+  "licenseDeactivatedSuccess": {
+    "message": "Lizenz deaktiviert. Du kannst sie jetzt auf einem anderen Gerät aktivieren."
   },
   "sectionSecuritySettings": {
     "message": "Sicherheitseinstellungen"
@@ -642,13 +660,13 @@
     "message": "Sicherheitseinstellungen"
   },
   "backgroundAnalysisFeature": {
-    "message": "Hintergrundanalysen"
+    "message": "Automatischer Schutz"
   },
   "premiumBadge": {
     "message": "PREMIUM"
   },
   "integratedProtectionFeature": {
-    "message": "Integrierter Malware- und Phishing-Schutz"
+    "message": "Intelligente Link-Prüfung"
   },
   "confirmationMessage": {
     "message": "Einstellungen erfolgreich gespeichert!"
@@ -852,7 +870,7 @@
     "message": "Diese Lizenz ist abgelaufen."
   },
   "licenseErrorActivationLimit": {
-    "message": "Aktivierungslimit erreicht. Bitte deaktivieren Sie zuerst ein anderes Gerät."
+    "message": "Sie haben Ihr Gerätelimit erreicht (3). Gehen Sie zu einem aktiven Gerät und wählen Sie 'Auf anderem Gerät verwenden', um einen Platz freizugeben."
   },
   "licenseErrorInstanceNotFound": {
     "message": "Installationsinstanz nicht gefunden."
@@ -1095,7 +1113,7 @@
     "message": "Versteckter Iframe auf dieser Seite erkannt. Unsichtbare Frames können für Tracking, Credential-Diebstahl oder Malware verwendet werden."
   },
   "typosquatting": {
-    "message": "Typosquatting erkannt! Diese Domain ist absichtlich falsch geschrieben, um eine legitime Website nachzuahmen."
+    "message": "Schreibtrick erkannt: Dieser Website-Name ist fast identisch mit einer vertrauenswürdigen Seite, aber mit einem subtilen Unterschied. Betrüger nutzen dies, um überzeugende Fake-Seiten zu erstellen."
   },
   "ipAddressDomain": {
     "message": "Diese Website verwendet eine IP-Adresse anstelle eines Domainnamens. Dies ist sehr ungewöhnlich und deutet oft auf böswillige Absichten hin."
@@ -1107,7 +1125,7 @@
     "message": "Möglicher Vishing (Voice-Phishing) Angriff erkannt. Diese Seite kombiniert Telefonnummern mit Phishing-Indikatoren."
   },
   "punycodeDetected": {
-    "message": "Punycode-Domain erkannt! Diese Adresse verwendet internationale Zeichen, die möglicherweise eine legitime Website imitieren."
+    "message": "Diese Webadresse verwendet Sonderzeichen, die wie normale Buchstaben aussehen, es aber nicht sind. Beispiel: Ein kyrillisches 'а' sieht identisch aus wie ein lateinisches 'a'. Dieser Trick lässt gefälschte Websites legitim erscheinen."
   },
   "bitbClosePageButton": {
     "message": "Diese Seite schließen"
@@ -1120,5 +1138,246 @@
   },
   "trustedDomainSkipped": {
     "message": "Diese Domain wurde von Ihnen als vertrauenswürdig markiert."
+  },
+  "gracePeriodActive": {
+    "message": "Wir konnten Ihre Lizenz nicht online verifizieren. Ihr Schutz bleibt noch $DAYS$ Tage aktiv, während wir es erneut versuchen.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "gracePeriodWarning": {
+    "message": "Lizenzverifizierung ausstehend. Bitte stellen Sie innerhalb der nächsten $DAYS$ Tage eine Internetverbindung her, um ununterbrochenen Schutz zu gewährleisten.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "gracePeriodExpired": {
+    "message": "Wir konnten Ihre Lizenz seit 7 Tagen nicht verifizieren. Bitte stellen Sie eine Internetverbindung her, um Premium-Funktionen wiederherzustellen."
+  },
+  "gracePeriodRestored": {
+    "message": "Lizenz erfolgreich verifiziert. Ihr Schutz ist vollständig aktiv."
+  },
+  "siteSafeSuccess": {
+    "message": "Keine Bedrohungen erkannt. Diese Website hat alle Sicherheitsprüfungen bestanden."
+  },
+  "siteSafeSuccessDetail": {
+    "message": "LinkShield hat diese Seite auf Phishing, Typosquatting und schädliche Skripte überprüft. Alles sieht gut aus."
+  },
+  "siteSafeSuccessBadge": {
+    "message": "Sicher Verifiziert"
+  },
+  "exitPage": {
+    "message": "Diese Seite verlassen"
+  },
+  "understandRisk": {
+    "message": "Ich verstehe das Risiko"
+  },
+  "premiumActive": {
+    "message": "Aktiv"
+  },
+  "premiumRequired": {
+    "message": "PREMIUM"
+  },
+  "backgroundSecurityHelp": {
+    "message": "Erfordert eine aktive Lizenz. Aktivieren Sie Premium für automatischen Schutz."
+  },
+  "sectionProtection": {
+    "message": "Schutz"
+  },
+  "statusProtected": {
+    "message": "Geschützt"
+  },
+  "statusTrialSub": {
+    "message": "Testversion · noch $DAYS$ Tage",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "statusPremiumSub": {
+    "message": "Premium · Aktiv"
+  },
+  "statusExpired": {
+    "message": "Schutz pausiert"
+  },
+  "statusExpiredSub": {
+    "message": "Erneuern für vollen Schutz"
+  },
+  "licenseActivateShort": {
+    "message": "Aktivieren"
+  },
+  "licenseDeactivateShort": {
+    "message": "Lizenz übertragen"
+  },
+  "ctaUpgradeText": {
+    "message": "Auf Premium upgraden"
+  },
+  "ctaUpgradePrice": {
+    "message": "€1,99/Monat · 3 Geräte"
+  },
+  "ctaRenewText": {
+    "message": "Schutz wiederherstellen"
+  },
+  "manageBtnText": {
+    "message": "Abo verwalten"
+  },
+  "transferBtnText": {
+    "message": "Deaktivieren"
+  },
+  "deactivateDeviceBtn": {
+    "message": "Deaktivieren"
+  },
+  "licenseNetworkError": {
+    "message": "Verbindung fehlgeschlagen. Prüfen Sie Ihre Internetverbindung."
+  },
+  "premiumFeatureTag": {
+    "message": "Premium-Funktion"
+  },
+  "liveNow": {
+    "message": "Live"
+  },
+  "updatedMinAgo": {
+    "message": "vor $MIN$ Min.",
+    "placeholders": {
+      "MIN": {
+        "content": "$1",
+        "example": "15"
+      }
+    }
+  },
+  "useLicenseKey": {
+    "message": "Lizenzschlüssel verwenden"
+  },
+  "clipboardHijackingCryptoTip": {
+    "message": "Überprüfen Sie immer Wallet-Adressen, bevor Sie Kryptowährung senden. Angreifer ersetzen Adressen in Ihrer Zwischenablage."
+  },
+  "clipboardHijackingTip": {
+    "message": "Diese Website versucht möglicherweise, kopierte Inhalte zu ersetzen. Überprüfen Sie eingefügte Inhalte immer."
+  },
+  "webTransportWarningTitle": {
+    "message": "Verdächtige Netzwerkaktivität"
+  },
+  "webTransportWarningMessage": {
+    "message": "Diese Seite verwendet fortschrittliche Netzwerkprotokolle auf potenziell verdächtige Weise."
+  },
+  "webTransportDirectIP": {
+    "message": "Verbindung zu direkter IP-Adresse erkannt."
+  },
+  "webTransportHighPort": {
+    "message": "Verbindung zu ungewöhnlich hoher Portnummer."
+  },
+  "webTransportRandomSubdomain": {
+    "message": "Verbindung zu verdächtiger zufälliger Subdomain (möglicher C2-Server)."
+  },
+  "webTransportFreeTLD": {
+    "message": "Verbindung zu kostenloser TLD-Domain (häufig für Malware verwendet)."
+  },
+  "webTransportHighConnectionRate": {
+    "message": "Ungewöhnlich hohe Verbindungsrate erkannt."
+  },
+  "webTransportHighDatagramRate": {
+    "message": "Ungewöhnlich hohe Datenübertragungsrate erkannt."
+  },
+  "webTransportObfuscatedUrl": {
+    "message": "Verschleierte oder codierte URL erkannt."
+  },
+  "webTransportInvalidUrl": {
+    "message": "Ungültige oder fehlerhafte Verbindungs-URL."
+  },
+  "failSafeNetworkTitle": {
+    "message": "Lizenzprüfung fehlgeschlagen",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeNetworkMessage": {
+    "message": "Lizenz konnte aufgrund von Netzwerkproblemen nicht überprüft werden. Der Schutz bleibt im abgesicherten Modus aktiv.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeGraceTitle": {
+    "message": "Lizenzverifizierung erforderlich",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeGraceMessage": {
+    "message": "Bitte verbinden Sie sich mit dem Internet, um Ihre Lizenz zu verifizieren. Der Schutz bleibt aktiv.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafePreservedTitle": {
+    "message": "Schutz aktiv",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafePreservedMessage": {
+    "message": "Ihre Schutzregeln sind erhalten. Bitte verifizieren Sie Ihre Lizenz, wenn möglich.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeDefaultTitle": {
+    "message": "Abgesicherter Modus aktiv",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeDefaultMessage": {
+    "message": "LinkShield läuft im abgesicherten Modus. Der Schutz bleibt aktiv.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "visualHijackingDetected": {
+    "message": "Visual Hijacking erkannt",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "visualHijackingMessage": {
+    "message": "Ein verstecktes Overlay wurde erkannt, das versucht, Ihren Klick abzufangen. Dies ist eine häufige Phishing-Technik, um Sie auf bösartige Websites umzuleiten.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "detectionReason": {
+    "message": "Erkennungsgrund",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "closeWarning": {
+    "message": "Schließen",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "transparentHighZIndexOverlay": {
+    "message": "Transparentes Overlay mit hohem Z-Index erkannt",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "invisibleClickjackOverlay": {
+    "message": "Unsichtbares Clickjacking-Overlay erkannt",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "fullscreenTransparentOverlay": {
+    "message": "Vollbild-transparentes Overlay erkannt",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "hiddenLinkOverlay": {
+    "message": "Verstecktes Link-Overlay erkannt",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "dismissTooltip": {
+    "message": "Schließen",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "dontShowAgain": {
+    "message": "Nicht mehr anzeigen?",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "confirmYes": {
+    "message": "Ja",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "confirmNo": {
+    "message": "Nein",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "reportPhishingSuccess": {
+    "message": "Gemeldet! Vielen Dank für Ihren Beitrag zur Verbesserung der Sicherheit.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "pointerEventsHijack": {
+    "message": "Pointer-events click hijacking detected",
+    "description": "[EN fallback] Pointer-events click hijacking detected"
   }
 }

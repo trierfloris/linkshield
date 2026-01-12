@@ -51,7 +51,7 @@
     "message": "Bağlantı olağandışı karakterler içeriyor (düşük risk). Bu gerçek hedefi gizlemek için kullanılabilir."
   },
   "homoglyphAttack": {
-    "message": "Bu web adresi bilinen bir web sitesiyle neredeyse aynı görünen karakterler kullanıyor (yüksek risk). Bu sizi yanıltmak için bir hile."
+    "message": "Bu adres benzer görünümlü karakterler içeriyor (yüksek risk). Herhangi bir bilgi girmeden önce doğru sitede olduğunuzdan emin olun."
   },
   "metaRedirect": {
     "message": "Bu web sitesi sizi otomatik olarak yönlendiriyor. Bu güvenli olmayan bir siteye yol açabilir (orta risk)."
@@ -114,7 +114,7 @@
     "message": "Arka Plan Taraması"
   },
   "backgroundAnalysisDescription": {
-    "message": "Gerçek zamanlı koruma. Her saat güncellenir. Dünya çapında kapsama."
+    "message": "En yeni kimlik avı sitelerini engeller. Veritabanı her saat güncellenir."
   },
   "activationRequired": {
     "message": "Bu özelliği kullanmak için etkinleştirin."
@@ -123,7 +123,7 @@
     "message": "Entegre Koruma"
   },
   "integratedProtectionDescription": {
-    "message": "Kapsamlı koruma için birden fazla güvenlik hizmetini birleştirir."
+    "message": "Sayfadaki her bağlantıyı kontrol eder ve şüpheli web siteleri hakkında sizi uyarır."
   },
   "premiumFeaturesActive": {
     "message": "Artık premium sürümü kullanıyorsunuz!"
@@ -240,7 +240,7 @@
     "message": "Bilinmeyen bir risk bulundu. Ekstra dikkatli olun."
   },
   "typosquattingAttack": {
-    "message": "Bu web adresi gerçek bir web sitesine benziyor ancak kasıtlı olarak yanlış yazılmış (yüksek risk). Bu sahte bir sürüm olabilir."
+    "message": "Bu adres bilinen bir siteye benziyor ama küçük bir yazım hatası içeriyor. Örneğin: 'amazon.com' yerine 'arnazon.com'. Giriş yapmadan önce her zaman yazımı kontrol edin."
   },
   "downloadKeyword": {
     "message": "Bağlantı indirmeyle ilgili kelimeler içeriyor (düşük risk). Yalnızca güvendiğiniz dosyaları açın."
@@ -252,7 +252,7 @@
     "message": "Bu sayfadaki bir betiğin bağlantısı yanlış."
   },
   "mixedScripts": {
-    "message": "Bu adres farklı yazı sistemlerinin bir karışımını kullanıyor (örn. Latin ve Kiril harfler). Bu bilinen bir kimlik avı hilesi (yüksek risk)."
+    "message": "Bu adres farklı alfabelerin harflerini karıştırıyor (İngilizce ve Rusça gibi). Aynı görünseler de tamamen farklı bir web adresi oluşturuyorlar."
   },
   "introBannerMessage": {
     "message": "LinkShield aktif ve riskli bağlantıları ⚠️ ile işaretliyor. Nedenini görmek için simgenin üzerine gelin."
@@ -261,9 +261,6 @@
     "message": "Bu adres, bilinen bir markayı taklit etmek için harflere benzeyen rakamlar kullanıyor (orta risk)."
   },
   "trustedTLD": {
-    "message": "Bu alan adı standart bir alan uzantısına sahip (düşük risk)."
-  },
-  "trustedTld": {
     "message": "Bu alan adı standart bir alan uzantısına sahip (düşük risk)."
   },
   "suspiciousPageText": {
@@ -468,10 +465,10 @@
     "message": "LinkShield Kontrol Paneli"
   },
   "extNameFull": {
-    "message": "LinkShield: Kimlik Avına Karşı Silahınız"
+    "message": "LinkShield: Çevrimiçi Güvende Kalın"
   },
   "extDescriptionFull": {
-    "message": "Doğrudan uyarılar ve çevrimiçi tehditlere karşı gelişmiş koruma ile güvenliğinizi artırın."
+    "message": "Sizi sahte web sitelerinden, kimlik avından ve çevrimiçi dolandırıcılıktan korur. Böylece kaygısızca gezinebilirsiniz."
   },
   "licenseTrialTitle": {
     "message": "Deneme: $DAYS$ gün kaldı",
@@ -483,22 +480,25 @@
     }
   },
   "licenseTrialSubtitle": {
-    "message": "Deneme süreniz boyunca tüm premium özellikler aktif"
+    "message": "Tamamen korunuyorsunuz. Tüm özellikler aktif."
   },
   "licenseUpgradeLink": {
-    "message": "Premium'a Yükselt →"
+    "message": "Premium'a Yükselt (1,99 €/ay, 3 cihaz) →"
+  },
+  "licenseAlreadyHaveCode": {
+    "message": "Zaten bir lisans kodunuz var mı?"
   },
   "licenseExpiredTitle": {
-    "message": "Deneme Süresi Doldu"
+    "message": "Premium özellikleriniz duraklatıldı"
   },
   "licenseExpiredSubtitle": {
-    "message": "Tam koruma için Premium'u etkinleştirin"
+    "message": "Temel koruma hâlâ aktif. Gelişmiş tarama ve saatlik güncellemeler için Premium'u yeniden etkinleştirin."
   },
   "licenseBenefitsLabel": {
-    "message": "Premium şunları içerir:"
+    "message": "Premium ile elde ettikleriniz:"
   },
   "licenseBenefitsText": {
-    "message": "Arka plan analizi, QR kod tarama, sürekli koruma"
+    "message": "En yeni kimlik avı siteleri engellenir (saatlik güncelleme), QR kodlar taranır, 7/24 koruma"
   },
   "licenseKeyPlaceholder": {
     "message": "Lisans kodunuzu girin"
@@ -507,19 +507,37 @@
     "message": "Premium'u Etkinleştir"
   },
   "licenseBuyLink": {
-    "message": "Henüz lisansınız yok mu? Buradan satın alın →"
+    "message": "Şimdi korunun →"
   },
   "licensePremiumTitle": {
-    "message": "Premium Aktif"
+    "message": "Korunuyorsunuz"
   },
   "licensePremiumSubtitle": {
-    "message": "Tam koruma etkinleştirildi"
+    "message": "Tüm güvenlik özellikleri aktif. Güveniniz için teşekkürler!"
   },
   "manageSubscription": {
     "message": "Aboneliği yönet"
   },
   "manageSubscriptionTooltip": {
     "message": "Ödeme yöntemini değiştir, iptal et veya faturaları görüntüle"
+  },
+  "licenseDeactivateButton": {
+    "message": "Lisans anahtarını başka bir cihazda kullan"
+  },
+  "licenseDeactivateConfirm": {
+    "message": "Aboneliğiniz aktif kalır. Bu cihaz ücretsiz sürüme geçecek, böylece başka bir cihazda etkinleştirebilirsiniz."
+  },
+  "licenseDeactivateCancel": {
+    "message": "İptal"
+  },
+  "licenseDeactivateConfirmBtn": {
+    "message": "Devre dışı bırak"
+  },
+  "licenseDeactivating": {
+    "message": "Devre dışı bırakılıyor..."
+  },
+  "licenseDeactivatedSuccess": {
+    "message": "Lisans devre dışı bırakıldı. Artık başka bir cihazda etkinleştirebilirsiniz."
   },
   "sectionSecuritySettings": {
     "message": "Güvenlik Ayarları"
@@ -528,13 +546,13 @@
     "message": "Güvenlik Ayarları"
   },
   "backgroundAnalysisFeature": {
-    "message": "Arka Plan Analizi"
+    "message": "Otomatik koruma"
   },
   "premiumBadge": {
     "message": "PREMİUM"
   },
   "integratedProtectionFeature": {
-    "message": "Entegre Kötü Amaçlı Yazılım ve Kimlik Avı Koruması"
+    "message": "Akıllı bağlantı tarama"
   },
   "confirmationMessage": {
     "message": "Ayarlar başarıyla kaydedildi!"
@@ -558,7 +576,7 @@
     "message": "Deneme süresi doldu"
   },
   "trialExpiredMessage": {
-    "message": "30 günlük deneme süreniz doldu. Tüm özellikleri kullanmaya devam etmek için lisans etkinleştirin."
+    "message": "Deneme süreniz sona erdi. Hâlâ temel korumanız var — tüm özellikleri geri yüklemek için istediğiniz zaman yükseltin."
   },
   "upgradeNow": {
     "message": "Şimdi yükselt"
@@ -771,7 +789,7 @@
     "message": "Bu lisansın süresi dolmuş."
   },
   "licenseErrorActivationLimit": {
-    "message": "Etkinleştirme sınırına ulaşıldı. Lütfen önce başka bir cihazı devre dışı bırakın."
+    "message": "Cihaz limitinize ulaştınız (3). Aktif bir cihaza gidin ve yer açmak için 'Başka cihazda kullan' seçeneğini seçin."
   },
   "licenseErrorInstanceNotFound": {
     "message": "Kurulum örneği bulunamadı."
@@ -1032,7 +1050,7 @@
     "message": "Bu sayfada gizli iframe tespit edildi. Görünmez çerçeveler takip, kimlik bilgisi hırsızlığı veya kötü amaçlı yazılım dağıtımı için kullanılabilir."
   },
   "typosquatting": {
-    "message": "Typosquatting tespit edildi! Bu alan adı meşru bir web sitesini taklit etmek için kasıtlı olarak yanlış yazılmış."
+    "message": "Yazım hilesi tespit edildi: Bu site adı güvenilir bir siteyle neredeyse aynı ama ince bir farkla. Dolandırıcılar bunu ikna edici sahte sayfalar oluşturmak için kullanır."
   },
   "ipAddressDomain": {
     "message": "Bu web sitesi alan adı yerine IP adresi kullanıyor. Bu son derece alışılmadık ve genellikle kötü niyetli olduğunu gösterir."
@@ -1044,7 +1062,7 @@
     "message": "Potansiyel sesli kimlik avı (vishing) saldırısı tespit edildi. Bu sayfa telefon numaralarını kimlik avı göstergeleriyle birleştiriyor."
   },
   "punycodeDetected": {
-    "message": "Punycode alan adı tespit edildi! Bu adres meşru bir web sitesini taklit edebilecek uluslararası karakterler kullanıyor."
+    "message": "Bu web adresi normal harflere benzeyen ama aslında öyle olmayan özel karakterler kullanıyor. Örneğin, Kiril 'а' harfi Latin 'a' harfiyle aynı görünür. Bu hile sahte sitelerin meşru görünmesini sağlar."
   },
   "reason_nonAscii": {
     "message": "Şüpheli karakterler tespit edildi (homoglyph'ler)"
@@ -1120,5 +1138,246 @@
   },
   "trustedDomainSkipped": {
     "message": "Bu alan adı sizin tarafınızdan güvenilir olarak işaretlendi."
+  },
+  "gracePeriodActive": {
+    "message": "Lisansınızı çevrimiçi doğrulayamadık. Yeniden denerken korumanız $DAYS$ gün daha devam ediyor.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "gracePeriodWarning": {
+    "message": "Lisans doğrulaması bekliyor. Kesintisiz koruma için önümüzdeki $DAYS$ gün içinde internete bağlanın.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "gracePeriodExpired": {
+    "message": "7 gündür lisansınızı doğrulayamadık. Premium özellikleri geri yüklemek için internete bağlanın."
+  },
+  "gracePeriodRestored": {
+    "message": "Lisans başarıyla doğrulandı. Korumanız tamamen aktif."
+  },
+  "siteSafeSuccess": {
+    "message": "Tehdit tespit edilmedi. Bu site tüm güvenlik kontrollerini geçti."
+  },
+  "siteSafeSuccessDetail": {
+    "message": "LinkShield bu sayfayı kimlik avı, typosquatting ve kötü amaçlı scriptler için taradı. Her şey yolunda görünüyor."
+  },
+  "siteSafeSuccessBadge": {
+    "message": "Güvenli Doğrulandı"
+  },
+  "exitPage": {
+    "message": "Bu sayfadan ayrıl"
+  },
+  "understandRisk": {
+    "message": "Riski anlıyorum"
+  },
+  "premiumActive": {
+    "message": "Aktif"
+  },
+  "premiumRequired": {
+    "message": "Premium Gerekli"
+  },
+  "backgroundSecurityHelp": {
+    "message": "LinkShield gezinirken arka planda güvenlik kontrolleri yapar."
+  },
+  "sectionProtection": {
+    "message": "Koruma"
+  },
+  "statusProtected": {
+    "message": "Korumalı"
+  },
+  "statusTrialSub": {
+    "message": "$DAYS$ gün deneme kaldı",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "7"
+      }
+    }
+  },
+  "statusPremiumSub": {
+    "message": "Aktif Premium abonelik"
+  },
+  "statusExpired": {
+    "message": "Süresi doldu"
+  },
+  "statusExpiredSub": {
+    "message": "Aboneliğinizin süresi doldu"
+  },
+  "licenseActivateShort": {
+    "message": "Etkinleştir"
+  },
+  "licenseDeactivateShort": {
+    "message": "Devre dışı bırak"
+  },
+  "ctaUpgradeText": {
+    "message": "Premium'a yükselt"
+  },
+  "ctaUpgradePrice": {
+    "message": "€1/aydan başlayan"
+  },
+  "ctaRenewText": {
+    "message": "Aboneliği yenile"
+  },
+  "manageBtnText": {
+    "message": "Yönet"
+  },
+  "transferBtnText": {
+    "message": "Transfer"
+  },
+  "deactivateDeviceBtn": {
+    "message": "Cihazı devre dışı bırak"
+  },
+  "licenseNetworkError": {
+    "message": "Ağ hatası. Bağlantıyı kontrol edin."
+  },
+  "premiumFeatureTag": {
+    "message": "Premium özellik"
+  },
+  "liveNow": {
+    "message": "Şu an canlı"
+  },
+  "updatedMinAgo": {
+    "message": "$MIN$ dakika önce güncellendi",
+    "placeholders": {
+      "MIN": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "useLicenseKey": {
+    "message": "Lisans anahtarı kullan"
+  },
+  "clipboardHijackingCryptoTip": {
+    "message": "Kripto para göndermeden önce cüzdan adreslerini her zaman doğrulayın. Saldırganlar panodaki adresleri değiştirir."
+  },
+  "clipboardHijackingTip": {
+    "message": "Bu site kopyaladığınız içeriği değiştirmeye çalışıyor olabilir. Yapıştırılan içeriği her zaman doğrulayın."
+  },
+  "webTransportWarningTitle": {
+    "message": "Şüpheli ağ etkinliği"
+  },
+  "webTransportWarningMessage": {
+    "message": "Bu sayfa potansiyel olarak şüpheli bir şekilde gelişmiş ağ protokolleri kullanıyor."
+  },
+  "webTransportDirectIP": {
+    "message": "Doğrudan IP adresine bağlantı algılandı."
+  },
+  "webTransportHighPort": {
+    "message": "Alışılmadık derecede yüksek port numarasına bağlantı."
+  },
+  "webTransportRandomSubdomain": {
+    "message": "Şüpheli rastgele alt alan adına bağlantı (olası C2 sunucusu)."
+  },
+  "webTransportFreeTLD": {
+    "message": "Ücretsiz TLD alan adına bağlantı (yaygın olarak kötü amaçlı yazılım için kullanılır)."
+  },
+  "webTransportHighConnectionRate": {
+    "message": "Alışılmadık derecede yüksek bağlantı hızı algılandı."
+  },
+  "webTransportHighDatagramRate": {
+    "message": "Alışılmadık derecede yüksek veri aktarım hızı algılandı."
+  },
+  "webTransportObfuscatedUrl": {
+    "message": "Gizlenmiş veya kodlanmış URL algılandı."
+  },
+  "webTransportInvalidUrl": {
+    "message": "Geçersiz veya hatalı biçimlendirilmiş bağlantı URL'si."
+  },
+  "failSafeNetworkTitle": {
+    "message": "Lisans doğrulama başarısız",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeNetworkMessage": {
+    "message": "Ağ sorunları nedeniyle lisans doğrulanamadı. Koruma güvenli modda aktif kalmaya devam ediyor.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeGraceTitle": {
+    "message": "Lisans doğrulaması gerekli",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeGraceMessage": {
+    "message": "Lisansınızı doğrulamak için internete bağlanın. Koruma aktif kalmaya devam ediyor.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafePreservedTitle": {
+    "message": "Koruma aktif",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafePreservedMessage": {
+    "message": "Koruma kurallarınız korundu. Mümkün olduğunda lisansınızı doğrulayın.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeDefaultTitle": {
+    "message": "Güvenli mod aktif",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeDefaultMessage": {
+    "message": "LinkShield güvenli modda çalışıyor. Koruma aktif kalmaya devam ediyor.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "visualHijackingDetected": {
+    "message": "Görsel ele geçirme algılandı",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "visualHijackingMessage": {
+    "message": "Tıklamanızı engellemeye çalışan gizli bir kaplama algılandı. Bu, sizi kötü amaçlı sitelere yönlendirmek için kullanılan yaygın bir oltalama tekniğidir.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "detectionReason": {
+    "message": "Algılama nedeni",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "closeWarning": {
+    "message": "Kapat",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "transparentHighZIndexOverlay": {
+    "message": "Yüksek z-index'li şeffaf kaplama algılandı",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "invisibleClickjackOverlay": {
+    "message": "Görünmez clickjacking kaplaması algılandı",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "fullscreenTransparentOverlay": {
+    "message": "Tam ekran şeffaf kaplama algılandı",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "hiddenLinkOverlay": {
+    "message": "Gizli bağlantı kaplaması algılandı",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "dismissTooltip": {
+    "message": "Kapat",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "dontShowAgain": {
+    "message": "Tekrar gösterme?",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "confirmYes": {
+    "message": "Evet",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "confirmNo": {
+    "message": "Hayır",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "reportPhishingSuccess": {
+    "message": "Bildirildi! Güvenliği iyileştirmeye yardımcı olduğunuz için teşekkürler.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "pointerEventsHijack": {
+    "message": "Pointer-events click hijacking detected",
+    "description": "[EN fallback] Pointer-events click hijacking detected"
   }
 }

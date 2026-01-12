@@ -51,7 +51,7 @@
     "message": "Il link contiene caratteri insoliti (rischio basso). Questo può essere usato per nascondere la vera destinazione."
   },
   "homoglyphAttack": {
-    "message": "Questo indirizzo web utilizza caratteri quasi identici a quelli di un sito web noto (rischio alto). È un trucco per ingannarti."
+    "message": "Questo indirizzo contiene caratteri simili (alto rischio). Verifica di essere sul sito corretto prima di inserire qualsiasi informazione."
   },
   "metaRedirect": {
     "message": "Questo sito web ti reindirizza automaticamente. Ciò può portare a un sito non sicuro (rischio medio)."
@@ -114,7 +114,7 @@
     "message": "Scansione in background"
   },
   "backgroundAnalysisDescription": {
-    "message": "Protezione in tempo reale. Aggiornato ogni ora. Copertura mondiale."
+    "message": "Blocca gli ultimi siti di phishing. Database aggiornato ogni ora."
   },
   "activationRequired": {
     "message": "Abilita questa funzione per usarla."
@@ -123,7 +123,7 @@
     "message": "Protezione integrata"
   },
   "integratedProtectionDescription": {
-    "message": "Combina più servizi di sicurezza per una protezione completa."
+    "message": "Controlla ogni link sulla pagina e ti avvisa di siti sospetti."
   },
   "premiumFeaturesActive": {
     "message": "Stai usando la versione premium!"
@@ -198,13 +198,13 @@
     "message": "Rischio sconosciuto"
   },
   "highRisk": {
-    "message": "Rischio alto: fai molta attenzione."
+    "message": "Attenzione! Questo sito è probabilmente pericoloso."
   },
   "mediumRisk": {
-    "message": "Rischio medio: presta molta attenzione."
+    "message": "Fai attenzione. Trovate caratteristiche sospette."
   },
   "lowRisk": {
-    "message": "Rischio basso: alcuni punti di preoccupazione."
+    "message": "Avviso minore. Verifica se ti fidi di questo sito."
   },
   "noSuspiciousFeatures": {
     "message": "Nessuna caratteristica di rischio diretto trovata."
@@ -240,7 +240,7 @@
     "message": "È stato riscontrato un rischio sconosciuto. Fai molta attenzione."
   },
   "typosquattingAttack": {
-    "message": "Questo indirizzo web assomiglia a un sito web reale ma è deliberatamente scritto in modo errato (rischio alto). Potrebbe trattarsi di una versione falsa."
+    "message": "Questo indirizzo sembra un sito conosciuto, ma contiene un piccolo errore di ortografia. Ad esempio: 'arnazon.com' invece di 'amazon.com'. Verifica sempre l'ortografia prima di accedere."
   },
   "downloadKeyword": {
     "message": "Il link contiene parole relative ai download (rischio basso). Apri solo i file di cui ti fidi."
@@ -252,7 +252,7 @@
     "message": "Il link a uno script in questa pagina non è corretto."
   },
   "mixedScripts": {
-    "message": "Questo indirizzo utilizza un mix di diversi sistemi di scrittura (es. lettere latine e cirilliche). È un noto trucco di phishing (rischio alto)."
+    "message": "Questo indirizzo mescola lettere di alfabeti diversi (come inglese e russo). Anche se sembrano uguali, creano un indirizzo web completamente diverso."
   },
   "introBannerMessage": {
     "message": "LinkShield è attivo e contrassegna i link rischiosi con ⚠️. Passa il mouse sull'icona per vedere il perché."
@@ -261,9 +261,6 @@
     "message": "Questo indirizzo utilizza numeri che assomigliano a lettere per imitare un marchio noto (rischio medio)."
   },
   "trustedTLD": {
-    "message": "Questo dominio ha un'estensione di dominio standard (rischio basso)."
-  },
-  "trustedTld": {
     "message": "Questo dominio ha un'estensione di dominio standard (rischio basso)."
   },
   "suspiciousPageText": {
@@ -573,7 +570,7 @@
     "message": "Periodo di prova scaduto"
   },
   "trialExpiredMessage": {
-    "message": "Il tuo periodo di prova di 30 giorni è scaduto. Attiva una licenza per continuare a utilizzare tutte le funzionalità."
+    "message": "Il tuo periodo di prova è terminato. Hai ancora la protezione base — esegui l'upgrade quando vuoi per ripristinare tutte le funzionalità."
   },
   "upgradeNow": {
     "message": "Aggiorna ora"
@@ -582,10 +579,10 @@
     "message": "Dashboard LinkShield"
   },
   "extNameFull": {
-    "message": "LinkShield: La tua arma contro il phishing"
+    "message": "LinkShield: Naviga in sicurezza"
   },
   "extDescriptionFull": {
-    "message": "Aumenta la tua sicurezza con avvisi istantanei e protezione avanzata contro le minacce online."
+    "message": "Ti protegge da siti web falsi, phishing e truffe online. Per navigare senza preoccupazioni."
   },
   "licenseTrialTitle": {
     "message": "Periodo di prova: $DAYS$ giorni rimanenti",
@@ -597,22 +594,25 @@
     }
   },
   "licenseTrialSubtitle": {
-    "message": "Tutte le funzionalità premium sono attive durante il periodo di prova"
+    "message": "Sei completamente protetto. Tutte le funzioni sono attive."
   },
   "licenseUpgradeLink": {
-    "message": "Passa a Premium →"
+    "message": "Resta protetto per 1,99€/mese (3 dispositivi) →"
+  },
+  "licenseAlreadyHaveCode": {
+    "message": "Hai già un codice di licenza?"
   },
   "licenseExpiredTitle": {
-    "message": "Periodo di prova scaduto"
+    "message": "Le tue funzionalità premium sono in pausa"
   },
   "licenseExpiredSubtitle": {
-    "message": "Attiva Premium per la protezione completa"
+    "message": "La protezione base è ancora attiva. Riattiva Premium per sbloccare la scansione avanzata e gli aggiornamenti orari."
   },
   "licenseBenefitsLabel": {
-    "message": "Premium include:"
+    "message": "Con Premium ottieni:"
   },
   "licenseBenefitsText": {
-    "message": "Analisi in background, scansione codici QR, protezione continua"
+    "message": "Ultimi siti di phishing bloccati (aggiornato ogni ora), codici QR scansionati, protezione 24/7"
   },
   "licenseKeyPlaceholder": {
     "message": "Inserisci il tuo codice licenza"
@@ -621,19 +621,37 @@
     "message": "Attiva Premium"
   },
   "licenseBuyLink": {
-    "message": "Non hai una licenza? Acquista qui →"
+    "message": "Proteggiti ora →"
   },
   "licensePremiumTitle": {
-    "message": "Premium Attivo"
+    "message": "Sei protetto"
   },
   "licensePremiumSubtitle": {
-    "message": "Protezione completa abilitata"
+    "message": "Tutte le funzioni di sicurezza sono attive. Grazie per la tua fiducia!"
   },
   "manageSubscription": {
     "message": "Gestisci abbonamento"
   },
   "manageSubscriptionTooltip": {
     "message": "Modifica metodo di pagamento, annulla o visualizza fatture"
+  },
+  "licenseDeactivateButton": {
+    "message": "Usa chiave di licenza su un altro dispositivo"
+  },
+  "licenseDeactivateConfirm": {
+    "message": "Il tuo abbonamento rimane attivo. Questo dispositivo passerà alla versione gratuita così potrai attivare su un altro dispositivo."
+  },
+  "licenseDeactivateCancel": {
+    "message": "Annulla"
+  },
+  "licenseDeactivateConfirmBtn": {
+    "message": "Disattiva"
+  },
+  "licenseDeactivating": {
+    "message": "Disattivazione..."
+  },
+  "licenseDeactivatedSuccess": {
+    "message": "Licenza disattivata. Ora puoi attivarla su un altro dispositivo."
   },
   "sectionSecuritySettings": {
     "message": "Impostazioni di sicurezza"
@@ -642,13 +660,13 @@
     "message": "Impostazioni di sicurezza"
   },
   "backgroundAnalysisFeature": {
-    "message": "Analisi in background"
+    "message": "Protezione automatica"
   },
   "premiumBadge": {
     "message": "PREMIUM"
   },
   "integratedProtectionFeature": {
-    "message": "Protezione integrata contro malware e phishing"
+    "message": "Scansione intelligente dei link"
   },
   "confirmationMessage": {
     "message": "Impostazioni salvate con successo!"
@@ -852,7 +870,7 @@
     "message": "Questa licenza è scaduta."
   },
   "licenseErrorActivationLimit": {
-    "message": "Limite di attivazioni raggiunto. Disattiva prima un altro dispositivo."
+    "message": "Hai raggiunto il limite di dispositivi (3). Vai su un dispositivo attivo e scegli 'Usa su altro dispositivo' per liberare uno spazio."
   },
   "licenseErrorInstanceNotFound": {
     "message": "Istanza di installazione non trovata."
@@ -1095,7 +1113,7 @@
     "message": "Iframe nascosto rilevato in questa pagina. I frame invisibili possono essere usati per tracciamento, furto di credenziali o distribuzione di malware."
   },
   "typosquatting": {
-    "message": "Typosquatting rilevato! Questo dominio è deliberatamente scritto male per impersonare un sito web legittimo."
+    "message": "Trucco ortografico rilevato: Questo nome di sito è quasi identico a un sito affidabile, ma con una sottile differenza. I truffatori lo usano per creare pagine false convincenti."
   },
   "ipAddressDomain": {
     "message": "Questo sito web utilizza un indirizzo IP invece di un nome di dominio. Questo è molto insolito e spesso indica intenzioni dannose."
@@ -1107,7 +1125,7 @@
     "message": "Potenziale attacco vishing (phishing vocale) rilevato. Questa pagina combina numeri di telefono con indicatori di phishing."
   },
   "punycodeDetected": {
-    "message": "Dominio Punycode rilevato! Questo indirizzo utilizza caratteri internazionali che potrebbero impersonare un sito web legittimo."
+    "message": "Questo indirizzo web usa caratteri speciali che sembrano lettere normali ma non lo sono. Ad esempio, una 'а' cirillica è identica a una 'a' latina. Questo trucco fa sembrare legittimi i siti falsi."
   },
   "bitbClosePageButton": {
     "message": "Chiudi questa pagina"
@@ -1120,5 +1138,246 @@
   },
   "trustedDomainSkipped": {
     "message": "Questo dominio è stato contrassegnato come attendibile da te."
+  },
+  "gracePeriodActive": {
+    "message": "Non siamo riusciti a verificare la tua licenza online. La tua protezione continua per altri $DAYS$ giorni mentre riproviamo.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "gracePeriodWarning": {
+    "message": "Verifica licenza in sospeso. Connettiti a Internet entro i prossimi $DAYS$ giorni per mantenere la protezione ininterrotta.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "gracePeriodExpired": {
+    "message": "Non siamo riusciti a verificare la tua licenza per 7 giorni. Connettiti a Internet per ripristinare le funzionalità premium."
+  },
+  "gracePeriodRestored": {
+    "message": "Licenza verificata con successo. La tua protezione è completamente attiva."
+  },
+  "siteSafeSuccess": {
+    "message": "Nessuna minaccia rilevata. Questo sito ha superato tutti i controlli di sicurezza."
+  },
+  "siteSafeSuccessDetail": {
+    "message": "LinkShield ha scansionato questa pagina per phishing, typosquatting e script dannosi. Tutto sembra a posto."
+  },
+  "siteSafeSuccessBadge": {
+    "message": "Verificato Sicuro"
+  },
+  "exitPage": {
+    "message": "Esci da questa pagina"
+  },
+  "understandRisk": {
+    "message": "Capisco il rischio"
+  },
+  "premiumActive": {
+    "message": "Attivo"
+  },
+  "premiumRequired": {
+    "message": "PREMIUM"
+  },
+  "backgroundSecurityHelp": {
+    "message": "Richiede una licenza attiva. Attiva Premium per la protezione automatica."
+  },
+  "sectionProtection": {
+    "message": "Protezione"
+  },
+  "statusProtected": {
+    "message": "Protetto"
+  },
+  "statusTrialSub": {
+    "message": "Prova · $DAYS$ giorni rimanenti",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "statusPremiumSub": {
+    "message": "Premium · Attivo"
+  },
+  "statusExpired": {
+    "message": "Protezione sospesa"
+  },
+  "statusExpiredSub": {
+    "message": "Rinnova per ripristinare la protezione"
+  },
+  "licenseActivateShort": {
+    "message": "Attiva"
+  },
+  "licenseDeactivateShort": {
+    "message": "Trasferisci licenza"
+  },
+  "ctaUpgradeText": {
+    "message": "Passa a Premium"
+  },
+  "ctaUpgradePrice": {
+    "message": "€1,99/mese · 3 dispositivi"
+  },
+  "ctaRenewText": {
+    "message": "Ripristina protezione"
+  },
+  "manageBtnText": {
+    "message": "Gestisci abbonamento"
+  },
+  "transferBtnText": {
+    "message": "Disattiva"
+  },
+  "deactivateDeviceBtn": {
+    "message": "Disattiva"
+  },
+  "licenseNetworkError": {
+    "message": "Connessione fallita. Verifica la tua connessione internet."
+  },
+  "premiumFeatureTag": {
+    "message": "Funzione Premium"
+  },
+  "liveNow": {
+    "message": "Live"
+  },
+  "updatedMinAgo": {
+    "message": "$MIN$ min fa",
+    "placeholders": {
+      "MIN": {
+        "content": "$1",
+        "example": "15"
+      }
+    }
+  },
+  "useLicenseKey": {
+    "message": "Usa chiave di licenza"
+  },
+  "clipboardHijackingCryptoTip": {
+    "message": "Verifica sempre gli indirizzi del portafoglio prima di inviare criptovalute. Gli aggressori sostituiscono gli indirizzi negli appunti."
+  },
+  "clipboardHijackingTip": {
+    "message": "Questo sito potrebbe tentare di sostituire il contenuto copiato. Verifica sempre il contenuto incollato."
+  },
+  "webTransportWarningTitle": {
+    "message": "Attività di rete sospetta"
+  },
+  "webTransportWarningMessage": {
+    "message": "Questa pagina utilizza protocolli di rete avanzati in modo potenzialmente sospetto."
+  },
+  "webTransportDirectIP": {
+    "message": "Rilevata connessione a indirizzo IP diretto."
+  },
+  "webTransportHighPort": {
+    "message": "Connessione a numero di porta insolitamente alto."
+  },
+  "webTransportRandomSubdomain": {
+    "message": "Connessione a sottodominio casuale sospetto (possibile server C2)."
+  },
+  "webTransportFreeTLD": {
+    "message": "Connessione a dominio TLD gratuito (comunemente usato per malware)."
+  },
+  "webTransportHighConnectionRate": {
+    "message": "Rilevata frequenza di connessione insolitamente alta."
+  },
+  "webTransportHighDatagramRate": {
+    "message": "Rilevata velocità di trasferimento dati insolitamente alta."
+  },
+  "webTransportObfuscatedUrl": {
+    "message": "Rilevato URL offuscato o codificato."
+  },
+  "webTransportInvalidUrl": {
+    "message": "URL di connessione non valido o malformato."
+  },
+  "failSafeNetworkTitle": {
+    "message": "Verifica licenza fallita",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeNetworkMessage": {
+    "message": "Impossibile verificare la licenza a causa di problemi di rete. La protezione rimane attiva in modalità sicura.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeGraceTitle": {
+    "message": "Verifica licenza richiesta",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeGraceMessage": {
+    "message": "Connettiti a Internet per verificare la tua licenza. La protezione rimane attiva.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafePreservedTitle": {
+    "message": "Protezione attiva",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafePreservedMessage": {
+    "message": "Le tue regole di protezione sono preservate. Verifica la tua licenza quando possibile.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeDefaultTitle": {
+    "message": "Modalità sicura attiva",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeDefaultMessage": {
+    "message": "LinkShield è in esecuzione in modalità sicura. La protezione rimane attiva.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "visualHijackingDetected": {
+    "message": "Dirottamento visivo rilevato",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "visualHijackingMessage": {
+    "message": "È stato rilevato un overlay nascosto che tenta di intercettare il tuo clic. Questa è una tecnica di phishing comune per reindirizzarti a siti dannosi.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "detectionReason": {
+    "message": "Motivo del rilevamento",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "closeWarning": {
+    "message": "Chiudi",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "transparentHighZIndexOverlay": {
+    "message": "Overlay trasparente con z-index alto rilevato",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "invisibleClickjackOverlay": {
+    "message": "Overlay di clickjacking invisibile rilevato",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "fullscreenTransparentOverlay": {
+    "message": "Overlay trasparente a schermo intero rilevato",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "hiddenLinkOverlay": {
+    "message": "Overlay di link nascosto rilevato",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "dismissTooltip": {
+    "message": "Chiudi",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "dontShowAgain": {
+    "message": "Non mostrare più?",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "confirmYes": {
+    "message": "Sì",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "confirmNo": {
+    "message": "No",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "reportPhishingSuccess": {
+    "message": "Segnalato! Grazie per contribuire a migliorare la sicurezza.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "pointerEventsHijack": {
+    "message": "Pointer-events click hijacking detected",
+    "description": "[EN fallback] Pointer-events click hijacking detected"
   }
 }

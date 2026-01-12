@@ -51,7 +51,7 @@
     "message": "Посилання містить незвичайні символи (низький ризик). Це може використовуватися для приховування справжнього призначення."
   },
   "homoglyphAttack": {
-    "message": "Ця веб-адреса використовує символи, майже ідентичні відомому веб-сайту (високий ризик). Це трюк, щоб вас обдурити."
+    "message": "Ця адреса містить схожі символи (високий ризик). Переконайтеся, що ви на правильному сайті, перш ніж вводити будь-яку інформацію."
   },
   "metaRedirect": {
     "message": "Цей веб-сайт автоматично перенаправляє вас. Це може призвести до небезпечного сайту (середній ризик)."
@@ -114,7 +114,7 @@
     "message": "Фонове сканування"
   },
   "backgroundAnalysisDescription": {
-    "message": "Захист у реальному часі. Оновлюється щогодини. Глобальне покриття."
+    "message": "Блокує найновіші фішингові сайти. База даних оновлюється щогодини."
   },
   "activationRequired": {
     "message": "Увімкніть цю функцію, щоб використовувати."
@@ -123,7 +123,7 @@
     "message": "Інтегрований захист"
   },
   "integratedProtectionDescription": {
-    "message": "Безпосередньо перевіряє веб-сайти та посилання на ризикові характеристики."
+    "message": "Перевіряє кожне посилання на сторінці та попереджає вас про підозрілі веб-сайти."
   },
   "premiumFeaturesActive": {
     "message": "Ви використовуєте преміум-версію!"
@@ -240,7 +240,7 @@
     "message": "Виявлено невідомий ризик. Будьте особливо обережні."
   },
   "typosquattingAttack": {
-    "message": "Ця веб-адреса схожа на справжній сайт, але навмисно написана з помилкою (високий ризик). Це може бути підробка."
+    "message": "Ця адреса схожа на відомий сайт, але містить невелику орфографічну помилку. Наприклад: 'arnazon.com' замість 'amazon.com'. Завжди перевіряйте правопис перед входом."
   },
   "downloadKeyword": {
     "message": "Посилання містить слова, пов'язані із завантаженням (низький ризик). Відкривайте лише файли, яким довіряєте."
@@ -252,7 +252,7 @@
     "message": "Посилання на скрипт на цій сторінці некоректне."
   },
   "mixedScripts": {
-    "message": "Ця адреса використовує суміш різних систем письма (напр. латиниця та кирилиця). Це відомий фішинговий трюк (високий ризик)."
+    "message": "Ця адреса змішує літери з різних алфавітів (наприклад, англійського та російського). Хоча вони виглядають однаково, вони створюють зовсім іншу веб-адресу."
   },
   "introBannerMessage": {
     "message": "LinkShield активний і позначає ризикові посилання ⚠️. Наведіть курсор на іконку, щоб побачити причину."
@@ -261,9 +261,6 @@
     "message": "Ця адреса використовує цифри, схожі на літери, щоб імітувати відомий бренд (середній ризик)."
   },
   "trustedTLD": {
-    "message": "Цей домен має стандартне розширення домену (низький ризик)."
-  },
-  "trustedTld": {
     "message": "Цей домен має стандартне розширення домену (низький ризик)."
   },
   "suspiciousPageText": {
@@ -468,10 +465,10 @@
     "message": "Панель керування LinkShield"
   },
   "extNameFull": {
-    "message": "LinkShield: Ваша зброя проти фішингу"
+    "message": "LinkShield: Залишайтеся в безпеці онлайн"
   },
   "extDescriptionFull": {
-    "message": "Підвищте свою безпеку з прямими сповіщеннями та розширеним захистом від онлайн-загроз."
+    "message": "Захищає вас від підроблених веб-сайтів, фішингу та онлайн-шахрайства. Щоб ви могли переглядати без турбот."
   },
   "licenseTrialTitle": {
     "message": "Пробний період: залишилось $DAYS$ днів",
@@ -483,22 +480,25 @@
     }
   },
   "licenseTrialSubtitle": {
-    "message": "Усі преміум-функції активні під час пробного періоду"
+    "message": "Ви повністю захищені. Усі функції активні."
   },
   "licenseUpgradeLink": {
-    "message": "Оновити до Преміум →"
+    "message": "Оновити до Преміум за 1,99 €/міс. (3 пристрої) →"
+  },
+  "licenseAlreadyHaveCode": {
+    "message": "Вже маєте код ліцензії?"
   },
   "licenseExpiredTitle": {
-    "message": "Пробний період закінчився"
+    "message": "Ваші преміум-функції призупинено"
   },
   "licenseExpiredSubtitle": {
-    "message": "Активуйте Преміум для повного захисту"
+    "message": "Базовий захист все ще активний. Активуйте Premium для розширеного сканування та щогодинних оновлень."
   },
   "licenseBenefitsLabel": {
-    "message": "Преміум включає:"
+    "message": "З Premium ви отримуєте:"
   },
   "licenseBenefitsText": {
-    "message": "Фоновий аналіз, сканування QR-кодів, постійний захист"
+    "message": "Найновіші фішингові сайти заблоковано (оновлення щогодини), QR-коди скануються, захист 24/7"
   },
   "licenseKeyPlaceholder": {
     "message": "Введіть код ліцензії"
@@ -507,19 +507,37 @@
     "message": "Активувати Преміум"
   },
   "licenseBuyLink": {
-    "message": "Немає ліцензії? Придбайте тут →"
+    "message": "Отримати захист зараз →"
   },
   "licensePremiumTitle": {
-    "message": "Преміум активний"
+    "message": "Ви захищені"
   },
   "licensePremiumSubtitle": {
-    "message": "Повний захист увімкнено"
+    "message": "Усі функції безпеки активні. Дякуємо за вашу довіру!"
   },
   "manageSubscription": {
     "message": "Керувати підпискою"
   },
   "manageSubscriptionTooltip": {
     "message": "Змінити спосіб оплати, скасувати або переглянути рахунки"
+  },
+  "licenseDeactivateButton": {
+    "message": "Використати ключ ліцензії на іншому пристрої"
+  },
+  "licenseDeactivateConfirm": {
+    "message": "Ваша підписка залишається активною. Цей пристрій перейде на безкоштовну версію, щоб ви могли активувати на іншому пристрої."
+  },
+  "licenseDeactivateCancel": {
+    "message": "Скасувати"
+  },
+  "licenseDeactivateConfirmBtn": {
+    "message": "Деактивувати"
+  },
+  "licenseDeactivating": {
+    "message": "Деактивація..."
+  },
+  "licenseDeactivatedSuccess": {
+    "message": "Ліцензію деактивовано. Тепер ви можете активувати її на іншому пристрої."
   },
   "sectionSecuritySettings": {
     "message": "Налаштування безпеки"
@@ -528,13 +546,13 @@
     "message": "Налаштування безпеки"
   },
   "backgroundAnalysisFeature": {
-    "message": "Фоновий аналіз"
+    "message": "Автоматичний захист"
   },
   "premiumBadge": {
     "message": "ПРЕМІУМ"
   },
   "integratedProtectionFeature": {
-    "message": "Інтегрований захист від шкідливого ПЗ та фішингу"
+    "message": "Розумне сканування посилань"
   },
   "confirmationMessage": {
     "message": "Налаштування успішно збережено!"
@@ -558,7 +576,7 @@
     "message": "Пробний період закінчився"
   },
   "trialExpiredMessage": {
-    "message": "Ваш 30-денний пробний період закінчився. Активуйте ліцензію, щоб продовжити використання всіх функцій."
+    "message": "Пробний період закінчився. У вас все ще є базовий захист — оновіться в будь-який час, щоб відновити всі функції."
   },
   "upgradeNow": {
     "message": "Оновити зараз"
@@ -771,7 +789,7 @@
     "message": "Термін дії цієї ліцензії закінчився."
   },
   "licenseErrorActivationLimit": {
-    "message": "Досягнуто ліміту активацій. Спочатку деактивуйте інший пристрій."
+    "message": "Ви досягли ліміту пристроїв (3). Перейдіть на активний пристрій і виберіть 'Використовувати на іншому пристрої', щоб звільнити місце."
   },
   "licenseErrorInstanceNotFound": {
     "message": "Екземпляр встановлення не знайдено."
@@ -1032,7 +1050,7 @@
     "message": "На цій сторінці виявлено прихований iframe. Невидимі фрейми можуть використовуватися для відстеження, крадіжки облікових даних або доставки шкідливого ПЗ."
   },
   "typosquatting": {
-    "message": "Виявлено тайпсквотинг! Цей домен навмисно написаний з помилкою для імітації легітимного веб-сайту."
+    "message": "Виявлено орфографічний трюк: Ця назва сайту майже ідентична надійному сайту, але з невеликою відмінністю. Шахраї використовують це для створення переконливих підроблених сторінок."
   },
   "ipAddressDomain": {
     "message": "Цей веб-сайт використовує IP-адресу замість доменного імені. Це дуже незвично і часто вказує на зловмисні наміри."
@@ -1044,7 +1062,7 @@
     "message": "Виявлено потенційну атаку вішингу (голосового фішингу). Ця сторінка поєднує номери телефонів з індикаторами фішингу."
   },
   "punycodeDetected": {
-    "message": "Виявлено домен Punycode! Ця адреса використовує міжнародні символи, які можуть імітувати легітимний веб-сайт."
+    "message": "Ця веб-адреса використовує спеціальні символи, які виглядають як звичайні літери, але такими не є. Наприклад, кирилична 'а' виглядає ідентично латинській 'a'. Цей трюк робить підроблені сайти легітимними."
   },
   "reason_nonAscii": {
     "message": "Виявлено підозрілі символи (гомогліфи)"
@@ -1120,5 +1138,246 @@
   },
   "trustedDomainSkipped": {
     "message": "Цей домен позначено вами як надійний."
+  },
+  "gracePeriodActive": {
+    "message": "Не вдалося перевірити вашу ліцензію онлайн. Ваш захист триває ще $DAYS$ днів, поки ми повторюємо спробу.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "gracePeriodWarning": {
+    "message": "Очікується перевірка ліцензії. Підключіться до Інтернету протягом $DAYS$ днів для безперервного захисту.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "gracePeriodExpired": {
+    "message": "Не вдалося перевірити вашу ліцензію протягом 7 днів. Підключіться до Інтернету для відновлення преміум-функцій."
+  },
+  "gracePeriodRestored": {
+    "message": "Ліцензію успішно перевірено. Ваш захист повністю активний."
+  },
+  "siteSafeSuccess": {
+    "message": "Загроз не виявлено. Цей сайт пройшов усі перевірки безпеки."
+  },
+  "siteSafeSuccessDetail": {
+    "message": "LinkShield перевірив цю сторінку на фішинг, тайпсквотинг та шкідливі скрипти. Все в порядку."
+  },
+  "siteSafeSuccessBadge": {
+    "message": "Перевірено безпечно"
+  },
+  "exitPage": {
+    "message": "Покинути сторінку"
+  },
+  "understandRisk": {
+    "message": "Я розумію ризик"
+  },
+  "premiumActive": {
+    "message": "Активний"
+  },
+  "premiumRequired": {
+    "message": "Потрібен Premium"
+  },
+  "backgroundSecurityHelp": {
+    "message": "LinkShield виконує перевірки безпеки у фоновому режимі під час перегляду."
+  },
+  "sectionProtection": {
+    "message": "Захист"
+  },
+  "statusProtected": {
+    "message": "Захищено"
+  },
+  "statusTrialSub": {
+    "message": "Залишилось $DAYS$ днів пробного періоду",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "7"
+      }
+    }
+  },
+  "statusPremiumSub": {
+    "message": "Активна підписка Premium"
+  },
+  "statusExpired": {
+    "message": "Закінчився"
+  },
+  "statusExpiredSub": {
+    "message": "Термін вашої підписки закінчився"
+  },
+  "licenseActivateShort": {
+    "message": "Активувати"
+  },
+  "licenseDeactivateShort": {
+    "message": "Деактивувати"
+  },
+  "ctaUpgradeText": {
+    "message": "Перейти на Premium"
+  },
+  "ctaUpgradePrice": {
+    "message": "Від €1/місяць"
+  },
+  "ctaRenewText": {
+    "message": "Поновити підписку"
+  },
+  "manageBtnText": {
+    "message": "Керування"
+  },
+  "transferBtnText": {
+    "message": "Перенести"
+  },
+  "deactivateDeviceBtn": {
+    "message": "Деактивувати пристрій"
+  },
+  "licenseNetworkError": {
+    "message": "Помилка мережі. Перевірте з'єднання."
+  },
+  "premiumFeatureTag": {
+    "message": "Функція Premium"
+  },
+  "liveNow": {
+    "message": "Наживо"
+  },
+  "updatedMinAgo": {
+    "message": "Оновлено $MIN$ хв. тому",
+    "placeholders": {
+      "MIN": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "useLicenseKey": {
+    "message": "Використати ліцензійний ключ"
+  },
+  "clipboardHijackingCryptoTip": {
+    "message": "Завжди перевіряйте адреси гаманців перед відправкою криптовалюти. Зловмисники підміняють адреси в буфері обміну."
+  },
+  "clipboardHijackingTip": {
+    "message": "Цей сайт може намагатися замінити вміст, який ви копіюєте. Завжди перевіряйте вставлений вміст."
+  },
+  "webTransportWarningTitle": {
+    "message": "Підозріла мережева активність"
+  },
+  "webTransportWarningMessage": {
+    "message": "Ця сторінка використовує просунуті мережеві протоколи потенційно підозрілим чином."
+  },
+  "webTransportDirectIP": {
+    "message": "Виявлено підключення до прямої IP-адреси."
+  },
+  "webTransportHighPort": {
+    "message": "Підключення до незвично високого номера порту."
+  },
+  "webTransportRandomSubdomain": {
+    "message": "Підключення до підозрілого випадкового піддомену (можливий C2-сервер)."
+  },
+  "webTransportFreeTLD": {
+    "message": "Підключення до безкоштовного TLD-домену (часто використовується для шкідливого ПЗ)."
+  },
+  "webTransportHighConnectionRate": {
+    "message": "Виявлено незвично високу частоту підключень."
+  },
+  "webTransportHighDatagramRate": {
+    "message": "Виявлено незвично високу швидкість передачі даних."
+  },
+  "webTransportObfuscatedUrl": {
+    "message": "Виявлено заплутаний або закодований URL."
+  },
+  "webTransportInvalidUrl": {
+    "message": "Недійсний або неправильний URL підключення."
+  },
+  "failSafeNetworkTitle": {
+    "message": "Помилка перевірки ліцензії",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeNetworkMessage": {
+    "message": "Не вдалося перевірити ліцензію через проблеми з мережею. Захист залишається активним у безпечному режимі.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeGraceTitle": {
+    "message": "Потрібна перевірка ліцензії",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeGraceMessage": {
+    "message": "Підключіться до інтернету для перевірки ліцензії. Захист залишається активним.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafePreservedTitle": {
+    "message": "Захист активний",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafePreservedMessage": {
+    "message": "Ваші правила захисту збережені. Перевірте ліцензію, коли це можливо.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeDefaultTitle": {
+    "message": "Безпечний режим активний",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeDefaultMessage": {
+    "message": "LinkShield працює в безпечному режимі. Захист залишається активним.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "visualHijackingDetected": {
+    "message": "Виявлено візуальне перехоплення",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "visualHijackingMessage": {
+    "message": "Виявлено приховане накладання, яке намагається перехопити ваш клік. Це поширена фішингова техніка для перенаправлення на шкідливі сайти.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "detectionReason": {
+    "message": "Причина виявлення",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "closeWarning": {
+    "message": "Закрити",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "transparentHighZIndexOverlay": {
+    "message": "Виявлено прозоре накладання з високим z-index",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "invisibleClickjackOverlay": {
+    "message": "Виявлено невидиме clickjacking накладання",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "fullscreenTransparentOverlay": {
+    "message": "Виявлено повноекранне прозоре накладання",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "hiddenLinkOverlay": {
+    "message": "Виявлено приховане накладання посилання",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "dismissTooltip": {
+    "message": "Закрити",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "dontShowAgain": {
+    "message": "Більше не показувати?",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "confirmYes": {
+    "message": "Так",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "confirmNo": {
+    "message": "Ні",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "reportPhishingSuccess": {
+    "message": "Повідомлено! Дякуємо за допомогу в покращенні безпеки.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "pointerEventsHijack": {
+    "message": "Pointer-events click hijacking detected",
+    "description": "[EN fallback] Pointer-events click hijacking detected"
   }
 }

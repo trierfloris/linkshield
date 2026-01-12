@@ -51,7 +51,7 @@
     "message": "Ссылка содержит необычные символы (низкий риск). Это может использоваться для скрытия реального места назначения."
   },
   "homoglyphAttack": {
-    "message": "Этот веб-адрес использует символы, почти идентичные известному веб-сайту (высокий риск). Это уловка, чтобы ввести вас в заблуждение."
+    "message": "Этот адрес содержит похожие символы (высокий риск). Убедитесь, что вы находитесь на правильном сайте, прежде чем вводить информацию."
   },
   "metaRedirect": {
     "message": "Этот сайт автоматически перенаправляет вас. Это может привести на небезопасный сайт (средний риск)."
@@ -114,7 +114,7 @@
     "message": "Фоновое сканирование"
   },
   "backgroundAnalysisDescription": {
-    "message": "Защита в реальном времени. Обновление каждый час. Мировое покрытие."
+    "message": "Блокирует новейшие фишинговые сайты. База данных обновляется каждый час."
   },
   "activationRequired": {
     "message": "Включите эту функцию, чтобы использовать ее."
@@ -123,7 +123,7 @@
     "message": "Встроенная защита"
   },
   "integratedProtectionDescription": {
-    "message": "Объединяет несколько служб безопасности для комплексной защиты."
+    "message": "Проверяет каждую ссылку на странице и предупреждает вас о подозрительных веб-сайтах."
   },
   "premiumFeaturesActive": {
     "message": "Вы используете премиум-версию!"
@@ -240,7 +240,7 @@
     "message": "Обнаружен неизвестный риск. Будьте особенно осторожны."
   },
   "typosquattingAttack": {
-    "message": "Этот веб-адрес похож на настоящий сайт, но намеренно написан с ошибкой (высокий риск). Это может быть поддельная версия."
+    "message": "Этот адрес похож на известный сайт, но содержит небольшую орфографическую ошибку. Например: 'arnazon.com' вместо 'amazon.com'. Всегда проверяйте правописание перед входом."
   },
   "downloadKeyword": {
     "message": "Ссылка содержит слова, связанные с загрузками (низкий риск). Открывайте только те файлы, которым вы доверяете."
@@ -252,7 +252,7 @@
     "message": "Ссылка на скрипт на этой странице неверна."
   },
   "mixedScripts": {
-    "message": "Этот адрес использует смесь различных систем письма (например, латинские и кириллические буквы). Это известный прием фишинга (высокий риск)."
+    "message": "Этот адрес смешивает буквы из разных алфавитов (например, английского и русского). Хотя они выглядят одинаково, они создают совершенно другой веб-адрес."
   },
   "introBannerMessage": {
     "message": "LinkShield активен и помечает рискованные ссылки значком ⚠️. Наведите курсор на значок, чтобы узнать причину."
@@ -261,9 +261,6 @@
     "message": "Этот адрес использует цифры, похожие на буквы, чтобы имитировать известный бренд (средний риск)."
   },
   "trustedTLD": {
-    "message": "Этот домен имеет стандартное доменное расширение (низкий риск)."
-  },
-  "trustedTld": {
     "message": "Этот домен имеет стандартное доменное расширение (низкий риск)."
   },
   "suspiciousPageText": {
@@ -573,7 +570,7 @@
     "message": "Пробный период истек"
   },
   "trialExpiredMessage": {
-    "message": "Ваш 30-дневный пробный период истек. Активируйте лицензию, чтобы продолжить использовать все функции."
+    "message": "Пробный период закончился. У вас всё ещё есть базовая защита — обновитесь в любое время, чтобы восстановить все функции."
   },
   "upgradeNow": {
     "message": "Обновить сейчас"
@@ -582,10 +579,10 @@
     "message": "Панель управления LinkShield"
   },
   "extNameFull": {
-    "message": "LinkShield: ваше оружие против фишинга"
+    "message": "LinkShield: Оставайтесь в безопасности онлайн"
   },
   "extDescriptionFull": {
-    "message": "Повысьте свою онлайн-безопасность с мгновенными оповещениями и расширенной защитой."
+    "message": "Защищает вас от поддельных веб-сайтов, фишинга и онлайн-мошенничества. Чтобы вы могли просматривать без забот."
   },
   "licenseTrialTitle": {
     "message": "Пробный период: осталось $DAYS$ дней",
@@ -597,22 +594,25 @@
     }
   },
   "licenseTrialSubtitle": {
-    "message": "Все премиум-функции активны в течение пробного периода"
+    "message": "Вы полностью защищены. Все функции активны."
   },
   "licenseUpgradeLink": {
-    "message": "Перейти на Premium →"
+    "message": "Перейти на Premium за 1,99 €/мес. (3 устройства) →"
+  },
+  "licenseAlreadyHaveCode": {
+    "message": "Уже есть лицензионный код?"
   },
   "licenseExpiredTitle": {
-    "message": "Пробный период истек"
+    "message": "Ваши премиум-функции приостановлены"
   },
   "licenseExpiredSubtitle": {
-    "message": "Активируйте Premium для полной защиты"
+    "message": "Базовая защита по-прежнему активна. Активируйте Premium для расширенного сканирования и ежечасных обновлений."
   },
   "licenseBenefitsLabel": {
-    "message": "Premium включает:"
+    "message": "С Premium вы получаете:"
   },
   "licenseBenefitsText": {
-    "message": "Фоновый анализ, сканирование QR-кодов, непрерывная защита"
+    "message": "Новейшие фишинговые сайты блокируются (обновление каждый час), QR-коды сканируются, защита 24/7"
   },
   "licenseKeyPlaceholder": {
     "message": "Введите ваш лицензионный код"
@@ -621,19 +621,37 @@
     "message": "Активировать Premium"
   },
   "licenseBuyLink": {
-    "message": "Нет лицензии? Купить здесь →"
+    "message": "Получить защиту сейчас →"
   },
   "licensePremiumTitle": {
-    "message": "Premium активен"
+    "message": "Вы защищены"
   },
   "licensePremiumSubtitle": {
-    "message": "Полная защита включена"
+    "message": "Все функции безопасности активны. Спасибо за ваше доверие!"
   },
   "manageSubscription": {
     "message": "Управление подпиской"
   },
   "manageSubscriptionTooltip": {
     "message": "Изменить способ оплаты, отменить или просмотреть счета"
+  },
+  "licenseDeactivateButton": {
+    "message": "Использовать лицензионный ключ на другом устройстве"
+  },
+  "licenseDeactivateConfirm": {
+    "message": "Ваша подписка остается активной. Это устройство переключится на бесплатную версию, чтобы вы могли активировать на другом устройстве."
+  },
+  "licenseDeactivateCancel": {
+    "message": "Отмена"
+  },
+  "licenseDeactivateConfirmBtn": {
+    "message": "Деактивировать"
+  },
+  "licenseDeactivating": {
+    "message": "Деактивация..."
+  },
+  "licenseDeactivatedSuccess": {
+    "message": "Лицензия деактивирована. Теперь вы можете активировать её на другом устройстве."
   },
   "sectionSecuritySettings": {
     "message": "Настройки безопасности"
@@ -642,13 +660,13 @@
     "message": "Настройки безопасности"
   },
   "backgroundAnalysisFeature": {
-    "message": "Фоновый анализ"
+    "message": "Автоматическая защита"
   },
   "premiumBadge": {
     "message": "PREMIUM"
   },
   "integratedProtectionFeature": {
-    "message": "Интегрированная защита от вредоносного ПО и фишинга"
+    "message": "Умное сканирование ссылок"
   },
   "confirmationMessage": {
     "message": "Настройки успешно сохранены!"
@@ -852,7 +870,7 @@
     "message": "Срок действия этой лицензии истёк."
   },
   "licenseErrorActivationLimit": {
-    "message": "Достигнут лимит активаций. Сначала деактивируйте другое устройство."
+    "message": "Вы достигли лимита устройств (3). Перейдите на активное устройство и выберите 'Использовать на другом устройстве', чтобы освободить место."
   },
   "licenseErrorInstanceNotFound": {
     "message": "Экземпляр установки не найден."
@@ -1095,7 +1113,7 @@
     "message": "На этой странице обнаружен скрытый iframe. Невидимые фреймы могут использоваться для отслеживания, кражи учётных данных или распространения вредоносного ПО."
   },
   "typosquatting": {
-    "message": "Обнаружен тайпсквоттинг! Этот домен намеренно написан с ошибкой, чтобы имитировать легитимный веб-сайт."
+    "message": "Обнаружен орфографический трюк: Это название сайта почти идентично надёжному сайту, но с небольшим отличием. Мошенники используют это для создания убедительных поддельных страниц."
   },
   "ipAddressDomain": {
     "message": "Этот веб-сайт использует IP-адрес вместо доменного имени. Это очень необычно и часто указывает на злонамеренные намерения."
@@ -1107,7 +1125,7 @@
     "message": "Обнаружена потенциальная атака вишинга (голосового фишинга). Эта страница сочетает номера телефонов с признаками фишинга."
   },
   "punycodeDetected": {
-    "message": "Обнаружен Punycode-домен! Этот адрес использует международные символы, которые могут имитировать легитимный веб-сайт."
+    "message": "Этот веб-адрес использует специальные символы, которые выглядят как обычные буквы, но таковыми не являются. Например, кириллическая 'а' идентична латинской 'a'. Этот трюк делает поддельные сайты легитимными."
   },
   "bitbClosePageButton": {
     "message": "Закрыть эту страницу"
@@ -1120,5 +1138,246 @@
   },
   "trustedDomainSkipped": {
     "message": "Этот домен был отмечен вами как доверенный."
+  },
+  "gracePeriodActive": {
+    "message": "Не удалось проверить лицензию онлайн. Ваша защита продолжается ещё $DAYS$ дней, пока мы повторяем попытку.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "gracePeriodWarning": {
+    "message": "Ожидается проверка лицензии. Подключитесь к Интернету в течение $DAYS$ дней для непрерывной защиты.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "gracePeriodExpired": {
+    "message": "Не удалось проверить лицензию в течение 7 дней. Подключитесь к Интернету для восстановления премиум-функций."
+  },
+  "gracePeriodRestored": {
+    "message": "Лицензия успешно проверена. Ваша защита полностью активна."
+  },
+  "siteSafeSuccess": {
+    "message": "Угрозы не обнаружены. Этот сайт прошёл все проверки безопасности."
+  },
+  "siteSafeSuccessDetail": {
+    "message": "LinkShield проверил эту страницу на фишинг, тайпсквоттинг и вредоносные скрипты. Всё в порядке."
+  },
+  "siteSafeSuccessBadge": {
+    "message": "Проверено безопасно"
+  },
+  "exitPage": {
+    "message": "Покинуть страницу"
+  },
+  "understandRisk": {
+    "message": "Я понимаю риск"
+  },
+  "premiumActive": {
+    "message": "Активен"
+  },
+  "premiumRequired": {
+    "message": "Требуется Premium"
+  },
+  "backgroundSecurityHelp": {
+    "message": "LinkShield выполняет проверки безопасности в фоновом режиме во время просмотра."
+  },
+  "sectionProtection": {
+    "message": "Защита"
+  },
+  "statusProtected": {
+    "message": "Защищено"
+  },
+  "statusTrialSub": {
+    "message": "Осталось $DAYS$ дней пробного периода",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "7"
+      }
+    }
+  },
+  "statusPremiumSub": {
+    "message": "Активная подписка Premium"
+  },
+  "statusExpired": {
+    "message": "Истёк"
+  },
+  "statusExpiredSub": {
+    "message": "Срок вашей подписки истёк"
+  },
+  "licenseActivateShort": {
+    "message": "Активировать"
+  },
+  "licenseDeactivateShort": {
+    "message": "Деактивировать"
+  },
+  "ctaUpgradeText": {
+    "message": "Перейти на Premium"
+  },
+  "ctaUpgradePrice": {
+    "message": "От €1/месяц"
+  },
+  "ctaRenewText": {
+    "message": "Продлить подписку"
+  },
+  "manageBtnText": {
+    "message": "Управление"
+  },
+  "transferBtnText": {
+    "message": "Перенести"
+  },
+  "deactivateDeviceBtn": {
+    "message": "Деактивировать устройство"
+  },
+  "licenseNetworkError": {
+    "message": "Ошибка сети. Проверьте подключение."
+  },
+  "premiumFeatureTag": {
+    "message": "Функция Premium"
+  },
+  "liveNow": {
+    "message": "В эфире"
+  },
+  "updatedMinAgo": {
+    "message": "Обновлено $MIN$ мин. назад",
+    "placeholders": {
+      "MIN": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "useLicenseKey": {
+    "message": "Использовать лицензионный ключ"
+  },
+  "clipboardHijackingCryptoTip": {
+    "message": "Всегда проверяйте адреса кошельков перед отправкой криптовалюты. Злоумышленники подменяют адреса в буфере обмена."
+  },
+  "clipboardHijackingTip": {
+    "message": "Этот сайт может пытаться заменить копируемый контент. Всегда проверяйте вставленный контент."
+  },
+  "webTransportWarningTitle": {
+    "message": "Подозрительная сетевая активность"
+  },
+  "webTransportWarningMessage": {
+    "message": "Эта страница использует продвинутые сетевые протоколы потенциально подозрительным образом."
+  },
+  "webTransportDirectIP": {
+    "message": "Обнаружено подключение к прямому IP-адресу."
+  },
+  "webTransportHighPort": {
+    "message": "Подключение к необычно высокому номеру порта."
+  },
+  "webTransportRandomSubdomain": {
+    "message": "Подключение к подозрительному случайному поддомену (возможный C2-сервер)."
+  },
+  "webTransportFreeTLD": {
+    "message": "Подключение к бесплатному TLD-домену (часто используется для вредоносного ПО)."
+  },
+  "webTransportHighConnectionRate": {
+    "message": "Обнаружена необычно высокая частота подключений."
+  },
+  "webTransportHighDatagramRate": {
+    "message": "Обнаружена необычно высокая скорость передачи данных."
+  },
+  "webTransportObfuscatedUrl": {
+    "message": "Обнаружен запутанный или закодированный URL."
+  },
+  "webTransportInvalidUrl": {
+    "message": "Недействительный или неправильный URL подключения."
+  },
+  "failSafeNetworkTitle": {
+    "message": "Ошибка проверки лицензии",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeNetworkMessage": {
+    "message": "Не удалось проверить лицензию из-за проблем с сетью. Защита остаётся активной в безопасном режиме.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeGraceTitle": {
+    "message": "Требуется проверка лицензии",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeGraceMessage": {
+    "message": "Подключитесь к интернету для проверки лицензии. Защита остаётся активной.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafePreservedTitle": {
+    "message": "Защита активна",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafePreservedMessage": {
+    "message": "Ваши правила защиты сохранены. Проверьте лицензию при возможности.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeDefaultTitle": {
+    "message": "Безопасный режим активен",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeDefaultMessage": {
+    "message": "LinkShield работает в безопасном режиме. Защита остаётся активной.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "visualHijackingDetected": {
+    "message": "Обнаружен визуальный перехват",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "visualHijackingMessage": {
+    "message": "Обнаружено скрытое наложение, пытающееся перехватить ваш клик. Это распространённая фишинговая техника для перенаправления на вредоносные сайты.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "detectionReason": {
+    "message": "Причина обнаружения",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "closeWarning": {
+    "message": "Закрыть",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "transparentHighZIndexOverlay": {
+    "message": "Обнаружено прозрачное наложение с высоким z-index",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "invisibleClickjackOverlay": {
+    "message": "Обнаружено невидимое clickjacking наложение",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "fullscreenTransparentOverlay": {
+    "message": "Обнаружено полноэкранное прозрачное наложение",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "hiddenLinkOverlay": {
+    "message": "Обнаружено скрытое наложение ссылки",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "dismissTooltip": {
+    "message": "Закрыть",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "dontShowAgain": {
+    "message": "Больше не показывать?",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "confirmYes": {
+    "message": "Да",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "confirmNo": {
+    "message": "Нет",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "reportPhishingSuccess": {
+    "message": "Сообщено! Спасибо за помощь в улучшении безопасности.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "pointerEventsHijack": {
+    "message": "Pointer-events click hijacking detected",
+    "description": "[EN fallback] Pointer-events click hijacking detected"
   }
 }

@@ -51,7 +51,7 @@
     "message": "يحتوي الرابط على أحرف غير عادية (خطورة منخفضة). يمكن استخدام هذا لإخفاء الوجهة الحقيقية."
   },
   "homoglyphAttack": {
-    "message": "يستخدم عنوان الويب هذا أحرفًا شبه متطابقة مع موقع ويب معروف (خطورة عالية). هذه خدعة لتضليلك."
+    "message": "يحتوي هذا العنوان على أحرف متشابهة (خطر عالي). تأكد من أنك على الموقع الصحيح قبل إدخال أي معلومات."
   },
   "metaRedirect": {
     "message": "يقوم هذا الموقع بإعادة توجيهك تلقائيًا. قد يؤدي هذا إلى موقع غير آمن (خطورة متوسطة)."
@@ -114,7 +114,7 @@
     "message": "المسح في الخلفية"
   },
   "backgroundAnalysisDescription": {
-    "message": "حماية في الوقت الفعلي. تحديث كل ساعة. تغطية عالمية."
+    "message": "يحظر أحدث مواقع التصيد الاحتيالي. يتم تحديث قاعدة البيانات كل ساعة."
   },
   "activationRequired": {
     "message": "قم بتمكين هذه الميزة لاستخدامها."
@@ -123,7 +123,7 @@
     "message": "حماية متكاملة"
   },
   "integratedProtectionDescription": {
-    "message": "يجمع بين خدمات أمنية متعددة لتوفير حماية شاملة."
+    "message": "يفحص كل رابط في الصفحة ويحذرك من المواقع المشبوهة."
   },
   "premiumFeaturesActive": {
     "message": "أنت تستخدم الآن الإصدار المميز!"
@@ -240,7 +240,7 @@
     "message": "تم العثور على مخاطرة غير معروفة. كن حذرًا للغاية."
   },
   "typosquattingAttack": {
-    "message": "يشبه عنوان الويب هذا موقعًا حقيقيًا، ولكنه مكتوب بشكل خاطئ عن عمد (خطورة عالية). قد يكون هذا إصدارًا مزيفًا."
+    "message": "يبدو هذا العنوان مثل موقع معروف، لكنه يحتوي على خطأ إملائي صغير. مثال: 'arnazon.com' بدلاً من 'amazon.com'. تحقق دائماً من الإملاء قبل تسجيل الدخول."
   },
   "downloadKeyword": {
     "message": "يحتوي الرابط على كلمات متعلقة بالتنزيلات (خطورة منخفضة). افتح فقط الملفات التي تثق بها."
@@ -252,7 +252,7 @@
     "message": "الرابط إلى نص برمجي على هذه الصفحة غير صحيح."
   },
   "mixedScripts": {
-    "message": "يستخدم هذا العنوان مزيجًا من أنظمة الكتابة المختلفة (مثل الأحرف اللاتينية والسيريلية). هذه خدعة تصيد احتيالي معروفة (خطورة عالية)."
+    "message": "يمزج هذا العنوان أحرفاً من أبجديات مختلفة (مثل الإنجليزية والروسية). رغم أنها تبدو متماثلة، إلا أنها تنشئ عنواناً مختلفاً تماماً."
   },
   "introBannerMessage": {
     "message": "LinkShield نشط ويميز الروابط الخطرة بـ ⚠️. مرر الماوس فوق الرمز لمعرفة السبب."
@@ -261,9 +261,6 @@
     "message": "يستخدم هذا العنوان أرقامًا تشبه الأحرف لتقليد علامة تجارية معروفة (خطورة متوسطة)."
   },
   "trustedTLD": {
-    "message": "يحتوي هذا النطاق على امتداد نطاق قياسي (خطورة منخفضة)."
-  },
-  "trustedTld": {
     "message": "يحتوي هذا النطاق على امتداد نطاق قياسي (خطورة منخفضة)."
   },
   "suspiciousPageText": {
@@ -573,7 +570,7 @@
     "message": "انتهت فترة التجربة"
   },
   "trialExpiredMessage": {
-    "message": "انتهت فترة التجربة المجانية لمدة 30 يومًا. قم بتفعيل الترخيص للاستمرار في استخدام جميع الميزات."
+    "message": "انتهت فترتك التجريبية. لا تزال لديك حماية أساسية — قم بالترقية في أي وقت لاستعادة جميع الميزات."
   },
   "upgradeNow": {
     "message": "الترقية الآن"
@@ -582,10 +579,10 @@
     "message": "لوحة تحكم LinkShield"
   },
   "extNameFull": {
-    "message": "LinkShield: سلاحك ضد التصيد الاحتيالي"
+    "message": "LinkShield: ابق آمناً على الإنترنت"
   },
   "extDescriptionFull": {
-    "message": "عزز أمانك على الإنترنت من خلال التنبيهات الفورية والحماية المتقدمة."
+    "message": "يحميك من المواقع المزيفة والتصيد الاحتيالي والاحتيال عبر الإنترنت. لتتصفح بدون قلق."
   },
   "licenseTrialTitle": {
     "message": "فترة التجربة: $DAYS$ أيام متبقية",
@@ -597,22 +594,25 @@
     }
   },
   "licenseTrialSubtitle": {
-    "message": "جميع ميزات Premium نشطة خلال فترة التجربة"
+    "message": "أنت محمي بالكامل. جميع الميزات نشطة."
   },
   "licenseUpgradeLink": {
-    "message": "الترقية إلى Premium ←"
+    "message": "الترقية إلى Premium — €1.99/شهر (3 أجهزة) ←"
+  },
+  "licenseAlreadyHaveCode": {
+    "message": "هل لديك رمز ترخيص بالفعل؟"
   },
   "licenseExpiredTitle": {
-    "message": "انتهت فترة التجربة"
+    "message": "ميزات Premium الخاصة بك متوقفة مؤقتاً"
   },
   "licenseExpiredSubtitle": {
-    "message": "قم بتفعيل Premium للحماية الكاملة"
+    "message": "الحماية الأساسية لا تزال نشطة. أعد تفعيل Premium لفتح الفحص المتقدم والتحديثات كل ساعة."
   },
   "licenseBenefitsLabel": {
-    "message": "يتضمن Premium:"
+    "message": "مع Premium تحصل على:"
   },
   "licenseBenefitsText": {
-    "message": "تحليلات في الخلفية، مسح رموز QR، حماية مستمرة"
+    "message": "حظر أحدث مواقع التصيد (تحديث كل ساعة)، فحص رموز QR، حماية على مدار الساعة"
   },
   "licenseKeyPlaceholder": {
     "message": "أدخل رمز الترخيص الخاص بك"
@@ -621,19 +621,37 @@
     "message": "تفعيل Premium"
   },
   "licenseBuyLink": {
-    "message": "ليس لديك ترخيص؟ اشترِ من هنا ←"
+    "message": "احصل على الحماية الآن ←"
   },
   "licensePremiumTitle": {
-    "message": "Premium نشط"
+    "message": "أنت محمي"
   },
   "licensePremiumSubtitle": {
-    "message": "الحماية الكاملة مفعلة"
+    "message": "جميع ميزات الأمان نشطة. شكراً لثقتك!"
   },
   "manageSubscription": {
     "message": "إدارة الاشتراك"
   },
   "manageSubscriptionTooltip": {
     "message": "تغيير طريقة الدفع، إلغاء أو عرض الفواتير"
+  },
+  "licenseDeactivateButton": {
+    "message": "استخدام مفتاح الترخيص على جهاز آخر"
+  },
+  "licenseDeactivateConfirm": {
+    "message": "يظل اشتراكك نشطاً. سيتحول هذا الجهاز إلى الإصدار المجاني حتى تتمكن من التفعيل على جهاز آخر."
+  },
+  "licenseDeactivateCancel": {
+    "message": "إلغاء"
+  },
+  "licenseDeactivateConfirmBtn": {
+    "message": "إلغاء التفعيل"
+  },
+  "licenseDeactivating": {
+    "message": "جارٍ إلغاء التفعيل..."
+  },
+  "licenseDeactivatedSuccess": {
+    "message": "تم إلغاء تفعيل الترخيص. يمكنك الآن تفعيله على جهاز آخر."
   },
   "sectionSecuritySettings": {
     "message": "إعدادات الأمان"
@@ -642,13 +660,13 @@
     "message": "إعدادات الأمان"
   },
   "backgroundAnalysisFeature": {
-    "message": "التحليلات في الخلفية"
+    "message": "الحماية التلقائية"
   },
   "premiumBadge": {
     "message": "PREMIUM"
   },
   "integratedProtectionFeature": {
-    "message": "حماية متكاملة ضد البرامج الضارة والتصيد الاحتيالي"
+    "message": "فحص الروابط الذكي"
   },
   "confirmationMessage": {
     "message": "تم حفظ الإعدادات بنجاح!"
@@ -852,7 +870,7 @@
     "message": "انتهت صلاحية هذا الترخيص."
   },
   "licenseErrorActivationLimit": {
-    "message": "تم الوصول إلى حد التفعيل. يرجى إلغاء تفعيل جهاز آخر أولاً."
+    "message": "لقد وصلت إلى حد الأجهزة (3). انتقل إلى جهاز نشط واختر 'استخدام على جهاز آخر' لتحرير مكان."
   },
   "licenseErrorInstanceNotFound": {
     "message": "لم يتم العثور على مثيل التثبيت."
@@ -1095,7 +1113,7 @@
     "message": "تم اكتشاف iframe مخفي في هذه الصفحة. يمكن استخدام الإطارات غير المرئية للتتبع أو سرقة بيانات الاعتماد أو توصيل البرامج الضارة."
   },
   "typosquatting": {
-    "message": "تم اكتشاف Typosquatting! تم كتابة هذا النطاق بشكل خاطئ عمداً لانتحال صفة موقع ويب شرعي."
+    "message": "تم اكتشاف خدعة إملائية: اسم هذا الموقع مطابق تقريباً لموقع موثوق، ولكن مع اختلاف طفيف. يستخدم المحتالون هذا لإنشاء صفحات مزيفة مقنعة."
   },
   "ipAddressDomain": {
     "message": "يستخدم هذا الموقع عنوان IP بدلاً من اسم النطاق. هذا غير عادي للغاية وغالباً ما يشير إلى نوايا ضارة."
@@ -1107,7 +1125,7 @@
     "message": "تم اكتشاف هجوم vishing (التصيد الصوتي) محتمل. تجمع هذه الصفحة بين أرقام الهواتف ومؤشرات التصيد."
   },
   "punycodeDetected": {
-    "message": "تم اكتشاف نطاق Punycode! يستخدم هذا العنوان أحرفاً دولية قد تنتحل صفة موقع ويب شرعي."
+    "message": "يستخدم هذا العنوان أحرفاً خاصة تبدو مثل الأحرف العادية لكنها ليست كذلك. مثلاً، الحرف السيريلي 'а' مطابق للحرف اللاتيني 'a'. هذه الخدعة تجعل المواقع المزيفة تبدو شرعية."
   },
   "bitbClosePageButton": {
     "message": "أغلق هذه الصفحة"
@@ -1120,5 +1138,246 @@
   },
   "trustedDomainSkipped": {
     "message": "تم تعليم هذا النطاق على أنه موثوق به من قبلك."
+  },
+  "gracePeriodActive": {
+    "message": "لم نتمكن من التحقق من ترخيصك عبر الإنترنت. تستمر حمايتك لمدة $DAYS$ أيام إضافية بينما نحاول مرة أخرى.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "gracePeriodWarning": {
+    "message": "التحقق من الترخيص معلق. يرجى الاتصال بالإنترنت خلال $DAYS$ أيام القادمة للحفاظ على الحماية المستمرة.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "gracePeriodExpired": {
+    "message": "لم نتمكن من التحقق من ترخيصك لمدة 7 أيام. يرجى الاتصال بالإنترنت لاستعادة ميزات Premium."
+  },
+  "gracePeriodRestored": {
+    "message": "تم التحقق من الترخيص بنجاح. حمايتك نشطة بالكامل."
+  },
+  "siteSafeSuccess": {
+    "message": "لم يتم اكتشاف أي تهديدات. اجتاز هذا الموقع جميع فحوصات الأمان."
+  },
+  "siteSafeSuccessDetail": {
+    "message": "قام LinkShield بفحص هذه الصفحة بحثاً عن التصيد الاحتيالي والتزوير الإملائي والنصوص البرمجية الضارة. كل شيء يبدو جيداً."
+  },
+  "siteSafeSuccessBadge": {
+    "message": "تم التحقق - آمن"
+  },
+  "exitPage": {
+    "message": "غادر هذه الصفحة"
+  },
+  "understandRisk": {
+    "message": "أنا أفهم المخاطر"
+  },
+  "premiumActive": {
+    "message": "نشط"
+  },
+  "premiumRequired": {
+    "message": "مميز"
+  },
+  "backgroundSecurityHelp": {
+    "message": "يتطلب ترخيصاً نشطاً. قم بتفعيل Premium لتمكين الحماية التلقائية."
+  },
+  "sectionProtection": {
+    "message": "الحماية"
+  },
+  "statusProtected": {
+    "message": "محمي"
+  },
+  "statusTrialSub": {
+    "message": "تجريبي · متبقي $DAYS$ أيام",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "statusPremiumSub": {
+    "message": "مميز · نشط"
+  },
+  "statusExpired": {
+    "message": "الحماية متوقفة"
+  },
+  "statusExpiredSub": {
+    "message": "جدد لاستعادة الحماية الكاملة"
+  },
+  "licenseActivateShort": {
+    "message": "تفعيل"
+  },
+  "licenseDeactivateShort": {
+    "message": "نقل الترخيص"
+  },
+  "ctaUpgradeText": {
+    "message": "الترقية إلى Premium"
+  },
+  "ctaUpgradePrice": {
+    "message": "€1.99/شهر · 3 أجهزة"
+  },
+  "ctaRenewText": {
+    "message": "استعادة الحماية"
+  },
+  "manageBtnText": {
+    "message": "إدارة الاشتراك"
+  },
+  "transferBtnText": {
+    "message": "إلغاء التفعيل"
+  },
+  "deactivateDeviceBtn": {
+    "message": "إلغاء التفعيل"
+  },
+  "licenseNetworkError": {
+    "message": "فشل الاتصال. تحقق من الإنترنت."
+  },
+  "premiumFeatureTag": {
+    "message": "ميزة مميزة"
+  },
+  "liveNow": {
+    "message": "مباشر"
+  },
+  "updatedMinAgo": {
+    "message": "قبل $MIN$ دقيقة",
+    "placeholders": {
+      "MIN": {
+        "content": "$1",
+        "example": "15"
+      }
+    }
+  },
+  "useLicenseKey": {
+    "message": "استخدام مفتاح الترخيص"
+  },
+  "clipboardHijackingCryptoTip": {
+    "message": "تحقق دائمًا من عناوين المحفظة قبل إرسال العملات المشفرة. يقوم المهاجمون باستبدال العناوين في الحافظة."
+  },
+  "clipboardHijackingTip": {
+    "message": "قد يحاول هذا الموقع استبدال المحتوى الذي تنسخه. تحقق دائمًا من المحتوى الملصق."
+  },
+  "webTransportWarningTitle": {
+    "message": "نشاط شبكة مشبوه"
+  },
+  "webTransportWarningMessage": {
+    "message": "هذه الصفحة تستخدم بروتوكولات شبكة متقدمة بطريقة مشبوهة محتملة."
+  },
+  "webTransportDirectIP": {
+    "message": "تم اكتشاف اتصال بعنوان IP مباشر."
+  },
+  "webTransportHighPort": {
+    "message": "اتصال برقم منفذ عالي بشكل غير عادي."
+  },
+  "webTransportRandomSubdomain": {
+    "message": "اتصال بنطاق فرعي عشوائي مشبوه (خادم C2 محتمل)."
+  },
+  "webTransportFreeTLD": {
+    "message": "اتصال بنطاق TLD مجاني (يستخدم عادة للبرامج الضارة)."
+  },
+  "webTransportHighConnectionRate": {
+    "message": "تم اكتشاف معدل اتصال عالي بشكل غير عادي."
+  },
+  "webTransportHighDatagramRate": {
+    "message": "تم اكتشاف معدل نقل بيانات عالي بشكل غير عادي."
+  },
+  "webTransportObfuscatedUrl": {
+    "message": "تم اكتشاف عنوان URL مشفر أو مخفي."
+  },
+  "webTransportInvalidUrl": {
+    "message": "عنوان URL للاتصال غير صالح أو مشوه."
+  },
+  "failSafeNetworkTitle": {
+    "message": "فشل التحقق من الترخيص",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeNetworkMessage": {
+    "message": "تعذر التحقق من الترخيص بسبب مشاكل في الشبكة. تظل الحماية نشطة في الوضع الآمن.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeGraceTitle": {
+    "message": "مطلوب التحقق من الترخيص",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeGraceMessage": {
+    "message": "يرجى الاتصال بالإنترنت للتحقق من ترخيصك. تظل الحماية نشطة.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafePreservedTitle": {
+    "message": "الحماية نشطة",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafePreservedMessage": {
+    "message": "تم الحفاظ على قواعد الحماية الخاصة بك. يرجى التحقق من ترخيصك عندما يكون ذلك ممكناً.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeDefaultTitle": {
+    "message": "الوضع الآمن نشط",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeDefaultMessage": {
+    "message": "LinkShield يعمل في الوضع الآمن. تظل الحماية نشطة.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "visualHijackingDetected": {
+    "message": "تم اكتشاف اختطاف بصري",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "visualHijackingMessage": {
+    "message": "تم اكتشاف طبقة مخفية تحاول اعتراض نقرتك. هذه تقنية تصيد شائعة لإعادة توجيهك إلى مواقع ضارة.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "detectionReason": {
+    "message": "سبب الاكتشاف",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "closeWarning": {
+    "message": "إغلاق",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "transparentHighZIndexOverlay": {
+    "message": "تم اكتشاف طبقة شفافة ذات z-index عالي",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "invisibleClickjackOverlay": {
+    "message": "تم اكتشاف طبقة clickjacking غير مرئية",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "fullscreenTransparentOverlay": {
+    "message": "تم اكتشاف طبقة شفافة بملء الشاشة",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "hiddenLinkOverlay": {
+    "message": "تم اكتشاف طبقة رابط مخفي",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "dismissTooltip": {
+    "message": "إغلاق",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "dontShowAgain": {
+    "message": "عدم الإظهار مرة أخرى؟",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "confirmYes": {
+    "message": "نعم",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "confirmNo": {
+    "message": "لا",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "reportPhishingSuccess": {
+    "message": "تم الإبلاغ! شكراً لمساعدتك في تحسين الأمان.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "pointerEventsHijack": {
+    "message": "Pointer-events click hijacking detected",
+    "description": "[EN fallback] Pointer-events click hijacking detected"
   }
 }

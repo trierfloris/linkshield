@@ -51,7 +51,7 @@
     "message": "A link szokatlan karaktereket tartalmaz (alacsony kockázat). Ezzel el lehet rejteni a valódi célt."
   },
   "homoglyphAttack": {
-    "message": "Ez a webcím egy ismert weboldalhoz majdnem azonos karaktereket használ (magas kockázat). Ez egy trükk a megtévesztésre."
+    "message": "Ez a cím hasonló karaktereket tartalmaz (magas kockázat). Ellenőrizze, hogy a megfelelő oldalon van-e, mielőtt bármilyen információt megadna."
   },
   "metaRedirect": {
     "message": "Ez a weboldal automatikusan átirányít. Ez nem biztonságos oldalra vezethet (közepes kockázat)."
@@ -114,7 +114,7 @@
     "message": "Háttérvizsgálat"
   },
   "backgroundAnalysisDescription": {
-    "message": "Valós idejű védelem. Óránként frissül. Világszerte lefedettség."
+    "message": "Blokkolja a legújabb adathalász oldalakat. Az adatbázis óránként frissül."
   },
   "activationRequired": {
     "message": "Engedélyezd ezt a funkciót a használatához."
@@ -123,7 +123,7 @@
     "message": "Integrált védelem"
   },
   "integratedProtectionDescription": {
-    "message": "Több biztonsági szolgáltatást kombinál az átfogó védelemért."
+    "message": "Ellenőrzi az oldal minden linkjét és figyelmeztet a gyanús weboldalakra."
   },
   "premiumFeaturesActive": {
     "message": "Most a prémium verziót használod!"
@@ -240,7 +240,7 @@
     "message": "Ismeretlen kockázatot találtunk. Légy extra óvatos."
   },
   "typosquattingAttack": {
-    "message": "Ez a webcím úgy néz ki, mint egy valódi weboldal, de szándékosan el van írva (magas kockázat). Ez lehet egy hamis verzió."
+    "message": "Ez a cím egy ismert weboldalhoz hasonlít, de apró helyesírási hibát tartalmaz. Például: 'arnazon.com' az 'amazon.com' helyett. Bejelentkezés előtt mindig ellenőrizze a helyesírást."
   },
   "downloadKeyword": {
     "message": "A link letöltéssel kapcsolatos szavakat tartalmaz (alacsony kockázat). Csak megbízható fájlokat nyiss meg."
@@ -252,7 +252,7 @@
     "message": "Az oldalon található szkript linkje hibás."
   },
   "mixedScripts": {
-    "message": "Ez a cím különböző írásrendszerek keverékét használja (pl. latin és cirill betűk). Ez egy ismert adathalász trükk (magas kockázat)."
+    "message": "Ez a cím különböző ábécék betűit keveri (például angol és orosz). Bár ugyanúgy néznek ki, teljesen más webcímet hoznak létre."
   },
   "introBannerMessage": {
     "message": "A LinkShield aktív és ⚠️ jellel jelöli a kockázatos linkeket. Vidd az egeret az ikon fölé, hogy megnézd miért."
@@ -261,9 +261,6 @@
     "message": "Ez a cím betűknek látszó számokat használ egy ismert márka utánzására (közepes kockázat)."
   },
   "trustedTLD": {
-    "message": "Ez a domain szabványos domainvégződéssel rendelkezik (alacsony kockázat)."
-  },
-  "trustedTld": {
     "message": "Ez a domain szabványos domainvégződéssel rendelkezik (alacsony kockázat)."
   },
   "suspiciousPageText": {
@@ -468,10 +465,10 @@
     "message": "LinkShield Vezérlőpult"
   },
   "extNameFull": {
-    "message": "LinkShield: A te fegyvered az adathalászat ellen"
+    "message": "LinkShield: Maradj biztonságban online"
   },
   "extDescriptionFull": {
-    "message": "Növeld biztonságodat közvetlen figyelmeztetésekkel és fejlett védelemmel az online fenyegetések ellen."
+    "message": "Megvéd a hamis weboldalakon, adathalászat és online csalások ellen. Így gondtalanul böngészhetsz."
   },
   "licenseTrialTitle": {
     "message": "Próbaidő: $DAYS$ nap hátra",
@@ -483,22 +480,25 @@
     }
   },
   "licenseTrialSubtitle": {
-    "message": "Minden prémium funkció aktív a próbaidő alatt"
+    "message": "Teljes mértékben védve vagy. Minden funkció aktív."
   },
   "licenseUpgradeLink": {
-    "message": "Váltás Prémiumra →"
+    "message": "Váltás Prémiumra 1,99 €/hó (3 eszköz) →"
+  },
+  "licenseAlreadyHaveCode": {
+    "message": "Már van licenckódod?"
   },
   "licenseExpiredTitle": {
-    "message": "Próbaidő lejárt"
+    "message": "Prémium funkciói szünetelnek"
   },
   "licenseExpiredSubtitle": {
-    "message": "Aktiváld a Prémiumot a teljes védelemért"
+    "message": "Az alapvető védelem továbbra is aktív. Aktiválja újra a Prémiumot a fejlett vizsgálatért és óránkénti frissítésekért."
   },
   "licenseBenefitsLabel": {
-    "message": "A Prémium tartalmazza:"
+    "message": "A Premium előnyei:"
   },
   "licenseBenefitsText": {
-    "message": "Háttérelemzés, QR-kód szkennelés, folyamatos védelem"
+    "message": "Legújabb adathalász oldalak blokkolva (óránként frissítve), QR-kódok szkennelve, 0-24 védelem"
   },
   "licenseKeyPlaceholder": {
     "message": "Add meg a licenckódodat"
@@ -507,19 +507,37 @@
     "message": "Prémium aktiválása"
   },
   "licenseBuyLink": {
-    "message": "Nincs még licenced? Vásárolj itt →"
+    "message": "Szerezd meg a védelmet most →"
   },
   "licensePremiumTitle": {
-    "message": "Prémium aktív"
+    "message": "Védve vagy"
   },
   "licensePremiumSubtitle": {
-    "message": "Teljes védelem engedélyezve"
+    "message": "Minden biztonsági funkció aktív. Köszönjük a bizalmat!"
   },
   "manageSubscription": {
     "message": "Előfizetés kezelése"
   },
   "manageSubscriptionTooltip": {
     "message": "Fizetési mód módosítása, lemondás vagy számlák megtekintése"
+  },
+  "licenseDeactivateButton": {
+    "message": "Licenckulcs használata másik eszközön"
+  },
+  "licenseDeactivateConfirm": {
+    "message": "Az előfizetésed aktív marad. Ez az eszköz átvált az ingyenes verzióra, így aktiválhatsz egy másik eszközön."
+  },
+  "licenseDeactivateCancel": {
+    "message": "Mégse"
+  },
+  "licenseDeactivateConfirmBtn": {
+    "message": "Deaktiválás"
+  },
+  "licenseDeactivating": {
+    "message": "Deaktiválás..."
+  },
+  "licenseDeactivatedSuccess": {
+    "message": "Licenc deaktiválva. Most már aktiválhatod egy másik eszközön."
   },
   "sectionSecuritySettings": {
     "message": "Biztonsági beállítások"
@@ -528,13 +546,13 @@
     "message": "Biztonsági beállítások"
   },
   "backgroundAnalysisFeature": {
-    "message": "Háttérelemzés"
+    "message": "Automatikus védelem"
   },
   "premiumBadge": {
     "message": "PRÉMIUM"
   },
   "integratedProtectionFeature": {
-    "message": "Integrált kártevő és adathalász védelem"
+    "message": "Intelligens link-ellenőrzés"
   },
   "confirmationMessage": {
     "message": "Beállítások sikeresen mentve!"
@@ -558,7 +576,7 @@
     "message": "Próbaidő lejárt"
   },
   "trialExpiredMessage": {
-    "message": "A 30 napos próbaidőd lejárt. Aktiválj licencet az összes funkció további használatához."
+    "message": "A próbaidőszak lejárt. Alapvető védelme továbbra is megvan — bármikor frissíthet az összes funkció visszaállításához."
   },
   "upgradeNow": {
     "message": "Frissítés most"
@@ -771,7 +789,7 @@
     "message": "Ez a licenc lejárt."
   },
   "licenseErrorActivationLimit": {
-    "message": "Elérted az aktiválási limitet. Előbb deaktiválj egy másik eszközt."
+    "message": "Elérte az eszközkorlátot (3). Menjen egy aktív eszközre és válassza a 'Használat másik eszközön' opciót egy hely felszabadításához."
   },
   "licenseErrorInstanceNotFound": {
     "message": "Telepítési példány nem található."
@@ -1032,7 +1050,7 @@
     "message": "Rejtett iframe észlelve ezen az oldalon. A láthatatlan kereteket követésre, hitelesítő adatlopásra vagy kártevő terjesztésére használhatják."
   },
   "typosquatting": {
-    "message": "Typosquatting észlelve! Ez a domain szándékosan el van írva, hogy egy legitim weboldalt utánozzon."
+    "message": "Helyesírási trükk észlelve: Ez a weboldal neve szinte azonos egy megbízható oldallal, de finom különbséggel. A csalók ezt használják meggyőző hamis oldalak létrehozására."
   },
   "ipAddressDomain": {
     "message": "Ez a weboldal IP-címet használ domain név helyett. Ez nagyon szokatlan és gyakran rosszindulatú szándékra utal."
@@ -1044,7 +1062,7 @@
     "message": "Potenciális vishing (hangalapú adathalász) támadás észlelve. Ez az oldal telefonszámokat kombinál adathalász jelzőkkel."
   },
   "punycodeDetected": {
-    "message": "Punycode domain észlelve! Ez a cím nemzetközi karaktereket használ, amelyek egy legitim weboldalt utánozhatnak."
+    "message": "Ez a webcím különleges karaktereket használ, amelyek normál betűknek tűnnek, de nem azok. Például a cirill 'а' azonosnak tűnik a latin 'a' betűvel. Ez a trükk legitimnek mutatja a hamis oldalakat."
   },
   "reason_nonAscii": {
     "message": "Gyanús karakterek észlelve (homoglifák)"
@@ -1120,5 +1138,246 @@
   },
   "trustedDomainSkipped": {
     "message": "Ezt a domaint megbízhatóként jelölte meg."
+  },
+  "gracePeriodActive": {
+    "message": "Nem sikerült online ellenőrizni a licencét. A védelme még $DAYS$ napig folytatódik, amíg újrapróbálkozunk.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "gracePeriodWarning": {
+    "message": "Licenc ellenőrzés függőben. Csatlakozzon az internethez a következő $DAYS$ napon belül a megszakítás nélküli védelemért.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "gracePeriodExpired": {
+    "message": "7 napja nem sikerült ellenőrizni a licencét. Csatlakozzon az internethez a prémium funkciók visszaállításához."
+  },
+  "gracePeriodRestored": {
+    "message": "Licenc sikeresen ellenőrizve. A védelme teljesen aktív."
+  },
+  "siteSafeSuccess": {
+    "message": "Nem észleltünk fenyegetést. Ez az oldal átment minden biztonsági ellenőrzésen."
+  },
+  "siteSafeSuccessDetail": {
+    "message": "A LinkShield átvizsgálta ezt az oldalt adathalászat, typosquatting és rosszindulatú szkriptek szempontjából. Minden rendben van."
+  },
+  "siteSafeSuccessBadge": {
+    "message": "Biztonságosnak ellenőrizve"
+  },
+  "exitPage": {
+    "message": "Oldal elhagyása"
+  },
+  "understandRisk": {
+    "message": "Megértem a kockázatot"
+  },
+  "premiumActive": {
+    "message": "Aktív"
+  },
+  "premiumRequired": {
+    "message": "Premium szükséges"
+  },
+  "backgroundSecurityHelp": {
+    "message": "A LinkShield biztonsági ellenőrzéseket végez a háttérben böngészés közben."
+  },
+  "sectionProtection": {
+    "message": "Védelem"
+  },
+  "statusProtected": {
+    "message": "Védett"
+  },
+  "statusTrialSub": {
+    "message": "$DAYS$ próbanap van hátra",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "7"
+      }
+    }
+  },
+  "statusPremiumSub": {
+    "message": "Aktív Premium előfizetés"
+  },
+  "statusExpired": {
+    "message": "Lejárt"
+  },
+  "statusExpiredSub": {
+    "message": "Előfizetése lejárt"
+  },
+  "licenseActivateShort": {
+    "message": "Aktiválás"
+  },
+  "licenseDeactivateShort": {
+    "message": "Deaktiválás"
+  },
+  "ctaUpgradeText": {
+    "message": "Frissítés Premiumra"
+  },
+  "ctaUpgradePrice": {
+    "message": "Már €1/hótól"
+  },
+  "ctaRenewText": {
+    "message": "Előfizetés megújítása"
+  },
+  "manageBtnText": {
+    "message": "Kezelés"
+  },
+  "transferBtnText": {
+    "message": "Átvitel"
+  },
+  "deactivateDeviceBtn": {
+    "message": "Eszköz deaktiválása"
+  },
+  "licenseNetworkError": {
+    "message": "Hálózati hiba. Ellenőrizze a kapcsolatot."
+  },
+  "premiumFeatureTag": {
+    "message": "Premium funkció"
+  },
+  "liveNow": {
+    "message": "Élő most"
+  },
+  "updatedMinAgo": {
+    "message": "$MIN$ perce frissítve",
+    "placeholders": {
+      "MIN": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "useLicenseKey": {
+    "message": "Licenckulcs használata"
+  },
+  "clipboardHijackingCryptoTip": {
+    "message": "Mindig ellenőrizze a pénztárca címeket kriptovaluta küldése előtt. A támadók lecserélik a vágólap címeit."
+  },
+  "clipboardHijackingTip": {
+    "message": "Ez a webhely megpróbálhatja lecserélni a másolt tartalmat. Mindig ellenőrizze a beillesztett tartalmat."
+  },
+  "webTransportWarningTitle": {
+    "message": "Gyanús hálózati tevékenység"
+  },
+  "webTransportWarningMessage": {
+    "message": "Ez az oldal potenciálisan gyanús módon használ fejlett hálózati protokollokat."
+  },
+  "webTransportDirectIP": {
+    "message": "Közvetlen IP-címhez való csatlakozás észlelve."
+  },
+  "webTransportHighPort": {
+    "message": "Szokatlanul magas portszámhoz való csatlakozás."
+  },
+  "webTransportRandomSubdomain": {
+    "message": "Gyanús véletlenszerű aldomain csatlakozás (lehetséges C2 szerver)."
+  },
+  "webTransportFreeTLD": {
+    "message": "Ingyenes TLD domainhez való csatlakozás (gyakran használják rosszindulatú szoftverekhez)."
+  },
+  "webTransportHighConnectionRate": {
+    "message": "Szokatlanul magas kapcsolódási arány észlelve."
+  },
+  "webTransportHighDatagramRate": {
+    "message": "Szokatlanul magas adatátviteli sebesség észlelve."
+  },
+  "webTransportObfuscatedUrl": {
+    "message": "Eltakart vagy kódolt URL észlelve."
+  },
+  "webTransportInvalidUrl": {
+    "message": "Érvénytelen vagy hibás formátumú csatlakozási URL."
+  },
+  "failSafeNetworkTitle": {
+    "message": "Licencellenőrzés sikertelen",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeNetworkMessage": {
+    "message": "A licenc nem ellenőrizhető hálózati problémák miatt. A védelem biztonságos módban aktív marad.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeGraceTitle": {
+    "message": "Licenc ellenőrzés szükséges",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeGraceMessage": {
+    "message": "Csatlakozzon az internethez a licenc ellenőrzéséhez. A védelem aktív marad.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafePreservedTitle": {
+    "message": "Védelem aktív",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafePreservedMessage": {
+    "message": "A védelmi szabályok megmaradtak. Ellenőrizze a licencet, amikor lehetséges.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeDefaultTitle": {
+    "message": "Biztonságos mód aktív",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeDefaultMessage": {
+    "message": "A LinkShield biztonságos módban fut. A védelem aktív marad.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "visualHijackingDetected": {
+    "message": "Vizuális eltérítés észlelve",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "visualHijackingMessage": {
+    "message": "Rejtett átfedés észlelve, amely megpróbálja elfogni a kattintását. Ez egy gyakori adathalász technika, amely rosszindulatú oldalakra irányít át.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "detectionReason": {
+    "message": "Észlelés oka",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "closeWarning": {
+    "message": "Bezárás",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "transparentHighZIndexOverlay": {
+    "message": "Magas z-indexű átlátszó átfedés észlelve",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "invisibleClickjackOverlay": {
+    "message": "Láthatatlan clickjacking átfedés észlelve",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "fullscreenTransparentOverlay": {
+    "message": "Teljes képernyős átlátszó átfedés észlelve",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "hiddenLinkOverlay": {
+    "message": "Rejtett link átfedés észlelve",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "dismissTooltip": {
+    "message": "Bezárás",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "dontShowAgain": {
+    "message": "Ne mutassa újra?",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "confirmYes": {
+    "message": "Igen",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "confirmNo": {
+    "message": "Nem",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "reportPhishingSuccess": {
+    "message": "Jelentve! Köszönjük, hogy segít a biztonság javításában.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "pointerEventsHijack": {
+    "message": "Pointer-events click hijacking detected",
+    "description": "[EN fallback] Pointer-events click hijacking detected"
   }
 }

@@ -51,7 +51,7 @@
     "message": "Tautan berisi karakter yang tidak biasa (risiko rendah). Ini dapat digunakan untuk menyembunyikan tujuan sebenarnya."
   },
   "homoglyphAttack": {
-    "message": "Alamat web ini menggunakan karakter yang hampir identik dengan situs web yang dikenal (risiko tinggi). Ini adalah trik untuk menipu Anda."
+    "message": "Alamat ini mengandung karakter yang mirip (risiko tinggi). Pastikan Anda berada di situs yang benar sebelum memasukkan informasi apa pun."
   },
   "metaRedirect": {
     "message": "Situs web ini secara otomatis mengarahkan Anda. Ini dapat mengarah ke situs yang tidak aman (risiko sedang)."
@@ -114,7 +114,7 @@
     "message": "Pemindaian Latar Belakang"
   },
   "backgroundAnalysisDescription": {
-    "message": "Perlindungan real-time. Diperbarui setiap jam. Cakupan seluruh dunia."
+    "message": "Memblokir situs phishing terbaru. Database diperbarui setiap jam."
   },
   "activationRequired": {
     "message": "Aktifkan fitur ini untuk menggunakannya."
@@ -123,7 +123,7 @@
     "message": "Perlindungan Terintegrasi"
   },
   "integratedProtectionDescription": {
-    "message": "Memeriksa situs web dan tautan secara langsung untuk karakteristik berisiko."
+    "message": "Memeriksa setiap tautan di halaman dan memperingatkan Anda tentang situs web mencurigakan."
   },
   "premiumFeaturesActive": {
     "message": "Anda sekarang menggunakan versi premium!"
@@ -240,7 +240,7 @@
     "message": "Risiko tidak diketahui telah ditemukan. Berhati-hatilah."
   },
   "typosquattingAttack": {
-    "message": "Alamat web ini terlihat seperti situs web asli tetapi sengaja salah eja (risiko tinggi). Ini mungkin versi palsu."
+    "message": "Alamat ini terlihat seperti situs terkenal, tapi mengandung kesalahan ejaan kecil. Contoh: 'arnazon.com' bukan 'amazon.com'. Selalu periksa ejaan sebelum login."
   },
   "downloadKeyword": {
     "message": "Tautan berisi kata-kata yang terkait dengan unduhan (risiko rendah). Hanya buka file yang Anda percayai."
@@ -252,7 +252,7 @@
     "message": "Tautan ke skrip di halaman ini tidak benar."
   },
   "mixedScripts": {
-    "message": "Alamat ini menggunakan campuran sistem penulisan yang berbeda (mis. huruf Latin dan Sirilik). Ini adalah trik phishing yang dikenal (risiko tinggi)."
+    "message": "Alamat ini mencampur huruf dari alfabet berbeda (seperti Inggris dan Rusia). Meskipun terlihat sama, mereka membuat alamat web yang sama sekali berbeda."
   },
   "introBannerMessage": {
     "message": "LinkShield aktif dan menandai tautan berisiko dengan ⚠️. Arahkan kursor ke ikon untuk melihat alasannya."
@@ -261,9 +261,6 @@
     "message": "Alamat ini menggunakan angka yang terlihat seperti huruf untuk meniru merek yang dikenal (risiko sedang)."
   },
   "trustedTLD": {
-    "message": "Domain ini memiliki ekstensi domain standar (risiko rendah)."
-  },
-  "trustedTld": {
     "message": "Domain ini memiliki ekstensi domain standar (risiko rendah)."
   },
   "suspiciousPageText": {
@@ -468,10 +465,10 @@
     "message": "Dasbor LinkShield"
   },
   "extNameFull": {
-    "message": "LinkShield: Senjata Anda Melawan Phishing"
+    "message": "LinkShield: Tetap Aman Online"
   },
   "extDescriptionFull": {
-    "message": "Tingkatkan keamanan Anda dengan peringatan langsung dan perlindungan canggih terhadap ancaman online."
+    "message": "Melindungi Anda dari situs web palsu, phishing, dan penipuan online. Sehingga Anda bisa browsing tanpa khawatir."
   },
   "licenseTrialTitle": {
     "message": "Uji coba: $DAYS$ hari tersisa",
@@ -483,22 +480,25 @@
     }
   },
   "licenseTrialSubtitle": {
-    "message": "Semua fitur premium aktif selama uji coba Anda"
+    "message": "Anda terlindungi sepenuhnya. Semua fitur aktif."
   },
   "licenseUpgradeLink": {
-    "message": "Tingkatkan ke Premium →"
+    "message": "Tingkatkan ke Premium — €1.99/bulan (3 perangkat) →"
+  },
+  "licenseAlreadyHaveCode": {
+    "message": "Sudah punya kode lisensi?"
   },
   "licenseExpiredTitle": {
-    "message": "Uji Coba Berakhir"
+    "message": "Fitur premium Anda dijeda"
   },
   "licenseExpiredSubtitle": {
-    "message": "Aktifkan Premium untuk perlindungan penuh"
+    "message": "Perlindungan dasar masih aktif. Aktifkan kembali Premium untuk pemindaian lanjutan dan pembaruan per jam."
   },
   "licenseBenefitsLabel": {
-    "message": "Premium meliputi:"
+    "message": "Dengan Premium Anda mendapat:"
   },
   "licenseBenefitsText": {
-    "message": "Analisis latar belakang, pemindaian kode QR, perlindungan berkelanjutan"
+    "message": "Situs phishing terbaru diblokir (diperbarui setiap jam), kode QR dipindai, perlindungan 24/7"
   },
   "licenseKeyPlaceholder": {
     "message": "Masukkan kode lisensi Anda"
@@ -507,19 +507,37 @@
     "message": "Aktifkan Premium"
   },
   "licenseBuyLink": {
-    "message": "Belum punya lisensi? Beli di sini →"
+    "message": "Dapatkan perlindungan sekarang →"
   },
   "licensePremiumTitle": {
-    "message": "Premium Aktif"
+    "message": "Anda terlindungi"
   },
   "licensePremiumSubtitle": {
-    "message": "Perlindungan penuh diaktifkan"
+    "message": "Semua fitur keamanan aktif. Terima kasih atas kepercayaan Anda!"
   },
   "manageSubscription": {
     "message": "Kelola langganan"
   },
   "manageSubscriptionTooltip": {
     "message": "Ubah metode pembayaran, batalkan atau lihat faktur"
+  },
+  "licenseDeactivateButton": {
+    "message": "Gunakan kunci lisensi di perangkat lain"
+  },
+  "licenseDeactivateConfirm": {
+    "message": "Langganan Anda tetap aktif. Perangkat ini akan beralih ke versi gratis agar Anda dapat mengaktifkan di perangkat lain."
+  },
+  "licenseDeactivateCancel": {
+    "message": "Batal"
+  },
+  "licenseDeactivateConfirmBtn": {
+    "message": "Nonaktifkan"
+  },
+  "licenseDeactivating": {
+    "message": "Menonaktifkan..."
+  },
+  "licenseDeactivatedSuccess": {
+    "message": "Lisensi dinonaktifkan. Sekarang Anda dapat mengaktifkannya di perangkat lain."
   },
   "sectionSecuritySettings": {
     "message": "Pengaturan Keamanan"
@@ -528,13 +546,13 @@
     "message": "Pengaturan Keamanan"
   },
   "backgroundAnalysisFeature": {
-    "message": "Analisis Latar Belakang"
+    "message": "Perlindungan otomatis"
   },
   "premiumBadge": {
     "message": "PREMIUM"
   },
   "integratedProtectionFeature": {
-    "message": "Perlindungan Malware & Phishing Terintegrasi"
+    "message": "Pemindaian tautan cerdas"
   },
   "confirmationMessage": {
     "message": "Pengaturan berhasil disimpan!"
@@ -558,7 +576,7 @@
     "message": "Uji coba berakhir"
   },
   "trialExpiredMessage": {
-    "message": "Uji coba 30 hari Anda telah berakhir. Aktifkan lisensi untuk terus menggunakan semua fitur."
+    "message": "Masa uji coba Anda telah berakhir. Anda masih memiliki perlindungan dasar — upgrade kapan saja untuk memulihkan semua fitur."
   },
   "upgradeNow": {
     "message": "Tingkatkan sekarang"
@@ -771,7 +789,7 @@
     "message": "Lisensi ini telah berakhir."
   },
   "licenseErrorActivationLimit": {
-    "message": "Batas aktivasi tercapai. Silakan nonaktifkan perangkat lain terlebih dahulu."
+    "message": "Anda telah mencapai batas perangkat (3). Pergi ke perangkat aktif dan pilih 'Gunakan di perangkat lain' untuk membebaskan slot."
   },
   "licenseErrorInstanceNotFound": {
     "message": "Instance instalasi tidak ditemukan."
@@ -1032,7 +1050,7 @@
     "message": "Iframe tersembunyi terdeteksi di halaman ini. Frame tak terlihat dapat digunakan untuk pelacakan, pencurian kredensial, atau pengiriman malware."
   },
   "typosquatting": {
-    "message": "Typosquatting terdeteksi! Domain ini sengaja salah eja untuk menyamar sebagai situs web yang sah."
+    "message": "Trik ejaan terdeteksi: Nama situs ini hampir identik dengan situs terpercaya, tapi dengan perbedaan halus. Penipu menggunakan ini untuk membuat halaman palsu yang meyakinkan."
   },
   "ipAddressDomain": {
     "message": "Situs web ini menggunakan alamat IP alih-alih nama domain. Ini sangat tidak biasa dan sering menunjukkan niat jahat."
@@ -1044,7 +1062,7 @@
     "message": "Potensi serangan vishing (phishing suara) terdeteksi. Halaman ini menggabungkan nomor telepon dengan indikator phishing."
   },
   "punycodeDetected": {
-    "message": "Domain Punycode terdeteksi! Alamat ini menggunakan karakter internasional yang mungkin menyamar sebagai situs web yang sah."
+    "message": "Alamat web ini menggunakan karakter khusus yang terlihat seperti huruf biasa tapi bukan. Misalnya, huruf Sirilik 'а' terlihat identik dengan huruf Latin 'a'. Trik ini membuat situs palsu terlihat sah."
   },
   "reason_nonAscii": {
     "message": "Karakter mencurigakan terdeteksi (homoglyph)"
@@ -1120,5 +1138,246 @@
   },
   "trustedDomainSkipped": {
     "message": "Domain ini telah ditandai sebagai tepercaya oleh Anda."
+  },
+  "gracePeriodActive": {
+    "message": "Kami tidak dapat memverifikasi lisensi Anda secara online. Perlindungan Anda berlanjut selama $DAYS$ hari lagi sementara kami mencoba lagi.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "gracePeriodWarning": {
+    "message": "Verifikasi lisensi tertunda. Hubungkan ke internet dalam $DAYS$ hari ke depan untuk perlindungan tanpa gangguan.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "gracePeriodExpired": {
+    "message": "Kami tidak dapat memverifikasi lisensi Anda selama 7 hari. Hubungkan ke internet untuk memulihkan fitur premium."
+  },
+  "gracePeriodRestored": {
+    "message": "Lisensi berhasil diverifikasi. Perlindungan Anda sepenuhnya aktif."
+  },
+  "siteSafeSuccess": {
+    "message": "Tidak ada ancaman terdeteksi. Situs ini lolos semua pemeriksaan keamanan."
+  },
+  "siteSafeSuccessDetail": {
+    "message": "LinkShield telah memindai halaman ini untuk phishing, typosquatting, dan skrip berbahaya. Semuanya terlihat baik."
+  },
+  "siteSafeSuccessBadge": {
+    "message": "Terverifikasi Aman"
+  },
+  "exitPage": {
+    "message": "Tinggalkan halaman ini"
+  },
+  "understandRisk": {
+    "message": "Saya memahami risikonya"
+  },
+  "premiumActive": {
+    "message": "Aktif"
+  },
+  "premiumRequired": {
+    "message": "Premium Diperlukan"
+  },
+  "backgroundSecurityHelp": {
+    "message": "LinkShield melakukan pemeriksaan keamanan di latar belakang saat Anda menjelajah."
+  },
+  "sectionProtection": {
+    "message": "Perlindungan"
+  },
+  "statusProtected": {
+    "message": "Dilindungi"
+  },
+  "statusTrialSub": {
+    "message": "$DAYS$ hari uji coba tersisa",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "7"
+      }
+    }
+  },
+  "statusPremiumSub": {
+    "message": "Langganan Premium aktif"
+  },
+  "statusExpired": {
+    "message": "Kedaluwarsa"
+  },
+  "statusExpiredSub": {
+    "message": "Langganan Anda telah kedaluwarsa"
+  },
+  "licenseActivateShort": {
+    "message": "Aktifkan"
+  },
+  "licenseDeactivateShort": {
+    "message": "Nonaktifkan"
+  },
+  "ctaUpgradeText": {
+    "message": "Upgrade ke Premium"
+  },
+  "ctaUpgradePrice": {
+    "message": "Mulai €1/bulan"
+  },
+  "ctaRenewText": {
+    "message": "Perpanjang langganan"
+  },
+  "manageBtnText": {
+    "message": "Kelola"
+  },
+  "transferBtnText": {
+    "message": "Transfer"
+  },
+  "deactivateDeviceBtn": {
+    "message": "Nonaktifkan perangkat"
+  },
+  "licenseNetworkError": {
+    "message": "Kesalahan jaringan. Periksa koneksi Anda."
+  },
+  "premiumFeatureTag": {
+    "message": "Fitur Premium"
+  },
+  "liveNow": {
+    "message": "Live sekarang"
+  },
+  "updatedMinAgo": {
+    "message": "Diperbarui $MIN$ menit lalu",
+    "placeholders": {
+      "MIN": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "useLicenseKey": {
+    "message": "Gunakan kunci lisensi"
+  },
+  "clipboardHijackingCryptoTip": {
+    "message": "Selalu verifikasi alamat dompet sebelum mengirim cryptocurrency. Penyerang mengganti alamat di clipboard Anda."
+  },
+  "clipboardHijackingTip": {
+    "message": "Situs ini mungkin mencoba mengganti konten yang Anda salin. Selalu verifikasi konten yang ditempel."
+  },
+  "webTransportWarningTitle": {
+    "message": "Aktivitas jaringan mencurigakan"
+  },
+  "webTransportWarningMessage": {
+    "message": "Halaman ini menggunakan protokol jaringan canggih dengan cara yang berpotensi mencurigakan."
+  },
+  "webTransportDirectIP": {
+    "message": "Koneksi ke alamat IP langsung terdeteksi."
+  },
+  "webTransportHighPort": {
+    "message": "Koneksi ke nomor port yang sangat tinggi."
+  },
+  "webTransportRandomSubdomain": {
+    "message": "Koneksi ke subdomain acak yang mencurigakan (kemungkinan server C2)."
+  },
+  "webTransportFreeTLD": {
+    "message": "Koneksi ke domain TLD gratis (sering digunakan untuk malware)."
+  },
+  "webTransportHighConnectionRate": {
+    "message": "Tingkat koneksi yang sangat tinggi terdeteksi."
+  },
+  "webTransportHighDatagramRate": {
+    "message": "Tingkat transfer data yang sangat tinggi terdeteksi."
+  },
+  "webTransportObfuscatedUrl": {
+    "message": "URL yang disamarkan atau dikodekan terdeteksi."
+  },
+  "webTransportInvalidUrl": {
+    "message": "URL koneksi tidak valid atau salah format."
+  },
+  "failSafeNetworkTitle": {
+    "message": "Verifikasi lisensi gagal",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeNetworkMessage": {
+    "message": "Tidak dapat memverifikasi lisensi karena masalah jaringan. Perlindungan tetap aktif dalam mode aman.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeGraceTitle": {
+    "message": "Verifikasi lisensi diperlukan",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeGraceMessage": {
+    "message": "Hubungkan ke internet untuk memverifikasi lisensi Anda. Perlindungan tetap aktif.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafePreservedTitle": {
+    "message": "Perlindungan aktif",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafePreservedMessage": {
+    "message": "Aturan perlindungan Anda dipertahankan. Verifikasi lisensi Anda jika memungkinkan.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeDefaultTitle": {
+    "message": "Mode aman aktif",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeDefaultMessage": {
+    "message": "LinkShield berjalan dalam mode aman. Perlindungan tetap aktif.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "visualHijackingDetected": {
+    "message": "Pembajakan visual terdeteksi",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "visualHijackingMessage": {
+    "message": "Terdeteksi overlay tersembunyi yang mencoba menyadap klik Anda. Ini adalah teknik phishing umum untuk mengarahkan Anda ke situs berbahaya.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "detectionReason": {
+    "message": "Alasan deteksi",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "closeWarning": {
+    "message": "Tutup",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "transparentHighZIndexOverlay": {
+    "message": "Terdeteksi overlay transparan dengan z-index tinggi",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "invisibleClickjackOverlay": {
+    "message": "Terdeteksi overlay clickjacking tidak terlihat",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "fullscreenTransparentOverlay": {
+    "message": "Terdeteksi overlay transparan layar penuh",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "hiddenLinkOverlay": {
+    "message": "Terdeteksi overlay tautan tersembunyi",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "dismissTooltip": {
+    "message": "Tutup",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "dontShowAgain": {
+    "message": "Jangan tampilkan lagi?",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "confirmYes": {
+    "message": "Ya",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "confirmNo": {
+    "message": "Tidak",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "reportPhishingSuccess": {
+    "message": "Dilaporkan! Terima kasih telah membantu meningkatkan keamanan.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "pointerEventsHijack": {
+    "message": "Pointer-events click hijacking detected",
+    "description": "[EN fallback] Pointer-events click hijacking detected"
   }
 }

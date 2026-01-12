@@ -51,7 +51,7 @@
     "message": "Liên kết chứa các ký tự bất thường (rủi ro thấp). Điều này có thể được sử dụng để ẩn đích đến thực sự."
   },
   "homoglyphAttack": {
-    "message": "Địa chỉ web này sử dụng các ký tự gần giống hệt với một trang web đã biết (rủi ro cao). Đây là một thủ thuật để đánh lừa bạn."
+    "message": "Địa chỉ này chứa các ký tự tương tự (rủi ro cao). Xác minh bạn đang ở đúng trang web trước khi nhập bất kỳ thông tin nào."
   },
   "metaRedirect": {
     "message": "Trang web này tự động chuyển hướng bạn. Điều này có thể dẫn đến một trang web không an toàn (rủi ro trung bình)."
@@ -114,7 +114,7 @@
     "message": "Quét Nền"
   },
   "backgroundAnalysisDescription": {
-    "message": "Bảo vệ theo thời gian thực. Cập nhật mỗi giờ. Phạm vi toàn cầu."
+    "message": "Chặn các trang web lừa đảo mới nhất. Cơ sở dữ liệu được cập nhật mỗi giờ."
   },
   "activationRequired": {
     "message": "Kích hoạt tính năng này để sử dụng."
@@ -123,7 +123,7 @@
     "message": "Bảo Vệ Tích Hợp"
   },
   "integratedProtectionDescription": {
-    "message": "Kiểm tra trực tiếp các trang web và liên kết về các đặc điểm rủi ro."
+    "message": "Kiểm tra mọi liên kết trên trang và cảnh báo bạn về các trang web đáng ngờ."
   },
   "premiumFeaturesActive": {
     "message": "Bạn đang sử dụng phiên bản cao cấp!"
@@ -240,7 +240,7 @@
     "message": "Đã tìm thấy rủi ro không xác định. Hãy thận trọng hơn."
   },
   "typosquattingAttack": {
-    "message": "Địa chỉ web này trông giống một trang web thật nhưng cố ý viết sai chính tả (rủi ro cao). Đây có thể là phiên bản giả."
+    "message": "Địa chỉ này trông giống một trang web nổi tiếng, nhưng có lỗi chính tả nhỏ. Ví dụ: 'arnazon.com' thay vì 'amazon.com'. Luôn kiểm tra chính tả trước khi đăng nhập."
   },
   "downloadKeyword": {
     "message": "Liên kết chứa các từ liên quan đến tải xuống (rủi ro thấp). Chỉ mở các tệp bạn tin tưởng."
@@ -252,7 +252,7 @@
     "message": "Liên kết đến script trên trang này không chính xác."
   },
   "mixedScripts": {
-    "message": "Địa chỉ này sử dụng hỗn hợp các hệ thống chữ viết khác nhau (ví dụ: chữ Latin và Cyrillic). Đây là thủ thuật lừa đảo đã biết (rủi ro cao)."
+    "message": "Địa chỉ này trộn lẫn chữ cái từ các bảng chữ cái khác nhau (như tiếng Anh và tiếng Nga). Mặc dù trông giống nhau, chúng tạo ra địa chỉ web hoàn toàn khác."
   },
   "introBannerMessage": {
     "message": "LinkShield đang hoạt động và đánh dấu các liên kết rủi ro bằng ⚠️. Di chuột qua biểu tượng để xem lý do."
@@ -261,9 +261,6 @@
     "message": "Địa chỉ này sử dụng số trông giống chữ cái để bắt chước một thương hiệu đã biết (rủi ro trung bình)."
   },
   "trustedTLD": {
-    "message": "Tên miền này có phần mở rộng tên miền tiêu chuẩn (rủi ro thấp)."
-  },
-  "trustedTld": {
     "message": "Tên miền này có phần mở rộng tên miền tiêu chuẩn (rủi ro thấp)."
   },
   "suspiciousPageText": {
@@ -468,10 +465,10 @@
     "message": "Bảng Điều Khiển LinkShield"
   },
   "extNameFull": {
-    "message": "LinkShield: Vũ Khí Chống Lừa Đảo Của Bạn"
+    "message": "LinkShield: An Toàn Khi Trực Tuyến"
   },
   "extDescriptionFull": {
-    "message": "Tăng cường bảo mật với cảnh báo trực tiếp và bảo vệ nâng cao chống lại các mối đe dọa trực tuyến."
+    "message": "Bảo vệ bạn khỏi trang web giả mạo, lừa đảo trực tuyến và các mối đe dọa mạng. Để bạn duyệt web an tâm."
   },
   "licenseTrialTitle": {
     "message": "Dùng thử: còn $DAYS$ ngày",
@@ -483,22 +480,25 @@
     }
   },
   "licenseTrialSubtitle": {
-    "message": "Tất cả tính năng cao cấp đang hoạt động trong thời gian dùng thử"
+    "message": "Bạn được bảo vệ đầy đủ. Tất cả tính năng đang hoạt động."
   },
   "licenseUpgradeLink": {
-    "message": "Nâng cấp lên Cao cấp →"
+    "message": "Nâng cấp lên Cao cấp — €1.99/tháng (3 thiết bị) →"
+  },
+  "licenseAlreadyHaveCode": {
+    "message": "Đã có mã giấy phép?"
   },
   "licenseExpiredTitle": {
-    "message": "Dùng Thử Đã Hết Hạn"
+    "message": "Tính năng cao cấp của bạn đã tạm dừng"
   },
   "licenseExpiredSubtitle": {
-    "message": "Kích hoạt Cao cấp để bảo vệ đầy đủ"
+    "message": "Bảo vệ cơ bản vẫn hoạt động. Kích hoạt lại Premium để mở khóa quét nâng cao và cập nhật hàng giờ."
   },
   "licenseBenefitsLabel": {
-    "message": "Cao cấp bao gồm:"
+    "message": "Với Premium bạn nhận được:"
   },
   "licenseBenefitsText": {
-    "message": "Phân tích nền, quét mã QR, bảo vệ liên tục"
+    "message": "Chặn trang lừa đảo mới nhất (cập nhật mỗi giờ), quét mã QR, bảo vệ 24/7"
   },
   "licenseKeyPlaceholder": {
     "message": "Nhập mã giấy phép của bạn"
@@ -507,19 +507,37 @@
     "message": "Kích Hoạt Cao Cấp"
   },
   "licenseBuyLink": {
-    "message": "Chưa có giấy phép? Mua tại đây →"
+    "message": "Được bảo vệ ngay →"
   },
   "licensePremiumTitle": {
-    "message": "Cao Cấp Đang Hoạt Động"
+    "message": "Bạn được bảo vệ"
   },
   "licensePremiumSubtitle": {
-    "message": "Bảo vệ đầy đủ đã được kích hoạt"
+    "message": "Tất cả tính năng bảo mật đang hoạt động. Cảm ơn bạn đã tin tưởng!"
   },
   "manageSubscription": {
     "message": "Quản lý đăng ký"
   },
   "manageSubscriptionTooltip": {
     "message": "Thay đổi phương thức thanh toán, hủy bỏ hoặc xem hóa đơn"
+  },
+  "licenseDeactivateButton": {
+    "message": "Sử dụng khóa giấy phép trên thiết bị khác"
+  },
+  "licenseDeactivateConfirm": {
+    "message": "Đăng ký của bạn vẫn hoạt động. Thiết bị này sẽ chuyển sang phiên bản miễn phí để bạn có thể kích hoạt trên thiết bị khác."
+  },
+  "licenseDeactivateCancel": {
+    "message": "Hủy"
+  },
+  "licenseDeactivateConfirmBtn": {
+    "message": "Hủy kích hoạt"
+  },
+  "licenseDeactivating": {
+    "message": "Đang hủy kích hoạt..."
+  },
+  "licenseDeactivatedSuccess": {
+    "message": "Giấy phép đã được hủy kích hoạt. Bây giờ bạn có thể kích hoạt nó trên thiết bị khác."
   },
   "sectionSecuritySettings": {
     "message": "Cài Đặt Bảo Mật"
@@ -528,13 +546,13 @@
     "message": "Cài Đặt Bảo Mật"
   },
   "backgroundAnalysisFeature": {
-    "message": "Phân Tích Nền"
+    "message": "Bảo vệ tự động"
   },
   "premiumBadge": {
     "message": "CAO CẤP"
   },
   "integratedProtectionFeature": {
-    "message": "Bảo Vệ Phần Mềm Độc Hại & Lừa Đảo Tích Hợp"
+    "message": "Quét liên kết thông minh"
   },
   "confirmationMessage": {
     "message": "Đã lưu cài đặt thành công!"
@@ -558,7 +576,7 @@
     "message": "Dùng thử đã hết hạn"
   },
   "trialExpiredMessage": {
-    "message": "Thời gian dùng thử 30 ngày của bạn đã hết. Kích hoạt giấy phép để tiếp tục sử dụng tất cả tính năng."
+    "message": "Thời gian dùng thử của bạn đã kết thúc. Bạn vẫn có bảo vệ cơ bản — nâng cấp bất cứ lúc nào để khôi phục tất cả tính năng."
   },
   "upgradeNow": {
     "message": "Nâng cấp ngay"
@@ -771,7 +789,7 @@
     "message": "Giấy phép này đã hết hạn."
   },
   "licenseErrorActivationLimit": {
-    "message": "Đã đạt giới hạn kích hoạt. Vui lòng hủy kích hoạt thiết bị khác trước."
+    "message": "Bạn đã đạt giới hạn thiết bị (3). Đi đến thiết bị đang hoạt động và chọn 'Sử dụng trên thiết bị khác' để giải phóng chỗ."
   },
   "licenseErrorInstanceNotFound": {
     "message": "Không tìm thấy phiên bản cài đặt."
@@ -1032,7 +1050,7 @@
     "message": "Phát hiện iframe ẩn trên trang này. Khung vô hình có thể được sử dụng để theo dõi, đánh cắp thông tin xác thực, hoặc phân phối phần mềm độc hại."
   },
   "typosquatting": {
-    "message": "Phát hiện typosquatting! Tên miền này cố ý viết sai chính tả để mạo danh một trang web hợp pháp."
+    "message": "Phát hiện thủ thuật chính tả: Tên trang web này gần giống với một trang đáng tin cậy, nhưng có sự khác biệt nhỏ. Kẻ lừa đảo sử dụng điều này để tạo trang giả thuyết phục."
   },
   "ipAddressDomain": {
     "message": "Trang web này sử dụng địa chỉ IP thay vì tên miền. Điều này rất bất thường và thường chỉ ra ý định độc hại."
@@ -1044,7 +1062,7 @@
     "message": "Phát hiện khả năng tấn công vishing (lừa đảo qua điện thoại). Trang này kết hợp số điện thoại với các dấu hiệu lừa đảo."
   },
   "punycodeDetected": {
-    "message": "Phát hiện tên miền Punycode! Địa chỉ này sử dụng các ký tự quốc tế có thể đang mạo danh một trang web hợp pháp."
+    "message": "Địa chỉ web này sử dụng ký tự đặc biệt trông giống chữ cái bình thường nhưng không phải. Ví dụ, chữ Cyrillic 'а' trông giống chữ Latin 'a'. Thủ thuật này làm các trang giả trông hợp pháp."
   },
   "reason_nonAscii": {
     "message": "Phát hiện ký tự đáng ngờ (homoglyph)"
@@ -1120,5 +1138,246 @@
   },
   "trustedDomainSkipped": {
     "message": "Tên miền này đã được bạn đánh dấu là đáng tin cậy."
+  },
+  "gracePeriodActive": {
+    "message": "Chúng tôi không thể xác minh giấy phép trực tuyến. Bảo vệ của bạn tiếp tục thêm $DAYS$ ngày trong khi chúng tôi thử lại.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "gracePeriodWarning": {
+    "message": "Đang chờ xác minh giấy phép. Vui lòng kết nối internet trong $DAYS$ ngày tới để duy trì bảo vệ liên tục.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "gracePeriodExpired": {
+    "message": "Chúng tôi không thể xác minh giấy phép trong 7 ngày. Vui lòng kết nối internet để khôi phục tính năng cao cấp."
+  },
+  "gracePeriodRestored": {
+    "message": "Giấy phép được xác minh thành công. Bảo vệ của bạn hoàn toàn hoạt động."
+  },
+  "siteSafeSuccess": {
+    "message": "Không phát hiện mối đe dọa. Trang này đã vượt qua tất cả kiểm tra bảo mật."
+  },
+  "siteSafeSuccessDetail": {
+    "message": "LinkShield đã quét trang này để tìm lừa đảo, typosquatting và mã độc. Mọi thứ đều ổn."
+  },
+  "siteSafeSuccessBadge": {
+    "message": "Đã xác minh An toàn"
+  },
+  "exitPage": {
+    "message": "Rời khỏi trang này"
+  },
+  "understandRisk": {
+    "message": "Tôi hiểu rủi ro"
+  },
+  "premiumActive": {
+    "message": "Đang hoạt động"
+  },
+  "premiumRequired": {
+    "message": "Yêu cầu Premium"
+  },
+  "backgroundSecurityHelp": {
+    "message": "LinkShield thực hiện kiểm tra bảo mật nền khi bạn duyệt web."
+  },
+  "sectionProtection": {
+    "message": "Bảo vệ"
+  },
+  "statusProtected": {
+    "message": "Được bảo vệ"
+  },
+  "statusTrialSub": {
+    "message": "Còn $DAYS$ ngày dùng thử",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "7"
+      }
+    }
+  },
+  "statusPremiumSub": {
+    "message": "Đăng ký Premium đang hoạt động"
+  },
+  "statusExpired": {
+    "message": "Hết hạn"
+  },
+  "statusExpiredSub": {
+    "message": "Đăng ký của bạn đã hết hạn"
+  },
+  "licenseActivateShort": {
+    "message": "Kích hoạt"
+  },
+  "licenseDeactivateShort": {
+    "message": "Vô hiệu"
+  },
+  "ctaUpgradeText": {
+    "message": "Nâng cấp lên Premium"
+  },
+  "ctaUpgradePrice": {
+    "message": "Từ €1/tháng"
+  },
+  "ctaRenewText": {
+    "message": "Gia hạn đăng ký"
+  },
+  "manageBtnText": {
+    "message": "Quản lý"
+  },
+  "transferBtnText": {
+    "message": "Chuyển"
+  },
+  "deactivateDeviceBtn": {
+    "message": "Vô hiệu thiết bị"
+  },
+  "licenseNetworkError": {
+    "message": "Lỗi mạng. Kiểm tra kết nối."
+  },
+  "premiumFeatureTag": {
+    "message": "Tính năng Premium"
+  },
+  "liveNow": {
+    "message": "Trực tiếp"
+  },
+  "updatedMinAgo": {
+    "message": "Cập nhật $MIN$ phút trước",
+    "placeholders": {
+      "MIN": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "useLicenseKey": {
+    "message": "Sử dụng khóa giấy phép"
+  },
+  "clipboardHijackingCryptoTip": {
+    "message": "Luôn xác minh địa chỉ ví trước khi gửi tiền điện tử. Kẻ tấn công thay thế địa chỉ trong clipboard của bạn."
+  },
+  "clipboardHijackingTip": {
+    "message": "Trang web này có thể đang cố thay thế nội dung bạn sao chép. Luôn xác minh nội dung đã dán."
+  },
+  "webTransportWarningTitle": {
+    "message": "Hoạt động mạng đáng ngờ"
+  },
+  "webTransportWarningMessage": {
+    "message": "Trang này đang sử dụng các giao thức mạng nâng cao theo cách có thể đáng ngờ."
+  },
+  "webTransportDirectIP": {
+    "message": "Phát hiện kết nối đến địa chỉ IP trực tiếp."
+  },
+  "webTransportHighPort": {
+    "message": "Kết nối đến số cổng cao bất thường."
+  },
+  "webTransportRandomSubdomain": {
+    "message": "Kết nối đến tên miền phụ ngẫu nhiên đáng ngờ (có thể là máy chủ C2)."
+  },
+  "webTransportFreeTLD": {
+    "message": "Kết nối đến tên miền TLD miễn phí (thường được sử dụng cho phần mềm độc hại)."
+  },
+  "webTransportHighConnectionRate": {
+    "message": "Phát hiện tốc độ kết nối cao bất thường."
+  },
+  "webTransportHighDatagramRate": {
+    "message": "Phát hiện tốc độ truyền dữ liệu cao bất thường."
+  },
+  "webTransportObfuscatedUrl": {
+    "message": "Phát hiện URL bị che giấu hoặc mã hóa."
+  },
+  "webTransportInvalidUrl": {
+    "message": "URL kết nối không hợp lệ hoặc sai định dạng."
+  },
+  "failSafeNetworkTitle": {
+    "message": "Xác minh giấy phép thất bại",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeNetworkMessage": {
+    "message": "Không thể xác minh giấy phép do sự cố mạng. Bảo vệ vẫn hoạt động ở chế độ an toàn.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeGraceTitle": {
+    "message": "Cần xác minh giấy phép",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeGraceMessage": {
+    "message": "Vui lòng kết nối internet để xác minh giấy phép của bạn. Bảo vệ vẫn hoạt động.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafePreservedTitle": {
+    "message": "Bảo vệ đang hoạt động",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafePreservedMessage": {
+    "message": "Các quy tắc bảo vệ của bạn được giữ nguyên. Vui lòng xác minh giấy phép khi có thể.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeDefaultTitle": {
+    "message": "Chế độ an toàn đang hoạt động",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeDefaultMessage": {
+    "message": "LinkShield đang chạy ở chế độ an toàn. Bảo vệ vẫn hoạt động.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "visualHijackingDetected": {
+    "message": "Phát hiện chiếm quyền hình ảnh",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "visualHijackingMessage": {
+    "message": "Đã phát hiện lớp phủ ẩn đang cố gắng chặn nhấp chuột của bạn. Đây là kỹ thuật lừa đảo phổ biến để chuyển hướng bạn đến các trang web độc hại.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "detectionReason": {
+    "message": "Lý do phát hiện",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "closeWarning": {
+    "message": "Đóng",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "transparentHighZIndexOverlay": {
+    "message": "Phát hiện lớp phủ trong suốt có z-index cao",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "invisibleClickjackOverlay": {
+    "message": "Phát hiện lớp phủ clickjacking vô hình",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "fullscreenTransparentOverlay": {
+    "message": "Phát hiện lớp phủ trong suốt toàn màn hình",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "hiddenLinkOverlay": {
+    "message": "Phát hiện lớp phủ liên kết ẩn",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "dismissTooltip": {
+    "message": "Đóng",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "dontShowAgain": {
+    "message": "Không hiển thị lại?",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "confirmYes": {
+    "message": "Có",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "confirmNo": {
+    "message": "Không",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "reportPhishingSuccess": {
+    "message": "Đã báo cáo! Cảm ơn bạn đã giúp cải thiện bảo mật.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "pointerEventsHijack": {
+    "message": "Pointer-events click hijacking detected",
+    "description": "[EN fallback] Pointer-events click hijacking detected"
   }
 }

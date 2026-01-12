@@ -221,45 +221,115 @@ function onConfigReady() {
 }
 
 /**
- * Fallback full-page scan met requestIdleCallback
- * SECURITY FIX v8.0.0: Extra vangnet voor gemiste elementen
+ * PERFORMANCE FIX v8.1.0: Progressive scanning with viewport priority
+ * Target: <3 seconds for 5000 links (was 8.5 seconds)
+ *
+ * Strategy:
+ * 1. Viewport-first: Scan visible links immediately
+ * 2. Batched processing: Process off-screen links in batches
+ * 3. requestIdleCallback: Use idle time for background work
  */
 function scheduleFullPageScan() {
-  const performScan = () => {
+  const BATCH_SIZE = 50; // Links per batch
+  const BATCH_DELAY = 0; // ms between batches (0 = requestIdleCallback handles timing)
+  const startTime = performance.now();
+
+  /**
+   * Check if an element is in the viewport
+   */
+  const isInViewport = (el) => {
+    const rect = el.getBoundingClientRect();
+    return (
+      rect.top < window.innerHeight &&
+      rect.bottom > 0 &&
+      rect.left < window.innerWidth &&
+      rect.right > 0
+    );
+  };
+
+  /**
+   * Scan a single link
+   */
+  const scanLink = (link) => {
+    if (link.dataset.linkshieldScanned) return false;
     try {
-      // Scan alle links op de pagina
-      const allLinks = document.querySelectorAll('a[href]');
-      let scannedCount = 0;
-
-      allLinks.forEach(link => {
-        if (!link.dataset.linkshieldScanned) {
-          try {
-            if (typeof isValidURL === 'function' && isValidURL(link.href)) {
-              if (typeof classifyAndCheckLink === 'function') {
-                classifyAndCheckLink(link);
-                // SECURITY FIX v8.0.1 (Vector 1): Mark Light DOM links as scanned
-                link.dataset.linkshieldScanned = 'true';
-                scannedCount++;
-              }
-            }
-          } catch (e) { /* ignore */ }
+      if (typeof isValidURL === 'function' && isValidURL(link.href)) {
+        if (typeof classifyAndCheckLink === 'function') {
+          classifyAndCheckLink(link);
+          link.dataset.linkshieldScanned = 'true';
+          return true;
         }
-      });
+      }
+    } catch (e) { /* ignore */ }
+    return false;
+  };
 
-      // SECURITY FIX v8.0.0: Scan ook Shadow DOM tot depth 20
-      scanAllShadowDOMs(document.body, 0);
+  /**
+   * Process a batch of links
+   */
+  const processBatch = (links, startIndex, callback) => {
+    const endIndex = Math.min(startIndex + BATCH_SIZE, links.length);
+    let scanned = 0;
 
-      logDebug(`[FallbackScan] Scanned ${scannedCount} links + Shadow DOMs`);
-    } catch (e) {
-      logError('[FallbackScan] Error:', e);
+    for (let i = startIndex; i < endIndex; i++) {
+      if (scanLink(links[i])) scanned++;
+    }
+
+    if (endIndex < links.length) {
+      // More links to process - schedule next batch
+      if (typeof requestIdleCallback === 'function') {
+        requestIdleCallback(() => processBatch(links, endIndex, callback), { timeout: 100 });
+      } else {
+        setTimeout(() => processBatch(links, endIndex, callback), BATCH_DELAY);
+      }
+    } else {
+      // All done
+      callback(scanned);
     }
   };
 
-  // Gebruik requestIdleCallback als beschikbaar, anders setTimeout
+  const performScan = () => {
+    try {
+      const allLinks = Array.from(document.querySelectorAll('a[href]'));
+      const totalLinks = allLinks.length;
+
+      // Phase 1: Immediate viewport scan (blocking but fast)
+      const viewportLinks = allLinks.filter(isInViewport);
+      const offscreenLinks = allLinks.filter(link => !isInViewport(link));
+
+      let viewportScanned = 0;
+      viewportLinks.forEach(link => {
+        if (scanLink(link)) viewportScanned++;
+      });
+
+      const viewportTime = performance.now() - startTime;
+      console.log(`[ProgressiveScan] 👁️ Phase 1: ${viewportScanned}/${viewportLinks.length} viewport links in ${viewportTime.toFixed(1)}ms`);
+
+      // Phase 2: Background scan for off-screen links (non-blocking)
+      if (offscreenLinks.length > 0) {
+        processBatch(offscreenLinks, 0, (offscreenScanned) => {
+          const totalTime = performance.now() - startTime;
+          console.log(`[ProgressiveScan] 📄 Phase 2: ${offscreenScanned}/${offscreenLinks.length} off-screen links`);
+          console.log(`[ProgressiveScan] ✅ Total: ${viewportScanned + offscreenScanned}/${totalLinks} links in ${totalTime.toFixed(1)}ms`);
+
+          // Phase 3: Shadow DOM scan (after main links done)
+          scanAllShadowDOMs(document.body, 0);
+        });
+      } else {
+        const totalTime = performance.now() - startTime;
+        console.log(`[ProgressiveScan] ✅ Complete: ${viewportScanned}/${totalLinks} links in ${totalTime.toFixed(1)}ms`);
+        scanAllShadowDOMs(document.body, 0);
+      }
+    } catch (e) {
+      console.error('[ProgressiveScan] Error:', e);
+    }
+  };
+
+  // Start scan after a short delay to allow page to stabilize
   if (typeof requestIdleCallback === 'function') {
-    requestIdleCallback(performScan, { timeout: 5000 });
+    requestIdleCallback(performScan, { timeout: 2000 });
   } else {
-    setTimeout(performScan, 3000);
+    setTimeout(performScan, 500);
   }
 }
 
@@ -270,15 +340,35 @@ function scheduleFullPageScan() {
  * @param {number} depth - Huidige diepte
  */
 function scanAllShadowDOMs(root, depth = 0) {
-  if (!root || depth > MAX_SHADOW_DEPTH) return;
+  if (!root || depth > MAX_SHADOW_DEPTH) {
+    if (depth > MAX_SHADOW_DEPTH) {
+      console.log(`[ShadowScan] 🛑 MAX_DEPTH reached (${MAX_SHADOW_DEPTH}) - stopping recursion`);
+    }
+    return;
+  }
 
   try {
     const allElements = root.querySelectorAll ? root.querySelectorAll('*') : [];
+    let shadowRootsFound = 0;
+    let linksScanned = 0;
+
+    // DEBUG: Log scan start
+    if (depth === 0) {
+      console.log(`[ShadowScan] 🔍 Starting Shadow DOM scan from root:`, root.nodeName || 'document');
+    }
 
     allElements.forEach(el => {
       if (el.shadowRoot) {
+        shadowRootsFound++;
+        const hostTag = el.tagName?.toLowerCase() || 'unknown';
+
+        // DEBUG: Log each Shadow Root found
+        console.log(`[ShadowScan] 🌑 Shadow Root FOUND at depth ${depth}: <${hostTag}> (mode: ${el.shadowRoot.mode || 'unknown'})`);
+
         // Scan links in deze shadow root
         const shadowLinks = el.shadowRoot.querySelectorAll('a[href]');
+        console.log(`[ShadowScan]   └─ Links in shadow: ${shadowLinks.length}`);
+
         shadowLinks.forEach(link => {
           if (!link.dataset.linkshieldScanned) {
             try {
@@ -286,9 +376,13 @@ function scanAllShadowDOMs(root, depth = 0) {
                 if (typeof classifyAndCheckLink === 'function') {
                   classifyAndCheckLink(link);
                   link.dataset.linkshieldScanned = 'true';
+                  linksScanned++;
+                  console.log(`[ShadowScan]   └─ ✅ Scanned: ${link.href.substring(0, 60)}...`);
                 }
               }
-            } catch (e) { /* ignore */ }
+            } catch (e) {
+              console.log(`[ShadowScan]   └─ ❌ Error scanning link:`, e.message);
+            }
           }
         });
 
@@ -296,8 +390,13 @@ function scanAllShadowDOMs(root, depth = 0) {
         scanAllShadowDOMs(el.shadowRoot, depth + 1);
       }
     });
+
+    // DEBUG: Log scan summary for this depth level
+    if (shadowRootsFound > 0 || depth === 0) {
+      console.log(`[ShadowScan] 📊 Depth ${depth} complete: ${shadowRootsFound} shadow roots, ${linksScanned} links scanned`);
+    }
   } catch (e) {
-    logDebug(`[ShadowScan] Error at depth ${depth}:`, e);
+    console.error(`[ShadowScan] ❌ Error at depth ${depth}:`, e);
   }
 }
 
@@ -4459,6 +4558,24 @@ async function analyzeDomainAndUrl(link) {
       logDebug(`Internal server detected for ${hostname}. Skipping checks.`);
       return;
     }
+
+    // AUDIT MODE (v8.1.0): TEST_MODE forces all external links to be flagged as HIGH RISK
+    // This allows testing visual protection (overlays, z-index) on any site
+    if (globalConfig.TEST_MODE === true) {
+      // Skip same-origin links in test mode
+      if (hostname !== window.location.hostname) {
+        console.log(`[TEST_MODE] 🧪 Forcing HIGH RISK for external link: ${href.substring(0, 60)}...`);
+        const testResult = {
+          level: 'alert',
+          risk: globalConfig.TEST_MODE_RISK_SCORE || 25,
+          reasons: ['TEST_MODE_ENABLED'],
+          link: href
+        };
+        warnLinkByLevel(link, testResult);
+        return;
+      }
+    }
+
     // Voer de gelaagde verdachte controles uit op de link's href.
     const result = await performSuspiciousChecks(href);
     // Als het risiconiveau niet 'safe' is, roep dan de visuele waarschuwing aan.

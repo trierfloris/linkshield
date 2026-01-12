@@ -37,6 +37,14 @@ window.CONFIG = {
     // Debug Modus
     DEBUG_MODE: false, // Zet op true voor debugging, false voor productie
 
+    // AUDIT MODE (v8.1.0): Voor functionele tests
+    // Wanneer true: ELKE externe link wordt als HIGH RISK gemarkeerd
+    // Dit maakt het mogelijk om visuele bescherming (overlays, z-index) te testen
+    // op willekeurige sites zonder echte phishing-domeinen te gebruiken
+    // WAARSCHUWING: Alleen voor testen - zet op false voor productie!
+    TEST_MODE: false,
+    TEST_MODE_RISK_SCORE: 25, // Score die wordt toegekend in test mode
+
     // Toegestane URL Protocollen
     ALLOWED_PROTOCOLS: ['http:', 'https:', 'mailto:', 'tel:', 'ftp:'],
 

@@ -1379,5 +1379,14 @@
   "pointerEventsHijack": {
     "message": "Pointer-events click hijacking detected",
     "description": "[EN fallback] Pointer-events click hijacking detected"
+  },
+  "pointerEventsNoneHighZIndex": {
+    "message": "Εντοπίστηκε αόρατη επικάλυψη με μέγιστο z-index (κρίσιμος κίνδυνος). Αυτή η σελίδα προσπαθεί να υποκλέψει τα κλικ σας."
+  },
+  "intMaxZIndexOverlay": {
+    "message": "Εντοπίστηκε ύποπτη επικάλυψη με μέγιστο z-index (κρίσιμος κίνδυνος). Αυτή είναι μια κοινή τεχνική υποκλοπής κλικ."
+  },
+  "fullscreenPointerEventsNone": {
+    "message": "Εντοπίστηκε αόρατη επικάλυψη πλήρους οθόνης (κρίσιμος κίνδυνος). Αυτή η σελίδα ενδέχεται να προσπαθεί να καταγράψει τις αλληλεπιδράσεις σας."
   }
 }

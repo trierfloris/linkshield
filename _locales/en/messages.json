@@ -1357,5 +1357,14 @@
   },
   "pointerEventsHijack": {
     "message": "Pointer-events click hijacking detected"
+  },
+  "pointerEventsNoneHighZIndex": {
+    "message": "Invisible overlay with maximum z-index detected (critical risk). This page is attempting to intercept your clicks."
+  },
+  "intMaxZIndexOverlay": {
+    "message": "Suspicious overlay using maximum z-index detected (critical risk). This is a common click hijacking technique."
+  },
+  "fullscreenPointerEventsNone": {
+    "message": "Full-screen invisible overlay detected (critical risk). This page may be attempting to capture your interactions."
   }
 }

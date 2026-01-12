@@ -1379,5 +1379,14 @@
   "pointerEventsHijack": {
     "message": "Pointer-events click hijacking detected",
     "description": "[EN fallback] Pointer-events click hijacking detected"
+  },
+  "pointerEventsNoneHighZIndex": {
+    "message": "Maksimum z-index ile görünmez kaplama algılandı (kritik risk). Bu sayfa tıklamalarınızı yakalamaya çalışıyor."
+  },
+  "intMaxZIndexOverlay": {
+    "message": "Maksimum z-index kullanan şüpheli kaplama algılandı (kritik risk). Bu yaygın bir tıklama kaçırma tekniğidir."
+  },
+  "fullscreenPointerEventsNone": {
+    "message": "Tam ekran görünmez kaplama algılandı (kritik risk). Bu sayfa etkileşimlerinizi yakalamaya çalışıyor olabilir."
   }
 }

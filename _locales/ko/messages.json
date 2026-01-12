@@ -1379,5 +1379,14 @@
   "pointerEventsHijack": {
     "message": "Pointer-events click hijacking detected",
     "description": "[EN fallback] Pointer-events click hijacking detected"
+  },
+  "pointerEventsNoneHighZIndex": {
+    "message": "최대 z-index를 가진 보이지 않는 오버레이 감지 (심각한 위험). 이 페이지가 클릭을 가로채려고 합니다."
+  },
+  "intMaxZIndexOverlay": {
+    "message": "최대 z-index를 사용하는 의심스러운 오버레이 감지 (심각한 위험). 이것은 일반적인 클릭 하이재킹 기술입니다."
+  },
+  "fullscreenPointerEventsNone": {
+    "message": "전체 화면 보이지 않는 오버레이 감지 (심각한 위험). 이 페이지가 상호 작용을 캡처하려고 할 수 있습니다."
   }
 }

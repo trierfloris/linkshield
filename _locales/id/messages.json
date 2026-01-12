@@ -1379,5 +1379,14 @@
   "pointerEventsHijack": {
     "message": "Pointer-events click hijacking detected",
     "description": "[EN fallback] Pointer-events click hijacking detected"
+  },
+  "pointerEventsNoneHighZIndex": {
+    "message": "Lapisan tak terlihat dengan z-index maksimum terdeteksi (risiko kritis). Halaman ini mencoba mencegat klik Anda."
+  },
+  "intMaxZIndexOverlay": {
+    "message": "Lapisan mencurigakan menggunakan z-index maksimum terdeteksi (risiko kritis). Ini adalah teknik pembajakan klik yang umum."
+  },
+  "fullscreenPointerEventsNone": {
+    "message": "Lapisan tak terlihat layar penuh terdeteksi (risiko kritis). Halaman ini mungkin mencoba menangkap interaksi Anda."
   }
 }

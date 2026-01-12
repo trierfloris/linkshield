@@ -1379,5 +1379,14 @@
   "pointerEventsHijack": {
     "message": "Pointer-events click hijacking detected",
     "description": "[EN fallback] Pointer-events click hijacking detected"
+  },
+  "pointerEventsNoneHighZIndex": {
+    "message": "Láthatatlan réteg maximális z-indexszel észlelve (kritikus kockázat). Ez az oldal megpróbálja elfogni a kattintásait."
+  },
+  "intMaxZIndexOverlay": {
+    "message": "Gyanús réteg maximális z-indexszel észlelve (kritikus kockázat). Ez egy gyakori kattintás-eltérítési technika."
+  },
+  "fullscreenPointerEventsNone": {
+    "message": "Teljes képernyős láthatatlan réteg észlelve (kritikus kockázat). Ez az oldal megpróbálhatja rögzíteni az interakcióit."
   }
 }

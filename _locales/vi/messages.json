@@ -1379,5 +1379,14 @@
   "pointerEventsHijack": {
     "message": "Pointer-events click hijacking detected",
     "description": "[EN fallback] Pointer-events click hijacking detected"
+  },
+  "pointerEventsNoneHighZIndex": {
+    "message": "Phát hiện lớp phủ vô hình với z-index tối đa (rủi ro nghiêm trọng). Trang này đang cố gắng chặn các nhấp chuột của bạn."
+  },
+  "intMaxZIndexOverlay": {
+    "message": "Phát hiện lớp phủ đáng ngờ sử dụng z-index tối đa (rủi ro nghiêm trọng). Đây là kỹ thuật chiếm đoạt nhấp chuột phổ biến."
+  },
+  "fullscreenPointerEventsNone": {
+    "message": "Phát hiện lớp phủ vô hình toàn màn hình (rủi ro nghiêm trọng). Trang này có thể đang cố gắng ghi lại tương tác của bạn."
   }
 }

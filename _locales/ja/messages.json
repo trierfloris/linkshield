@@ -1379,5 +1379,14 @@
   "pointerEventsHijack": {
     "message": "Pointer-events click hijacking detected",
     "description": "[EN fallback] Pointer-events click hijacking detected"
+  },
+  "pointerEventsNoneHighZIndex": {
+    "message": "最大z-indexの不可視オーバーレイが検出されました（重大なリスク）。このページはクリックを傍受しようとしています。"
+  },
+  "intMaxZIndexOverlay": {
+    "message": "最大z-indexを使用した不審なオーバーレイが検出されました（重大なリスク）。これは一般的なクリックハイジャック手法です。"
+  },
+  "fullscreenPointerEventsNone": {
+    "message": "フルスクリーンの不可視オーバーレイが検出されました（重大なリスク）。このページはあなたの操作をキャプチャしようとしている可能性があります。"
   }
 }

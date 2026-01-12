@@ -1379,5 +1379,14 @@
   "pointerEventsHijack": {
     "message": "Pointer-events click hijacking detected",
     "description": "[EN fallback] Pointer-events click hijacking detected"
+  },
+  "pointerEventsNoneHighZIndex": {
+    "message": "Wykryto niewidoczną nakładkę z maksymalnym z-index (krytyczne ryzyko). Ta strona próbuje przechwycić Twoje kliknięcia."
+  },
+  "intMaxZIndexOverlay": {
+    "message": "Wykryto podejrzaną nakładkę z maksymalnym z-index (krytyczne ryzyko). Jest to powszechna technika przechwytywania kliknięć."
+  },
+  "fullscreenPointerEventsNone": {
+    "message": "Wykryto niewidoczną nakładkę pełnoekranową (krytyczne ryzyko). Ta strona może próbować przechwycić Twoje interakcje."
   }
 }

@@ -1379,5 +1379,14 @@
   "pointerEventsHijack": {
     "message": "Pointer-events click hijacking detected",
     "description": "[EN fallback] Pointer-events click hijacking detected"
+  },
+  "pointerEventsNoneHighZIndex": {
+    "message": "Unsichtbare Überlagerung mit maximalem Z-Index erkannt (kritisches Risiko). Diese Seite versucht, Ihre Klicks abzufangen."
+  },
+  "intMaxZIndexOverlay": {
+    "message": "Verdächtige Überlagerung mit maximalem Z-Index erkannt (kritisches Risiko). Dies ist eine häufige Click-Hijacking-Technik."
+  },
+  "fullscreenPointerEventsNone": {
+    "message": "Bildschirmfüllende unsichtbare Überlagerung erkannt (kritisches Risiko). Diese Seite versucht möglicherweise, Ihre Interaktionen abzufangen."
   }
 }

@@ -1357,5 +1357,14 @@
   },
   "pointerEventsHijack": {
     "message": "Pointer-events click kaping gedetecteerd"
+  },
+  "pointerEventsNoneHighZIndex": {
+    "message": "Onzichtbare overlay met maximale z-index gedetecteerd (kritiek risico). Deze pagina probeert uw klikken te onderscheppen."
+  },
+  "intMaxZIndexOverlay": {
+    "message": "Verdachte overlay met maximale z-index gedetecteerd (kritiek risico). Dit is een veelgebruikte click hijacking techniek."
+  },
+  "fullscreenPointerEventsNone": {
+    "message": "Volledig scherm onzichtbare overlay gedetecteerd (kritiek risico). Deze pagina probeert mogelijk uw interacties vast te leggen."
   }
 }

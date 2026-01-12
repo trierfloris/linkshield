@@ -1379,5 +1379,14 @@
   "pointerEventsHijack": {
     "message": "Pointer-events click hijacking detected",
     "description": "[EN fallback] Pointer-events click hijacking detected"
+  },
+  "pointerEventsNoneHighZIndex": {
+    "message": "Rilevata sovrapposizione invisibile con z-index massimo (rischio critico). Questa pagina sta tentando di intercettare i tuoi clic."
+  },
+  "intMaxZIndexOverlay": {
+    "message": "Rilevata sovrapposizione sospetta con z-index massimo (rischio critico). Questa è una tecnica comune di click hijacking."
+  },
+  "fullscreenPointerEventsNone": {
+    "message": "Rilevata sovrapposizione invisibile a schermo intero (rischio critico). Questa pagina potrebbe tentare di catturare le tue interazioni."
   }
 }

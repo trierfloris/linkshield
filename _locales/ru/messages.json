@@ -1379,5 +1379,14 @@
   "pointerEventsHijack": {
     "message": "Pointer-events click hijacking detected",
     "description": "[EN fallback] Pointer-events click hijacking detected"
+  },
+  "pointerEventsNoneHighZIndex": {
+    "message": "Обнаружен невидимый слой с максимальным z-index (критический риск). Эта страница пытается перехватить ваши клики."
+  },
+  "intMaxZIndexOverlay": {
+    "message": "Обнаружен подозрительный слой с максимальным z-index (критический риск). Это распространённая техника перехвата кликов."
+  },
+  "fullscreenPointerEventsNone": {
+    "message": "Обнаружен полноэкранный невидимый слой (критический риск). Эта страница может пытаться перехватить ваши действия."
   }
 }

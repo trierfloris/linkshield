@@ -51,7 +51,7 @@
     "message": "该链接包含不寻常的字符（低风险）。这可能被用来隐藏真实的目标地址。"
   },
   "homoglyphAttack": {
-    "message": "此网址使用的字符与一个已知网站的字符几乎完全相同（高风险）。这是一个误导您的伎俩。"
+    "message": "此地址包含相似字符（高风险）。在输入任何信息之前，请确认您在正确的网站上。"
   },
   "metaRedirect": {
     "message": "此网站会自动将您重定向。这可能导向一个不安全的网站（中等风险）。"
@@ -114,7 +114,7 @@
     "message": "后台扫描"
   },
   "backgroundAnalysisDescription": {
-    "message": "实时保护。每小时更新。全球覆盖。"
+    "message": "拦截最新的钓鱼网站。数据库每小时更新。"
   },
   "activationRequired": {
     "message": "请启用此功能以使用它。"
@@ -123,7 +123,7 @@
     "message": "集成保护"
   },
   "integratedProtectionDescription": {
-    "message": "结合多种安全服务提供全面保护。"
+    "message": "检查页面上的每个链接，并警告您可疑网站。"
   },
   "premiumFeaturesActive": {
     "message": "您现在正在使用高级版本！"
@@ -240,7 +240,7 @@
     "message": "发现未知风险。请格外小心。"
   },
   "typosquattingAttack": {
-    "message": "此网址看起来像一个真实的网站，但被故意拼写错误（高风险）。这可能是一个假冒版本。"
+    "message": "此地址看起来像一个知名网站，但包含一个小拼写错误。例如：'arnazon.com'而不是'amazon.com'。登录前请始终检查拼写。"
   },
   "downloadKeyword": {
     "message": "该链接包含与下载相关的词语（低风险）。请仅打开您信任的文件。"
@@ -252,7 +252,7 @@
     "message": "此页面上一个脚本的链接不正确。"
   },
   "mixedScripts": {
-    "message": "此地址混合使用了不同的书写系统（例如拉丁字母和西里尔字母）。这是一种已知的网络钓鱼伎俩（高风险）。"
+    "message": "此地址混合了不同字母表的字母（如英语和俄语）。虽然看起来一样，但它们创建了一个完全不同的网址。"
   },
   "introBannerMessage": {
     "message": "链接盾 (LinkShield) 已激活，并用 ⚠️ 标记有风险的链接。将鼠标悬停在图标上查看原因。"
@@ -261,9 +261,6 @@
     "message": "此地址使用看起来像字母的数字来模仿一个知名品牌（中等风险）。"
   },
   "trustedTLD": {
-    "message": "此域名具有标准域名后缀（低风险）。"
-  },
-  "trustedTld": {
     "message": "此域名具有标准域名后缀（低风险）。"
   },
   "suspiciousPageText": {
@@ -573,7 +570,7 @@
     "message": "试用期已过期"
   },
   "trialExpiredMessage": {
-    "message": "您的30天试用期已过期。请激活许可证以继续使用所有功能。"
+    "message": "您的试用期已结束。您仍然拥有基本保护——随时升级以恢复所有功能。"
   },
   "upgradeNow": {
     "message": "立即升级"
@@ -582,10 +579,10 @@
     "message": "LinkShield 控制面板"
   },
   "extNameFull": {
-    "message": "LinkShield：您的反钓鱼武器"
+    "message": "LinkShield：安全上网"
   },
   "extDescriptionFull": {
-    "message": "通过即时警报和高级保护来增强您的在线安全。"
+    "message": "保护您免受虚假网站、网络钓鱼和在线诈骗的侵害。让您无忧浏览。"
   },
   "licenseTrialTitle": {
     "message": "试用期：剩余 $DAYS$ 天",
@@ -597,22 +594,25 @@
     }
   },
   "licenseTrialSubtitle": {
-    "message": "试用期内所有高级功能均已激活"
+    "message": "您已获得全面保护。所有功能均已激活。"
   },
   "licenseUpgradeLink": {
-    "message": "升级到高级版 →"
+    "message": "升级到高级版 — €1.99/月（3台设备）→"
+  },
+  "licenseAlreadyHaveCode": {
+    "message": "已有许可证代码？"
   },
   "licenseExpiredTitle": {
-    "message": "试用期已过期"
+    "message": "您的高级功能已暂停"
   },
   "licenseExpiredSubtitle": {
-    "message": "激活高级版以获得完整保护"
+    "message": "基本保护仍然有效。重新激活高级版以解锁高级扫描和每小时更新。"
   },
   "licenseBenefitsLabel": {
-    "message": "高级版包含："
+    "message": "高级版为您提供："
   },
   "licenseBenefitsText": {
-    "message": "后台分析、二维码扫描、持续保护"
+    "message": "最新钓鱼网站已拦截（每小时更新）、二维码扫描、全天候保护"
   },
   "licenseKeyPlaceholder": {
     "message": "输入您的许可证密钥"
@@ -621,13 +621,37 @@
     "message": "激活高级版"
   },
   "licenseBuyLink": {
-    "message": "还没有许可证？点击这里购买 →"
+    "message": "立即获得保护 →"
   },
   "licensePremiumTitle": {
-    "message": "高级版已激活"
+    "message": "您已受到保护"
   },
   "licensePremiumSubtitle": {
-    "message": "完整保护已启用"
+    "message": "所有安全功能均已激活。感谢您的信任！"
+  },
+  "manageSubscription": {
+    "message": "管理订阅"
+  },
+  "manageSubscriptionTooltip": {
+    "message": "更改付款方式、取消订阅或查看发票"
+  },
+  "licenseDeactivateButton": {
+    "message": "在其他设备上使用许可证密钥"
+  },
+  "licenseDeactivateConfirm": {
+    "message": "您的订阅保持有效。此设备将切换到免费版本，以便您在其他设备上激活。"
+  },
+  "licenseDeactivateCancel": {
+    "message": "取消"
+  },
+  "licenseDeactivateConfirmBtn": {
+    "message": "停用"
+  },
+  "licenseDeactivating": {
+    "message": "正在停用..."
+  },
+  "licenseDeactivatedSuccess": {
+    "message": "许可证已停用。您现在可以在其他设备上激活它。"
   },
   "sectionSecuritySettings": {
     "message": "安全设置"
@@ -636,13 +660,13 @@
     "message": "安全设置"
   },
   "backgroundAnalysisFeature": {
-    "message": "后台分析"
+    "message": "自动保护"
   },
   "premiumBadge": {
     "message": "高级版"
   },
   "integratedProtectionFeature": {
-    "message": "集成恶意软件和钓鱼防护"
+    "message": "智能链接扫描"
   },
   "confirmationMessage": {
     "message": "设置保存成功！"
@@ -846,7 +870,7 @@
     "message": "此许可证已过期。"
   },
   "licenseErrorActivationLimit": {
-    "message": "已达到激活限制。请先停用其他设备。"
+    "message": "您已达到设备限制（3台）。请前往一台已激活的设备，选择「在其他设备上使用」以释放名额。"
   },
   "licenseErrorInstanceNotFound": {
     "message": "未找到安装实例。"
@@ -1089,7 +1113,7 @@
     "message": "在此页面上检测到隐藏的iframe。不可见的框架可用于跟踪、凭证盗窃或恶意软件传播。"
   },
   "typosquatting": {
-    "message": "检测到域名仿冒！此域名被故意拼写错误以冒充合法网站。"
+    "message": "检测到拼写欺骗：此网站名称与可信网站几乎相同，但有细微差别。骗子利用这一点创建令人信服的虚假页面。"
   },
   "ipAddressDomain": {
     "message": "此网站使用IP地址而非域名。这非常不寻常，通常表示恶意意图。"
@@ -1101,7 +1125,7 @@
     "message": "检测到潜在的语音钓鱼攻击。此页面将电话号码与钓鱼指标相结合。"
   },
   "punycodeDetected": {
-    "message": "检测到Punycode域名！此地址使用可能冒充合法网站的国际字符。"
+    "message": "此网址使用看起来像普通字母但实际上不是的特殊字符。例如，西里尔字母'а'看起来与拉丁字母'a'完全相同。这种欺骗使虚假网站看起来合法。"
   },
   "bitbClosePageButton": {
     "message": "关闭此页面"
@@ -1114,5 +1138,324 @@
   },
   "trustedDomainSkipped": {
     "message": "此域名已被您标记为可信。"
+  },
+  "gracePeriodActive": {
+    "message": "我们无法在线验证您的许可证。在我们重试期间，您的保护将继续$DAYS$天。",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "gracePeriodWarning": {
+    "message": "许可证验证待处理。请在未来$DAYS$天内连接互联网以保持不间断保护。",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "gracePeriodExpired": {
+    "message": "我们已7天无法验证您的许可证。请连接互联网以恢复高级功能。"
+  },
+  "gracePeriodRestored": {
+    "message": "许可证验证成功。您的保护已完全激活。"
+  },
+  "siteSafeSuccess": {
+    "message": "未检测到威胁。此网站已通过所有安全检查。"
+  },
+  "siteSafeSuccessDetail": {
+    "message": "LinkShield已扫描此页面，检查钓鱼、域名仿冒和恶意脚本。一切正常。"
+  },
+  "siteSafeSuccessBadge": {
+    "message": "已验证安全"
+  },
+  "exitPage": {
+    "message": "离开此页面"
+  },
+  "understandRisk": {
+    "message": "我了解风险"
+  },
+  "premiumActive": {
+    "message": "已激活"
+  },
+  "premiumRequired": {
+    "message": "高级版"
+  },
+  "backgroundSecurityHelp": {
+    "message": "需要有效许可证。激活高级版以启用自动保护。"
+  },
+  "sectionProtection": {
+    "message": "保护"
+  },
+  "statusProtected": {
+    "message": "已保护"
+  },
+  "statusTrialSub": {
+    "message": "试用 · 剩余 $DAYS$ 天",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "statusPremiumSub": {
+    "message": "高级版 · 已激活"
+  },
+  "statusExpired": {
+    "message": "保护已暂停"
+  },
+  "statusExpiredSub": {
+    "message": "续订以恢复完整保护"
+  },
+  "licenseActivateShort": {
+    "message": "激活"
+  },
+  "licenseDeactivateShort": {
+    "message": "转移许可证"
+  },
+  "ctaUpgradeText": {
+    "message": "升级到高级版"
+  },
+  "ctaUpgradePrice": {
+    "message": "€1.99/月 · 3台设备"
+  },
+  "ctaRenewText": {
+    "message": "恢复保护"
+  },
+  "manageBtnText": {
+    "message": "管理订阅"
+  },
+  "transferBtnText": {
+    "message": "停用"
+  },
+  "deactivateDeviceBtn": {
+    "message": "停用"
+  },
+  "licenseNetworkError": {
+    "message": "连接失败。请检查网络。"
+  },
+  "premiumFeatureTag": {
+    "message": "高级功能"
+  },
+  "liveNow": {
+    "message": "实时"
+  },
+  "updatedMinAgo": {
+    "message": "$MIN$分钟前",
+    "placeholders": {
+      "MIN": {
+        "content": "$1",
+        "example": "15"
+      }
+    }
+  },
+  "useLicenseKey": {
+    "message": "使用许可证密钥"
+  },
+  "clipboardHijackingCryptoTip": {
+    "message": "发送加密货币前请务必验证钱包地址。攻击者会替换剪贴板中的地址。"
+  },
+  "clipboardHijackingTip": {
+    "message": "此网站可能正在尝试替换您复制的内容。请始终验证粘贴的内容。"
+  },
+  "webTransportWarningTitle": {
+    "message": "可疑网络活动"
+  },
+  "webTransportWarningMessage": {
+    "message": "此页面正在以潜在可疑的方式使用高级网络协议。"
+  },
+  "webTransportDirectIP": {
+    "message": "检测到直接IP地址连接。"
+  },
+  "webTransportHighPort": {
+    "message": "连接到异常高的端口号。"
+  },
+  "webTransportRandomSubdomain": {
+    "message": "连接到可疑的随机子域名（可能是C2服务器）。"
+  },
+  "webTransportFreeTLD": {
+    "message": "连接到免费TLD域名（常用于恶意软件）。"
+  },
+  "webTransportHighConnectionRate": {
+    "message": "检测到异常高的连接率。"
+  },
+  "webTransportHighDatagramRate": {
+    "message": "检测到异常高的数据传输率。"
+  },
+  "webTransportObfuscatedUrl": {
+    "message": "检测到混淆或编码的URL。"
+  },
+  "webTransportInvalidUrl": {
+    "message": "无效或格式错误的连接URL。"
+  },
+  "failSafeNetworkTitle": {
+    "message": "许可证验证失败",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeNetworkMessage": {
+    "message": "由于网络问题无法验证许可证。保护功能在安全模式下保持激活状态。",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeGraceTitle": {
+    "message": "需要验证许可证",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeGraceMessage": {
+    "message": "请连接互联网以验证您的许可证。保护功能保持激活状态。",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafePreservedTitle": {
+    "message": "保护已激活",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafePreservedMessage": {
+    "message": "您的保护规则已保留。请在可能时验证您的许可证。",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeDefaultTitle": {
+    "message": "安全模式已激活",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeDefaultMessage": {
+    "message": "LinkShield正在安全模式下运行。保护功能保持激活状态。",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "visualHijackingDetected": {
+    "message": "检测到视觉劫持",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "visualHijackingMessage": {
+    "message": "检测到试图拦截您点击的隐藏覆盖层。这是一种常见的钓鱼技术，用于将您重定向到恶意网站。",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "detectionReason": {
+    "message": "检测原因",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "closeWarning": {
+    "message": "关闭",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "transparentHighZIndexOverlay": {
+    "message": "检测到高z-index透明覆盖层",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "invisibleClickjackOverlay": {
+    "message": "检测到不可见的点击劫持覆盖层",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "fullscreenTransparentOverlay": {
+    "message": "检测到全屏透明覆盖层",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "hiddenLinkOverlay": {
+    "message": "检测到隐藏链接覆盖层",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "dismissTooltip": {
+    "message": "关闭",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "dontShowAgain": {
+    "message": "不再显示？",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "confirmYes": {
+    "message": "是",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "confirmNo": {
+    "message": "否",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "reportPhishingSuccess": {
+    "message": "已举报！感谢您帮助提高安全性。",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "pointerEventsHijack": {
+    "message": "Pointer-events click hijacking detected",
+    "description": "[EN fallback] Pointer-events click hijacking detected"
+  },
+  "pointerEventsNoneHighZIndex": {
+    "message": "检测到具有最大z-index的不可见覆盖层（严重风险）。此页面正在尝试拦截您的点击。"
+  },
+  "intMaxZIndexOverlay": {
+    "message": "检测到使用最大z-index的可疑覆盖层（严重风险）。这是一种常见的点击劫持技术。"
+  },
+  "fullscreenPointerEventsNone": {
+    "message": "检测到全屏不可见覆盖层（严重风险）。此页面可能正在尝试捕获您的交互。"
+  },
+  "suspiciousLinkZIndex": {
+    "message": "此链接使用极高的z-index定位（严重风险）。这是一种点击劫持攻击技术，恶意链接被放置在合法内容之上。"
+  },
+  "suspiciousContainerZIndex": {
+    "message": "此链接位于具有可疑z-index定位的容器内（严重风险）。该页面可能试图诱骗您点击恶意内容。"
+  },
+  "dangerousJavascriptUri": {
+    "message": "严重：此链接包含可执行的JavaScript代码（严重风险）。点击可能会在您的浏览器中运行恶意脚本。"
+  },
+  "dangerousVbscriptUri": {
+    "message": "严重：此链接包含可执行的VBScript代码（严重风险）。这是一种针对Windows系统的危险攻击技术。"
+  },
+  "dangerousDataUri": {
+    "message": "严重：此链接包含可能执行代码的嵌入数据（严重风险）。Data URI可用于网络钓鱼或恶意软件分发。"
+  },
+  "criticalSecurityThreat": {
+    "message": "严重安全威胁：此链接已被识别为极度危险。在任何情况下都不要点击。"
+  },
+  "mixedScriptAttack": {
+    "message": "严重：此网址混合了来自不同字母表的字符（例如拉丁文和西里尔文）。这是一种复杂的欺骗攻击，其中看起来相同的字符来自不同的书写系统。"
+  },
+  "nonAsciiDomain": {
+    "message": "此域名包含非ASCII字符（高风险）。域名中的国际字符可用于冒充合法网站。"
+  },
+  "homoglyphCharactersDetected": {
+    "message": "严重：在此域名中检测到同形字符（严重风险）。看起来像拉丁字母但实际上来自其他书写系统（例如西里尔文）的字符正被用于冒充合法网站。"
+  },
+  "dangerousBlobUri": {
+    "message": "严重：此链接包含Blob URL（严重风险）。Blob URL可用于执行恶意代码或分发恶意软件。"
+  },
+  "dataUriBlocked": {
+    "message": "严重：此链接包含 data: URI（严重风险）。Data: URI 可以直接在您的浏览器中执行恶意内容。这是钓鱼和恶意软件的常见攻击载体。"
+  },
+  "javascriptUriBlocked": {
+    "message": "严重：此链接包含 javascript: URI（严重风险）。JavaScript URI 可以在您的浏览器上下文中执行任意代码，可能窃取您的数据或凭据。"
+  },
+  "vbscriptUriBlocked": {
+    "message": "严重：此链接包含 vbscript: URI（严重风险）。VBScript URI 可以在 Windows 系统上执行危险代码。这是严重的安全威胁。"
+  },
+  "blobUriBlocked": {
+    "message": "严重：此链接包含 blob: URI（严重风险）。Blob URI 可以执行任意代码或分发恶意软件。此链接已被阻止以保护您。"
+  },
+  "mathematicalCharsDetected": {
+    "message": "此域名包含数学 Unicode 字符（高风险）。看起来像普通字母的数学符号正被用于冒充合法网站。"
+  },
+  "greekCharsDetected": {
+    "message": "此域名包含与拉丁字母混合的希腊字母（高风险）。像 omicron 和 nu 这样的希腊字母与拉丁语的 'o' 和 'v' 相同，使其成为潜在的欺骗攻击。"
+  },
+  "scriptCharsDetected": {
+    "message": "此域名包含类似字母的符号（高风险）。特殊的 Unicode 脚本字符正被用于冒充合法网站。"
+  },
+  "digitInDomainDetected": {
+    "message": "此域名使用数字替换来冒充知名品牌（高风险）。数字如 0、1、3、5 被用来替代字母（例如：g00gle、paypa1、amaz0n）。"
+  },
+  "visualHijackingRisk": {
+    "message": "严重：检测到视觉劫持攻击（严重风险）。透明覆盖层正试图拦截您的点击并将您重定向到恶意目的地。此链接已被阻止以保护您。"
+  },
+  "fullwidthCharsDetected": {
+    "message": "此域名包含全角Unicode字符（高风险）。全角字母（如ａｐｐｌｅ）看起来与普通字母相同，但实际上是不同的字符，常用于钓鱼攻击。"
+  },
+  "cherokeeCharsDetected": {
+    "message": "此域名包含切罗基文字字符（高风险）。切罗基字母与拉丁字母相似（如ꮓ看起来像'z'），用于创建令人信服的假域名。"
+  },
+  "nonAsciiInBrandDomain": {
+    "message": "此域名在品牌相关的上下文中包含非ASCII字符（高风险）。正在使用特殊字符来冒充合法网站。"
+  },
+  "maliciousDomainKeyword": {
+    "message": "严重：此域名包含通常与钓鱼或恶意软件相关的关键词（严重风险）。域名本身暗示了恶意意图。"
   }
 }

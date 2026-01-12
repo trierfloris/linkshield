@@ -51,7 +51,7 @@
     "message": "ลิงก์มีอักขระที่ผิดปกติ (ความเสี่ยงต่ำ) อาจใช้เพื่อซ่อนปลายทางจริง"
   },
   "homoglyphAttack": {
-    "message": "ที่อยู่เว็บนี้ใช้อักขระที่เกือบเหมือนกับเว็บไซต์ที่รู้จัก (ความเสี่ยงสูง) นี่เป็นเทคนิคหลอกลวงคุณ"
+    "message": "ที่อยู่นี้มีตัวอักษรที่คล้ายกัน (ความเสี่ยงสูง) โปรดตรวจสอบว่าคุณอยู่บนเว็บไซต์ที่ถูกต้องก่อนกรอกข้อมูลใดๆ"
   },
   "metaRedirect": {
     "message": "เว็บไซต์นี้เปลี่ยนเส้นทางคุณโดยอัตโนมัติ อาจนำไปสู่เว็บไซต์ที่ไม่ปลอดภัย (ความเสี่ยงปานกลาง)"
@@ -114,7 +114,7 @@
     "message": "การสแกนเบื้องหลัง"
   },
   "backgroundAnalysisDescription": {
-    "message": "การป้องกันแบบเรียลไทม์ อัปเดตทุกชั่วโมง ครอบคลุมทั่วโลก"
+    "message": "บล็อกเว็บไซต์ฟิชชิ่งล่าสุด ฐานข้อมูลอัปเดตทุกชั่วโมง"
   },
   "activationRequired": {
     "message": "เปิดใช้งานคุณสมบัตินี้เพื่อใช้งาน"
@@ -123,7 +123,7 @@
     "message": "การป้องกันแบบบูรณาการ"
   },
   "integratedProtectionDescription": {
-    "message": "ตรวจสอบเว็บไซต์และลิงก์โดยตรงเพื่อหาลักษณะที่มีความเสี่ยง"
+    "message": "ตรวจสอบทุกลิงก์บนหน้าเว็บและเตือนคุณเกี่ยวกับเว็บไซต์ที่น่าสงสัย"
   },
   "premiumFeaturesActive": {
     "message": "คุณกำลังใช้เวอร์ชันพรีเมียม!"
@@ -240,7 +240,7 @@
     "message": "พบความเสี่ยงที่ไม่ทราบ ระวังให้มากขึ้น"
   },
   "typosquattingAttack": {
-    "message": "ที่อยู่เว็บนี้ดูเหมือนเว็บไซต์จริงแต่จงใจสะกดผิด (ความเสี่ยงสูง) อาจเป็นเวอร์ชันปลอม"
+    "message": "ที่อยู่นี้ดูเหมือนเว็บไซต์ที่รู้จัก แต่มีข้อผิดพลาดการสะกดเล็กน้อย ตัวอย่าง: 'arnazon.com' แทน 'amazon.com' ตรวจสอบการสะกดก่อนเข้าสู่ระบบเสมอ"
   },
   "downloadKeyword": {
     "message": "ลิงก์มีคำที่เกี่ยวข้องกับการดาวน์โหลด (ความเสี่ยงต่ำ) เปิดเฉพาะไฟล์ที่คุณไว้วางใจ"
@@ -252,7 +252,7 @@
     "message": "ลิงก์ไปยังสคริปต์บนหน้านี้ไม่ถูกต้อง"
   },
   "mixedScripts": {
-    "message": "ที่อยู่นี้ใช้ส่วนผสมของระบบการเขียนที่แตกต่างกัน (เช่น ตัวอักษรละตินและซีริลลิก) นี่เป็นเทคนิคฟิชชิ่งที่รู้จัก (ความเสี่ยงสูง)"
+    "message": "ที่อยู่นี้ผสมตัวอักษรจากตัวอักษรต่างๆ (เช่น อังกฤษและรัสเซีย) แม้ดูเหมือนกัน แต่สร้างที่อยู่เว็บที่แตกต่างกันโดยสิ้นเชิง"
   },
   "introBannerMessage": {
     "message": "LinkShield ทำงานอยู่และทำเครื่องหมายลิงก์ที่มีความเสี่ยงด้วย ⚠️ วางเมาส์เหนือไอคอนเพื่อดูเหตุผล"
@@ -261,9 +261,6 @@
     "message": "ที่อยู่นี้ใช้ตัวเลขที่ดูเหมือนตัวอักษรเพื่อเลียนแบบแบรนด์ที่รู้จัก (ความเสี่ยงปานกลาง)"
   },
   "trustedTLD": {
-    "message": "โดเมนนี้มีนามสกุลโดเมนมาตรฐาน (ความเสี่ยงต่ำ)"
-  },
-  "trustedTld": {
     "message": "โดเมนนี้มีนามสกุลโดเมนมาตรฐาน (ความเสี่ยงต่ำ)"
   },
   "suspiciousPageText": {
@@ -468,10 +465,10 @@
     "message": "แดชบอร์ด LinkShield"
   },
   "extNameFull": {
-    "message": "LinkShield: อาวุธต่อต้านฟิชชิ่งของคุณ"
+    "message": "LinkShield: ปลอดภัยออนไลน์"
   },
   "extDescriptionFull": {
-    "message": "เพิ่มความปลอดภัยด้วยการแจ้งเตือนโดยตรงและการป้องกันขั้นสูงจากภัยคุกคามออนไลน์"
+    "message": "ปกป้องคุณจากเว็บไซต์ปลอม ฟิชชิ่ง และการหลอกลวงออนไลน์ เพื่อให้คุณท่องเว็บได้อย่างไร้กังวล"
   },
   "licenseTrialTitle": {
     "message": "ทดลองใช้: เหลือ $DAYS$ วัน",
@@ -483,22 +480,25 @@
     }
   },
   "licenseTrialSubtitle": {
-    "message": "คุณสมบัติพรีเมียมทั้งหมดเปิดใช้งานระหว่างการทดลองใช้"
+    "message": "คุณได้รับการป้องกันอย่างเต็มที่ ทุกคุณสมบัติเปิดใช้งานแล้ว"
   },
   "licenseUpgradeLink": {
-    "message": "อัปเกรดเป็นพรีเมียม →"
+    "message": "อัปเกรดเป็นพรีเมียม — €1.99/เดือน (3 อุปกรณ์) →"
+  },
+  "licenseAlreadyHaveCode": {
+    "message": "มีรหัสใบอนุญาตอยู่แล้ว?"
   },
   "licenseExpiredTitle": {
-    "message": "การทดลองใช้หมดอายุ"
+    "message": "ฟีเจอร์พรีเมียมของคุณถูกหยุดชั่วคราว"
   },
   "licenseExpiredSubtitle": {
-    "message": "เปิดใช้งานพรีเมียมเพื่อการป้องกันเต็มรูปแบบ"
+    "message": "การป้องกันพื้นฐานยังคงใช้งานได้ เปิดใช้งาน Premium อีกครั้งเพื่อการสแกนขั้นสูงและอัปเดตรายชั่วโมง"
   },
   "licenseBenefitsLabel": {
-    "message": "พรีเมียมรวมถึง:"
+    "message": "กับ Premium คุณจะได้รับ:"
   },
   "licenseBenefitsText": {
-    "message": "การวิเคราะห์เบื้องหลัง, การสแกน QR โค้ด, การป้องกันต่อเนื่อง"
+    "message": "บล็อกเว็บไซต์ฟิชชิ่งล่าสุด (อัปเดตทุกชั่วโมง), สแกน QR โค้ด, การป้องกัน 24/7"
   },
   "licenseKeyPlaceholder": {
     "message": "ป้อนรหัสใบอนุญาตของคุณ"
@@ -507,13 +507,37 @@
     "message": "เปิดใช้งานพรีเมียม"
   },
   "licenseBuyLink": {
-    "message": "ยังไม่มีใบอนุญาต? ซื้อที่นี่ →"
+    "message": "รับการป้องกันตอนนี้ →"
   },
   "licensePremiumTitle": {
-    "message": "พรีเมียมเปิดใช้งานแล้ว"
+    "message": "คุณได้รับการป้องกัน"
   },
   "licensePremiumSubtitle": {
-    "message": "เปิดใช้งานการป้องกันเต็มรูปแบบแล้ว"
+    "message": "คุณสมบัติความปลอดภัยทั้งหมดเปิดใช้งานแล้ว ขอบคุณสำหรับความไว้วางใจ!"
+  },
+  "manageSubscription": {
+    "message": "จัดการการสมัครสมาชิก"
+  },
+  "manageSubscriptionTooltip": {
+    "message": "เปลี่ยนวิธีการชำระเงิน ยกเลิก หรือดูใบแจ้งหนี้"
+  },
+  "licenseDeactivateButton": {
+    "message": "ใช้รหัสใบอนุญาตบนอุปกรณ์อื่น"
+  },
+  "licenseDeactivateConfirm": {
+    "message": "การสมัครของคุณยังคงใช้งานได้ อุปกรณ์นี้จะเปลี่ยนเป็นเวอร์ชันฟรีเพื่อให้คุณสามารถเปิดใช้งานบนอุปกรณ์อื่นได้"
+  },
+  "licenseDeactivateCancel": {
+    "message": "ยกเลิก"
+  },
+  "licenseDeactivateConfirmBtn": {
+    "message": "ปิดใช้งาน"
+  },
+  "licenseDeactivating": {
+    "message": "กำลังปิดใช้งาน..."
+  },
+  "licenseDeactivatedSuccess": {
+    "message": "ใบอนุญาตถูกปิดใช้งานแล้ว ตอนนี้คุณสามารถเปิดใช้งานบนอุปกรณ์อื่นได้"
   },
   "sectionSecuritySettings": {
     "message": "การตั้งค่าความปลอดภัย"
@@ -522,13 +546,13 @@
     "message": "การตั้งค่าความปลอดภัย"
   },
   "backgroundAnalysisFeature": {
-    "message": "การวิเคราะห์เบื้องหลัง"
+    "message": "การป้องกันอัตโนมัติ"
   },
   "premiumBadge": {
     "message": "พรีเมียม"
   },
   "integratedProtectionFeature": {
-    "message": "การป้องกันมัลแวร์และฟิชชิ่งแบบบูรณาการ"
+    "message": "การสแกนลิงก์อัจฉริยะ"
   },
   "confirmationMessage": {
     "message": "บันทึกการตั้งค่าสำเร็จ!"
@@ -552,7 +576,7 @@
     "message": "การทดลองใช้หมดอายุ"
   },
   "trialExpiredMessage": {
-    "message": "การทดลองใช้ 30 วันของคุณหมดอายุแล้ว เปิดใช้งานใบอนุญาตเพื่อใช้งานคุณสมบัติทั้งหมดต่อไป"
+    "message": "ช่วงทดลองใช้ของคุณสิ้นสุดแล้ว คุณยังมีการป้องกันพื้นฐาน — อัปเกรดเมื่อใดก็ได้เพื่อคืนค่าฟีเจอร์ทั้งหมด"
   },
   "upgradeNow": {
     "message": "อัปเกรดเดี๋ยวนี้"
@@ -765,7 +789,7 @@
     "message": "ใบอนุญาตนี้หมดอายุแล้ว"
   },
   "licenseErrorActivationLimit": {
-    "message": "ถึงขีดจำกัดการเปิดใช้งานแล้ว กรุณาปิดใช้งานอุปกรณ์อื่นก่อน"
+    "message": "คุณถึงขีดจำกัดอุปกรณ์แล้ว (3) ไปที่อุปกรณ์ที่ใช้งานและเลือก 'ใช้บนอุปกรณ์อื่น' เพื่อเพิ่มช่อง"
   },
   "licenseErrorInstanceNotFound": {
     "message": "ไม่พบอินสแตนซ์การติดตั้ง"
@@ -1026,7 +1050,7 @@
     "message": "ตรวจพบ iframe ที่ซ่อนอยู่บนหน้านี้ เฟรมที่มองไม่เห็นสามารถใช้สำหรับการติดตาม การขโมยข้อมูลประจำตัว หรือการส่งมัลแวร์"
   },
   "typosquatting": {
-    "message": "ตรวจพบ Typosquatting! โดเมนนี้จงใจสะกดผิดเพื่อปลอมตัวเป็นเว็บไซต์ที่ถูกต้อง"
+    "message": "ตรวจพบกลอุบายการสะกด: ชื่อเว็บไซต์นี้เกือบเหมือนกับเว็บไซต์ที่เชื่อถือได้ แต่มีความแตกต่างเล็กน้อย มิจฉาชีพใช้สิ่งนี้สร้างหน้าปลอมที่น่าเชื่อถือ"
   },
   "ipAddressDomain": {
     "message": "เว็บไซต์นี้ใช้ที่อยู่ IP แทนชื่อโดเมน นี่ไม่ปกติมากและมักบ่งบอกถึงเจตนาที่เป็นอันตราย"
@@ -1038,7 +1062,7 @@
     "message": "ตรวจพบการโจมตี vishing (ฟิชชิ่งทางเสียง) ที่อาจเกิดขึ้น หน้านี้รวมหมายเลขโทรศัพท์กับตัวบ่งชี้ฟิชชิ่ง"
   },
   "punycodeDetected": {
-    "message": "ตรวจพบโดเมน Punycode! ที่อยู่นี้ใช้อักขระนานาชาติที่อาจปลอมตัวเป็นเว็บไซต์ที่ถูกต้อง"
+    "message": "ที่อยู่เว็บนี้ใช้อักขระพิเศษที่ดูเหมือนตัวอักษรปกติแต่ไม่ใช่ ตัวอย่างเช่น 'а' ซีริลลิกดูเหมือน 'a' ละติน กลอุบายนี้ทำให้เว็บไซต์ปลอมดูถูกต้อง"
   },
   "reason_nonAscii": {
     "message": "ตรวจพบอักขระที่น่าสงสัย (homoglyphs)"
@@ -1114,5 +1138,324 @@
   },
   "trustedDomainSkipped": {
     "message": "โดเมนนี้ถูกทำเครื่องหมายว่าเชื่อถือได้โดยคุณ"
+  },
+  "gracePeriodActive": {
+    "message": "เราไม่สามารถยืนยันใบอนุญาตออนไลน์ได้ การป้องกันของคุณจะดำเนินต่อไปอีก $DAYS$ วันในขณะที่เราลองใหม่",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "gracePeriodWarning": {
+    "message": "รอการยืนยันใบอนุญาต กรุณาเชื่อมต่ออินเทอร์เน็ตภายใน $DAYS$ วันเพื่อการป้องกันต่อเนื่อง",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "gracePeriodExpired": {
+    "message": "เราไม่สามารถยืนยันใบอนุญาตได้ 7 วัน กรุณาเชื่อมต่ออินเทอร์เน็ตเพื่อคืนค่าฟีเจอร์พรีเมียม"
+  },
+  "gracePeriodRestored": {
+    "message": "ยืนยันใบอนุญาตสำเร็จ การป้องกันของคุณใช้งานได้เต็มที่"
+  },
+  "siteSafeSuccess": {
+    "message": "ไม่พบภัยคุกคาม เว็บไซต์นี้ผ่านการตรวจสอบความปลอดภัยทั้งหมด"
+  },
+  "siteSafeSuccessDetail": {
+    "message": "LinkShield สแกนหน้านี้เพื่อหาฟิชชิง typosquatting และสคริปต์อันตราย ทุกอย่างดูดี"
+  },
+  "siteSafeSuccessBadge": {
+    "message": "ยืนยันปลอดภัย"
+  },
+  "exitPage": {
+    "message": "ออกจากหน้านี้"
+  },
+  "understandRisk": {
+    "message": "ฉันเข้าใจความเสี่ยง"
+  },
+  "premiumActive": {
+    "message": "ใช้งานอยู่"
+  },
+  "premiumRequired": {
+    "message": "ต้องการพรีเมียม"
+  },
+  "backgroundSecurityHelp": {
+    "message": "LinkShield ตรวจสอบความปลอดภัยเบื้องหลังขณะคุณเรียกดู"
+  },
+  "sectionProtection": {
+    "message": "การป้องกัน"
+  },
+  "statusProtected": {
+    "message": "ได้รับการป้องกัน"
+  },
+  "statusTrialSub": {
+    "message": "เหลือทดลองใช้ $DAYS$ วัน",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "7"
+      }
+    }
+  },
+  "statusPremiumSub": {
+    "message": "การสมัครพรีเมียมใช้งานอยู่"
+  },
+  "statusExpired": {
+    "message": "หมดอายุ"
+  },
+  "statusExpiredSub": {
+    "message": "การสมัครของคุณหมดอายุแล้ว"
+  },
+  "licenseActivateShort": {
+    "message": "เปิดใช้งาน"
+  },
+  "licenseDeactivateShort": {
+    "message": "ปิดใช้งาน"
+  },
+  "ctaUpgradeText": {
+    "message": "อัพเกรดเป็นพรีเมียม"
+  },
+  "ctaUpgradePrice": {
+    "message": "เริ่มต้น €1/เดือน"
+  },
+  "ctaRenewText": {
+    "message": "ต่ออายุการสมัคร"
+  },
+  "manageBtnText": {
+    "message": "จัดการ"
+  },
+  "transferBtnText": {
+    "message": "โอนย้าย"
+  },
+  "deactivateDeviceBtn": {
+    "message": "ปิดใช้งานอุปกรณ์"
+  },
+  "licenseNetworkError": {
+    "message": "ข้อผิดพลาดเครือข่าย ตรวจสอบการเชื่อมต่อ"
+  },
+  "premiumFeatureTag": {
+    "message": "ฟีเจอร์พรีเมียม"
+  },
+  "liveNow": {
+    "message": "ไลฟ์ตอนนี้"
+  },
+  "updatedMinAgo": {
+    "message": "อัปเดต $MIN$ นาทีที่แล้ว",
+    "placeholders": {
+      "MIN": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "useLicenseKey": {
+    "message": "ใช้รหัสใบอนุญาต"
+  },
+  "clipboardHijackingCryptoTip": {
+    "message": "ตรวจสอบที่อยู่กระเป๋าเงินก่อนส่งคริปโตเสมอ ผู้โจมตีเปลี่ยนที่อยู่ในคลิปบอร์ดของคุณ"
+  },
+  "clipboardHijackingTip": {
+    "message": "เว็บไซต์นี้อาจพยายามแทนที่เนื้อหาที่คุณคัดลอก ตรวจสอบเนื้อหาที่วางเสมอ"
+  },
+  "webTransportWarningTitle": {
+    "message": "กิจกรรมเครือข่ายที่น่าสงสัย"
+  },
+  "webTransportWarningMessage": {
+    "message": "หน้านี้กำลังใช้โปรโตคอลเครือข่ายขั้นสูงในลักษณะที่อาจน่าสงสัย"
+  },
+  "webTransportDirectIP": {
+    "message": "ตรวจพบการเชื่อมต่อไปยังที่อยู่ IP โดยตรง"
+  },
+  "webTransportHighPort": {
+    "message": "การเชื่อมต่อไปยังหมายเลขพอร์ตที่สูงผิดปกติ"
+  },
+  "webTransportRandomSubdomain": {
+    "message": "การเชื่อมต่อไปยังซับโดเมนสุ่มที่น่าสงสัย (อาจเป็นเซิร์ฟเวอร์ C2)"
+  },
+  "webTransportFreeTLD": {
+    "message": "การเชื่อมต่อไปยังโดเมน TLD ฟรี (มักใช้สำหรับมัลแวร์)"
+  },
+  "webTransportHighConnectionRate": {
+    "message": "ตรวจพบอัตราการเชื่อมต่อที่สูงผิดปกติ"
+  },
+  "webTransportHighDatagramRate": {
+    "message": "ตรวจพบอัตราการถ่ายโอนข้อมูลที่สูงผิดปกติ"
+  },
+  "webTransportObfuscatedUrl": {
+    "message": "ตรวจพบ URL ที่ถูกปิดบังหรือเข้ารหัส"
+  },
+  "webTransportInvalidUrl": {
+    "message": "URL การเชื่อมต่อไม่ถูกต้องหรือผิดรูปแบบ"
+  },
+  "failSafeNetworkTitle": {
+    "message": "การตรวจสอบใบอนุญาตล้มเหลว",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeNetworkMessage": {
+    "message": "ไม่สามารถตรวจสอบใบอนุญาตได้เนื่องจากปัญหาเครือข่าย การป้องกันยังคงทำงานในโหมดปลอดภัย",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeGraceTitle": {
+    "message": "ต้องการการตรวจสอบใบอนุญาต",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeGraceMessage": {
+    "message": "กรุณาเชื่อมต่ออินเทอร์เน็ตเพื่อตรวจสอบใบอนุญาตของคุณ การป้องกันยังคงทำงาน",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafePreservedTitle": {
+    "message": "การป้องกันทำงานอยู่",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafePreservedMessage": {
+    "message": "กฎการป้องกันของคุณได้รับการรักษาไว้ กรุณาตรวจสอบใบอนุญาตเมื่อเป็นไปได้",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeDefaultTitle": {
+    "message": "โหมดปลอดภัยทำงานอยู่",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeDefaultMessage": {
+    "message": "LinkShield กำลังทำงานในโหมดปลอดภัย การป้องกันยังคงทำงาน",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "visualHijackingDetected": {
+    "message": "ตรวจพบการไฮแจ็กภาพ",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "visualHijackingMessage": {
+    "message": "ตรวจพบโอเวอร์เลย์ที่ซ่อนอยู่พยายามดักจับการคลิกของคุณ นี่คือเทคนิคฟิชชิ่งทั่วไปเพื่อเปลี่ยนเส้นทางคุณไปยังเว็บไซต์อันตราย",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "detectionReason": {
+    "message": "เหตุผลในการตรวจจับ",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "closeWarning": {
+    "message": "ปิด",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "transparentHighZIndexOverlay": {
+    "message": "ตรวจพบโอเวอร์เลย์โปร่งใสที่มี z-index สูง",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "invisibleClickjackOverlay": {
+    "message": "ตรวจพบโอเวอร์เลย์ clickjacking ที่มองไม่เห็น",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "fullscreenTransparentOverlay": {
+    "message": "ตรวจพบโอเวอร์เลย์โปร่งใสแบบเต็มหน้าจอ",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "hiddenLinkOverlay": {
+    "message": "ตรวจพบโอเวอร์เลย์ลิงก์ที่ซ่อนอยู่",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "dismissTooltip": {
+    "message": "ปิด",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "dontShowAgain": {
+    "message": "ไม่ต้องแสดงอีก?",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "confirmYes": {
+    "message": "ใช่",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "confirmNo": {
+    "message": "ไม่",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "reportPhishingSuccess": {
+    "message": "รายงานแล้ว! ขอบคุณที่ช่วยปรับปรุงความปลอดภัย",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "pointerEventsHijack": {
+    "message": "Pointer-events click hijacking detected",
+    "description": "[EN fallback] Pointer-events click hijacking detected"
+  },
+  "pointerEventsNoneHighZIndex": {
+    "message": "ตรวจพบเลเยอร์ที่มองไม่เห็นที่มี z-index สูงสุด (ความเสี่ยงร้ายแรง) หน้านี้กำลังพยายามดักจับการคลิกของคุณ"
+  },
+  "intMaxZIndexOverlay": {
+    "message": "ตรวจพบเลเยอร์ที่น่าสงสัยใช้ z-index สูงสุด (ความเสี่ยงร้ายแรง) นี่เป็นเทคนิคการจี้คลิกที่พบบ่อย"
+  },
+  "fullscreenPointerEventsNone": {
+    "message": "ตรวจพบเลเยอร์ที่มองไม่เห็นเต็มหน้าจอ (ความเสี่ยงร้ายแรง) หน้านี้อาจพยายามจับภาพการโต้ตอบของคุณ"
+  },
+  "suspiciousLinkZIndex": {
+    "message": "ลิงก์นี้ใช้การจัดตำแหน่ง z-index ที่สูงมาก (ความเสี่ยงร้ายแรง) นี่คือเทคนิคการโจมตีแบบ click hijacking ที่ลิงก์ที่เป็นอันตรายถูกวางซ้อนบนเนื้อหาที่ถูกต้อง"
+  },
+  "suspiciousContainerZIndex": {
+    "message": "ลิงก์นี้อยู่ภายในคอนเทนเนอร์ที่มีการจัดตำแหน่ง z-index ที่น่าสงสัย (ความเสี่ยงร้ายแรง) หน้านี้อาจพยายามหลอกให้คุณคลิกเนื้อหาที่เป็นอันตราย"
+  },
+  "dangerousJavascriptUri": {
+    "message": "วิกฤต: ลิงก์นี้มีโค้ด JavaScript ที่สามารถรันได้ (ความเสี่ยงวิกฤต) การคลิกอาจรันสคริปต์ที่เป็นอันตรายในเบราว์เซอร์ของคุณ"
+  },
+  "dangerousVbscriptUri": {
+    "message": "วิกฤต: ลิงก์นี้มีโค้ด VBScript ที่สามารถรันได้ (ความเสี่ยงวิกฤต) นี่เป็นเทคนิคการโจมตีที่อันตรายซึ่งมุ่งเป้าไปที่ระบบ Windows"
+  },
+  "dangerousDataUri": {
+    "message": "วิกฤต: ลิงก์นี้มีข้อมูลฝังตัวที่สามารถรันโค้ดได้ (ความเสี่ยงวิกฤต) Data URIs สามารถใช้สำหรับฟิชชิ่งหรือแพร่กระจายมัลแวร์"
+  },
+  "criticalSecurityThreat": {
+    "message": "ภัยคุกคามด้านความปลอดภัยวิกฤต: ลิงก์นี้ถูกระบุว่าเป็นอันตรายอย่างยิ่ง อย่าคลิกไม่ว่าในกรณีใด"
+  },
+  "mixedScriptAttack": {
+    "message": "วิกฤต: ที่อยู่เว็บนี้ผสมอักขระจากตัวอักษรต่างกัน (เช่น ละตินและซีริลลิก) นี่เป็นการโจมตีปลอมแปลงที่ซับซ้อนซึ่งอักขระที่เหมือนกันมาจากระบบการเขียนที่ต่างกัน"
+  },
+  "nonAsciiDomain": {
+    "message": "โดเมนนี้มีอักขระที่ไม่ใช่ ASCII (ความเสี่ยงสูง) อักขระสากลในชื่อโดเมนสามารถใช้เพื่อปลอมแปลงเว็บไซต์ที่ถูกต้อง"
+  },
+  "homoglyphCharactersDetected": {
+    "message": "วิกฤต: ตรวจพบอักขระโฮโมกลิฟในโดเมนนี้ (ความเสี่ยงวิกฤต) อักขระที่ดูเหมือนตัวอักษรละตินแต่จริงๆ มาจากระบบการเขียนอื่น (เช่น ซีริลลิก) ถูกใช้เพื่อปลอมแปลงเว็บไซต์ที่ถูกต้อง"
+  },
+  "dangerousBlobUri": {
+    "message": "วิกฤต: ลิงก์นี้มี Blob URL (ความเสี่ยงวิกฤต) Blob URLs สามารถใช้เพื่อรันโค้ดที่เป็นอันตรายหรือแพร่กระจายมัลแวร์"
+  },
+  "dataUriBlocked": {
+    "message": "วิกฤต: ลิงก์นี้มี data: URI (ความเสี่ยงวิกฤต) Data: URIs สามารถเรียกใช้เนื้อหาที่เป็นอันตรายโดยตรงในเบราว์เซอร์ของคุณ นี่คือเวกเตอร์การโจมตีทั่วไปสำหรับฟิชชิ่งและมัลแวร์"
+  },
+  "javascriptUriBlocked": {
+    "message": "วิกฤต: ลิงก์นี้มี javascript: URI (ความเสี่ยงวิกฤต) JavaScript URIs สามารถเรียกใช้โค้ดตามอำเภอใจในบริบทเบราว์เซอร์ของคุณ อาจขโมยข้อมูลหรือข้อมูลรับรองของคุณ"
+  },
+  "vbscriptUriBlocked": {
+    "message": "วิกฤต: ลิงก์นี้มี vbscript: URI (ความเสี่ยงวิกฤต) VBScript URIs สามารถเรียกใช้โค้ดอันตรายบนระบบ Windows นี่คือภัยคุกคามความปลอดภัยร้ายแรง"
+  },
+  "blobUriBlocked": {
+    "message": "วิกฤต: ลิงก์นี้มี blob: URI (ความเสี่ยงวิกฤต) Blob URIs สามารถเรียกใช้โค้ดตามอำเภอใจหรือแพร่กระจายมัลแวร์ ลิงก์นี้ถูกบล็อกเพื่อการป้องกันของคุณ"
+  },
+  "mathematicalCharsDetected": {
+    "message": "โดเมนนี้มีอักขระ Unicode ทางคณิตศาสตร์ (ความเสี่ยงสูง) สัญลักษณ์ทางคณิตศาสตร์ที่ดูเหมือนตัวอักษรปกติถูกใช้เพื่อเลียนแบบเว็บไซต์ที่ถูกต้อง"
+  },
+  "greekCharsDetected": {
+    "message": "โดเมนนี้มีตัวอักษรกรีกผสมกับตัวอักษรละติน (ความเสี่ยงสูง) ตัวอักษรกรีกเช่น omicron และ nu เหมือนกับ 'o' และ 'v' ละติน ทำให้นี่อาจเป็นการโจมตี spoofing"
+  },
+  "scriptCharsDetected": {
+    "message": "โดเมนนี้มีสัญลักษณ์คล้ายตัวอักษร (ความเสี่ยงสูง) อักขระสคริปต์ Unicode พิเศษถูกใช้เพื่อเลียนแบบเว็บไซต์ที่ถูกต้อง"
+  },
+  "digitInDomainDetected": {
+    "message": "โดเมนนี้ใช้การแทนที่ตัวเลขเพื่อเลียนแบบแบรนด์ที่รู้จัก (ความเสี่ยงสูง) ตัวเลขเช่น 0, 1, 3, 5 ถูกใช้แทนตัวอักษร (เช่น g00gle, paypa1, amaz0n)"
+  },
+  "visualHijackingRisk": {
+    "message": "วิกฤต: ตรวจพบการโจมตี Visual Hijacking (ความเสี่ยงวิกฤต) เลเยอร์โปร่งใสกำลังพยายามดักจับคลิกของคุณและเปลี่ยนเส้นทางไปยังปลายทางที่เป็นอันตราย ลิงก์นี้ถูกบล็อกเพื่อการป้องกันของคุณ"
+  },
+  "fullwidthCharsDetected": {
+    "message": "โดเมนนี้มีอักขระ Unicode แบบเต็มความกว้าง (ความเสี่ยงสูง) ตัวอักษรแบบเต็มความกว้าง (เช่น ａｐｐｌｅ) ดูเหมือนกับตัวอักษรปกติแต่เป็นอักขระที่แตกต่างกัน ซึ่งมักใช้สำหรับการโจมตีแบบฟิชชิง"
+  },
+  "cherokeeCharsDetected": {
+    "message": "โดเมนนี้มีอักขระเชอโรกี (ความเสี่ยงสูง) ตัวอักษรเชอโรกีคล้ายกับตัวอักษรละติน (เช่น ꮓ ดูเหมือน 'z') และใช้สร้างโดเมนปลอมที่น่าเชื่อถือ"
+  },
+  "nonAsciiInBrandDomain": {
+    "message": "โดเมนนี้มีอักขระที่ไม่ใช่ ASCII ในบริบทของแบรนด์ (ความเสี่ยงสูง) อักขระพิเศษถูกใช้เพื่อปลอมเป็นเว็บไซต์ที่ถูกต้อง"
+  },
+  "maliciousDomainKeyword": {
+    "message": "วิกฤต: โดเมนนี้มีคำหลักที่มักเกี่ยวข้องกับฟิชชิงหรือมัลแวร์ (ความเสี่ยงวิกฤต) ชื่อโดเมนเองบ่งบอกถึงเจตนาร้าย"
   }
 }

@@ -1394,5 +1394,68 @@
   },
   "suspiciousContainerZIndex": {
     "message": "Bu bağlantı şüpheli z-index konumlandırmasına sahip bir kapsayıcının içinde (kritik risk). Sayfa sizi kötü amaçlı içeriğe tıklamaya kandırmaya çalışıyor olabilir."
+  },
+  "dangerousJavascriptUri": {
+    "message": "KRİTİK: Bu bağlantı çalıştırılabilir JavaScript kodu içeriyor (kritik risk). Tıklamak tarayıcınızda kötü amaçlı komut dosyaları çalıştırabilir."
+  },
+  "dangerousVbscriptUri": {
+    "message": "KRİTİK: Bu bağlantı çalıştırılabilir VBScript kodu içeriyor (kritik risk). Bu, Windows sistemlerini hedef alan tehlikeli bir saldırı tekniğidir."
+  },
+  "dangerousDataUri": {
+    "message": "KRİTİK: Bu bağlantı kod çalıştırabilecek gömülü veriler içeriyor (kritik risk). Data URI'ler oltalama veya kötü amaçlı yazılım dağıtımı için kullanılabilir."
+  },
+  "criticalSecurityThreat": {
+    "message": "KRİTİK GÜVENLİK TEHDİDİ: Bu bağlantı son derece tehlikeli olarak tanımlandı. Hiçbir koşulda tıklamayın."
+  },
+  "mixedScriptAttack": {
+    "message": "KRİTİK: Bu web adresi farklı alfabelerden karakterler karıştırıyor (örn: Latin ve Kiril). Bu, aynı görünen karakterlerin farklı yazı sistemlerinden geldiği sofistike bir kimlik sahteciliği saldırısıdır."
+  },
+  "nonAsciiDomain": {
+    "message": "Bu alan adı ASCII olmayan karakterler içeriyor (yüksek risk). Alan adlarındaki uluslararası karakterler meşru web sitelerini taklit etmek için kullanılabilir."
+  },
+  "homoglyphCharactersDetected": {
+    "message": "KRİTİK: Bu alan adında homoglif karakterler tespit edildi (kritik risk). Latin harflere benzeyen ancak başka yazı sistemlerinden gelen karakterler (örn: Kiril) meşru bir web sitesini taklit etmek için kullanılıyor."
+  },
+  "dangerousBlobUri": {
+    "message": "KRİTİK: Bu bağlantı Blob URL içeriyor (kritik risk). Blob URL'ler kötü amaçlı kod çalıştırmak veya kötü amaçlı yazılım dağıtmak için kullanılabilir."
+  },
+  "dataUriBlocked": {
+    "message": "KRİTİK: Bu bağlantı data: URI içeriyor (kritik risk). Data: URI'leri doğrudan tarayıcınızda kötü amaçlı içerik çalıştırabilir. Bu, kimlik avı ve kötü amaçlı yazılım için yaygın bir saldırı vektörüdür."
+  },
+  "javascriptUriBlocked": {
+    "message": "KRİTİK: Bu bağlantı javascript: URI içeriyor (kritik risk). JavaScript URI'leri tarayıcı bağlamınızda rastgele kod çalıştırabilir, potansiyel olarak verilerinizi veya kimlik bilgilerinizi çalabilir."
+  },
+  "vbscriptUriBlocked": {
+    "message": "KRİTİK: Bu bağlantı vbscript: URI içeriyor (kritik risk). VBScript URI'leri Windows sistemlerinde tehlikeli kod çalıştırabilir. Bu ciddi bir güvenlik tehdididir."
+  },
+  "blobUriBlocked": {
+    "message": "KRİTİK: Bu bağlantı blob: URI içeriyor (kritik risk). Blob URI'leri rastgele kod çalıştırabilir veya kötü amaçlı yazılım dağıtabilir. Bu bağlantı korumanız için engellendi."
+  },
+  "mathematicalCharsDetected": {
+    "message": "Bu alan adı matematiksel Unicode karakterler içeriyor (yüksek risk). Normal harflere benzeyen matematiksel semboller meşru bir web sitesini taklit etmek için kullanılıyor."
+  },
+  "greekCharsDetected": {
+    "message": "Bu alan adı Latin harflerle karışık Yunan harfler içeriyor (yüksek risk). Omikron ve nu gibi Yunan harfleri Latin 'o' ve 'v' ile aynıdır, bu da bunu potansiyel bir sahtecilik saldırısı yapar."
+  },
+  "scriptCharsDetected": {
+    "message": "Bu alan adı harf benzeri semboller içeriyor (yüksek risk). Özel Unicode script karakterleri meşru bir web sitesini taklit etmek için kullanılıyor."
+  },
+  "digitInDomainDetected": {
+    "message": "Bu alan adı bilinen bir markayı taklit etmek için rakam değiştirme kullanıyor (yüksek risk). 0, 1, 3, 5 gibi rakamlar harfler yerine kullanılıyor (örn: g00gle, paypa1, amaz0n)."
+  },
+  "visualHijackingRisk": {
+    "message": "KRİTİK: Görsel kaçırma saldırısı tespit edildi (kritik risk). Şeffaf bir katman tıklamalarınızı yakalamaya ve sizi kötü amaçlı bir hedefe yönlendirmeye çalışıyor. Bu bağlantı korumanız için engellendi."
+  },
+  "fullwidthCharsDetected": {
+    "message": "Bu alan adı tam genişlikli Unicode karakterler içeriyor (yüksek risk). Tam genişlikli harfler (ａｐｐｌｅ gibi) normal harflerle aynı görünür ancak farklı karakterlerdir, yaygın olarak kimlik avı saldırılarında kullanılır."
+  },
+  "cherokeeCharsDetected": {
+    "message": "Bu alan adı Cherokee yazı karakterleri içeriyor (yüksek risk). Cherokee harfleri Latin harflerine benzer (ꮓ 'z' gibi görünür) ve ikna edici sahte alan adları oluşturmak için kullanılır."
+  },
+  "nonAsciiInBrandDomain": {
+    "message": "Bu alan adı marka benzeri bir bağlamda ASCII olmayan karakterler içeriyor (yüksek risk). Özel karakterler meşru bir web sitesini taklit etmek için kullanılıyor."
+  },
+  "maliciousDomainKeyword": {
+    "message": "KRİTİK: Bu alan adı yaygın olarak kimlik avı veya kötü amaçlı yazılımla ilişkilendirilen anahtar kelimeler içeriyor (kritik risk). Alan adının kendisi kötü niyetli niyet gösteriyor."
   }
 }

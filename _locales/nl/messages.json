@@ -1372,5 +1372,68 @@
   },
   "suspiciousContainerZIndex": {
     "message": "Deze link bevindt zich in een container met verdachte z-index positionering (kritiek risico). De pagina probeert u mogelijk te misleiden om op kwaadaardige content te klikken."
+  },
+  "dangerousJavascriptUri": {
+    "message": "KRITIEK: Deze link bevat uitvoerbare JavaScript-code (kritiek risico). Klikken kan schadelijke scripts in je browser uitvoeren."
+  },
+  "dangerousVbscriptUri": {
+    "message": "KRITIEK: Deze link bevat uitvoerbare VBScript-code (kritiek risico). Dit is een gevaarlijke aanvalstechniek gericht op Windows-systemen."
+  },
+  "dangerousDataUri": {
+    "message": "KRITIEK: Deze link bevat ingesloten data die code kan uitvoeren (kritiek risico). Data-URI's kunnen worden gebruikt voor phishing of malware."
+  },
+  "criticalSecurityThreat": {
+    "message": "KRITIEKE BEVEILIGINGSDREIGING: Deze link is geïdentificeerd als extreem gevaarlijk. Klik in geen geval."
+  },
+  "mixedScriptAttack": {
+    "message": "KRITIEK: Dit webadres mengt tekens uit verschillende alfabetten (bijv. Latijn en Cyrillisch). Dit is een geavanceerde spoofing-aanval waarbij identiek lijkende tekens van verschillende scripts komen."
+  },
+  "nonAsciiDomain": {
+    "message": "Dit domein bevat niet-ASCII-tekens (hoog risico). Internationale tekens in domeinnamen kunnen worden gebruikt om legitieme websites na te bootsen."
+  },
+  "homoglyphCharactersDetected": {
+    "message": "KRITIEK: Homoglyph-tekens gedetecteerd in dit domein (kritiek risico). Tekens die lijken op Latijnse letters maar eigenlijk van andere scripts zijn (bijv. Cyrillisch) worden gebruikt om een legitieme website na te bootsen."
+  },
+  "dangerousBlobUri": {
+    "message": "KRITIEK: Deze link bevat een Blob-URL (kritiek risico). Blob-URL's kunnen worden gebruikt om schadelijke code uit te voeren of malware af te leveren."
+  },
+  "dataUriBlocked": {
+    "message": "KRITIEK: Deze link bevat een data: URI (kritiek risico). Data-URI's kunnen schadelijke inhoud direct in uw browser uitvoeren. Dit is een veelgebruikte aanvalstechniek voor phishing en malware."
+  },
+  "javascriptUriBlocked": {
+    "message": "KRITIEK: Deze link bevat een javascript: URI (kritiek risico). JavaScript-URI's kunnen willekeurige code uitvoeren in uw browsercontext, waardoor uw gegevens of inloggegevens kunnen worden gestolen."
+  },
+  "vbscriptUriBlocked": {
+    "message": "KRITIEK: Deze link bevat een vbscript: URI (kritiek risico). VBScript-URI's kunnen gevaarlijke code uitvoeren op Windows-systemen. Dit is een ernstige beveiligingsdreiging."
+  },
+  "blobUriBlocked": {
+    "message": "KRITIEK: Deze link bevat een blob: URI (kritiek risico). Blob-URI's kunnen willekeurige code uitvoeren of malware afleveren. Deze link is geblokkeerd voor uw bescherming."
+  },
+  "mathematicalCharsDetected": {
+    "message": "Dit domein bevat wiskundige Unicode-tekens (hoog risico). Wiskundige symbolen die eruitzien als normale letters worden gebruikt om een legitieme website na te bootsen."
+  },
+  "greekCharsDetected": {
+    "message": "Dit domein bevat Griekse letters gemengd met Latijnse letters (hoog risico). Griekse letters zoals omicron en nu zien er identiek uit aan Latijnse 'o' en 'v', wat dit een mogelijke spoofing-aanval maakt."
+  },
+  "scriptCharsDetected": {
+    "message": "Dit domein bevat letterachtige symbolen (hoog risico). Speciale Unicode-scripttekens worden gebruikt om een legitieme website na te bootsen."
+  },
+  "digitInDomainDetected": {
+    "message": "Dit domein gebruikt cijfervervanging om een bekend merk na te bootsen (hoog risico). Cijfers zoals 0, 1, 3, 5 worden gebruikt ter vervanging van letters (bijv. g00gle, paypa1, amaz0n)."
+  },
+  "visualHijackingRisk": {
+    "message": "KRITIEK: Visuele kaping-aanval gedetecteerd (kritiek risico). Een transparante overlay probeert uw klikken te onderscheppen en u naar een kwaadaardige bestemming om te leiden. Deze link is geblokkeerd voor uw bescherming."
+  },
+  "fullwidthCharsDetected": {
+    "message": "Dit domein bevat Fullwidth Unicode-tekens (hoog risico). Fullwidth letters (zoals ａｐｐｌｅ) zien er identiek uit als gewone letters maar zijn andere tekens, vaak gebruikt voor phishing-aanvallen."
+  },
+  "cherokeeCharsDetected": {
+    "message": "Dit domein bevat Cherokee-schrifttekens (hoog risico). Cherokee-letters lijken op Latijnse letters (zoals ꮓ lijkt op 'z') en worden gebruikt om overtuigende nepdomeinen te maken."
+  },
+  "nonAsciiInBrandDomain": {
+    "message": "Dit domein bevat niet-ASCII-tekens in een merkachtige context (hoog risico). Speciale tekens worden gebruikt om een legitieme website na te bootsen."
+  },
+  "maliciousDomainKeyword": {
+    "message": "KRITIEK: Dit domein bevat sleutelwoorden die vaak geassocieerd worden met phishing of malware (kritiek risico). De domeinnaam zelf suggereert kwaadaardige bedoelingen."
   }
 }

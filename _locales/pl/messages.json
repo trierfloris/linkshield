@@ -1394,5 +1394,68 @@
   },
   "suspiciousContainerZIndex": {
     "message": "Ten link znajduje się w kontenerze z podejrzanym pozycjonowaniem z-index (krytyczne ryzyko). Strona może próbować nakłonić cię do kliknięcia złośliwej treści."
+  },
+  "dangerousJavascriptUri": {
+    "message": "KRYTYCZNE: Ten link zawiera wykonywalny kod JavaScript (krytyczne ryzyko). Kliknięcie może uruchomić złośliwe skrypty w przeglądarce."
+  },
+  "dangerousVbscriptUri": {
+    "message": "KRYTYCZNE: Ten link zawiera wykonywalny kod VBScript (krytyczne ryzyko). To niebezpieczna technika ataku skierowana na systemy Windows."
+  },
+  "dangerousDataUri": {
+    "message": "KRYTYCZNE: Ten link zawiera osadzone dane, które mogą wykonać kod (krytyczne ryzyko). URI danych mogą być używane do phishingu lub dystrybucji malware."
+  },
+  "criticalSecurityThreat": {
+    "message": "KRYTYCZNE ZAGROŻENIE BEZPIECZEŃSTWA: Ten link został zidentyfikowany jako ekstremalnie niebezpieczny. Pod żadnym pozorem nie klikaj."
+  },
+  "mixedScriptAttack": {
+    "message": "KRYTYCZNE: Ten adres internetowy miesza znaki z różnych alfabetów (np. łacińskiego i cyrylicy). To wyrafinowany atak spoofingowy, gdzie identyczne znaki pochodzą z różnych pism."
+  },
+  "nonAsciiDomain": {
+    "message": "Ta domena zawiera znaki spoza ASCII (wysokie ryzyko). Międzynarodowe znaki w nazwach domen mogą być używane do podszywania się pod legalne strony."
+  },
+  "homoglyphCharactersDetected": {
+    "message": "KRYTYCZNE: Wykryto znaki homoglify w tej domenie (krytyczne ryzyko). Znaki wyglądające jak litery łacińskie, ale pochodzące z innych pism (np. cyrylicy), są używane do podszywania się pod legalną stronę."
+  },
+  "dangerousBlobUri": {
+    "message": "KRYTYCZNE: Ten link zawiera URL Blob (krytyczne ryzyko). URL Blob mogą być używane do wykonywania złośliwego kodu lub dystrybucji malware."
+  },
+  "dataUriBlocked": {
+    "message": "KRYTYCZNE: Ten link zawiera URI data: (krytyczne ryzyko). URI data: mogą wykonywać złośliwą zawartość bezpośrednio w przeglądarce. To powszechny wektor ataku dla phishingu i malware."
+  },
+  "javascriptUriBlocked": {
+    "message": "KRYTYCZNE: Ten link zawiera URI javascript: (krytyczne ryzyko). URI JavaScript mogą wykonywać dowolny kod w kontekście przeglądarki, potencjalnie kradnąc dane lub poświadczenia."
+  },
+  "vbscriptUriBlocked": {
+    "message": "KRYTYCZNE: Ten link zawiera URI vbscript: (krytyczne ryzyko). URI VBScript mogą wykonywać niebezpieczny kod w systemach Windows. To poważne zagrożenie bezpieczeństwa."
+  },
+  "blobUriBlocked": {
+    "message": "KRYTYCZNE: Ten link zawiera URI blob: (krytyczne ryzyko). URI blob mogą wykonywać dowolny kod lub rozpowszechniać malware. Ten link został zablokowany dla Twojej ochrony."
+  },
+  "mathematicalCharsDetected": {
+    "message": "Ta domena zawiera matematyczne znaki Unicode (wysokie ryzyko). Symbole matematyczne wyglądające jak normalne litery są używane do podszywania się pod legalną stronę."
+  },
+  "greekCharsDetected": {
+    "message": "Ta domena zawiera greckie litery zmieszane z łacińskimi (wysokie ryzyko). Greckie litery jak omikron i ny są identyczne z łacińskimi 'o' i 'v', co czyni to potencjalnym atakiem spoofingu."
+  },
+  "scriptCharsDetected": {
+    "message": "Ta domena zawiera symbole przypominające litery (wysokie ryzyko). Specjalne skryptowe znaki Unicode są używane do podszywania się pod legalną stronę."
+  },
+  "digitInDomainDetected": {
+    "message": "Ta domena używa podstawienia cyfr, aby podszywać się pod znaną markę (wysokie ryzyko). Cyfry 0, 1, 3, 5 są używane zamiast liter (np. g00gle, paypa1, amaz0n)."
+  },
+  "visualHijackingRisk": {
+    "message": "KRYTYCZNE: Wykryto atak wizualnego przechwytywania (krytyczne ryzyko). Przezroczysta nakładka próbuje przechwycić Twoje kliknięcia i przekierować Cię do złośliwego miejsca docelowego. Ten link został zablokowany dla Twojej ochrony."
+  },
+  "fullwidthCharsDetected": {
+    "message": "Ta domena zawiera znaki Unicode o pełnej szerokości (wysokie ryzyko). Litery o pełnej szerokości (jak ａｐｐｌｅ) wyglądają identycznie jak zwykłe litery, ale są różnymi znakami, powszechnie używanymi do ataków phishingowych."
+  },
+  "cherokeeCharsDetected": {
+    "message": "Ta domena zawiera znaki pisma Cherokee (wysokie ryzyko). Litery Cherokee przypominają litery łacińskie (jak ꮓ wygląda jak 'z') i są używane do tworzenia przekonujących fałszywych domen."
+  },
+  "nonAsciiInBrandDomain": {
+    "message": "Ta domena zawiera znaki spoza ASCII w kontekście marki (wysokie ryzyko). Znaki specjalne są używane do podszywania się pod legalną stronę internetową."
+  },
+  "maliciousDomainKeyword": {
+    "message": "KRYTYCZNE: Ta domena zawiera słowa kluczowe często związane z phishingiem lub złośliwym oprogramowaniem (krytyczne ryzyko). Sama nazwa domeny sugeruje złośliwe zamiary."
   }
 }

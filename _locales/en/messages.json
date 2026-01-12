@@ -1372,5 +1372,77 @@
   },
   "suspiciousContainerZIndex": {
     "message": "This link is inside a container with suspicious z-index positioning (critical risk). The page may be attempting to trick you into clicking malicious content."
+  },
+  "dangerousJavascriptUri": {
+    "message": "CRITICAL: This link contains executable JavaScript code (critical risk). Clicking it could run malicious scripts in your browser."
+  },
+  "dangerousVbscriptUri": {
+    "message": "CRITICAL: This link contains executable VBScript code (critical risk). This is a dangerous attack technique targeting Windows systems."
+  },
+  "dangerousDataUri": {
+    "message": "CRITICAL: This link contains embedded data that could execute code (critical risk). Data URIs can be used for phishing or malware delivery."
+  },
+  "criticalSecurityThreat": {
+    "message": "CRITICAL SECURITY THREAT: This link has been identified as extremely dangerous. Do not click under any circumstances."
+  },
+  "mixedScriptAttack": {
+    "message": "CRITICAL: This web address mixes characters from different alphabets (e.g., Latin and Cyrillic). This is a sophisticated spoofing attack where characters that look identical are from different scripts."
+  },
+  "nonAsciiDomain": {
+    "message": "This domain contains non-ASCII characters (high risk). International characters in domain names can be used to impersonate legitimate websites."
+  },
+  "homoglyphCharactersDetected": {
+    "message": "CRITICAL: Homoglyph characters detected in this domain (critical risk). Characters that look like Latin letters but are actually from other scripts (e.g., Cyrillic) are being used to impersonate a legitimate website."
+  },
+  "dangerousBlobUri": {
+    "message": "CRITICAL: This link contains a Blob URL (critical risk). Blob URLs can be used to execute malicious code or deliver malware."
+  },
+  "digitHomoglyph": {
+    "message": "This domain uses digits that look like letters to imitate a known brand (high risk). For example: g00gle uses zeros instead of 'o'."
+  },
+  "dataUriBlocked": {
+    "message": "CRITICAL: This link contains a data: URI (critical risk). Data URIs can embed and execute malicious content directly in your browser. This is a common attack vector for phishing and malware delivery."
+  },
+  "javascriptUriBlocked": {
+    "message": "CRITICAL: This link contains a javascript: URI (critical risk). JavaScript URIs can execute arbitrary code in your browser context, potentially stealing your data or credentials."
+  },
+  "vbscriptUriBlocked": {
+    "message": "CRITICAL: This link contains a vbscript: URI (critical risk). VBScript URIs can execute dangerous code targeting Windows systems. This is a serious security threat."
+  },
+  "blobUriBlocked": {
+    "message": "CRITICAL: This link contains a blob: URI (critical risk). Blob URIs can execute arbitrary code or deliver malware. This link has been blocked for your protection."
+  },
+  "mathematicalCharsDetected": {
+    "message": "This domain contains Mathematical Unicode characters (high risk). Mathematical symbols that look like regular letters (like bold or italic variants) are being used to impersonate a legitimate website."
+  },
+  "greekCharsDetected": {
+    "message": "This domain contains Greek characters mixed with Latin letters (high risk). Greek letters like omicron (ο) and nu (ν) look identical to Latin 'o' and 'v', making this a potential spoofing attack."
+  },
+  "scriptCharsDetected": {
+    "message": "This domain contains Letterlike Symbols (high risk). Special Unicode script characters are being used to impersonate a legitimate website."
+  },
+  "digitInDomainDetected": {
+    "message": "This domain uses digit substitution to impersonate a known brand (high risk). Numbers like 0, 1, 3, 5 are used to replace letters (e.g., g00gle, paypa1, amaz0n)."
+  },
+  "visualHijackingRisk": {
+    "message": "CRITICAL: Visual hijacking attack detected (critical risk). A transparent overlay is attempting to intercept your clicks and redirect you to a malicious destination. This link has been blocked for your protection."
+  },
+  "fullwidthCharsDetected": {
+    "message": "This domain contains Fullwidth Unicode characters (high risk). Fullwidth letters (like ａｐｐｌｅ) look identical to regular letters but are different characters, commonly used for phishing attacks."
+  },
+  "cherokeeCharsDetected": {
+    "message": "This domain contains Cherokee script characters (high risk). Cherokee letters resemble Latin letters (like ꮓ looks like 'z') and are used to create convincing fake domains."
+  },
+  "nonAsciiInBrandDomain": {
+    "message": "This domain contains non-ASCII characters in a brand-like context (high risk). Special characters are being used to impersonate a legitimate website."
+  },
+  "pointerEventsNoneHighZIndex": {
+    "message": "CRITICAL: A transparent clickjacking overlay was detected (critical risk). An invisible element with maximum z-index is trying to intercept your interactions."
+  },
+  "intMaxZIndexOverlay": {
+    "message": "CRITICAL: A suspicious overlay with maximum z-index was detected (critical risk). This may be an attempt to hijack your clicks."
+  },
+  "maliciousDomainKeyword": {
+    "message": "CRITICAL: This domain contains keywords commonly associated with phishing or malware (critical risk). The domain name itself suggests malicious intent."
   }
 }

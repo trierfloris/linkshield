@@ -51,7 +51,7 @@
     "message": "लिंक में असामान्य वर्ण हैं (कम जोखिम)। इसका उपयोग वास्तविक गंतव्य को छिपाने के लिए किया जा सकता है।"
   },
   "homoglyphAttack": {
-    "message": "यह वेब पता ऐसे वर्णों का उपयोग करता है जो एक जानी-मानी वेबसाइट के समान हैं (उच्च जोखिम)। यह आपको गुमराह करने की एक चाल है।"
+    "message": "इस पते में समान दिखने वाले अक्षर हैं (उच्च जोखिम)। कोई भी जानकारी दर्ज करने से पहले सुनिश्चित करें कि आप सही साइट पर हैं।"
   },
   "metaRedirect": {
     "message": "यह वेबसाइट आपको स्वचालित रूप से पुनर्निर्देशित करती है। यह एक असुरक्षित साइट पर ले जा सकता है (मध्यम जोखिम)।"
@@ -114,7 +114,7 @@
     "message": "पृष्ठभूमि स्कैनिंग"
   },
   "backgroundAnalysisDescription": {
-    "message": "रीयल-टाइम सुरक्षा। हर घंटे अपडेट। विश्वव्यापी कवरेज।"
+    "message": "नवीनतम फ़िशिंग साइटों को ब्लॉक करता है। डेटाबेस हर घंटे अपडेट होता है।"
   },
   "activationRequired": {
     "message": "इसका उपयोग करने के लिए इस सुविधा को सक्षम करें।"
@@ -123,7 +123,7 @@
     "message": "एकीकृत सुरक्षा"
   },
   "integratedProtectionDescription": {
-    "message": "व्यापक सुरक्षा के लिए कई सुरक्षा सेवाओं को जोड़ता है।"
+    "message": "पृष्ठ पर हर लिंक की जांच करता है और संदिग्ध वेबसाइटों के बारे में चेतावनी देता है।"
   },
   "premiumFeaturesActive": {
     "message": "अब आप प्रीमियम संस्करण का उपयोग कर रहे हैं!"
@@ -240,7 +240,7 @@
     "message": "एक अज्ञात जोखिम पाया गया है। अतिरिक्त सतर्क रहें।"
   },
   "typosquattingAttack": {
-    "message": "यह वेब पता एक वास्तविक वेबसाइट जैसा दिखता है, लेकिन जानबूझकर गलत वर्तनी में लिखा गया है (उच्च जोखिम)। यह एक नकली संस्करण हो सकता है।"
+    "message": "यह पता एक प्रसिद्ध वेबसाइट जैसा दिखता है, लेकिन इसमें एक छोटी वर्तनी गलती है। उदाहरण: 'amazon.com' के बजाय 'arnazon.com'। लॉगिन करने से पहले हमेशा वर्तनी जांचें।"
   },
   "downloadKeyword": {
     "message": "लिंक में डाउनलोड से संबंधित शब्द हैं (कम जोखिम)। केवल उन्हीं फ़ाइलों को खोलें जिन पर आप भरोसा करते हैं।"
@@ -252,7 +252,7 @@
     "message": "इस पृष्ठ पर एक स्क्रिप्ट का लिंक गलत है।"
   },
   "mixedScripts": {
-    "message": "यह पता विभिन्न लेखन प्रणालियों (जैसे लैटिन और सिरिलिक अक्षर) का मिश्रण उपयोग करता है। यह एक ज्ञात फ़िशिंग चाल है (उच्च जोखिम)।"
+    "message": "यह पता विभिन्न वर्णमालाओं के अक्षरों को मिलाता है (जैसे अंग्रेजी और रूसी)। हालांकि वे समान दिखते हैं, वे पूरी तरह से अलग वेब पता बनाते हैं।"
   },
   "introBannerMessage": {
     "message": "LinkShield सक्रिय है और जोखिम भरे लिंक को ⚠️ से चिह्नित करता है। कारण देखने के लिए आइकन पर होवर करें।"
@@ -261,9 +261,6 @@
     "message": "यह पता एक प्रसिद्ध ब्रांड की नकल करने के लिए अक्षरों जैसे दिखने वाले नंबरों का उपयोग करता है (मध्यम जोखिम)।"
   },
   "trustedTLD": {
-    "message": "इस डोमेन में एक मानक डोमेन एक्सटेंशन है (कम जोखिम)।"
-  },
-  "trustedTld": {
     "message": "इस डोमेन में एक मानक डोमेन एक्सटेंशन है (कम जोखिम)।"
   },
   "suspiciousPageText": {
@@ -573,7 +570,7 @@
     "message": "परीक्षण अवधि समाप्त"
   },
   "trialExpiredMessage": {
-    "message": "आपकी 30 दिन की परीक्षण अवधि समाप्त हो गई है। सभी सुविधाओं का उपयोग जारी रखने के लिए लाइसेंस सक्रिय करें।"
+    "message": "आपका परीक्षण अवधि समाप्त हो गई है। आपके पास अभी भी बुनियादी सुरक्षा है — सभी सुविधाएं पुनर्स्थापित करने के लिए कभी भी अपग्रेड करें।"
   },
   "upgradeNow": {
     "message": "अभी अपग्रेड करें"
@@ -582,10 +579,10 @@
     "message": "LinkShield डैशबोर्ड"
   },
   "extNameFull": {
-    "message": "LinkShield: फ़िशिंग के खिलाफ आपका हथियार"
+    "message": "LinkShield: ऑनलाइन सुरक्षित रहें"
   },
   "extDescriptionFull": {
-    "message": "तत्काल अलर्ट और उन्नत सुरक्षा के साथ अपनी ऑनलाइन सुरक्षा बढ़ाएं।"
+    "message": "नकली वेबसाइटों, फ़िशिंग और ऑनलाइन धोखाधड़ी से आपकी सुरक्षा करता है। ताकि आप बिना चिंता के ब्राउज़ कर सकें।"
   },
   "licenseTrialTitle": {
     "message": "परीक्षण अवधि: $DAYS$ दिन शेष",
@@ -597,22 +594,25 @@
     }
   },
   "licenseTrialSubtitle": {
-    "message": "परीक्षण अवधि के दौरान सभी प्रीमियम सुविधाएं सक्रिय हैं"
+    "message": "आप पूरी तरह से सुरक्षित हैं। सभी सुविधाएं सक्रिय हैं।"
   },
   "licenseUpgradeLink": {
-    "message": "प्रीमियम में अपग्रेड करें →"
+    "message": "प्रीमियम में अपग्रेड करें — €1.99/माह (3 डिवाइस) →"
+  },
+  "licenseAlreadyHaveCode": {
+    "message": "क्या आपके पास पहले से लाइसेंस कोड है?"
   },
   "licenseExpiredTitle": {
-    "message": "परीक्षण अवधि समाप्त"
+    "message": "आपकी प्रीमियम सुविधाएं रुकी हुई हैं"
   },
   "licenseExpiredSubtitle": {
-    "message": "पूर्ण सुरक्षा के लिए प्रीमियम सक्रिय करें"
+    "message": "बुनियादी सुरक्षा अभी भी सक्रिय है। उन्नत स्कैनिंग और प्रति घंटा अपडेट के लिए Premium पुनः सक्रिय करें।"
   },
   "licenseBenefitsLabel": {
-    "message": "प्रीमियम में शामिल:"
+    "message": "Premium के साथ आपको मिलता है:"
   },
   "licenseBenefitsText": {
-    "message": "पृष्ठभूमि विश्लेषण, QR कोड स्कैनिंग, निरंतर सुरक्षा"
+    "message": "नवीनतम फ़िशिंग साइटें ब्लॉक (हर घंटे अपडेट), QR कोड स्कैन, 24/7 सुरक्षा"
   },
   "licenseKeyPlaceholder": {
     "message": "अपना लाइसेंस कोड दर्ज करें"
@@ -621,13 +621,37 @@
     "message": "प्रीमियम सक्रिय करें"
   },
   "licenseBuyLink": {
-    "message": "लाइसेंस नहीं है? यहां खरीदें →"
+    "message": "अभी सुरक्षित हों →"
   },
   "licensePremiumTitle": {
-    "message": "प्रीमियम सक्रिय"
+    "message": "आप सुरक्षित हैं"
   },
   "licensePremiumSubtitle": {
-    "message": "पूर्ण सुरक्षा सक्षम"
+    "message": "सभी सुरक्षा सुविधाएं सक्रिय हैं। आपके विश्वास के लिए धन्यवाद!"
+  },
+  "manageSubscription": {
+    "message": "सदस्यता प्रबंधित करें"
+  },
+  "manageSubscriptionTooltip": {
+    "message": "भुगतान विधि बदलें, रद्द करें या चालान देखें"
+  },
+  "licenseDeactivateButton": {
+    "message": "लाइसेंस कुंजी किसी अन्य डिवाइस पर उपयोग करें"
+  },
+  "licenseDeactivateConfirm": {
+    "message": "आपकी सदस्यता सक्रिय रहती है। यह डिवाइस मुफ्त संस्करण पर स्विच हो जाएगा ताकि आप किसी अन्य डिवाइस पर सक्रिय कर सकें।"
+  },
+  "licenseDeactivateCancel": {
+    "message": "रद्द करें"
+  },
+  "licenseDeactivateConfirmBtn": {
+    "message": "निष्क्रिय करें"
+  },
+  "licenseDeactivating": {
+    "message": "निष्क्रिय किया जा रहा है..."
+  },
+  "licenseDeactivatedSuccess": {
+    "message": "लाइसेंस निष्क्रिय किया गया। अब आप इसे किसी अन्य डिवाइस पर सक्रिय कर सकते हैं।"
   },
   "sectionSecuritySettings": {
     "message": "सुरक्षा सेटिंग्स"
@@ -636,13 +660,13 @@
     "message": "सुरक्षा सेटिंग्स"
   },
   "backgroundAnalysisFeature": {
-    "message": "पृष्ठभूमि विश्लेषण"
+    "message": "स्वचालित सुरक्षा"
   },
   "premiumBadge": {
     "message": "प्रीमियम"
   },
   "integratedProtectionFeature": {
-    "message": "एकीकृत मैलवेयर और फ़िशिंग सुरक्षा"
+    "message": "स्मार्ट लिंक स्कैनिंग"
   },
   "confirmationMessage": {
     "message": "सेटिंग्स सफलतापूर्वक सहेजी गईं!"
@@ -846,7 +870,7 @@
     "message": "यह लाइसेंस समाप्त हो गया है।"
   },
   "licenseErrorActivationLimit": {
-    "message": "सक्रियण सीमा पूरी हो गई। कृपया पहले किसी अन्य डिवाइस को निष्क्रिय करें।"
+    "message": "आप अपनी डिवाइस सीमा (3) तक पहुंच गए हैं। एक सक्रिय डिवाइस पर जाएं और जगह खाली करने के लिए 'अन्य डिवाइस पर उपयोग करें' चुनें।"
   },
   "licenseErrorInstanceNotFound": {
     "message": "इंस्टॉलेशन इंस्टेंस नहीं मिला।"
@@ -1089,7 +1113,7 @@
     "message": "इस पृष्ठ पर छिपा iframe पाया गया। अदृश्य फ्रेम का उपयोग ट्रैकिंग, क्रेडेंशियल चोरी या मैलवेयर के लिए किया जा सकता है।"
   },
   "typosquatting": {
-    "message": "टाइपोस्क्वाटिंग पाया गया! यह डोमेन जानबूझकर गलत लिखा गया है ताकि वैध वेबसाइट की नकल की जा सके।"
+    "message": "वर्तनी ट्रिक का पता चला: यह साइट नाम एक विश्वसनीय साइट के लगभग समान है, लेकिन एक सूक्ष्म अंतर के साथ। धोखेबाज इसका उपयोग विश्वसनीय नकली पेज बनाने के लिए करते हैं।"
   },
   "ipAddressDomain": {
     "message": "यह वेबसाइट डोमेन नाम के बजाय IP पते का उपयोग करती है। यह बहुत असामान्य है और अक्सर दुर्भावनापूर्ण इरादे का संकेत देता है।"
@@ -1101,7 +1125,7 @@
     "message": "संभावित विशिंग (वॉयस फिशिंग) हमला पाया गया। यह पृष्ठ फोन नंबरों को फिशिंग संकेतकों के साथ जोड़ता है।"
   },
   "punycodeDetected": {
-    "message": "Punycode डोमेन पाया गया! यह पता अंतरराष्ट्रीय वर्णों का उपयोग करता है जो एक वैध वेबसाइट की नकल कर सकते हैं।"
+    "message": "यह वेब पता विशेष वर्णों का उपयोग करता है जो सामान्य अक्षरों जैसे दिखते हैं लेकिन नहीं हैं। उदाहरण के लिए, सिरिलिक 'а' लैटिन 'a' के समान दिखता है। यह ट्रिक नकली साइटों को वैध बनाती है।"
   },
   "bitbClosePageButton": {
     "message": "इस पेज को बंद करें"
@@ -1114,5 +1138,324 @@
   },
   "trustedDomainSkipped": {
     "message": "इस डोमेन को आपके द्वारा विश्वसनीय के रूप में चिह्नित किया गया है।"
+  },
+  "gracePeriodActive": {
+    "message": "हम आपके लाइसेंस को ऑनलाइन सत्यापित नहीं कर सके। जब तक हम पुनः प्रयास करते हैं, आपकी सुरक्षा $DAYS$ और दिनों तक जारी रहेगी।",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "gracePeriodWarning": {
+    "message": "लाइसेंस सत्यापन लंबित है। निर्बाध सुरक्षा के लिए अगले $DAYS$ दिनों में इंटरनेट से कनेक्ट करें।",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "gracePeriodExpired": {
+    "message": "हम 7 दिनों से आपके लाइसेंस को सत्यापित नहीं कर पाए। प्रीमियम सुविधाएं पुनर्स्थापित करने के लिए इंटरनेट से कनेक्ट करें।"
+  },
+  "gracePeriodRestored": {
+    "message": "लाइसेंस सफलतापूर्वक सत्यापित। आपकी सुरक्षा पूरी तरह सक्रिय है।"
+  },
+  "siteSafeSuccess": {
+    "message": "कोई खतरा नहीं मिला। इस साइट ने सभी सुरक्षा जांच पास कर ली।"
+  },
+  "siteSafeSuccessDetail": {
+    "message": "LinkShield ने इस पेज को फ़िशिंग, टाइपोस्क्वाटिंग और दुर्भावनापूर्ण स्क्रिप्ट के लिए स्कैन किया। सब कुछ ठीक दिखता है।"
+  },
+  "siteSafeSuccessBadge": {
+    "message": "सुरक्षित सत्यापित"
+  },
+  "exitPage": {
+    "message": "इस पेज से बाहर निकलें"
+  },
+  "understandRisk": {
+    "message": "मैं जोखिम समझता हूं"
+  },
+  "premiumActive": {
+    "message": "सक्रिय"
+  },
+  "premiumRequired": {
+    "message": "प्रीमियम आवश्यक"
+  },
+  "backgroundSecurityHelp": {
+    "message": "LinkShield आपके ब्राउज़ करते समय पृष्ठभूमि में सुरक्षा जांच करता है।"
+  },
+  "sectionProtection": {
+    "message": "सुरक्षा"
+  },
+  "statusProtected": {
+    "message": "सुरक्षित"
+  },
+  "statusTrialSub": {
+    "message": "$DAYS$ दिन परीक्षण शेष",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "7"
+      }
+    }
+  },
+  "statusPremiumSub": {
+    "message": "सक्रिय प्रीमियम सदस्यता"
+  },
+  "statusExpired": {
+    "message": "समाप्त"
+  },
+  "statusExpiredSub": {
+    "message": "आपकी सदस्यता समाप्त हो गई है"
+  },
+  "licenseActivateShort": {
+    "message": "सक्रिय करें"
+  },
+  "licenseDeactivateShort": {
+    "message": "निष्क्रिय करें"
+  },
+  "ctaUpgradeText": {
+    "message": "प्रीमियम में अपग्रेड करें"
+  },
+  "ctaUpgradePrice": {
+    "message": "€1/माह से शुरू"
+  },
+  "ctaRenewText": {
+    "message": "सदस्यता नवीनीकृत करें"
+  },
+  "manageBtnText": {
+    "message": "प्रबंधित करें"
+  },
+  "transferBtnText": {
+    "message": "स्थानांतरण"
+  },
+  "deactivateDeviceBtn": {
+    "message": "डिवाइस निष्क्रिय करें"
+  },
+  "licenseNetworkError": {
+    "message": "नेटवर्क त्रुटि। कनेक्शन जांचें।"
+  },
+  "premiumFeatureTag": {
+    "message": "प्रीमियम सुविधा"
+  },
+  "liveNow": {
+    "message": "अभी लाइव"
+  },
+  "updatedMinAgo": {
+    "message": "$MIN$ मिनट पहले अपडेट",
+    "placeholders": {
+      "MIN": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "useLicenseKey": {
+    "message": "लाइसेंस कुंजी उपयोग करें"
+  },
+  "clipboardHijackingCryptoTip": {
+    "message": "क्रिप्टोकरेंसी भेजने से पहले हमेशा वॉलेट पते सत्यापित करें। हमलावर आपके क्लिपबोर्ड में पते बदल देते हैं।"
+  },
+  "clipboardHijackingTip": {
+    "message": "यह साइट आपके द्वारा कॉपी की गई सामग्री को बदलने का प्रयास कर सकती है। हमेशा पेस्ट की गई सामग्री सत्यापित करें।"
+  },
+  "webTransportWarningTitle": {
+    "message": "संदिग्ध नेटवर्क गतिविधि"
+  },
+  "webTransportWarningMessage": {
+    "message": "यह पृष्ठ संभावित संदिग्ध तरीके से उन्नत नेटवर्क प्रोटोकॉल का उपयोग कर रहा है।"
+  },
+  "webTransportDirectIP": {
+    "message": "सीधे IP पते से कनेक्शन का पता चला।"
+  },
+  "webTransportHighPort": {
+    "message": "असामान्य रूप से उच्च पोर्ट नंबर से कनेक्शन।"
+  },
+  "webTransportRandomSubdomain": {
+    "message": "संदिग्ध यादृच्छिक सबडोमेन से कनेक्शन (संभावित C2 सर्वर)।"
+  },
+  "webTransportFreeTLD": {
+    "message": "मुफ्त TLD डोमेन से कनेक्शन (आमतौर पर मैलवेयर के लिए उपयोग किया जाता है)।"
+  },
+  "webTransportHighConnectionRate": {
+    "message": "असामान्य रूप से उच्च कनेक्शन दर का पता चला।"
+  },
+  "webTransportHighDatagramRate": {
+    "message": "असामान्य रूप से उच्च डेटा ट्रांसफर दर का पता चला।"
+  },
+  "webTransportObfuscatedUrl": {
+    "message": "अस्पष्ट या एन्कोडेड URL का पता चला।"
+  },
+  "webTransportInvalidUrl": {
+    "message": "अमान्य या विकृत कनेक्शन URL।"
+  },
+  "failSafeNetworkTitle": {
+    "message": "लाइसेंस सत्यापन विफल",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeNetworkMessage": {
+    "message": "नेटवर्क समस्याओं के कारण लाइसेंस सत्यापित नहीं हो सका। सुरक्षा सेफ मोड में सक्रिय है।",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeGraceTitle": {
+    "message": "लाइसेंस सत्यापन आवश्यक",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeGraceMessage": {
+    "message": "अपना लाइसेंस सत्यापित करने के लिए इंटरनेट से कनेक्ट करें। सुरक्षा सक्रिय है।",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafePreservedTitle": {
+    "message": "सुरक्षा सक्रिय",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafePreservedMessage": {
+    "message": "आपके सुरक्षा नियम संरक्षित हैं। जब संभव हो अपना लाइसेंस सत्यापित करें।",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeDefaultTitle": {
+    "message": "सेफ मोड सक्रिय",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeDefaultMessage": {
+    "message": "LinkShield सेफ मोड में चल रहा है। सुरक्षा सक्रिय है।",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "visualHijackingDetected": {
+    "message": "विजुअल हाईजैकिंग का पता चला",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "visualHijackingMessage": {
+    "message": "आपके क्लिक को इंटरसेप्ट करने की कोशिश करने वाला एक छिपा हुआ ओवरले पाया गया। यह आपको दुर्भावनापूर्ण साइटों पर रीडायरेक्ट करने की एक आम फ़िशिंग तकनीक है।",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "detectionReason": {
+    "message": "पता लगाने का कारण",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "closeWarning": {
+    "message": "बंद करें",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "transparentHighZIndexOverlay": {
+    "message": "उच्च z-index वाला पारदर्शी ओवरले पाया गया",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "invisibleClickjackOverlay": {
+    "message": "अदृश्य क्लिकजैकिंग ओवरले पाया गया",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "fullscreenTransparentOverlay": {
+    "message": "फुलस्क्रीन पारदर्शी ओवरले पाया गया",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "hiddenLinkOverlay": {
+    "message": "छिपा हुआ लिंक ओवरले पाया गया",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "dismissTooltip": {
+    "message": "बंद करें",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "dontShowAgain": {
+    "message": "फिर से न दिखाएं?",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "confirmYes": {
+    "message": "हाँ",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "confirmNo": {
+    "message": "नहीं",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "reportPhishingSuccess": {
+    "message": "रिपोर्ट किया गया! सुरक्षा बेहतर करने में मदद के लिए धन्यवाद।",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "pointerEventsHijack": {
+    "message": "Pointer-events click hijacking detected",
+    "description": "[EN fallback] Pointer-events click hijacking detected"
+  },
+  "pointerEventsNoneHighZIndex": {
+    "message": "अधिकतम z-इंडेक्स वाली अदृश्य परत का पता चला (गंभीर जोखिम)। यह पृष्ठ आपके क्लिक को रोकने का प्रयास कर रहा है।"
+  },
+  "intMaxZIndexOverlay": {
+    "message": "अधिकतम z-इंडेक्स का उपयोग करने वाली संदिग्ध परत का पता चला (गंभीर जोखिम)। यह क्लिक अपहरण की एक सामान्य तकनीक है।"
+  },
+  "fullscreenPointerEventsNone": {
+    "message": "पूर्ण स्क्रीन अदृश्य परत का पता चला (गंभीर जोखिम)। यह पृष्ठ आपकी बातचीत को कैप्चर करने का प्रयास कर सकता है।"
+  },
+  "suspiciousLinkZIndex": {
+    "message": "यह लिंक अत्यधिक उच्च z-index पोजिशनिंग का उपयोग करता है (गंभीर जोखिम)। यह एक क्लिक हाइजैकिंग अटैक तकनीक है जहां दुर्भावनापूर्ण लिंक वैध सामग्री के ऊपर रखे जाते हैं।"
+  },
+  "suspiciousContainerZIndex": {
+    "message": "यह लिंक संदिग्ध z-index पोजिशनिंग वाले कंटेनर के अंदर है (गंभीर जोखिम)। पृष्ठ आपको दुर्भावनापूर्ण सामग्री पर क्लिक करने के लिए धोखा देने का प्रयास कर सकता है।"
+  },
+  "dangerousJavascriptUri": {
+    "message": "गंभीर: इस लिंक में निष्पादन योग्य JavaScript कोड है (गंभीर जोखिम)। क्लिक करने से आपके ब्राउज़र में दुर्भावनापूर्ण स्क्रिप्ट चल सकती हैं।"
+  },
+  "dangerousVbscriptUri": {
+    "message": "गंभीर: इस लिंक में निष्पादन योग्य VBScript कोड है (गंभीर जोखिम)। यह Windows सिस्टम को लक्षित करने वाली एक खतरनाक हमला तकनीक है।"
+  },
+  "dangerousDataUri": {
+    "message": "गंभीर: इस लिंक में एम्बेडेड डेटा है जो कोड निष्पादित कर सकता है (गंभीर जोखिम)। Data URIs का उपयोग फ़िशिंग या मैलवेयर वितरण के लिए किया जा सकता है।"
+  },
+  "criticalSecurityThreat": {
+    "message": "गंभीर सुरक्षा खतरा: इस लिंक को अत्यंत खतरनाक के रूप में पहचाना गया है। किसी भी परिस्थिति में क्लिक न करें।"
+  },
+  "mixedScriptAttack": {
+    "message": "गंभीर: यह वेब पता विभिन्न वर्णमालाओं के वर्णों को मिलाता है (जैसे लैटिन और सिरिलिक)। यह एक परिष्कृत स्पूफिंग हमला है जहां समान दिखने वाले वर्ण विभिन्न स्क्रिप्ट से आते हैं।"
+  },
+  "nonAsciiDomain": {
+    "message": "इस डोमेन में गैर-ASCII वर्ण हैं (उच्च जोखिम)। डोमेन नामों में अंतर्राष्ट्रीय वर्णों का उपयोग वैध वेबसाइटों का प्रतिरूपण करने के लिए किया जा सकता है।"
+  },
+  "homoglyphCharactersDetected": {
+    "message": "गंभीर: इस डोमेन में होमोग्लिफ़ वर्ण पाए गए (गंभीर जोखिम)। लैटिन अक्षरों जैसे दिखने वाले लेकिन वास्तव में अन्य स्क्रिप्ट के वर्ण (जैसे सिरिलिक) का उपयोग एक वैध वेबसाइट का प्रतिरूपण करने के लिए किया जा रहा है।"
+  },
+  "dangerousBlobUri": {
+    "message": "गंभीर: इस लिंक में Blob URL है (गंभीर जोखिम)। Blob URLs का उपयोग दुर्भावनापूर्ण कोड चलाने या मैलवेयर वितरित करने के लिए किया जा सकता है।"
+  },
+  "dataUriBlocked": {
+    "message": "गंभीर: इस लिंक में data: URI है (गंभीर जोखिम)। Data: URIs आपके ब्राउज़र में सीधे दुर्भावनापूर्ण सामग्री निष्पादित कर सकते हैं। यह फ़िशिंग और मैलवेयर के लिए एक सामान्य हमला वेक्टर है।"
+  },
+  "javascriptUriBlocked": {
+    "message": "गंभीर: इस लिंक में javascript: URI है (गंभीर जोखिम)। JavaScript URIs आपके ब्राउज़र संदर्भ में मनमाना कोड निष्पादित कर सकते हैं, संभावित रूप से आपका डेटा या क्रेडेंशियल चुरा सकते हैं।"
+  },
+  "vbscriptUriBlocked": {
+    "message": "गंभीर: इस लिंक में vbscript: URI है (गंभीर जोखिम)। VBScript URIs Windows सिस्टम पर खतरनाक कोड निष्पादित कर सकते हैं। यह एक गंभीर सुरक्षा खतरा है।"
+  },
+  "blobUriBlocked": {
+    "message": "गंभीर: इस लिंक में blob: URI है (गंभीर जोखिम)। Blob URIs मनमाना कोड निष्पादित कर सकते हैं या मैलवेयर वितरित कर सकते हैं। यह लिंक आपकी सुरक्षा के लिए अवरुद्ध कर दिया गया है।"
+  },
+  "mathematicalCharsDetected": {
+    "message": "इस डोमेन में गणितीय यूनिकोड वर्ण हैं (उच्च जोखिम)। सामान्य अक्षरों जैसे दिखने वाले गणितीय प्रतीकों का उपयोग एक वैध वेबसाइट का प्रतिरूपण करने के लिए किया जा रहा है।"
+  },
+  "greekCharsDetected": {
+    "message": "इस डोमेन में लैटिन अक्षरों के साथ मिश्रित ग्रीक अक्षर हैं (उच्च जोखिम)। ओमिक्रॉन और न्यू जैसे ग्रीक अक्षर लैटिन 'o' और 'v' के समान हैं, जो इसे संभावित स्पूफिंग हमला बनाता है।"
+  },
+  "scriptCharsDetected": {
+    "message": "इस डोमेन में अक्षर-जैसे प्रतीक हैं (उच्च जोखिम)। विशेष यूनिकोड स्क्रिप्ट वर्णों का उपयोग एक वैध वेबसाइट का प्रतिरूपण करने के लिए किया जा रहा है।"
+  },
+  "digitInDomainDetected": {
+    "message": "यह डोमेन एक ज्ञात ब्रांड का प्रतिरूपण करने के लिए अंक प्रतिस्थापन का उपयोग करता है (उच्च जोखिम)। 0, 1, 3, 5 जैसे नंबर अक्षरों के स्थान पर उपयोग किए जाते हैं (उदा: g00gle, paypa1, amaz0n)।"
+  },
+  "visualHijackingRisk": {
+    "message": "गंभीर: दृश्य अपहरण हमला पाया गया (गंभीर जोखिम)। एक पारदर्शी ओवरले आपके क्लिक को रोकने और आपको एक दुर्भावनापूर्ण गंतव्य पर पुनर्निर्देशित करने का प्रयास कर रहा है। यह लिंक आपकी सुरक्षा के लिए अवरुद्ध कर दिया गया है।"
+  },
+  "fullwidthCharsDetected": {
+    "message": "इस डोमेन में फुलविड्थ यूनिकोड अक्षर हैं (उच्च जोखिम)। फुलविड्थ अक्षर (जैसे ａｐｐｌｅ) सामान्य अक्षरों की तरह दिखते हैं लेकिन अलग अक्षर हैं, जो आमतौर पर फ़िशिंग हमलों के लिए उपयोग किए जाते हैं।"
+  },
+  "cherokeeCharsDetected": {
+    "message": "इस डोमेन में चेरोकी लिपि के अक्षर हैं (उच्च जोखिम)। चेरोकी अक्षर लैटिन अक्षरों की तरह दिखते हैं (जैसे ꮓ 'z' जैसा दिखता है) और विश्वसनीय नकली डोमेन बनाने के लिए उपयोग किए जाते हैं।"
+  },
+  "nonAsciiInBrandDomain": {
+    "message": "इस डोमेन में ब्रांड जैसे संदर्भ में गैर-ASCII अक्षर हैं (उच्च जोखिम)। एक वैध वेबसाइट का प्रतिरूपण करने के लिए विशेष अक्षरों का उपयोग किया जा रहा है।"
+  },
+  "maliciousDomainKeyword": {
+    "message": "गंभीर: इस डोमेन में आमतौर पर फ़िशिंग या मैलवेयर से जुड़े कीवर्ड हैं (गंभीर जोखिम)। डोमेन नाम स्वयं दुर्भावनापूर्ण इरादे का सुझाव देता है।"
   }
 }

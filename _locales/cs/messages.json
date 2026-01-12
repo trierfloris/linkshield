@@ -1394,5 +1394,68 @@
   },
   "suspiciousContainerZIndex": {
     "message": "Tento odkaz je uvnitř kontejneru s podezřelým z-index umístěním (kritické riziko). Stránka se vás možná pokouší přimět kliknout na škodlivý obsah."
+  },
+  "dangerousJavascriptUri": {
+    "message": "KRITICKÉ: Tento odkaz obsahuje spustitelný JavaScript kód (kritické riziko). Kliknutí může spustit škodlivé skripty ve vašem prohlížeči."
+  },
+  "dangerousVbscriptUri": {
+    "message": "KRITICKÉ: Tento odkaz obsahuje spustitelný VBScript kód (kritické riziko). Jedná se o nebezpečnou útočnou techniku zaměřenou na systémy Windows."
+  },
+  "dangerousDataUri": {
+    "message": "KRITICKÉ: Tento odkaz obsahuje vložená data, která mohou spustit kód (kritické riziko). Data URI mohou být použity pro phishing nebo šíření malwaru."
+  },
+  "criticalSecurityThreat": {
+    "message": "KRITICKÁ BEZPEČNOSTNÍ HROZBA: Tento odkaz byl identifikován jako extrémně nebezpečný. Za žádných okolností neklikejte."
+  },
+  "mixedScriptAttack": {
+    "message": "KRITICKÉ: Tato webová adresa míchá znaky z různých abeced (např. latinky a cyrilice). Jedná se o sofistikovaný spoofingový útok, kde identické znaky pocházejí z různých písem."
+  },
+  "nonAsciiDomain": {
+    "message": "Tato doména obsahuje ne-ASCII znaky (vysoké riziko). Mezinárodní znaky v názvech domén mohou být použity k napodobování legitimních webů."
+  },
+  "homoglyphCharactersDetected": {
+    "message": "KRITICKÉ: V této doméně byly zjištěny homoglyfové znaky (kritické riziko). Znaky vypadající jako latinská písmena, ale pocházející z jiných písem (např. cyrilice), jsou používány k napodobování legitimního webu."
+  },
+  "dangerousBlobUri": {
+    "message": "KRITICKÉ: Tento odkaz obsahuje Blob URL (kritické riziko). Blob URL mohou být použity ke spuštění škodlivého kódu nebo šíření malwaru."
+  },
+  "dataUriBlocked": {
+    "message": "KRITICKÉ: Tento odkaz obsahuje URI data: (kritické riziko). URI data: mohou spouštět škodlivý obsah přímo ve vašem prohlížeči. Toto je běžný vektor útoku pro phishing a malware."
+  },
+  "javascriptUriBlocked": {
+    "message": "KRITICKÉ: Tento odkaz obsahuje URI javascript: (kritické riziko). URI JavaScript mohou spouštět libovolný kód v kontextu vašeho prohlížeče, potenciálně kradouce vaše data nebo přihlašovací údaje."
+  },
+  "vbscriptUriBlocked": {
+    "message": "KRITICKÉ: Tento odkaz obsahuje URI vbscript: (kritické riziko). URI VBScript mohou spouštět nebezpečný kód na systémech Windows. Toto je vážná bezpečnostní hrozba."
+  },
+  "blobUriBlocked": {
+    "message": "KRITICKÉ: Tento odkaz obsahuje URI blob: (kritické riziko). URI blob mohou spouštět libovolný kód nebo šířit malware. Tento odkaz byl zablokován pro vaši ochranu."
+  },
+  "mathematicalCharsDetected": {
+    "message": "Tato doména obsahuje matematické Unicode znaky (vysoké riziko). Matematické symboly, které vypadají jako normální písmena, jsou používány k napodobení legitimního webu."
+  },
+  "greekCharsDetected": {
+    "message": "Tato doména obsahuje řecká písmena smíchaná s latinskými (vysoké riziko). Řecká písmena jako omikron a ný jsou identická s latinskými 'o' a 'v', což z toho činí potenciální spoofingový útok."
+  },
+  "scriptCharsDetected": {
+    "message": "Tato doména obsahuje symboly podobné písmenům (vysoké riziko). Speciální skriptové Unicode znaky jsou používány k napodobení legitimního webu."
+  },
+  "digitInDomainDetected": {
+    "message": "Tato doména používá nahrazení číslic k napodobení známé značky (vysoké riziko). Čísla 0, 1, 3, 5 jsou používána místo písmen (např. g00gle, paypa1, amaz0n)."
+  },
+  "visualHijackingRisk": {
+    "message": "KRITICKÉ: Detekován vizuální únos (kritické riziko). Průhledná vrstva se pokouší zachytit vaše kliknutí a přesměrovat vás na škodlivý cíl. Tento odkaz byl zablokován pro vaši ochranu."
+  },
+  "fullwidthCharsDetected": {
+    "message": "Tato doména obsahuje Unicode znaky plné šířky (vysoké riziko). Znaky plné šířky (jako ａｐｐｌｅ) vypadají stejně jako běžné znaky, ale jsou to jiné znaky, běžně používané pro phishingové útoky."
+  },
+  "cherokeeCharsDetected": {
+    "message": "Tato doména obsahuje znaky písma Cherokee (vysoké riziko). Písmena Cherokee připomínají latinská písmena (např. ꮓ vypadá jako 'z') a používají se k vytváření přesvědčivých falešných domén."
+  },
+  "nonAsciiInBrandDomain": {
+    "message": "Tato doména obsahuje znaky mimo ASCII v kontextu značky (vysoké riziko). Speciální znaky se používají k napodobování legitimních webových stránek."
+  },
+  "maliciousDomainKeyword": {
+    "message": "KRITICKÉ: Tato doména obsahuje klíčová slova běžně spojovaná s phishingem nebo malwarem (kritické riziko). Samotný název domény naznačuje škodlivý záměr."
   }
 }

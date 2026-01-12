@@ -1394,5 +1394,68 @@
   },
   "suspiciousContainerZIndex": {
     "message": "此链接位于具有可疑z-index定位的容器内（严重风险）。该页面可能试图诱骗您点击恶意内容。"
+  },
+  "dangerousJavascriptUri": {
+    "message": "严重：此链接包含可执行的JavaScript代码（严重风险）。点击可能会在您的浏览器中运行恶意脚本。"
+  },
+  "dangerousVbscriptUri": {
+    "message": "严重：此链接包含可执行的VBScript代码（严重风险）。这是一种针对Windows系统的危险攻击技术。"
+  },
+  "dangerousDataUri": {
+    "message": "严重：此链接包含可能执行代码的嵌入数据（严重风险）。Data URI可用于网络钓鱼或恶意软件分发。"
+  },
+  "criticalSecurityThreat": {
+    "message": "严重安全威胁：此链接已被识别为极度危险。在任何情况下都不要点击。"
+  },
+  "mixedScriptAttack": {
+    "message": "严重：此网址混合了来自不同字母表的字符（例如拉丁文和西里尔文）。这是一种复杂的欺骗攻击，其中看起来相同的字符来自不同的书写系统。"
+  },
+  "nonAsciiDomain": {
+    "message": "此域名包含非ASCII字符（高风险）。域名中的国际字符可用于冒充合法网站。"
+  },
+  "homoglyphCharactersDetected": {
+    "message": "严重：在此域名中检测到同形字符（严重风险）。看起来像拉丁字母但实际上来自其他书写系统（例如西里尔文）的字符正被用于冒充合法网站。"
+  },
+  "dangerousBlobUri": {
+    "message": "严重：此链接包含Blob URL（严重风险）。Blob URL可用于执行恶意代码或分发恶意软件。"
+  },
+  "dataUriBlocked": {
+    "message": "严重：此链接包含 data: URI（严重风险）。Data: URI 可以直接在您的浏览器中执行恶意内容。这是钓鱼和恶意软件的常见攻击载体。"
+  },
+  "javascriptUriBlocked": {
+    "message": "严重：此链接包含 javascript: URI（严重风险）。JavaScript URI 可以在您的浏览器上下文中执行任意代码，可能窃取您的数据或凭据。"
+  },
+  "vbscriptUriBlocked": {
+    "message": "严重：此链接包含 vbscript: URI（严重风险）。VBScript URI 可以在 Windows 系统上执行危险代码。这是严重的安全威胁。"
+  },
+  "blobUriBlocked": {
+    "message": "严重：此链接包含 blob: URI（严重风险）。Blob URI 可以执行任意代码或分发恶意软件。此链接已被阻止以保护您。"
+  },
+  "mathematicalCharsDetected": {
+    "message": "此域名包含数学 Unicode 字符（高风险）。看起来像普通字母的数学符号正被用于冒充合法网站。"
+  },
+  "greekCharsDetected": {
+    "message": "此域名包含与拉丁字母混合的希腊字母（高风险）。像 omicron 和 nu 这样的希腊字母与拉丁语的 'o' 和 'v' 相同，使其成为潜在的欺骗攻击。"
+  },
+  "scriptCharsDetected": {
+    "message": "此域名包含类似字母的符号（高风险）。特殊的 Unicode 脚本字符正被用于冒充合法网站。"
+  },
+  "digitInDomainDetected": {
+    "message": "此域名使用数字替换来冒充知名品牌（高风险）。数字如 0、1、3、5 被用来替代字母（例如：g00gle、paypa1、amaz0n）。"
+  },
+  "visualHijackingRisk": {
+    "message": "严重：检测到视觉劫持攻击（严重风险）。透明覆盖层正试图拦截您的点击并将您重定向到恶意目的地。此链接已被阻止以保护您。"
+  },
+  "fullwidthCharsDetected": {
+    "message": "此域名包含全角Unicode字符（高风险）。全角字母（如ａｐｐｌｅ）看起来与普通字母相同，但实际上是不同的字符，常用于钓鱼攻击。"
+  },
+  "cherokeeCharsDetected": {
+    "message": "此域名包含切罗基文字字符（高风险）。切罗基字母与拉丁字母相似（如ꮓ看起来像'z'），用于创建令人信服的假域名。"
+  },
+  "nonAsciiInBrandDomain": {
+    "message": "此域名在品牌相关的上下文中包含非ASCII字符（高风险）。正在使用特殊字符来冒充合法网站。"
+  },
+  "maliciousDomainKeyword": {
+    "message": "严重：此域名包含通常与钓鱼或恶意软件相关的关键词（严重风险）。域名本身暗示了恶意意图。"
   }
 }

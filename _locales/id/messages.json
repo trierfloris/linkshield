@@ -1394,5 +1394,68 @@
   },
   "suspiciousContainerZIndex": {
     "message": "Tautan ini berada di dalam wadah dengan posisi z-index yang mencurigakan (risiko kritis). Halaman ini mungkin mencoba menipu Anda untuk mengklik konten berbahaya."
+  },
+  "dangerousJavascriptUri": {
+    "message": "KRITIS: Tautan ini berisi kode JavaScript yang dapat dieksekusi (risiko kritis). Mengklik dapat menjalankan skrip berbahaya di browser Anda."
+  },
+  "dangerousVbscriptUri": {
+    "message": "KRITIS: Tautan ini berisi kode VBScript yang dapat dieksekusi (risiko kritis). Ini adalah teknik serangan berbahaya yang menargetkan sistem Windows."
+  },
+  "dangerousDataUri": {
+    "message": "KRITIS: Tautan ini berisi data tertanam yang dapat mengeksekusi kode (risiko kritis). Data URI dapat digunakan untuk phishing atau distribusi malware."
+  },
+  "criticalSecurityThreat": {
+    "message": "ANCAMAN KEAMANAN KRITIS: Tautan ini telah diidentifikasi sebagai sangat berbahaya. Jangan klik dalam keadaan apapun."
+  },
+  "mixedScriptAttack": {
+    "message": "KRITIS: Alamat web ini mencampur karakter dari alfabet berbeda (misalnya Latin dan Sirilik). Ini adalah serangan spoofing canggih di mana karakter yang identik berasal dari skrip berbeda."
+  },
+  "nonAsciiDomain": {
+    "message": "Domain ini berisi karakter non-ASCII (risiko tinggi). Karakter internasional dalam nama domain dapat digunakan untuk menyamar sebagai situs web yang sah."
+  },
+  "homoglyphCharactersDetected": {
+    "message": "KRITIS: Karakter homoglif terdeteksi di domain ini (risiko kritis). Karakter yang terlihat seperti huruf Latin tetapi sebenarnya dari skrip lain (misalnya Sirilik) digunakan untuk menyamar sebagai situs web yang sah."
+  },
+  "dangerousBlobUri": {
+    "message": "KRITIS: Tautan ini berisi Blob URL (risiko kritis). Blob URL dapat digunakan untuk mengeksekusi kode berbahaya atau mendistribusikan malware."
+  },
+  "dataUriBlocked": {
+    "message": "KRITIS: Tautan ini berisi data: URI (risiko kritis). Data: URI dapat mengeksekusi konten berbahaya langsung di browser Anda. Ini adalah vektor serangan umum untuk phishing dan malware."
+  },
+  "javascriptUriBlocked": {
+    "message": "KRITIS: Tautan ini berisi javascript: URI (risiko kritis). JavaScript URI dapat mengeksekusi kode arbitrer dalam konteks browser Anda, berpotensi mencuri data atau kredensial Anda."
+  },
+  "vbscriptUriBlocked": {
+    "message": "KRITIS: Tautan ini berisi vbscript: URI (risiko kritis). VBScript URI dapat mengeksekusi kode berbahaya pada sistem Windows. Ini adalah ancaman keamanan serius."
+  },
+  "blobUriBlocked": {
+    "message": "KRITIS: Tautan ini berisi blob: URI (risiko kritis). Blob URI dapat mengeksekusi kode arbitrer atau mendistribusikan malware. Tautan ini telah diblokir untuk perlindungan Anda."
+  },
+  "mathematicalCharsDetected": {
+    "message": "Domain ini berisi karakter Unicode matematika (risiko tinggi). Simbol matematika yang terlihat seperti huruf biasa digunakan untuk meniru situs web yang sah."
+  },
+  "greekCharsDetected": {
+    "message": "Domain ini berisi huruf Yunani yang dicampur dengan huruf Latin (risiko tinggi). Huruf Yunani seperti omicron dan nu identik dengan 'o' dan 'v' Latin, menjadikan ini potensi serangan spoofing."
+  },
+  "scriptCharsDetected": {
+    "message": "Domain ini berisi simbol mirip huruf (risiko tinggi). Karakter skrip Unicode khusus digunakan untuk meniru situs web yang sah."
+  },
+  "digitInDomainDetected": {
+    "message": "Domain ini menggunakan substitusi digit untuk meniru merek terkenal (risiko tinggi). Angka seperti 0, 1, 3, 5 digunakan sebagai pengganti huruf (misalnya: g00gle, paypa1, amaz0n)."
+  },
+  "visualHijackingRisk": {
+    "message": "KRITIS: Serangan visual hijacking terdeteksi (risiko kritis). Overlay transparan mencoba mencegat klik Anda dan mengarahkan Anda ke tujuan berbahaya. Tautan ini telah diblokir untuk perlindungan Anda."
+  },
+  "fullwidthCharsDetected": {
+    "message": "Domain ini mengandung karakter Unicode lebar penuh (risiko tinggi). Huruf lebar penuh (seperti ａｐｐｌｅ) terlihat identik dengan huruf biasa tetapi merupakan karakter yang berbeda, umumnya digunakan untuk serangan phishing."
+  },
+  "cherokeeCharsDetected": {
+    "message": "Domain ini mengandung karakter skrip Cherokee (risiko tinggi). Huruf Cherokee menyerupai huruf Latin (seperti ꮓ terlihat seperti 'z') dan digunakan untuk membuat domain palsu yang meyakinkan."
+  },
+  "nonAsciiInBrandDomain": {
+    "message": "Domain ini mengandung karakter non-ASCII dalam konteks merek (risiko tinggi). Karakter khusus digunakan untuk meniru situs web yang sah."
+  },
+  "maliciousDomainKeyword": {
+    "message": "KRITIS: Domain ini mengandung kata kunci yang umumnya terkait dengan phishing atau malware (risiko kritis). Nama domain itu sendiri menunjukkan niat jahat."
   }
 }

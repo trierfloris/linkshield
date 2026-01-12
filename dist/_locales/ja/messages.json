@@ -51,7 +51,7 @@
     "message": "リンクには珍しい文字が含まれています（低リスク）。これは実際のリンク先を隠すために使用されることがあります。"
   },
   "homoglyphAttack": {
-    "message": "このウェブアドレスは、既知のウェブサイトと酷似した文字を使用しています（高リスク）。これはあなたを騙すための手口です。"
+    "message": "このアドレスには類似した文字が含まれています（高リスク）。情報を入力する前に、正しいサイトにいることを確認してください。"
   },
   "metaRedirect": {
     "message": "このウェブサイトは自動的にリダイレクトします。安全でないサイトにつながる可能性があります（中リスク）。"
@@ -114,7 +114,7 @@
     "message": "バックグラウンドスキャン"
   },
   "backgroundAnalysisDescription": {
-    "message": "リアルタイム保護。毎時更新。世界規模のカバレッジ。"
+    "message": "最新のフィッシングサイトをブロック。データベースは1時間ごとに更新。"
   },
   "activationRequired": {
     "message": "この機能を使用するには有効にしてください。"
@@ -123,7 +123,7 @@
     "message": "統合保護"
   },
   "integratedProtectionDescription": {
-    "message": "複数のセキュリティサービスを組み合わせて包括的な保護を提供します。"
+    "message": "ページ上のすべてのリンクをチェックし、不審なウェブサイトを警告します。"
   },
   "premiumFeaturesActive": {
     "message": "現在、プレミアムバージョンを使用しています！"
@@ -240,7 +240,7 @@
     "message": "不明なリスクが検出されました。特に注意してください。"
   },
   "typosquattingAttack": {
-    "message": "このウェブアドレスは実際のウェブサイトに似ていますが、意図的にスペルが間違っています（高リスク）。偽のバージョンである可能性があります。"
+    "message": "このアドレスは有名なサイトに似ていますが、わずかなスペルミスがあります。例：'amazon.com'の代わりに'arnazon.com'。ログイン前に必ずスペルを確認してください。"
   },
   "downloadKeyword": {
     "message": "リンクにはダウンロードに関連する単語が含まれています（低リスク）。信頼できるファイルのみを開いてください。"
@@ -252,7 +252,7 @@
     "message": "このページのスクリプトへのリンクが正しくありません。"
   },
   "mixedScripts": {
-    "message": "このアドレスは、異なる文字体系（ラテン文字とキリル文字など）を混在させて使用しています。これは既知のフィッシング手口です（高リスク）。"
+    "message": "このアドレスは異なるアルファベット（英語とロシア語など）の文字を混在させています。同じに見えても、全く別のウェブアドレスになります。"
   },
   "introBannerMessage": {
     "message": "LinkShieldが有効で、危険なリンクを⚠️でマークします。アイコンにカーソルを合わせると理由が表示されます。"
@@ -261,9 +261,6 @@
     "message": "このアドレスは、既知のブランドを模倣するために文字に似た数字を使用しています（中リスク）。"
   },
   "trustedTLD": {
-    "message": "このドメインは標準的なドメイン拡張子を持っています（低リスク）。"
-  },
-  "trustedTld": {
     "message": "このドメインは標準的なドメイン拡張子を持っています（低リスク）。"
   },
   "suspiciousPageText": {
@@ -573,7 +570,7 @@
     "message": "試用期間終了"
   },
   "trialExpiredMessage": {
-    "message": "30日間の試用期間が終了しました。すべての機能を引き続き使用するには、ライセンスを有効化してください。"
+    "message": "試用期間が終了しました。基本保護は継続中です。いつでもアップグレードしてすべての機能を復元できます。"
   },
   "upgradeNow": {
     "message": "今すぐアップグレード"
@@ -582,10 +579,10 @@
     "message": "LinkShield ダッシュボード"
   },
   "extNameFull": {
-    "message": "LinkShield：フィッシング対策の武器"
+    "message": "LinkShield：安全なネット利用"
   },
   "extDescriptionFull": {
-    "message": "即時アラートと高度な保護でオンラインセキュリティを強化します。"
+    "message": "偽サイト、フィッシング、オンライン詐欺からあなたを守ります。安心してブラウジングできます。"
   },
   "licenseTrialTitle": {
     "message": "試用期間：残り $DAYS$ 日",
@@ -597,22 +594,25 @@
     }
   },
   "licenseTrialSubtitle": {
-    "message": "試用期間中はすべてのプレミアム機能が有効です"
+    "message": "完全に保護されています。すべての機能が有効です。"
   },
   "licenseUpgradeLink": {
-    "message": "プレミアムにアップグレード →"
+    "message": "プレミアムにアップグレード — €1.99/月（3台まで）→"
+  },
+  "licenseAlreadyHaveCode": {
+    "message": "ライセンスコードをお持ちですか？"
   },
   "licenseExpiredTitle": {
-    "message": "試用期間終了"
+    "message": "プレミアム機能が一時停止中です"
   },
   "licenseExpiredSubtitle": {
-    "message": "完全な保護のためにプレミアムを有効化"
+    "message": "基本保護は引き続き有効です。Premiumを再有効化して高度なスキャンと1時間ごとの更新をご利用ください。"
   },
   "licenseBenefitsLabel": {
-    "message": "プレミアムに含まれる機能："
+    "message": "プレミアムで得られる機能："
   },
   "licenseBenefitsText": {
-    "message": "バックグラウンド分析、QRコードスキャン、継続的な保護"
+    "message": "最新のフィッシングサイトをブロック（1時間ごとに更新）、QRコードスキャン、24時間保護"
   },
   "licenseKeyPlaceholder": {
     "message": "ライセンスキーを入力してください"
@@ -621,13 +621,37 @@
     "message": "プレミアムを有効化"
   },
   "licenseBuyLink": {
-    "message": "ライセンスをお持ちでない方はこちら →"
+    "message": "今すぐ保護を開始 →"
   },
   "licensePremiumTitle": {
-    "message": "プレミアム有効"
+    "message": "保護されています"
   },
   "licensePremiumSubtitle": {
-    "message": "完全な保護が有効化されました"
+    "message": "すべてのセキュリティ機能が有効です。ご信頼ありがとうございます！"
+  },
+  "manageSubscription": {
+    "message": "サブスクリプションを管理"
+  },
+  "manageSubscriptionTooltip": {
+    "message": "支払い方法の変更、解約、請求書の確認"
+  },
+  "licenseDeactivateButton": {
+    "message": "別のデバイスでライセンスキーを使用"
+  },
+  "licenseDeactivateConfirm": {
+    "message": "サブスクリプションは有効なままです。このデバイスは無料版に切り替わり、別のデバイスで有効化できるようになります。"
+  },
+  "licenseDeactivateCancel": {
+    "message": "キャンセル"
+  },
+  "licenseDeactivateConfirmBtn": {
+    "message": "無効化"
+  },
+  "licenseDeactivating": {
+    "message": "無効化中..."
+  },
+  "licenseDeactivatedSuccess": {
+    "message": "ライセンスが無効化されました。別のデバイスで有効化できます。"
   },
   "sectionSecuritySettings": {
     "message": "セキュリティ設定"
@@ -636,13 +660,13 @@
     "message": "セキュリティ設定"
   },
   "backgroundAnalysisFeature": {
-    "message": "バックグラウンド分析"
+    "message": "自動保護"
   },
   "premiumBadge": {
     "message": "プレミアム"
   },
   "integratedProtectionFeature": {
-    "message": "統合マルウェア・フィッシング保護"
+    "message": "スマートリンクスキャン"
   },
   "confirmationMessage": {
     "message": "設定が正常に保存されました！"
@@ -846,7 +870,7 @@
     "message": "このライセンスは期限切れです。"
   },
   "licenseErrorActivationLimit": {
-    "message": "アクティベーション上限に達しました。先に他のデバイスを無効化してください。"
+    "message": "デバイス上限（3台）に達しました。アクティブなデバイスで「別のデバイスで使用」を選択して空きを作ってください。"
   },
   "licenseErrorInstanceNotFound": {
     "message": "インストールインスタンスが見つかりません。"
@@ -1089,7 +1113,7 @@
     "message": "このページで隠されたiframeを検出しました。不可視のフレームはトラッキング、資格情報の盗難、マルウェアの配信に使用される可能性があります。"
   },
   "typosquatting": {
-    "message": "タイポスクワッティングを検出しました！このドメインは正規のウェブサイトを偽装するために意図的にスペルミスされています。"
+    "message": "スペルトリック検出：このサイト名は信頼できるサイトとほぼ同じですが、微妙な違いがあります。詐欺師はこれを使って説得力のある偽ページを作成します。"
   },
   "ipAddressDomain": {
     "message": "このウェブサイトはドメイン名の代わりにIPアドレスを使用しています。これは非常に珍しく、悪意のある意図を示すことが多いです。"
@@ -1101,7 +1125,7 @@
     "message": "潜在的なビッシング（音声フィッシング）攻撃を検出しました。このページは電話番号とフィッシング指標を組み合わせています。"
   },
   "punycodeDetected": {
-    "message": "Punycodeドメインを検出しました！このアドレスは正規のウェブサイトを偽装している可能性のある国際文字を使用しています。"
+    "message": "このウェブアドレスは、通常の文字に見えるが実際は違う特殊文字を使用しています。例えば、キリル文字の「а」はラテン文字の「a」と同じに見えます。このトリックで偽サイトが正規に見えます。"
   },
   "bitbClosePageButton": {
     "message": "このページを閉じる"
@@ -1114,5 +1138,324 @@
   },
   "trustedDomainSkipped": {
     "message": "このドメインは信頼済みとしてマークされています。"
+  },
+  "gracePeriodActive": {
+    "message": "ライセンスをオンラインで確認できませんでした。再試行中、あと$DAYS$日間保護が継続されます。",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "gracePeriodWarning": {
+    "message": "ライセンス確認保留中。$DAYS$日以内にインターネットに接続して、中断のない保護を維持してください。",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "gracePeriodExpired": {
+    "message": "7日間ライセンスを確認できませんでした。プレミアム機能を復元するにはインターネットに接続してください。"
+  },
+  "gracePeriodRestored": {
+    "message": "ライセンスが正常に確認されました。保護は完全に有効です。"
+  },
+  "siteSafeSuccess": {
+    "message": "脅威は検出されませんでした。このサイトはすべてのセキュリティチェックに合格しました。"
+  },
+  "siteSafeSuccessDetail": {
+    "message": "LinkShieldがこのページをフィッシング、タイポスクワッティング、悪意のあるスクリプトについてスキャンしました。問題ありません。"
+  },
+  "siteSafeSuccessBadge": {
+    "message": "安全確認済み"
+  },
+  "exitPage": {
+    "message": "このページを離れる"
+  },
+  "understandRisk": {
+    "message": "リスクを理解しています"
+  },
+  "premiumActive": {
+    "message": "有効"
+  },
+  "premiumRequired": {
+    "message": "プレミアム必須"
+  },
+  "backgroundSecurityHelp": {
+    "message": "LinkShieldはブラウジング中にバックグラウンドでセキュリティチェックを行います。"
+  },
+  "sectionProtection": {
+    "message": "保護"
+  },
+  "statusProtected": {
+    "message": "保護済み"
+  },
+  "statusTrialSub": {
+    "message": "お試し期間残り$DAYS$日",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "7"
+      }
+    }
+  },
+  "statusPremiumSub": {
+    "message": "プレミアム契約中"
+  },
+  "statusExpired": {
+    "message": "期限切れ"
+  },
+  "statusExpiredSub": {
+    "message": "サブスクリプションの有効期限が切れています"
+  },
+  "licenseActivateShort": {
+    "message": "有効化"
+  },
+  "licenseDeactivateShort": {
+    "message": "無効化"
+  },
+  "ctaUpgradeText": {
+    "message": "プレミアムにアップグレード"
+  },
+  "ctaUpgradePrice": {
+    "message": "€1/月から"
+  },
+  "ctaRenewText": {
+    "message": "サブスクリプションを更新"
+  },
+  "manageBtnText": {
+    "message": "管理"
+  },
+  "transferBtnText": {
+    "message": "移行"
+  },
+  "deactivateDeviceBtn": {
+    "message": "デバイスを無効化"
+  },
+  "licenseNetworkError": {
+    "message": "ネットワークエラー。接続を確認してください。"
+  },
+  "premiumFeatureTag": {
+    "message": "プレミアム機能"
+  },
+  "liveNow": {
+    "message": "ライブ中"
+  },
+  "updatedMinAgo": {
+    "message": "$MIN$分前に更新",
+    "placeholders": {
+      "MIN": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "useLicenseKey": {
+    "message": "ライセンスキーを使用"
+  },
+  "clipboardHijackingCryptoTip": {
+    "message": "暗号通貨を送信する前に、必ずウォレットアドレスを確認してください。攻撃者はクリップボード内のアドレスを置き換えます。"
+  },
+  "clipboardHijackingTip": {
+    "message": "このサイトはコピーした内容を置き換えようとしている可能性があります。貼り付けた内容を必ず確認してください。"
+  },
+  "webTransportWarningTitle": {
+    "message": "疑わしいネットワークアクティビティ"
+  },
+  "webTransportWarningMessage": {
+    "message": "このページは高度なネットワークプロトコルを潜在的に疑わしい方法で使用しています。"
+  },
+  "webTransportDirectIP": {
+    "message": "直接IPアドレスへの接続が検出されました。"
+  },
+  "webTransportHighPort": {
+    "message": "異常に高いポート番号への接続。"
+  },
+  "webTransportRandomSubdomain": {
+    "message": "疑わしいランダムサブドメインへの接続（C2サーバーの可能性）。"
+  },
+  "webTransportFreeTLD": {
+    "message": "無料TLDドメインへの接続（マルウェアに頻繁に使用される）。"
+  },
+  "webTransportHighConnectionRate": {
+    "message": "異常に高い接続率が検出されました。"
+  },
+  "webTransportHighDatagramRate": {
+    "message": "異常に高いデータ転送率が検出されました。"
+  },
+  "webTransportObfuscatedUrl": {
+    "message": "難読化またはエンコードされたURLが検出されました。"
+  },
+  "webTransportInvalidUrl": {
+    "message": "無効または不正な接続URL。"
+  },
+  "failSafeNetworkTitle": {
+    "message": "ライセンス確認に失敗",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeNetworkMessage": {
+    "message": "ネットワークの問題によりライセンスを確認できませんでした。保護はセーフモードで有効なままです。",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeGraceTitle": {
+    "message": "ライセンス確認が必要",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeGraceMessage": {
+    "message": "ライセンスを確認するにはインターネットに接続してください。保護は有効なままです。",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafePreservedTitle": {
+    "message": "保護は有効",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafePreservedMessage": {
+    "message": "保護ルールは保持されています。可能な時にライセンスを確認してください。",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeDefaultTitle": {
+    "message": "セーフモードが有効",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeDefaultMessage": {
+    "message": "LinkShieldはセーフモードで動作しています。保護は有効なままです。",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "visualHijackingDetected": {
+    "message": "ビジュアルハイジャックを検出",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "visualHijackingMessage": {
+    "message": "クリックを傍受しようとする隠しオーバーレイが検出されました。これは悪意のあるサイトにリダイレクトする一般的なフィッシング手法です。",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "detectionReason": {
+    "message": "検出理由",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "closeWarning": {
+    "message": "閉じる",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "transparentHighZIndexOverlay": {
+    "message": "高いz-indexの透明オーバーレイを検出",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "invisibleClickjackOverlay": {
+    "message": "不可視のクリックジャッキングオーバーレイを検出",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "fullscreenTransparentOverlay": {
+    "message": "フルスクリーン透明オーバーレイを検出",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "hiddenLinkOverlay": {
+    "message": "隠しリンクオーバーレイを検出",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "dismissTooltip": {
+    "message": "閉じる",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "dontShowAgain": {
+    "message": "今後表示しない？",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "confirmYes": {
+    "message": "はい",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "confirmNo": {
+    "message": "いいえ",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "reportPhishingSuccess": {
+    "message": "報告完了！セキュリティ向上にご協力いただきありがとうございます。",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "pointerEventsHijack": {
+    "message": "Pointer-events click hijacking detected",
+    "description": "[EN fallback] Pointer-events click hijacking detected"
+  },
+  "pointerEventsNoneHighZIndex": {
+    "message": "最大z-indexの不可視オーバーレイが検出されました（重大なリスク）。このページはクリックを傍受しようとしています。"
+  },
+  "intMaxZIndexOverlay": {
+    "message": "最大z-indexを使用した不審なオーバーレイが検出されました（重大なリスク）。これは一般的なクリックハイジャック手法です。"
+  },
+  "fullscreenPointerEventsNone": {
+    "message": "フルスクリーンの不可視オーバーレイが検出されました（重大なリスク）。このページはあなたの操作をキャプチャしようとしている可能性があります。"
+  },
+  "suspiciousLinkZIndex": {
+    "message": "このリンクは非常に高いz-indexポジショニングを使用しています（重大なリスク）。これは悪意のあるリンクが正規のコンテンツの上に重ねられるクリックハイジャック攻撃手法です。"
+  },
+  "suspiciousContainerZIndex": {
+    "message": "このリンクは疑わしいz-indexポジショニングを持つコンテナ内にあります（重大なリスク）。ページは悪意のあるコンテンツをクリックさせようとしている可能性があります。"
+  },
+  "dangerousJavascriptUri": {
+    "message": "重大: このリンクには実行可能なJavaScriptコードが含まれています（重大リスク）。クリックするとブラウザで悪意のあるスクリプトが実行される可能性があります。"
+  },
+  "dangerousVbscriptUri": {
+    "message": "重大: このリンクには実行可能なVBScriptコードが含まれています（重大リスク）。これはWindowsシステムを標的とした危険な攻撃手法です。"
+  },
+  "dangerousDataUri": {
+    "message": "重大: このリンクにはコードを実行できる埋め込みデータが含まれています（重大リスク）。Data URIはフィッシングやマルウェア配布に使用される可能性があります。"
+  },
+  "criticalSecurityThreat": {
+    "message": "重大なセキュリティ脅威: このリンクは非常に危険と特定されました。いかなる状況でもクリックしないでください。"
+  },
+  "mixedScriptAttack": {
+    "message": "重大: このウェブアドレスは異なるアルファベットの文字を混在させています（例：ラテン文字とキリル文字）。これは同一に見える文字が異なる文字体系から来る高度ななりすまし攻撃です。"
+  },
+  "nonAsciiDomain": {
+    "message": "このドメインには非ASCII文字が含まれています（高リスク）。ドメイン名の国際文字は、正規のウェブサイトになりすますために使用される可能性があります。"
+  },
+  "homoglyphCharactersDetected": {
+    "message": "重大: このドメインでホモグリフ文字が検出されました（重大リスク）。ラテン文字に見えるが実際は他の文字体系の文字（例：キリル文字）が正規のウェブサイトになりすますために使用されています。"
+  },
+  "dangerousBlobUri": {
+    "message": "重大: このリンクにはBlob URLが含まれています（重大リスク）。Blob URLは悪意のあるコードの実行やマルウェアの配布に使用される可能性があります。"
+  },
+  "dataUriBlocked": {
+    "message": "重大: このリンクにはdata: URIが含まれています（重大リスク）。Data: URIはブラウザで直接悪意のあるコンテンツを実行できます。これはフィッシングやマルウェアの一般的な攻撃ベクトルです。"
+  },
+  "javascriptUriBlocked": {
+    "message": "重大: このリンクにはjavascript: URIが含まれています（重大リスク）。JavaScript URIはブラウザコンテキストで任意のコードを実行でき、データや資格情報を盗む可能性があります。"
+  },
+  "vbscriptUriBlocked": {
+    "message": "重大: このリンクにはvbscript: URIが含まれています（重大リスク）。VBScript URIはWindowsシステムで危険なコードを実行できます。これは深刻なセキュリティ脅威です。"
+  },
+  "blobUriBlocked": {
+    "message": "重大: このリンクにはblob: URIが含まれています（重大リスク）。Blob URIは任意のコードを実行したり、マルウェアを配布したりできます。このリンクはあなたの保護のためにブロックされました。"
+  },
+  "mathematicalCharsDetected": {
+    "message": "このドメインには数学的なUnicode文字が含まれています（高リスク）。通常の文字のように見える数学記号が、正当なウェブサイトを偽装するために使用されています。"
+  },
+  "greekCharsDetected": {
+    "message": "このドメインにはラテン文字と混在したギリシャ文字が含まれています（高リスク）。オミクロンやニューなどのギリシャ文字はラテン語の'o'と'v'と同一であり、これを潜在的なスプーフィング攻撃にしています。"
+  },
+  "scriptCharsDetected": {
+    "message": "このドメインには文字のようなシンボルが含まれています（高リスク）。特殊なUnicodeスクリプト文字が、正当なウェブサイトを偽装するために使用されています。"
+  },
+  "digitInDomainDetected": {
+    "message": "このドメインは既知のブランドを偽装するために数字の置換を使用しています（高リスク）。0、1、3、5などの数字が文字の代わりに使用されています（例：g00gle、paypa1、amaz0n）。"
+  },
+  "visualHijackingRisk": {
+    "message": "重大: ビジュアルハイジャック攻撃が検出されました（重大リスク）。透明なオーバーレイがあなたのクリックを傍受し、悪意のある宛先にリダイレクトしようとしています。このリンクはあなたの保護のためにブロックされました。"
+  },
+  "fullwidthCharsDetected": {
+    "message": "このドメインには全角Unicode文字が含まれています（高リスク）。全角文字（ａｐｐｌｅなど）は通常の文字と同じに見えますが、異なる文字であり、フィッシング攻撃によく使用されます。"
+  },
+  "cherokeeCharsDetected": {
+    "message": "このドメインにはチェロキー文字が含まれています（高リスク）。チェロキー文字はラテン文字に似ています（ꮓは'z'のように見えます）。説得力のある偽のドメインを作成するために使用されます。"
+  },
+  "nonAsciiInBrandDomain": {
+    "message": "このドメインには、ブランドのようなコンテキストで非ASCII文字が含まれています（高リスク）。特殊文字が正規のウェブサイトを偽装するために使用されています。"
+  },
+  "maliciousDomainKeyword": {
+    "message": "重大: このドメインには、フィッシングやマルウェアに一般的に関連するキーワードが含まれています（重大リスク）。ドメイン名自体が悪意のある意図を示唆しています。"
   }
 }

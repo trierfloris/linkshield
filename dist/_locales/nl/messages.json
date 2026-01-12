@@ -51,7 +51,7 @@
     "message": "De link bevat ongebruikelijke tekens (laag risico). Dit kan worden gebruikt om de echte bestemming te verhullen."
   },
   "homoglyphAttack": {
-    "message": "Dit webadres gebruikt tekens die bijna identiek zijn aan een bekende website (hoog risico). Dit is een truc om je te misleiden."
+    "message": "Dit adres bevat op elkaar lijkende tekens (hoog risico). Controleer of u op de juiste site bent voordat u informatie invoert."
   },
   "metaRedirect": {
     "message": "Deze website stuurt je automatisch door. Dit kan leiden naar een onveilige site (gemiddeld risico)."
@@ -92,16 +92,8 @@
       "AGE": {
         "content": "$1",
         "example": "3"
-      ,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
-    ,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
+      }
+    }
   },
   "insecureLoginPage": {
     "message": "Deze inlogpagina is niet beveiligd (geen HTTPS). Voer hier nooit je wachtwoord in (hoog risico)."
@@ -122,7 +114,7 @@
     "message": "Achtergrondcontrole"
   },
   "backgroundAnalysisDescription": {
-    "message": "Realtime bescherming. Elk uur bijgewerkt. Wereldwijde dekking."
+    "message": "Stopt zelfs de nieuwste bedreigingen elk uur"
   },
   "activationRequired": {
     "message": "Schakel deze functie in om deze te gebruiken."
@@ -131,7 +123,7 @@
     "message": "Ingebouwde bescherming"
   },
   "integratedProtectionDescription": {
-    "message": "Combineert meerdere beveiligingsdiensten voor uitgebreide bescherming."
+    "message": "Waarschuwt voordat je op riskante links klikt"
   },
   "premiumFeaturesActive": {
     "message": "Je gebruikt nu de premiumversie!"
@@ -206,13 +198,13 @@
     "message": "Onbekend risico"
   },
   "highRisk": {
-    "message": "Hoog risico: wees zeer voorzichtig."
+    "message": "Pas op! Deze site is waarschijnlijk gevaarlijk."
   },
   "mediumRisk": {
-    "message": "Gemiddeld risico: let goed op."
+    "message": "Wees voorzichtig. Er zijn verdachte kenmerken gevonden."
   },
   "lowRisk": {
-    "message": "Laag risico: enkele aandachtspunten."
+    "message": "Lichte waarschuwing. Controleer of je deze site vertrouwt."
   },
   "noSuspiciousFeatures": {
     "message": "Geen directe risicovolle kenmerken gevonden."
@@ -248,7 +240,7 @@
     "message": "Er is een onbekend risico gevonden. Wees extra voorzichtig."
   },
   "typosquattingAttack": {
-    "message": "Dit webadres lijkt op een echte website, maar is bewust verkeerd gespeld (hoog risico). Dit kan een nepversie zijn."
+    "message": "Dit adres lijkt op een bekende website, maar bevat een kleine spelfout. Bijvoorbeeld: 'arnazon.com' in plaats van 'amazon.com'. Controleer altijd de spelling voordat je inlogt."
   },
   "downloadKeyword": {
     "message": "De link bevat woorden gerelateerd aan downloads (laag risico). Open alleen bestanden die je vertrouwt."
@@ -260,7 +252,7 @@
     "message": "De link naar een script op deze pagina is onjuist."
   },
   "mixedScripts": {
-    "message": "Dit adres gebruikt een mix van verschillende schriftsystemen (bijv. Latijnse en Cyrillische letters). Dit is een bekende phishing-truc (hoog risico)."
+    "message": "Dit adres combineert letters uit verschillende alfabetten (zoals Engels en Russisch). Hoewel ze er hetzelfde uitzien, creëren ze een compleet ander webadres."
   },
   "introBannerMessage": {
     "message": "LinkShield is actief en markeert risicovolle links met ⚠️. Beweeg de muis over het icoon om te zien waarom."
@@ -269,9 +261,6 @@
     "message": "Dit adres gebruikt cijfers die lijken op letters om een bekend merk na te bootsen (gemiddeld risico)."
   },
   "trustedTLD": {
-    "message": "Dit domein heeft een standaard domeinextensie (laag risico)."
-  },
-  "trustedTld": {
     "message": "Dit domein heeft een standaard domeinextensie (laag risico)."
   },
   "suspiciousPageText": {
@@ -574,22 +563,14 @@
       "DAYS": {
         "content": "$1",
         "example": "14"
-      ,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
-    ,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
+      }
+    }
   },
   "trialExpired": {
     "message": "Proefperiode verlopen"
   },
   "trialExpiredMessage": {
-    "message": "Je proefperiode van 30 dagen is verlopen. Activeer een licentie om alle functies te blijven gebruiken."
+    "message": "Je proefperiode is afgelopen. Je hebt nog basisbescherming — upgrade wanneer je wilt om alle functies te herstellen."
   },
   "upgradeNow": {
     "message": "Nu upgraden"
@@ -598,10 +579,10 @@
     "message": "LinkShield Dashboard"
   },
   "extNameFull": {
-    "message": "LinkShield: jouw wapen tegen phishing"
+    "message": "LinkShield: Veilig online zonder zorgen"
   },
   "extDescriptionFull": {
-    "message": "Verhoog jouw veiligheid met directe alerts en geavanceerde bescherming tegen online bedreigingen."
+    "message": "Beschermt je tegen nepwebsites, phishing en online oplichting. Zodat jij zorgeloos kunt browsen."
   },
   "licenseTrialTitle": {
     "message": "Proefperiode: $DAYS$ dagen resterend",
@@ -609,49 +590,68 @@
       "DAYS": {
         "content": "$1",
         "example": "30"
-      ,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
-    ,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
+      }
+    }
   },
   "licenseTrialSubtitle": {
-    "message": "Alle premium functies zijn actief tijdens je proefperiode"
+    "message": "Je bent volledig beschermd. Alle functies zijn actief."
   },
   "licenseUpgradeLink": {
-    "message": "Upgrade naar Premium →"
+    "message": "Upgrade naar Premium · €1,99/mnd →"
+  },
+  "licenseAlreadyHaveCode": {
+    "message": "Al een licentiecode?"
   },
   "licenseExpiredTitle": {
-    "message": "Proefperiode verlopen"
+    "message": "Je premium-functies zijn gepauzeerd"
   },
   "licenseExpiredSubtitle": {
-    "message": "Activeer Premium voor volledige bescherming"
+    "message": "Basisbescherming is nog steeds actief. Heractiveer Premium voor geavanceerde scanning en updates per uur."
   },
   "licenseBenefitsLabel": {
-    "message": "Premium bevat:"
+    "message": "Met Premium krijg je:"
   },
   "licenseBenefitsText": {
-    "message": "Achtergrondanalyses, QR-code scanning, continue bescherming"
+    "message": "Nieuwste phishing-sites geblokkeerd (elk uur bijgewerkt), QR-codes gescand, 24/7 bescherming"
   },
   "licenseKeyPlaceholder": {
-    "message": "Voer je licentiecode in"
+    "message": "XXXX-XXXX-XXXX"
   },
   "licenseActivateButton": {
     "message": "Activeer Premium"
   },
   "licenseBuyLink": {
-    "message": "Nog geen licentie? Koop hier →"
+    "message": "Direct beveiligen →"
   },
   "licensePremiumTitle": {
-    "message": "Premium Actief"
+    "message": "Je bent beschermd"
   },
   "licensePremiumSubtitle": {
-    "message": "Volledige bescherming ingeschakeld"
+    "message": "Alle beveiligingsfuncties zijn actief. Bedankt voor je vertrouwen!"
+  },
+  "manageSubscription": {
+    "message": "Abonnement beheren"
+  },
+  "manageSubscriptionTooltip": {
+    "message": "Wijzig betaalmethode, annuleer of bekijk facturen"
+  },
+  "licenseDeactivateButton": {
+    "message": "Licentiecode op ander apparaat gebruiken"
+  },
+  "licenseDeactivateConfirm": {
+    "message": "Dit maakt de licentie vrij van dit apparaat, zodat je deze elders kunt gebruiken."
+  },
+  "licenseDeactivateCancel": {
+    "message": "Annuleren"
+  },
+  "licenseDeactivateConfirmBtn": {
+    "message": "Deactiveren"
+  },
+  "licenseDeactivating": {
+    "message": "Bezig..."
+  },
+  "licenseDeactivatedSuccess": {
+    "message": "Licentie gedeactiveerd. Je kunt deze nu op een ander apparaat activeren."
   },
   "sectionSecuritySettings": {
     "message": "Beveiligingsinstellingen"
@@ -660,13 +660,13 @@
     "message": "Beveiligingsinstellingen"
   },
   "backgroundAnalysisFeature": {
-    "message": "Achtergrondanalyses"
+    "message": "Automatische bescherming"
   },
   "premiumBadge": {
     "message": "PREMIUM"
   },
   "integratedProtectionFeature": {
-    "message": "Geïntegreerde Malware- en Phishingbescherming"
+    "message": "Slimme linkcontrole"
   },
   "confirmationMessage": {
     "message": "Instellingen succesvol opgeslagen!"
@@ -743,16 +743,8 @@
       "DAYS": {
         "content": "$1",
         "example": "30"
-      ,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
-    ,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
+      }
+    }
   },
   "debugExpiredSimulated": {
     "message": "✓ Verlopen trial gesimuleerd"
@@ -769,16 +761,8 @@
       "ERROR": {
         "content": "$1",
         "example": "Unknown error"
-      ,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
-    ,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
+      }
+    }
   },
   "reason_redirectChain": {
     "message": "Verdachte redirect-keten gedetecteerd. De link passeert meerdere servers voordat de bestemming wordt bereikt."
@@ -837,16 +821,8 @@
       "DOMAIN": {
         "content": "$1",
         "example": "evil-site.com"
-      ,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
-    ,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
+      }
+    }
   },
   "formActionInvalid": {
     "message": "Inlogformulier heeft een ongeldige of verdachte actie-URL (hoog risico). Je gegevens worden mogelijk niet veilig verzonden."
@@ -869,16 +845,8 @@
       "DAYS": {
         "content": "$1",
         "example": "0"
-      ,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
-    ,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
+      }
+    }
   },
   "nrdHigh": {
     "message": "Domein slechts $DAYS$ dagen geleden geregistreerd (hoog risico). Zeer nieuwe domeinen worden vaak voor oplichting gebruikt.",
@@ -886,16 +854,8 @@
       "DAYS": {
         "content": "$1",
         "example": "5"
-      ,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
-    ,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
+      }
+    }
   },
   "nrdMedium": {
     "message": "Domein $DAYS$ dagen geleden geregistreerd (gemiddeld risico). Nieuwe domeinen onder 30 dagen vereisen extra voorzichtigheid.",
@@ -903,16 +863,8 @@
       "DAYS": {
         "content": "$1",
         "example": "15"
-      ,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
-    ,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
+      }
+    }
   },
   "nrdLow": {
     "message": "Domein $DAYS$ dagen geleden geregistreerd (laag risico). Relatief nieuw domein, wees enigszins voorzichtig.",
@@ -920,16 +872,8 @@
       "DAYS": {
         "content": "$1",
         "example": "60"
-      ,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
-    ,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
+      }
+    }
   },
   "licenseErrorNotFound": {
     "message": "Licentiesleutel niet gevonden. Controleer je invoer."
@@ -941,7 +885,7 @@
     "message": "Deze licentie is verlopen."
   },
   "licenseErrorActivationLimit": {
-    "message": "Activeringslimiet bereikt. Deactiveer eerst een ander apparaat."
+    "message": "Je hebt je apparaatlimiet bereikt (3). Ga naar een actief apparaat en kies 'Gebruik op ander apparaat' om een plek vrij te maken."
   },
   "licenseErrorInstanceNotFound": {
     "message": "Installatie-instantie niet gevonden."
@@ -1169,7 +1113,7 @@
     "message": "Verborgen iframe gedetecteerd op deze pagina. Onzichtbare frames kunnen worden gebruikt voor tracking, credential-diefstal of malware."
   },
   "typosquatting": {
-    "message": "Typosquatting gedetecteerd! Dit domein is opzettelijk verkeerd gespeld om een legitieme website na te bootsen."
+    "message": "Spellingsstruc gedetecteerd: Deze websitenaam lijkt bijna identiek aan een vertrouwde site, maar met een subtiel verschil. Oplichters gebruiken dit om overtuigende neppagina's te maken."
   },
   "ipAddressDomain": {
     "message": "Deze website gebruikt een IP-adres in plaats van een domeinnaam. Dit is zeer ongebruikelijk en duidt vaak op kwaadaardige bedoelingen."
@@ -1181,20 +1125,315 @@
     "message": "Mogelijke vishing (voice phishing) aanval gedetecteerd. Deze pagina combineert telefoonnummers met phishing-indicatoren."
   },
   "punycodeDetected": {
-    "message": "Punycode-domein gedetecteerd! Dit adres gebruikt internationale tekens die mogelijk een legitieme website nabootsen."
+    "message": "Dit webadres gebruikt speciale tekens die op normale letters lijken maar dat niet zijn. Bijvoorbeeld: een Cyrillische 'а' ziet er identiek uit als een Latijnse 'a'. Deze truc laat nepwebsites er legitiem uitzien."
   },
   "bitbClosePageButton": {
     "message": "Sluit deze pagina"
   },
   "bitbDismissButton": {
     "message": "Ik begrijp het risico"
-  ,
+  },
+  "trustDomainButton": {
+    "message": "Vertrouw dit domein"
+  },
   "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
-,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
+    "message": "Dit domein is door u als vertrouwd gemarkeerd."
+  },
+  "gracePeriodActive": {
+    "message": "We konden je licentie niet online verifiëren. Je bescherming blijft nog $DAYS$ dagen actief terwijl we het opnieuw proberen.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "gracePeriodWarning": {
+    "message": "Licentieverificatie in behandeling. Maak binnen $DAYS$ dagen verbinding met internet om ononderbroken bescherming te behouden.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "gracePeriodExpired": {
+    "message": "We hebben je licentie 7 dagen niet kunnen verifiëren. Maak verbinding met internet om premium-functies te herstellen."
+  },
+  "gracePeriodRestored": {
+    "message": "Licentie succesvol geverifieerd. Je bescherming is volledig actief."
+  },
+  "siteSafeSuccess": {
+    "message": "Geen bedreigingen gedetecteerd. Deze site heeft alle beveiligingscontroles doorstaan."
+  },
+  "siteSafeSuccessDetail": {
+    "message": "LinkShield heeft deze pagina gescand op phishing, typosquatting en kwaadaardige scripts. Alles ziet er goed uit."
+  },
+  "siteSafeSuccessBadge": {
+    "message": "Veilig Geverifieerd"
+  },
+  "premiumActive": {
+    "message": "Actief"
+  },
+  "premiumRequired": {
+    "message": "PREMIUM"
+  },
+  "exitPage": {
+    "message": "Verlaat deze pagina"
+  },
+  "understandRisk": {
+    "message": "Ik begrijp het risico"
+  },
+  "backgroundSecurityHelp": {
+    "message": "Vereist een actieve licentie. Activeer Premium om automatische bescherming in te schakelen."
+  },
+  "sectionProtection": {
+    "message": "Bescherming"
+  },
+  "statusProtected": {
+    "message": "Beschermd"
+  },
+  "statusTrialSub": {
+    "message": "Proefperiode · nog $DAYS$ dagen",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "statusPremiumSub": {
+    "message": "Premium · Actief"
+  },
+  "statusExpired": {
+    "message": "Bescherming gepauzeerd"
+  },
+  "statusExpiredSub": {
+    "message": "Verleng om volledige bescherming te herstellen"
+  },
+  "licenseActivateShort": {
+    "message": "Activeer"
+  },
+  "licenseDeactivateShort": {
+    "message": "Licentie overdragen"
+  },
+  "ctaUpgradeText": {
+    "message": "Upgrade naar Premium"
+  },
+  "ctaUpgradePrice": {
+    "message": "€1,99/maand · 3 apparaten"
+  },
+  "ctaRenewText": {
+    "message": "Herstel bescherming"
+  },
+  "manageBtnText": {
+    "message": "Beheer abonnement"
+  },
+  "transferBtnText": {
+    "message": "Deactiveren"
+  },
+  "deactivateDeviceBtn": {
+    "message": "Deactiveren"
+  },
+  "licenseNetworkError": {
+    "message": "Verbinding mislukt. Controleer je internet."
+  },
+  "premiumFeatureTag": {
+    "message": "Premium Functie"
+  },
+  "liveNow": {
+    "message": "Live"
+  },
+  "updatedMinAgo": {
+    "message": "$MIN$m geleden",
+    "placeholders": {
+      "MIN": {
+        "content": "$1",
+        "example": "15"
+      }
+    }
+  },
+  "useLicenseKey": {
+    "message": "Licentiecode gebruiken"
+  },
+  "clipboardHijackingCryptoTip": {
+    "message": "Controleer altijd wallet-adressen voordat je cryptocurrency verstuurt. Aanvallers vervangen adressen in je klembord."
+  },
+  "clipboardHijackingTip": {
+    "message": "Deze site probeert mogelijk inhoud te vervangen die je kopieert. Controleer altijd geplakte inhoud."
+  },
+  "webTransportWarningTitle": {
+    "message": "Verdachte netwerkactiviteit"
+  },
+  "webTransportWarningMessage": {
+    "message": "Deze pagina gebruikt geavanceerde netwerkprotocollen op een mogelijk verdachte manier."
+  },
+  "webTransportDirectIP": {
+    "message": "Verbinding naar direct IP-adres gedetecteerd."
+  },
+  "webTransportHighPort": {
+    "message": "Verbinding naar ongebruikelijk hoog poortnummer."
+  },
+  "webTransportRandomSubdomain": {
+    "message": "Verbinding naar verdacht willekeurig subdomein (mogelijk C2-server)."
+  },
+  "webTransportFreeTLD": {
+    "message": "Verbinding naar gratis TLD-domein (vaak gebruikt voor malware)."
+  },
+  "webTransportHighConnectionRate": {
+    "message": "Ongewoon hoge verbindingsfrequentie gedetecteerd."
+  },
+  "webTransportHighDatagramRate": {
+    "message": "Ongewoon hoge dataoverdrachtsnelheid gedetecteerd."
+  },
+  "webTransportObfuscatedUrl": {
+    "message": "Versleutelde of gecodeerde URL gedetecteerd."
+  },
+  "webTransportInvalidUrl": {
+    "message": "Ongeldige of misvormde verbindings-URL."
+  },
+  "failSafeNetworkTitle": {
+    "message": "Licentiecontrole Mislukt"
+  },
+  "failSafeNetworkMessage": {
+    "message": "Kon licentie niet verifiëren door netwerkproblemen. Bescherming blijft actief in veilige modus."
+  },
+  "failSafeGraceTitle": {
+    "message": "Licentieverificatie Nodig"
+  },
+  "failSafeGraceMessage": {
+    "message": "Maak verbinding met internet om uw licentie te verifiëren. Bescherming blijft actief."
+  },
+  "failSafePreservedTitle": {
+    "message": "Bescherming Actief"
+  },
+  "failSafePreservedMessage": {
+    "message": "Uw beschermingsregels zijn behouden. Verifieer uw licentie wanneer mogelijk."
+  },
+  "failSafeDefaultTitle": {
+    "message": "Veilige Modus Actief"
+  },
+  "failSafeDefaultMessage": {
+    "message": "LinkShield draait in veilige modus. Bescherming blijft actief."
+  },
+  "visualHijackingDetected": {
+    "message": "Visuele Kaping Gedetecteerd"
+  },
+  "visualHijackingMessage": {
+    "message": "Er is een verborgen overlay gedetecteerd die probeert uw klik te onderscheppen. Dit is een veelgebruikte phishing-techniek om u naar kwaadaardige sites om te leiden."
+  },
+  "detectionReason": {
+    "message": "Detectiereden"
+  },
+  "closeWarning": {
+    "message": "Sluiten"
+  },
+  "transparentHighZIndexOverlay": {
+    "message": "Transparante overlay met hoge z-index gedetecteerd"
+  },
+  "invisibleClickjackOverlay": {
+    "message": "Onzichtbare clickjacking overlay gedetecteerd"
+  },
+  "fullscreenTransparentOverlay": {
+    "message": "Volledig scherm transparante overlay gedetecteerd"
+  },
+  "hiddenLinkOverlay": {
+    "message": "Verborgen link overlay gedetecteerd"
+  },
+  "dismissTooltip": {
+    "message": "Sluiten"
+  },
+  "dontShowAgain": {
+    "message": "Niet meer tonen?"
+  },
+  "confirmYes": {
+    "message": "Ja"
+  },
+  "confirmNo": {
+    "message": "Nee"
+  },
+  "reportPhishingSuccess": {
+    "message": "Gerapporteerd! Bedankt voor het helpen verbeteren van de beveiliging."
+  },
+  "pointerEventsHijack": {
+    "message": "Pointer-events click kaping gedetecteerd"
+  },
+  "pointerEventsNoneHighZIndex": {
+    "message": "Onzichtbare overlay met maximale z-index gedetecteerd (kritiek risico). Deze pagina probeert uw klikken te onderscheppen."
+  },
+  "intMaxZIndexOverlay": {
+    "message": "Verdachte overlay met maximale z-index gedetecteerd (kritiek risico). Dit is een veelgebruikte click hijacking techniek."
+  },
+  "fullscreenPointerEventsNone": {
+    "message": "Volledig scherm onzichtbare overlay gedetecteerd (kritiek risico). Deze pagina probeert mogelijk uw interacties vast te leggen."
+  },
+  "suspiciousLinkZIndex": {
+    "message": "Deze link gebruikt een extreem hoge z-index positionering (kritiek risico). Dit is een click hijacking aanvalstechniek waarbij kwaadaardige links boven legitieme content worden geplaatst."
+  },
+  "suspiciousContainerZIndex": {
+    "message": "Deze link bevindt zich in een container met verdachte z-index positionering (kritiek risico). De pagina probeert u mogelijk te misleiden om op kwaadaardige content te klikken."
+  },
+  "dangerousJavascriptUri": {
+    "message": "KRITIEK: Deze link bevat uitvoerbare JavaScript-code (kritiek risico). Klikken kan schadelijke scripts in je browser uitvoeren."
+  },
+  "dangerousVbscriptUri": {
+    "message": "KRITIEK: Deze link bevat uitvoerbare VBScript-code (kritiek risico). Dit is een gevaarlijke aanvalstechniek gericht op Windows-systemen."
+  },
+  "dangerousDataUri": {
+    "message": "KRITIEK: Deze link bevat ingesloten data die code kan uitvoeren (kritiek risico). Data-URI's kunnen worden gebruikt voor phishing of malware."
+  },
+  "criticalSecurityThreat": {
+    "message": "KRITIEKE BEVEILIGINGSDREIGING: Deze link is geïdentificeerd als extreem gevaarlijk. Klik in geen geval."
+  },
+  "mixedScriptAttack": {
+    "message": "KRITIEK: Dit webadres mengt tekens uit verschillende alfabetten (bijv. Latijn en Cyrillisch). Dit is een geavanceerde spoofing-aanval waarbij identiek lijkende tekens van verschillende scripts komen."
+  },
+  "nonAsciiDomain": {
+    "message": "Dit domein bevat niet-ASCII-tekens (hoog risico). Internationale tekens in domeinnamen kunnen worden gebruikt om legitieme websites na te bootsen."
+  },
+  "homoglyphCharactersDetected": {
+    "message": "KRITIEK: Homoglyph-tekens gedetecteerd in dit domein (kritiek risico). Tekens die lijken op Latijnse letters maar eigenlijk van andere scripts zijn (bijv. Cyrillisch) worden gebruikt om een legitieme website na te bootsen."
+  },
+  "dangerousBlobUri": {
+    "message": "KRITIEK: Deze link bevat een Blob-URL (kritiek risico). Blob-URL's kunnen worden gebruikt om schadelijke code uit te voeren of malware af te leveren."
+  },
+  "dataUriBlocked": {
+    "message": "KRITIEK: Deze link bevat een data: URI (kritiek risico). Data-URI's kunnen schadelijke inhoud direct in uw browser uitvoeren. Dit is een veelgebruikte aanvalstechniek voor phishing en malware."
+  },
+  "javascriptUriBlocked": {
+    "message": "KRITIEK: Deze link bevat een javascript: URI (kritiek risico). JavaScript-URI's kunnen willekeurige code uitvoeren in uw browsercontext, waardoor uw gegevens of inloggegevens kunnen worden gestolen."
+  },
+  "vbscriptUriBlocked": {
+    "message": "KRITIEK: Deze link bevat een vbscript: URI (kritiek risico). VBScript-URI's kunnen gevaarlijke code uitvoeren op Windows-systemen. Dit is een ernstige beveiligingsdreiging."
+  },
+  "blobUriBlocked": {
+    "message": "KRITIEK: Deze link bevat een blob: URI (kritiek risico). Blob-URI's kunnen willekeurige code uitvoeren of malware afleveren. Deze link is geblokkeerd voor uw bescherming."
+  },
+  "mathematicalCharsDetected": {
+    "message": "Dit domein bevat wiskundige Unicode-tekens (hoog risico). Wiskundige symbolen die eruitzien als normale letters worden gebruikt om een legitieme website na te bootsen."
+  },
+  "greekCharsDetected": {
+    "message": "Dit domein bevat Griekse letters gemengd met Latijnse letters (hoog risico). Griekse letters zoals omicron en nu zien er identiek uit aan Latijnse 'o' en 'v', wat dit een mogelijke spoofing-aanval maakt."
+  },
+  "scriptCharsDetected": {
+    "message": "Dit domein bevat letterachtige symbolen (hoog risico). Speciale Unicode-scripttekens worden gebruikt om een legitieme website na te bootsen."
+  },
+  "digitInDomainDetected": {
+    "message": "Dit domein gebruikt cijfervervanging om een bekend merk na te bootsen (hoog risico). Cijfers zoals 0, 1, 3, 5 worden gebruikt ter vervanging van letters (bijv. g00gle, paypa1, amaz0n)."
+  },
+  "visualHijackingRisk": {
+    "message": "KRITIEK: Visuele kaping-aanval gedetecteerd (kritiek risico). Een transparante overlay probeert uw klikken te onderscheppen en u naar een kwaadaardige bestemming om te leiden. Deze link is geblokkeerd voor uw bescherming."
+  },
+  "fullwidthCharsDetected": {
+    "message": "Dit domein bevat Fullwidth Unicode-tekens (hoog risico). Fullwidth letters (zoals ａｐｐｌｅ) zien er identiek uit als gewone letters maar zijn andere tekens, vaak gebruikt voor phishing-aanvallen."
+  },
+  "cherokeeCharsDetected": {
+    "message": "Dit domein bevat Cherokee-schrifttekens (hoog risico). Cherokee-letters lijken op Latijnse letters (zoals ꮓ lijkt op 'z') en worden gebruikt om overtuigende nepdomeinen te maken."
+  },
+  "nonAsciiInBrandDomain": {
+    "message": "Dit domein bevat niet-ASCII-tekens in een merkachtige context (hoog risico). Speciale tekens worden gebruikt om een legitieme website na te bootsen."
+  },
+  "maliciousDomainKeyword": {
+    "message": "KRITIEK: Dit domein bevat sleutelwoorden die vaak geassocieerd worden met phishing of malware (kritiek risico). De domeinnaam zelf suggereert kwaadaardige bedoelingen."
   }
 }

@@ -1394,5 +1394,68 @@
   },
   "suspiciousContainerZIndex": {
     "message": "Dieser Link befindet sich in einem Container mit verdächtiger Z-Index-Positionierung (kritisches Risiko). Die Seite versucht möglicherweise, Sie zum Klicken auf bösartige Inhalte zu verleiten."
+  },
+  "dangerousJavascriptUri": {
+    "message": "KRITISCH: Dieser Link enthält ausführbaren JavaScript-Code (kritisches Risiko). Ein Klick könnte schädliche Skripte in Ihrem Browser ausführen."
+  },
+  "dangerousVbscriptUri": {
+    "message": "KRITISCH: Dieser Link enthält ausführbaren VBScript-Code (kritisches Risiko). Dies ist eine gefährliche Angriffstechnik für Windows-Systeme."
+  },
+  "dangerousDataUri": {
+    "message": "KRITISCH: Dieser Link enthält eingebettete Daten, die Code ausführen könnten (kritisches Risiko). Data-URIs können für Phishing oder Malware verwendet werden."
+  },
+  "criticalSecurityThreat": {
+    "message": "KRITISCHE SICHERHEITSBEDROHUNG: Dieser Link wurde als extrem gefährlich identifiziert. Klicken Sie unter keinen Umständen."
+  },
+  "mixedScriptAttack": {
+    "message": "KRITISCH: Diese Webadresse mischt Zeichen aus verschiedenen Alphabeten (z.B. Lateinisch und Kyrillisch). Dies ist ein ausgeklügelter Spoofing-Angriff mit identisch aussehenden Zeichen aus verschiedenen Schriften."
+  },
+  "nonAsciiDomain": {
+    "message": "Diese Domain enthält Nicht-ASCII-Zeichen (hohes Risiko). Internationale Zeichen in Domainnamen können verwendet werden, um legitime Websites zu imitieren."
+  },
+  "homoglyphCharactersDetected": {
+    "message": "KRITISCH: Homoglyph-Zeichen in dieser Domain erkannt (kritisches Risiko). Zeichen, die wie lateinische Buchstaben aussehen, aber aus anderen Schriften stammen (z.B. Kyrillisch), werden verwendet, um eine legitime Website zu imitieren."
+  },
+  "dangerousBlobUri": {
+    "message": "KRITISCH: Dieser Link enthält eine Blob-URL (kritisches Risiko). Blob-URLs können verwendet werden, um schädlichen Code auszuführen oder Malware zu verbreiten."
+  },
+  "dataUriBlocked": {
+    "message": "KRITISCH: Dieser Link enthält eine data: URI (kritisches Risiko). Data-URIs können schädliche Inhalte direkt in Ihrem Browser ausführen. Dies ist ein häufiger Angriffsvektor für Phishing und Malware."
+  },
+  "javascriptUriBlocked": {
+    "message": "KRITISCH: Dieser Link enthält eine javascript: URI (kritisches Risiko). JavaScript-URIs können beliebigen Code in Ihrem Browser-Kontext ausführen und möglicherweise Ihre Daten oder Zugangsdaten stehlen."
+  },
+  "vbscriptUriBlocked": {
+    "message": "KRITISCH: Dieser Link enthält eine vbscript: URI (kritisches Risiko). VBScript-URIs können gefährlichen Code auf Windows-Systemen ausführen. Dies ist eine ernsthafte Sicherheitsbedrohung."
+  },
+  "blobUriBlocked": {
+    "message": "KRITISCH: Dieser Link enthält eine blob: URI (kritisches Risiko). Blob-URIs können beliebigen Code ausführen oder Malware verbreiten. Dieser Link wurde zu Ihrem Schutz blockiert."
+  },
+  "mathematicalCharsDetected": {
+    "message": "Diese Domain enthält mathematische Unicode-Zeichen (hohes Risiko). Mathematische Symbole, die wie normale Buchstaben aussehen, werden verwendet, um eine legitime Website zu imitieren."
+  },
+  "greekCharsDetected": {
+    "message": "Diese Domain enthält griechische Buchstaben gemischt mit lateinischen Buchstaben (hohes Risiko). Griechische Buchstaben wie Omikron und Nu sehen identisch aus wie die lateinischen 'o' und 'v', was dies zu einem potenziellen Spoofing-Angriff macht."
+  },
+  "scriptCharsDetected": {
+    "message": "Diese Domain enthält buchstabenähnliche Symbole (hohes Risiko). Spezielle Unicode-Skriptzeichen werden verwendet, um eine legitime Website zu imitieren."
+  },
+  "digitInDomainDetected": {
+    "message": "Diese Domain verwendet Ziffernersetzung, um eine bekannte Marke zu imitieren (hohes Risiko). Zahlen wie 0, 1, 3, 5 werden anstelle von Buchstaben verwendet (z.B. g00gle, paypa1, amaz0n)."
+  },
+  "visualHijackingRisk": {
+    "message": "KRITISCH: Visueller Hijacking-Angriff erkannt (kritisches Risiko). Ein transparentes Overlay versucht, Ihre Klicks abzufangen und Sie zu einem bösartigen Ziel umzuleiten. Dieser Link wurde zu Ihrem Schutz blockiert."
+  },
+  "fullwidthCharsDetected": {
+    "message": "Diese Domain enthält Vollbreite-Unicode-Zeichen (hohes Risiko). Vollbreite-Buchstaben (wie ａｐｐｌｅ) sehen identisch mit normalen Buchstaben aus, sind aber andere Zeichen, die häufig für Phishing-Angriffe verwendet werden."
+  },
+  "cherokeeCharsDetected": {
+    "message": "Diese Domain enthält Cherokee-Schriftzeichen (hohes Risiko). Cherokee-Buchstaben ähneln lateinischen Buchstaben (z.B. ꮓ sieht aus wie 'z') und werden verwendet, um überzeugende gefälschte Domains zu erstellen."
+  },
+  "nonAsciiInBrandDomain": {
+    "message": "Diese Domain enthält Nicht-ASCII-Zeichen in einem markenähnlichen Kontext (hohes Risiko). Sonderzeichen werden verwendet, um eine legitime Website zu imitieren."
+  },
+  "maliciousDomainKeyword": {
+    "message": "KRITISCH: Diese Domain enthält Schlüsselwörter, die häufig mit Phishing oder Malware in Verbindung gebracht werden (kritisches Risiko). Der Domainname selbst deutet auf böswillige Absichten hin."
   }
 }

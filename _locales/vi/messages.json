@@ -1394,5 +1394,68 @@
   },
   "suspiciousContainerZIndex": {
     "message": "Liên kết này nằm trong một container với vị trí z-index đáng ngờ (rủi ro nghiêm trọng). Trang có thể đang cố gắng lừa bạn nhấp vào nội dung độc hại."
+  },
+  "dangerousJavascriptUri": {
+    "message": "NGHIÊM TRỌNG: Liên kết này chứa mã JavaScript có thể thực thi (rủi ro nghiêm trọng). Nhấp có thể chạy các tập lệnh độc hại trong trình duyệt của bạn."
+  },
+  "dangerousVbscriptUri": {
+    "message": "NGHIÊM TRỌNG: Liên kết này chứa mã VBScript có thể thực thi (rủi ro nghiêm trọng). Đây là kỹ thuật tấn công nguy hiểm nhắm vào hệ thống Windows."
+  },
+  "dangerousDataUri": {
+    "message": "NGHIÊM TRỌNG: Liên kết này chứa dữ liệu nhúng có thể thực thi mã (rủi ro nghiêm trọng). Data URIs có thể được sử dụng cho lừa đảo hoặc phân phối phần mềm độc hại."
+  },
+  "criticalSecurityThreat": {
+    "message": "MỐI ĐE DỌA BẢO MẬT NGHIÊM TRỌNG: Liên kết này đã được xác định là cực kỳ nguy hiểm. Không nhấp trong bất kỳ trường hợp nào."
+  },
+  "mixedScriptAttack": {
+    "message": "NGHIÊM TRỌNG: Địa chỉ web này trộn lẫn các ký tự từ các bảng chữ cái khác nhau (ví dụ: Latin và Cyrillic). Đây là một cuộc tấn công giả mạo tinh vi nơi các ký tự giống hệt nhau đến từ các hệ thống chữ viết khác nhau."
+  },
+  "nonAsciiDomain": {
+    "message": "Tên miền này chứa các ký tự không phải ASCII (rủi ro cao). Các ký tự quốc tế trong tên miền có thể được sử dụng để mạo danh các trang web hợp pháp."
+  },
+  "homoglyphCharactersDetected": {
+    "message": "NGHIÊM TRỌNG: Phát hiện các ký tự homoglyph trong tên miền này (rủi ro nghiêm trọng). Các ký tự trông giống chữ cái Latin nhưng thực sự từ các hệ thống chữ viết khác (ví dụ: Cyrillic) đang được sử dụng để mạo danh một trang web hợp pháp."
+  },
+  "dangerousBlobUri": {
+    "message": "NGHIÊM TRỌNG: Liên kết này chứa Blob URL (rủi ro nghiêm trọng). Blob URL có thể được sử dụng để thực thi mã độc hại hoặc phân phối phần mềm độc hại."
+  },
+  "dataUriBlocked": {
+    "message": "NGHIÊM TRỌNG: Liên kết này chứa data: URI (rủi ro nghiêm trọng). Data: URIs có thể thực thi nội dung độc hại trực tiếp trong trình duyệt của bạn. Đây là vector tấn công phổ biến cho phishing và phần mềm độc hại."
+  },
+  "javascriptUriBlocked": {
+    "message": "NGHIÊM TRỌNG: Liên kết này chứa javascript: URI (rủi ro nghiêm trọng). JavaScript URIs có thể thực thi mã tùy ý trong ngữ cảnh trình duyệt của bạn, có thể đánh cắp dữ liệu hoặc thông tin đăng nhập của bạn."
+  },
+  "vbscriptUriBlocked": {
+    "message": "NGHIÊM TRỌNG: Liên kết này chứa vbscript: URI (rủi ro nghiêm trọng). VBScript URIs có thể thực thi mã nguy hiểm trên hệ thống Windows. Đây là mối đe dọa bảo mật nghiêm trọng."
+  },
+  "blobUriBlocked": {
+    "message": "NGHIÊM TRỌNG: Liên kết này chứa blob: URI (rủi ro nghiêm trọng). Blob URIs có thể thực thi mã tùy ý hoặc phân phối phần mềm độc hại. Liên kết này đã bị chặn để bảo vệ bạn."
+  },
+  "mathematicalCharsDetected": {
+    "message": "Tên miền này chứa ký tự Unicode toán học (rủi ro cao). Các ký hiệu toán học trông giống chữ cái bình thường đang được sử dụng để mạo danh một trang web hợp pháp."
+  },
+  "greekCharsDetected": {
+    "message": "Tên miền này chứa chữ cái Hy Lạp trộn lẫn với chữ cái Latin (rủi ro cao). Các chữ cái Hy Lạp như omicron và nu giống hệt với 'o' và 'v' Latin, khiến đây trở thành cuộc tấn công giả mạo tiềm năng."
+  },
+  "scriptCharsDetected": {
+    "message": "Tên miền này chứa ký hiệu giống chữ cái (rủi ro cao). Các ký tự script Unicode đặc biệt đang được sử dụng để mạo danh một trang web hợp pháp."
+  },
+  "digitInDomainDetected": {
+    "message": "Tên miền này sử dụng thay thế chữ số để mạo danh một thương hiệu nổi tiếng (rủi ro cao). Các số như 0, 1, 3, 5 được sử dụng thay vì chữ cái (ví dụ: g00gle, paypa1, amaz0n)."
+  },
+  "visualHijackingRisk": {
+    "message": "NGHIÊM TRỌNG: Phát hiện tấn công Visual Hijacking (rủi ro nghiêm trọng). Một lớp phủ trong suốt đang cố gắng chặn nhấp chuột của bạn và chuyển hướng bạn đến đích độc hại. Liên kết này đã bị chặn để bảo vệ bạn."
+  },
+  "fullwidthCharsDetected": {
+    "message": "Tên miền này chứa các ký tự Unicode toàn chiều rộng (rủi ro cao). Các chữ cái toàn chiều rộng (như ａｐｐｌｅ) trông giống hệt các chữ cái thông thường nhưng là các ký tự khác nhau, thường được sử dụng cho các cuộc tấn công lừa đảo."
+  },
+  "cherokeeCharsDetected": {
+    "message": "Tên miền này chứa các ký tự Cherokee (rủi ro cao). Các chữ cái Cherokee giống với các chữ cái Latin (như ꮓ trông giống 'z') và được sử dụng để tạo các tên miền giả mạo thuyết phục."
+  },
+  "nonAsciiInBrandDomain": {
+    "message": "Tên miền này chứa các ký tự không phải ASCII trong ngữ cảnh thương hiệu (rủi ro cao). Các ký tự đặc biệt đang được sử dụng để mạo danh một trang web hợp pháp."
+  },
+  "maliciousDomainKeyword": {
+    "message": "NGHIÊM TRỌNG: Tên miền này chứa các từ khóa thường liên quan đến lừa đảo hoặc phần mềm độc hại (rủi ro nghiêm trọng). Tên miền cho thấy ý định độc hại."
   }
 }

@@ -51,7 +51,7 @@
     "message": "Le lien contient des caractères inhabituels (risque faible). Cela peut être utilisé pour masquer la destination réelle."
   },
   "homoglyphAttack": {
-    "message": "Cette adresse web utilise des caractères presque identiques à ceux d'un site web connu (risque élevé). C'est une astuce pour vous tromper."
+    "message": "Cette adresse contient des caractères similaires (risque élevé). Vérifiez que vous êtes sur le bon site avant de saisir des informations."
   },
   "metaRedirect": {
     "message": "Ce site vous redirige automatiquement. Cela peut mener à un site non sécurisé (risque moyen)."
@@ -92,16 +92,8 @@
       "AGE": {
         "content": "$1",
         "example": "3"
-      ,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
-    ,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
+      }
+    }
   },
   "insecureLoginPage": {
     "message": "Cette page de connexion n'est pas sécurisée (pas de HTTPS). Ne saisissez jamais votre mot de passe ici (risque élevé)."
@@ -122,7 +114,7 @@
     "message": "Analyse en arrière-plan"
   },
   "backgroundAnalysisDescription": {
-    "message": "Protection en temps réel. Mise à jour toutes les heures. Couverture mondiale."
+    "message": "Bloque les derniers sites de phishing. Base de données mise à jour toutes les heures."
   },
   "activationRequired": {
     "message": "Activez cette fonctionnalité pour l'utiliser."
@@ -131,7 +123,7 @@
     "message": "Protection intégrée"
   },
   "integratedProtectionDescription": {
-    "message": "Combine plusieurs services de sécurité pour une protection complète."
+    "message": "Vérifie chaque lien sur la page et vous avertit des sites suspects."
   },
   "premiumFeaturesActive": {
     "message": "Vous utilisez maintenant la version premium !"
@@ -206,13 +198,13 @@
     "message": "Risque inconnu"
   },
   "highRisk": {
-    "message": "Risque élevé : soyez très prudent."
+    "message": "Attention ! Ce site est probablement dangereux."
   },
   "mediumRisk": {
-    "message": "Risque moyen : faites bien attention."
+    "message": "Soyez prudent. Caractéristiques suspectes détectées."
   },
   "lowRisk": {
-    "message": "Risque faible : quelques points de préoccupation."
+    "message": "Avertissement mineur. Vérifiez que vous faites confiance à ce site."
   },
   "noSuspiciousFeatures": {
     "message": "Aucune caractéristique à risque direct n'a été trouvée."
@@ -248,7 +240,7 @@
     "message": "Un risque inconnu a été détecté. Soyez extrêmement prudent."
   },
   "typosquattingAttack": {
-    "message": "Cette adresse web ressemble à un vrai site web, mais est délibérément mal orthographiée (risque élevé). Il pourrait s'agir d'une fausse version."
+    "message": "Cette adresse ressemble à un site connu, mais contient une petite faute d'orthographe. Par exemple : 'arnazon.com' au lieu de 'amazon.com'. Vérifiez toujours l'orthographe avant de vous connecter."
   },
   "downloadKeyword": {
     "message": "Le lien contient des mots liés aux téléchargements (risque faible). N'ouvrez que les fichiers que vous jugez fiables."
@@ -260,7 +252,7 @@
     "message": "Le lien vers un script sur cette page est incorrect."
   },
   "mixedScripts": {
-    "message": "Cette adresse utilise un mélange de différents systèmes d'écriture (par exemple, des lettres latines et cyrilliques). C'est une astuce de hameçonnage connue (risque élevé)."
+    "message": "Cette adresse mélange des lettres de différents alphabets (comme l'anglais et le russe). Bien qu'elles semblent identiques, elles créent une adresse web complètement différente."
   },
   "introBannerMessage": {
     "message": "LinkShield est actif et marque les liens à risque avec ⚠️. Survolez l'icône pour voir pourquoi."
@@ -269,9 +261,6 @@
     "message": "Cette adresse utilise des chiffres qui ressemblent à des lettres pour imiter une marque connue (risque moyen)."
   },
   "trustedTLD": {
-    "message": "Ce domaine a une extension de domaine standard (risque faible)."
-  },
-  "trustedTld": {
     "message": "Ce domaine a une extension de domaine standard (risque faible)."
   },
   "suspiciousPageText": {
@@ -574,22 +563,14 @@
       "DAYS": {
         "content": "$1",
         "example": "14"
-      ,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
-    ,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
+      }
+    }
   },
   "trialExpired": {
     "message": "Période d'essai expirée"
   },
   "trialExpiredMessage": {
-    "message": "Votre période d'essai de 30 jours a expiré. Activez une licence pour continuer à utiliser toutes les fonctionnalités."
+    "message": "Votre période d'essai est terminée. Vous avez toujours la protection de base — passez à la version supérieure à tout moment pour restaurer toutes les fonctionnalités."
   },
   "upgradeNow": {
     "message": "Mettre à niveau maintenant"
@@ -598,10 +579,10 @@
     "message": "Tableau de bord LinkShield"
   },
   "extNameFull": {
-    "message": "LinkShield : Votre arme contre l'hameçonnage"
+    "message": "LinkShield : Naviguez en toute sécurité"
   },
   "extDescriptionFull": {
-    "message": "Augmentez votre sécurité avec des alertes instantanées et une protection avancée contre les menaces en ligne."
+    "message": "Vous protège des faux sites web, du phishing et des arnaques en ligne. Pour naviguer l'esprit tranquille."
   },
   "licenseTrialTitle": {
     "message": "Période d'essai : $DAYS$ jours restants",
@@ -609,34 +590,29 @@
       "DAYS": {
         "content": "$1",
         "example": "30"
-      ,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
-    ,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
+      }
+    }
   },
   "licenseTrialSubtitle": {
-    "message": "Toutes les fonctionnalités premium sont actives pendant votre période d'essai"
+    "message": "Vous êtes entièrement protégé. Toutes les fonctionnalités sont actives."
   },
   "licenseUpgradeLink": {
-    "message": "Passer à Premium →"
+    "message": "Restez protégé pour 1,99€/mois (3 appareils) →"
+  },
+  "licenseAlreadyHaveCode": {
+    "message": "Vous avez déjà un code de licence ?"
   },
   "licenseExpiredTitle": {
-    "message": "Période d'essai expirée"
+    "message": "Vos fonctionnalités premium sont en pause"
   },
   "licenseExpiredSubtitle": {
-    "message": "Activez Premium pour une protection complète"
+    "message": "La protection de base est toujours active. Réactivez Premium pour débloquer l'analyse avancée et les mises à jour horaires."
   },
   "licenseBenefitsLabel": {
-    "message": "Premium inclut :"
+    "message": "Avec Premium vous obtenez :"
   },
   "licenseBenefitsText": {
-    "message": "Analyses en arrière-plan, scan de codes QR, protection continue"
+    "message": "Derniers sites de phishing bloqués (mis à jour toutes les heures), codes QR scannés, protection 24/7"
   },
   "licenseKeyPlaceholder": {
     "message": "Entrez votre code de licence"
@@ -645,13 +621,37 @@
     "message": "Activer Premium"
   },
   "licenseBuyLink": {
-    "message": "Pas de licence ? Achetez ici →"
+    "message": "Protégez-vous maintenant →"
   },
   "licensePremiumTitle": {
-    "message": "Premium Actif"
+    "message": "Vous êtes protégé"
   },
   "licensePremiumSubtitle": {
-    "message": "Protection complète activée"
+    "message": "Toutes les fonctionnalités de sécurité sont actives. Merci pour votre confiance !"
+  },
+  "manageSubscription": {
+    "message": "Gérer l'abonnement"
+  },
+  "manageSubscriptionTooltip": {
+    "message": "Modifier le mode de paiement, annuler ou consulter les factures"
+  },
+  "licenseDeactivateButton": {
+    "message": "Utiliser la clé de licence sur un autre appareil"
+  },
+  "licenseDeactivateConfirm": {
+    "message": "Votre abonnement reste actif. Cet appareil passera à la version gratuite pour que vous puissiez activer sur un autre appareil."
+  },
+  "licenseDeactivateCancel": {
+    "message": "Annuler"
+  },
+  "licenseDeactivateConfirmBtn": {
+    "message": "Désactiver"
+  },
+  "licenseDeactivating": {
+    "message": "Désactivation..."
+  },
+  "licenseDeactivatedSuccess": {
+    "message": "Licence désactivée. Vous pouvez maintenant l'activer sur un autre appareil."
   },
   "sectionSecuritySettings": {
     "message": "Paramètres de sécurité"
@@ -660,13 +660,13 @@
     "message": "Paramètres de sécurité"
   },
   "backgroundAnalysisFeature": {
-    "message": "Analyses en arrière-plan"
+    "message": "Protection automatique"
   },
   "premiumBadge": {
     "message": "PREMIUM"
   },
   "integratedProtectionFeature": {
-    "message": "Protection intégrée contre les malwares et l'hameçonnage"
+    "message": "Analyse intelligente des liens"
   },
   "confirmationMessage": {
     "message": "Paramètres enregistrés avec succès !"
@@ -743,16 +743,8 @@
       "DAYS": {
         "content": "$1",
         "example": "30"
-      ,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
-    ,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
+      }
+    }
   },
   "debugExpiredSimulated": {
     "message": "✓ Essai expiré simulé"
@@ -769,16 +761,8 @@
       "ERROR": {
         "content": "$1",
         "example": "Unknown error"
-      ,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
-    ,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
+      }
+    }
   },
   "reason_redirectChain": {
     "message": "Chaîne de redirection suspecte détectée. Le lien passe par plusieurs serveurs avant d'atteindre sa destination."
@@ -822,16 +806,8 @@
       "DOMAIN": {
         "content": "$1",
         "example": "evil-site.com"
-      ,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
-    ,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
+      }
+    }
   },
   "formActionInvalid": {
     "message": "Le formulaire de connexion a une URL d'action invalide ou suspecte (risque élevé). Vos identifiants peuvent ne pas être envoyés de manière sécurisée."
@@ -854,16 +830,8 @@
       "DAYS": {
         "content": "$1",
         "example": "0"
-      ,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
-    ,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
+      }
+    }
   },
   "nrdHigh": {
     "message": "Domaine enregistré il y a seulement $DAYS$ jours (risque élevé). Les domaines très récents sont fréquemment utilisés pour des arnaques.",
@@ -871,16 +839,8 @@
       "DAYS": {
         "content": "$1",
         "example": "5"
-      ,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
-    ,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
+      }
+    }
   },
   "nrdMedium": {
     "message": "Domaine enregistré il y a $DAYS$ jours (risque moyen). Les nouveaux domaines de moins de 30 jours nécessitent une prudence supplémentaire.",
@@ -888,16 +848,8 @@
       "DAYS": {
         "content": "$1",
         "example": "15"
-      ,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
-    ,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
+      }
+    }
   },
   "nrdLow": {
     "message": "Domaine enregistré il y a $DAYS$ jours (risque faible). Domaine relativement nouveau, soyez un peu prudent.",
@@ -905,16 +857,8 @@
       "DAYS": {
         "content": "$1",
         "example": "60"
-      ,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
-    ,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
+      }
+    }
   },
   "licenseErrorNotFound": {
     "message": "Clé de licence non trouvée. Veuillez vérifier votre saisie."
@@ -926,7 +870,7 @@
     "message": "Cette licence a expiré."
   },
   "licenseErrorActivationLimit": {
-    "message": "Limite d'activation atteinte. Veuillez d'abord désactiver un autre appareil."
+    "message": "Vous avez atteint votre limite d'appareils (3). Allez sur un appareil actif et choisissez 'Utiliser sur un autre appareil' pour libérer une place."
   },
   "licenseErrorInstanceNotFound": {
     "message": "Instance d'installation non trouvée."
@@ -1169,7 +1113,7 @@
     "message": "Iframe caché détecté sur cette page. Les frames invisibles peuvent être utilisées pour le suivi, le vol d'identifiants ou la diffusion de malware."
   },
   "typosquatting": {
-    "message": "Typosquatting détecté ! Ce domaine est délibérément mal orthographié pour imiter un site web légitime."
+    "message": "Astuce d'orthographe détectée : Ce nom de site est presque identique à un site de confiance, mais avec une différence subtile. Les escrocs utilisent cela pour créer des pages contrefaites convaincantes."
   },
   "ipAddressDomain": {
     "message": "Ce site utilise une adresse IP au lieu d'un nom de domaine. C'est très inhabituel et indique souvent une intention malveillante."
@@ -1181,20 +1125,337 @@
     "message": "Attaque potentielle de vishing (hameçonnage vocal) détectée. Cette page combine des numéros de téléphone avec des indicateurs de phishing."
   },
   "punycodeDetected": {
-    "message": "Domaine Punycode détecté ! Cette adresse utilise des caractères internationaux qui pourraient usurper l'identité d'un site web légitime."
+    "message": "Cette adresse web utilise des caractères spéciaux qui ressemblent à des lettres normales mais n'en sont pas. Par exemple, un 'а' cyrillique est identique à un 'a' latin. Cette astuce fait paraître les faux sites légitimes."
   },
   "bitbClosePageButton": {
     "message": "Fermer cette page"
   },
   "bitbDismissButton": {
     "message": "Je comprends le risque"
-  ,
+  },
+  "trustDomainButton": {
+    "message": "Faire confiance à ce domaine"
+  },
   "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
-  }
-}
-,
-  "trustedDomainSkipped": {
-    "message": "This domain has been marked as trusted by you."
+    "message": "Ce domaine a été marqué comme fiable par vous."
+  },
+  "gracePeriodActive": {
+    "message": "Nous n'avons pas pu vérifier votre licence en ligne. Votre protection continue pendant encore $DAYS$ jours pendant que nous réessayons.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "gracePeriodWarning": {
+    "message": "Vérification de licence en attente. Veuillez vous connecter à Internet dans les $DAYS$ prochains jours pour maintenir une protection ininterrompue.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "gracePeriodExpired": {
+    "message": "Nous n'avons pas pu vérifier votre licence depuis 7 jours. Veuillez vous connecter à Internet pour restaurer les fonctionnalités premium."
+  },
+  "gracePeriodRestored": {
+    "message": "Licence vérifiée avec succès. Votre protection est entièrement active."
+  },
+  "siteSafeSuccess": {
+    "message": "Aucune menace détectée. Ce site a passé tous les contrôles de sécurité."
+  },
+  "siteSafeSuccessDetail": {
+    "message": "LinkShield a analysé cette page pour le phishing, le typosquatting et les scripts malveillants. Tout semble correct."
+  },
+  "siteSafeSuccessBadge": {
+    "message": "Vérifié Sûr"
+  },
+  "exitPage": {
+    "message": "Quitter cette page"
+  },
+  "understandRisk": {
+    "message": "Je comprends le risque"
+  },
+  "premiumActive": {
+    "message": "Actif"
+  },
+  "premiumRequired": {
+    "message": "PREMIUM"
+  },
+  "backgroundSecurityHelp": {
+    "message": "Nécessite une licence active. Activez Premium pour la protection automatique."
+  },
+  "sectionProtection": {
+    "message": "Protection"
+  },
+  "statusProtected": {
+    "message": "Protégé"
+  },
+  "statusTrialSub": {
+    "message": "Essai · $DAYS$ jours restants",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "statusPremiumSub": {
+    "message": "Premium · Actif"
+  },
+  "statusExpired": {
+    "message": "Protection suspendue"
+  },
+  "statusExpiredSub": {
+    "message": "Renouvelez pour restaurer la protection"
+  },
+  "licenseActivateShort": {
+    "message": "Activer"
+  },
+  "licenseDeactivateShort": {
+    "message": "Transférer la licence"
+  },
+  "ctaUpgradeText": {
+    "message": "Passer à Premium"
+  },
+  "ctaUpgradePrice": {
+    "message": "1,99€/mois · 3 appareils"
+  },
+  "ctaRenewText": {
+    "message": "Restaurer la protection"
+  },
+  "manageBtnText": {
+    "message": "Gérer l'abonnement"
+  },
+  "transferBtnText": {
+    "message": "Désactiver"
+  },
+  "deactivateDeviceBtn": {
+    "message": "Désactiver"
+  },
+  "licenseNetworkError": {
+    "message": "Échec de connexion. Vérifiez votre connexion internet."
+  },
+  "premiumFeatureTag": {
+    "message": "Fonction Premium"
+  },
+  "liveNow": {
+    "message": "En direct"
+  },
+  "updatedMinAgo": {
+    "message": "il y a $MIN$ min",
+    "placeholders": {
+      "MIN": {
+        "content": "$1",
+        "example": "15"
+      }
+    }
+  },
+  "useLicenseKey": {
+    "message": "Utiliser une clé de licence"
+  },
+  "clipboardHijackingCryptoTip": {
+    "message": "Vérifiez toujours les adresses de portefeuille avant d'envoyer des cryptomonnaies. Les attaquants remplacent les adresses dans votre presse-papiers."
+  },
+  "clipboardHijackingTip": {
+    "message": "Ce site tente peut-être de remplacer le contenu que vous copiez. Vérifiez toujours le contenu collé."
+  },
+  "webTransportWarningTitle": {
+    "message": "Activité réseau suspecte"
+  },
+  "webTransportWarningMessage": {
+    "message": "Cette page utilise des protocoles réseau avancés de manière potentiellement suspecte."
+  },
+  "webTransportDirectIP": {
+    "message": "Connexion à une adresse IP directe détectée."
+  },
+  "webTransportHighPort": {
+    "message": "Connexion à un numéro de port inhabituellement élevé."
+  },
+  "webTransportRandomSubdomain": {
+    "message": "Connexion à un sous-domaine aléatoire suspect (serveur C2 possible)."
+  },
+  "webTransportFreeTLD": {
+    "message": "Connexion à un domaine TLD gratuit (souvent utilisé pour les malwares)."
+  },
+  "webTransportHighConnectionRate": {
+    "message": "Taux de connexion anormalement élevé détecté."
+  },
+  "webTransportHighDatagramRate": {
+    "message": "Taux de transfert de données anormalement élevé détecté."
+  },
+  "webTransportObfuscatedUrl": {
+    "message": "URL obscurcie ou encodée détectée."
+  },
+  "webTransportInvalidUrl": {
+    "message": "URL de connexion invalide ou malformée."
+  },
+  "failSafeNetworkTitle": {
+    "message": "Échec de la vérification de licence",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeNetworkMessage": {
+    "message": "Impossible de vérifier la licence en raison de problèmes réseau. La protection reste active en mode sécurisé.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeGraceTitle": {
+    "message": "Vérification de licence requise",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeGraceMessage": {
+    "message": "Veuillez vous connecter à Internet pour vérifier votre licence. La protection reste active.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafePreservedTitle": {
+    "message": "Protection active",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafePreservedMessage": {
+    "message": "Vos règles de protection sont préservées. Veuillez vérifier votre licence dès que possible.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeDefaultTitle": {
+    "message": "Mode sécurisé actif",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeDefaultMessage": {
+    "message": "LinkShield fonctionne en mode sécurisé. La protection reste active.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "visualHijackingDetected": {
+    "message": "Détournement visuel détecté",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "visualHijackingMessage": {
+    "message": "Une superposition cachée a été détectée, tentant d'intercepter votre clic. C'est une technique de phishing courante pour vous rediriger vers des sites malveillants.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "detectionReason": {
+    "message": "Raison de détection",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "closeWarning": {
+    "message": "Fermer",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "transparentHighZIndexOverlay": {
+    "message": "Superposition transparente avec z-index élevé détectée",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "invisibleClickjackOverlay": {
+    "message": "Superposition de clickjacking invisible détectée",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "fullscreenTransparentOverlay": {
+    "message": "Superposition transparente plein écran détectée",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "hiddenLinkOverlay": {
+    "message": "Superposition de lien caché détectée",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "dismissTooltip": {
+    "message": "Fermer",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "dontShowAgain": {
+    "message": "Ne plus afficher ?",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "confirmYes": {
+    "message": "Oui",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "confirmNo": {
+    "message": "Non",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "reportPhishingSuccess": {
+    "message": "Signalé ! Merci de contribuer à améliorer la sécurité.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "pointerEventsHijack": {
+    "message": "Pointer-events click hijacking detected",
+    "description": "[EN fallback] Pointer-events click hijacking detected"
+  },
+  "pointerEventsNoneHighZIndex": {
+    "message": "Superposition invisible avec z-index maximum détectée (risque critique). Cette page tente d'intercepter vos clics."
+  },
+  "intMaxZIndexOverlay": {
+    "message": "Superposition suspecte utilisant z-index maximum détectée (risque critique). C'est une technique courante de détournement de clic."
+  },
+  "fullscreenPointerEventsNone": {
+    "message": "Superposition invisible plein écran détectée (risque critique). Cette page pourrait tenter de capturer vos interactions."
+  },
+  "suspiciousLinkZIndex": {
+    "message": "Ce lien utilise un positionnement z-index extrêmement élevé (risque critique). C'est une technique d'attaque de détournement de clic où des liens malveillants sont superposés au contenu légitime."
+  },
+  "suspiciousContainerZIndex": {
+    "message": "Ce lien se trouve dans un conteneur avec un positionnement z-index suspect (risque critique). La page pourrait tenter de vous inciter à cliquer sur du contenu malveillant."
+  },
+  "dangerousJavascriptUri": {
+    "message": "CRITIQUE: Ce lien contient du code JavaScript exécutable (risque critique). Cliquer pourrait exécuter des scripts malveillants dans votre navigateur."
+  },
+  "dangerousVbscriptUri": {
+    "message": "CRITIQUE: Ce lien contient du code VBScript exécutable (risque critique). C'est une technique d'attaque dangereuse ciblant les systèmes Windows."
+  },
+  "dangerousDataUri": {
+    "message": "CRITIQUE: Ce lien contient des données intégrées qui pourraient exécuter du code (risque critique). Les URI de données peuvent être utilisées pour le phishing ou la diffusion de malware."
+  },
+  "criticalSecurityThreat": {
+    "message": "MENACE DE SÉCURITÉ CRITIQUE: Ce lien a été identifié comme extrêmement dangereux. Ne cliquez en aucun cas."
+  },
+  "mixedScriptAttack": {
+    "message": "CRITIQUE: Cette adresse web mélange des caractères de différents alphabets (ex: Latin et Cyrillique). C'est une attaque de spoofing sophistiquée utilisant des caractères identiques de différents scripts."
+  },
+  "nonAsciiDomain": {
+    "message": "Ce domaine contient des caractères non-ASCII (risque élevé). Les caractères internationaux dans les noms de domaine peuvent être utilisés pour imiter des sites légitimes."
+  },
+  "homoglyphCharactersDetected": {
+    "message": "CRITIQUE: Caractères homoglyphes détectés dans ce domaine (risque critique). Des caractères ressemblant aux lettres latines mais provenant d'autres scripts (ex: Cyrillique) sont utilisés pour imiter un site légitime."
+  },
+  "dangerousBlobUri": {
+    "message": "CRITIQUE: Ce lien contient une URL Blob (risque critique). Les URL Blob peuvent être utilisées pour exécuter du code malveillant ou distribuer des malwares."
+  },
+  "dataUriBlocked": {
+    "message": "CRITIQUE: Ce lien contient une URI data: (risque critique). Les URI data: peuvent exécuter du contenu malveillant directement dans votre navigateur. C'est un vecteur d'attaque courant pour le phishing et les malwares."
+  },
+  "javascriptUriBlocked": {
+    "message": "CRITIQUE: Ce lien contient une URI javascript: (risque critique). Les URI JavaScript peuvent exécuter du code arbitraire dans le contexte de votre navigateur, pouvant voler vos données ou identifiants."
+  },
+  "vbscriptUriBlocked": {
+    "message": "CRITIQUE: Ce lien contient une URI vbscript: (risque critique). Les URI VBScript peuvent exécuter du code dangereux sur les systèmes Windows. C'est une menace de sécurité sérieuse."
+  },
+  "blobUriBlocked": {
+    "message": "CRITIQUE: Ce lien contient une URI blob: (risque critique). Les URI blob peuvent exécuter du code arbitraire ou distribuer des malwares. Ce lien a été bloqué pour votre protection."
+  },
+  "mathematicalCharsDetected": {
+    "message": "Ce domaine contient des caractères Unicode mathématiques (risque élevé). Des symboles mathématiques ressemblant à des lettres normales sont utilisés pour imiter un site web légitime."
+  },
+  "greekCharsDetected": {
+    "message": "Ce domaine contient des caractères grecs mélangés avec des lettres latines (risque élevé). Les lettres grecques comme omicron et nu sont identiques aux 'o' et 'v' latins, ce qui en fait une potentielle attaque de spoofing."
+  },
+  "scriptCharsDetected": {
+    "message": "Ce domaine contient des symboles de type lettre (risque élevé). Des caractères Unicode de script spéciaux sont utilisés pour imiter un site web légitime."
+  },
+  "digitInDomainDetected": {
+    "message": "Ce domaine utilise la substitution de chiffres pour imiter une marque connue (risque élevé). Les chiffres comme 0, 1, 3, 5 sont utilisés à la place des lettres (ex: g00gle, paypa1, amaz0n)."
+  },
+  "visualHijackingRisk": {
+    "message": "CRITIQUE: Attaque de détournement visuel détectée (risque critique). Une superposition transparente tente d'intercepter vos clics et de vous rediriger vers une destination malveillante. Ce lien a été bloqué pour votre protection."
+  },
+  "fullwidthCharsDetected": {
+    "message": "Ce domaine contient des caractères Unicode pleine largeur (risque élevé). Les lettres pleine largeur (comme ａｐｐｌｅ) ressemblent aux lettres normales mais sont des caractères différents, couramment utilisés pour les attaques de phishing."
+  },
+  "cherokeeCharsDetected": {
+    "message": "Ce domaine contient des caractères Cherokee (risque élevé). Les lettres Cherokee ressemblent aux lettres latines (comme ꮓ ressemble à 'z') et sont utilisées pour créer des domaines factices convaincants."
+  },
+  "nonAsciiInBrandDomain": {
+    "message": "Ce domaine contient des caractères non-ASCII dans un contexte de marque (risque élevé). Des caractères spéciaux sont utilisés pour usurper l'identité d'un site Web légitime."
+  },
+  "maliciousDomainKeyword": {
+    "message": "CRITIQUE: Ce domaine contient des mots-clés couramment associés au phishing ou aux logiciels malveillants (risque critique). Le nom de domaine lui-même suggère une intention malveillante."
   }
 }

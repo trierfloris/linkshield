@@ -51,7 +51,7 @@
     "message": "Odkaz obsahuje neobvyklé znaky (nízké riziko). To může být použito ke skrytí skutečného cíle."
   },
   "homoglyphAttack": {
-    "message": "Tato webová adresa používá znaky téměř identické se známou webovou stránkou (vysoké riziko). Toto je trik, jak vás oklamat."
+    "message": "Tato adresa obsahuje podobně vypadající znaky (vysoké riziko). Před zadáním jakýchkoli informací ověřte, že jste na správném webu."
   },
   "metaRedirect": {
     "message": "Tato webová stránka vás automaticky přesměrovává. To může vést na nebezpečnou stránku (střední riziko)."
@@ -114,7 +114,7 @@
     "message": "Skenování na pozadí"
   },
   "backgroundAnalysisDescription": {
-    "message": "Ochrana v reálném čase. Aktualizováno každou hodinu. Celosvětové pokrytí."
+    "message": "Blokuje nejnovější phishingové stránky. Databáze aktualizována každou hodinu."
   },
   "activationRequired": {
     "message": "Povolte tuto funkci pro její použití."
@@ -123,7 +123,7 @@
     "message": "Integrovaná ochrana"
   },
   "integratedProtectionDescription": {
-    "message": "Přímo kontroluje webové stránky a odkazy na rizikové charakteristiky."
+    "message": "Kontroluje každý odkaz na stránce a upozorní vás na podezřelé weby."
   },
   "premiumFeaturesActive": {
     "message": "Nyní používáte prémiovou verzi!"
@@ -240,7 +240,7 @@
     "message": "Bylo nalezeno neznámé riziko. Buďte extra opatrní."
   },
   "typosquattingAttack": {
-    "message": "Tato webová adresa vypadá jako skutečná stránka, ale je záměrně chybně napsaná (vysoké riziko). Může to být falešná verze."
+    "message": "Tato adresa vypadá jako známý web, ale obsahuje malou pravopisnou chybu. Například: 'arnazon.com' místo 'amazon.com'. Před přihlášením vždy zkontrolujte pravopis."
   },
   "downloadKeyword": {
     "message": "Odkaz obsahuje slova související se stahováním (nízké riziko). Otevírejte pouze soubory, kterým důvěřujete."
@@ -252,7 +252,7 @@
     "message": "Odkaz na skript na této stránce je nesprávný."
   },
   "mixedScripts": {
-    "message": "Tato adresa používá směs různých písemných systémů (např. latinky a cyrilice). Toto je známý phishingový trik (vysoké riziko)."
+    "message": "Tato adresa kombinuje písmena z různých abeced (jako angličtina a ruština). I když vypadají stejně, vytvářejí zcela jinou webovou adresu."
   },
   "introBannerMessage": {
     "message": "LinkShield je aktivní a označuje rizikové odkazy pomocí ⚠️. Najeďte myší na ikonu pro zobrazení důvodu."
@@ -261,9 +261,6 @@
     "message": "Tato adresa používá čísla, která vypadají jako písmena, k napodobení známé značky (střední riziko)."
   },
   "trustedTLD": {
-    "message": "Tato doména má standardní příponu domény (nízké riziko)."
-  },
-  "trustedTld": {
     "message": "Tato doména má standardní příponu domény (nízké riziko)."
   },
   "suspiciousPageText": {
@@ -468,10 +465,10 @@
     "message": "Ovládací panel LinkShield"
   },
   "extNameFull": {
-    "message": "LinkShield: Vaše zbraň proti phishingu"
+    "message": "LinkShield: Bezpečně online"
   },
   "extDescriptionFull": {
-    "message": "Zvyšte své zabezpečení s přímými upozorněními a pokročilou ochranou proti online hrozbám."
+    "message": "Chrání vás před falešnými weby, phishingem a online podvody. Surfujte bez starostí."
   },
   "licenseTrialTitle": {
     "message": "Zkušební období: zbývá $DAYS$ dní",
@@ -483,22 +480,25 @@
     }
   },
   "licenseTrialSubtitle": {
-    "message": "Všechny prémiové funkce jsou aktivní během zkušebního období"
+    "message": "Jste plně chráněni. Všechny funkce jsou aktivní."
   },
   "licenseUpgradeLink": {
-    "message": "Upgradovat na Premium →"
+    "message": "Upgradovat na Premium za 1,99 €/měs. (3 zařízení) →"
+  },
+  "licenseAlreadyHaveCode": {
+    "message": "Již máte licenční kód?"
   },
   "licenseExpiredTitle": {
-    "message": "Zkušební období vypršelo"
+    "message": "Vaše prémiové funkce jsou pozastaveny"
   },
   "licenseExpiredSubtitle": {
-    "message": "Aktivujte Premium pro plnou ochranu"
+    "message": "Základní ochrana je stále aktivní. Reaktivujte Premium pro pokročilé skenování a hodinové aktualizace."
   },
   "licenseBenefitsLabel": {
-    "message": "Premium zahrnuje:"
+    "message": "S Premium získáte:"
   },
   "licenseBenefitsText": {
-    "message": "Analýza na pozadí, skenování QR kódů, nepřetržitá ochrana"
+    "message": "Nejnovější phishingové stránky blokovány (aktualizováno každou hodinu), QR kódy skenovány, ochrana 24/7"
   },
   "licenseKeyPlaceholder": {
     "message": "Zadejte licenční kód"
@@ -507,13 +507,37 @@
     "message": "Aktivovat Premium"
   },
   "licenseBuyLink": {
-    "message": "Nemáte licenci? Kupte zde →"
+    "message": "Chraňte se nyní →"
   },
   "licensePremiumTitle": {
-    "message": "Premium aktivní"
+    "message": "Jste chráněni"
   },
   "licensePremiumSubtitle": {
-    "message": "Plná ochrana povolena"
+    "message": "Všechny bezpečnostní funkce jsou aktivní. Děkujeme za důvěru!"
+  },
+  "manageSubscription": {
+    "message": "Spravovat předplatné"
+  },
+  "manageSubscriptionTooltip": {
+    "message": "Změnit platební metodu, zrušit nebo zobrazit faktury"
+  },
+  "licenseDeactivateButton": {
+    "message": "Použít licenční klíč na jiném zařízení"
+  },
+  "licenseDeactivateConfirm": {
+    "message": "Vaše předplatné zůstává aktivní. Toto zařízení přejde na bezplatnou verzi, abyste mohli aktivovat na jiném zařízení."
+  },
+  "licenseDeactivateCancel": {
+    "message": "Zrušit"
+  },
+  "licenseDeactivateConfirmBtn": {
+    "message": "Deaktivovat"
+  },
+  "licenseDeactivating": {
+    "message": "Deaktivace..."
+  },
+  "licenseDeactivatedSuccess": {
+    "message": "Licence deaktivována. Nyní ji můžete aktivovat na jiném zařízení."
   },
   "sectionSecuritySettings": {
     "message": "Nastavení zabezpečení"
@@ -522,13 +546,13 @@
     "message": "Nastavení zabezpečení"
   },
   "backgroundAnalysisFeature": {
-    "message": "Analýza na pozadí"
+    "message": "Automatická ochrana"
   },
   "premiumBadge": {
     "message": "PREMIUM"
   },
   "integratedProtectionFeature": {
-    "message": "Integrovaná ochrana proti malwaru a phishingu"
+    "message": "Chytré skenování odkazů"
   },
   "confirmationMessage": {
     "message": "Nastavení úspěšně uloženo!"
@@ -552,7 +576,7 @@
     "message": "Zkušební období vypršelo"
   },
   "trialExpiredMessage": {
-    "message": "Vaše 30denní zkušební období vypršelo. Aktivujte licenci pro pokračování v používání všech funkcí."
+    "message": "Vaše zkušební období skončilo. Stále máte základní ochranu — upgradujte kdykoli pro obnovení všech funkcí."
   },
   "upgradeNow": {
     "message": "Upgradovat nyní"
@@ -765,7 +789,7 @@
     "message": "Tato licence vypršela."
   },
   "licenseErrorActivationLimit": {
-    "message": "Dosažen limit aktivací."
+    "message": "Dosáhli jste limitu zařízení (3). Přejděte na aktivní zařízení a vyberte 'Použít na jiném zařízení' pro uvolnění místa."
   },
   "licenseErrorInstanceNotFound": {
     "message": "Instance instalace nenalezena."
@@ -1026,7 +1050,7 @@
     "message": "Detekován skrytý iframe na této stránce."
   },
   "typosquatting": {
-    "message": "Detekován typosquatting!"
+    "message": "Zjištěn pravopisný trik: Tento název webu je téměř totožný s důvěryhodným webem, ale s nepatrným rozdílem. Podvodníci to používají k vytváření přesvědčivých falešných stránek."
   },
   "ipAddressDomain": {
     "message": "Tato webová stránka používá IP adresu místo názvu domény."
@@ -1038,7 +1062,7 @@
     "message": "Detekován potenciální vishingový útok."
   },
   "punycodeDetected": {
-    "message": "Detekována Punycode doména!"
+    "message": "Tato webová adresa používá speciální znaky, které vypadají jako běžná písmena, ale nejsou. Například cyrilice 'а' vypadá identicky jako latinka 'a'. Tento trik dělá falešné weby legitimními."
   },
   "reason_nonAscii": {
     "message": "Detekovány podezřelé znaky (homoglyfy)"
@@ -1114,5 +1138,324 @@
   },
   "trustedDomainSkipped": {
     "message": "Tato doména byla vámi označena jako důvěryhodná."
+  },
+  "gracePeriodActive": {
+    "message": "Nepodařilo se ověřit vaši licenci online. Vaše ochrana pokračuje dalších $DAYS$ dní, zatímco to zkoušíme znovu.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "5"
+      }
+    }
+  },
+  "gracePeriodWarning": {
+    "message": "Ověření licence čeká. Připojte se k internetu během příštích $DAYS$ dní pro zachování nepřetržité ochrany.",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "2"
+      }
+    }
+  },
+  "gracePeriodExpired": {
+    "message": "Nepodařilo se ověřit vaši licenci po 7 dní. Připojte se k internetu pro obnovení prémiových funkcí."
+  },
+  "gracePeriodRestored": {
+    "message": "Licence úspěšně ověřena. Vaše ochrana je plně aktivní."
+  },
+  "siteSafeSuccess": {
+    "message": "Nebyly zjištěny žádné hrozby. Tento web prošel všemi bezpečnostními kontrolami."
+  },
+  "siteSafeSuccessDetail": {
+    "message": "LinkShield prověřil tuto stránku na phishing, typosquatting a škodlivé skripty. Vše vypadá v pořádku."
+  },
+  "siteSafeSuccessBadge": {
+    "message": "Ověřeno jako bezpečné"
+  },
+  "exitPage": {
+    "message": "Opustit stránku"
+  },
+  "understandRisk": {
+    "message": "Chápu riziko"
+  },
+  "premiumActive": {
+    "message": "Aktivní"
+  },
+  "premiumRequired": {
+    "message": "PREMIUM"
+  },
+  "backgroundSecurityHelp": {
+    "message": "Vyžaduje aktivní licenci. Aktivujte Premium pro automatickou ochranu."
+  },
+  "sectionProtection": {
+    "message": "Ochrana"
+  },
+  "statusProtected": {
+    "message": "Chráněno"
+  },
+  "statusTrialSub": {
+    "message": "Zkušební · zbývá $DAYS$ dní",
+    "placeholders": {
+      "DAYS": {
+        "content": "$1",
+        "example": "30"
+      }
+    }
+  },
+  "statusPremiumSub": {
+    "message": "Premium · Aktivní"
+  },
+  "statusExpired": {
+    "message": "Ochrana pozastavena"
+  },
+  "statusExpiredSub": {
+    "message": "Obnovte pro plnou ochranu"
+  },
+  "licenseActivateShort": {
+    "message": "Aktivovat"
+  },
+  "licenseDeactivateShort": {
+    "message": "Přenést licenci"
+  },
+  "ctaUpgradeText": {
+    "message": "Upgradovat na Premium"
+  },
+  "ctaUpgradePrice": {
+    "message": "€1,99/měsíc · 3 zařízení"
+  },
+  "ctaRenewText": {
+    "message": "Obnovit ochranu"
+  },
+  "manageBtnText": {
+    "message": "Spravovat předplatné"
+  },
+  "transferBtnText": {
+    "message": "Deaktivovat"
+  },
+  "deactivateDeviceBtn": {
+    "message": "Deaktivovat"
+  },
+  "licenseNetworkError": {
+    "message": "Připojení selhalo. Zkontrolujte internet."
+  },
+  "premiumFeatureTag": {
+    "message": "Prémiová funkce"
+  },
+  "liveNow": {
+    "message": "Živě"
+  },
+  "updatedMinAgo": {
+    "message": "před $MIN$ min",
+    "placeholders": {
+      "MIN": {
+        "content": "$1",
+        "example": "15"
+      }
+    }
+  },
+  "useLicenseKey": {
+    "message": "Použít licenční klíč"
+  },
+  "clipboardHijackingCryptoTip": {
+    "message": "Vždy ověřte adresy peněženek před odesláním kryptoměn. Útočníci nahrazují adresy ve schránce."
+  },
+  "clipboardHijackingTip": {
+    "message": "Tento web se může pokoušet nahradit obsah, který kopírujete. Vždy ověřte vložený obsah."
+  },
+  "webTransportWarningTitle": {
+    "message": "Podezřelá síťová aktivita"
+  },
+  "webTransportWarningMessage": {
+    "message": "Tato stránka používá pokročilé síťové protokoly potenciálně podezřelým způsobem."
+  },
+  "webTransportDirectIP": {
+    "message": "Detekováno připojení k přímé IP adrese."
+  },
+  "webTransportHighPort": {
+    "message": "Připojení k neobvykle vysokému číslu portu."
+  },
+  "webTransportRandomSubdomain": {
+    "message": "Připojení k podezřelé náhodné subdoméně (možný C2 server)."
+  },
+  "webTransportFreeTLD": {
+    "message": "Připojení k bezplatné TLD doméně (často používané pro malware)."
+  },
+  "webTransportHighConnectionRate": {
+    "message": "Detekována neobvykle vysoká frekvence připojení."
+  },
+  "webTransportHighDatagramRate": {
+    "message": "Detekována neobvykle vysoká rychlost přenosu dat."
+  },
+  "webTransportObfuscatedUrl": {
+    "message": "Detekována obfuskovaná nebo zakódovaná URL."
+  },
+  "webTransportInvalidUrl": {
+    "message": "Neplatná nebo poškozená URL připojení."
+  },
+  "failSafeNetworkTitle": {
+    "message": "Ověření licence selhalo",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeNetworkMessage": {
+    "message": "Licenci nelze ověřit kvůli problémům se sítí. Ochrana zůstává aktivní v nouzovém režimu.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeGraceTitle": {
+    "message": "Vyžadováno ověření licence",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeGraceMessage": {
+    "message": "Připojte se k internetu pro ověření licence. Ochrana zůstává aktivní.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafePreservedTitle": {
+    "message": "Ochrana aktivní",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafePreservedMessage": {
+    "message": "Vaše pravidla ochrany jsou zachována. Ověřte licenci, až to bude možné.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeDefaultTitle": {
+    "message": "Nouzový režim aktivní",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "failSafeDefaultMessage": {
+    "message": "LinkShield běží v nouzovém režimu. Ochrana zůstává aktivní.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "visualHijackingDetected": {
+    "message": "Zjištěn vizuální únos",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "visualHijackingMessage": {
+    "message": "Byla zjištěna skrytá překryvná vrstva, která se pokouší zachytit vaše kliknutí. Jedná se o běžnou phishingovou techniku k přesměrování na škodlivé weby.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "detectionReason": {
+    "message": "Důvod detekce",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "closeWarning": {
+    "message": "Zavřít",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "transparentHighZIndexOverlay": {
+    "message": "Zjištěna průhledná překryvná vrstva s vysokým z-indexem",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "invisibleClickjackOverlay": {
+    "message": "Zjištěna neviditelná clickjacking překryvná vrstva",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "fullscreenTransparentOverlay": {
+    "message": "Zjištěna průhledná celoobrazovková překryvná vrstva",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "hiddenLinkOverlay": {
+    "message": "Zjištěna skrytá překryvná vrstva odkazu",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "dismissTooltip": {
+    "message": "Zavřít",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "dontShowAgain": {
+    "message": "Už nezobrazovat?",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "confirmYes": {
+    "message": "Ano",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "confirmNo": {
+    "message": "Ne",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "reportPhishingSuccess": {
+    "message": "Nahlášeno! Děkujeme za pomoc při zlepšování bezpečnosti.",
+    "description": "Translated from EN for v8.0.0 security update"
+  },
+  "pointerEventsHijack": {
+    "message": "Pointer-events click hijacking detected",
+    "description": "[EN fallback] Pointer-events click hijacking detected"
+  },
+  "pointerEventsNoneHighZIndex": {
+    "message": "Detekována neviditelná vrstva s maximálním z-indexem (kritické riziko). Tato stránka se pokouší zachytit vaše kliknutí."
+  },
+  "intMaxZIndexOverlay": {
+    "message": "Detekována podezřelá vrstva používající maximální z-index (kritické riziko). Jedná se o běžnou techniku únosu kliknutí."
+  },
+  "fullscreenPointerEventsNone": {
+    "message": "Detekována celoobrazovková neviditelná vrstva (kritické riziko). Tato stránka se možná pokouší zachytit vaše interakce."
+  },
+  "suspiciousLinkZIndex": {
+    "message": "Tento odkaz používá extrémně vysoké z-index umístění (kritické riziko). Jedná se o techniku útoku click hijacking, kde jsou škodlivé odkazy umístěny nad legitimním obsahem."
+  },
+  "suspiciousContainerZIndex": {
+    "message": "Tento odkaz je uvnitř kontejneru s podezřelým z-index umístěním (kritické riziko). Stránka se vás možná pokouší přimět kliknout na škodlivý obsah."
+  },
+  "dangerousJavascriptUri": {
+    "message": "KRITICKÉ: Tento odkaz obsahuje spustitelný JavaScript kód (kritické riziko). Kliknutí může spustit škodlivé skripty ve vašem prohlížeči."
+  },
+  "dangerousVbscriptUri": {
+    "message": "KRITICKÉ: Tento odkaz obsahuje spustitelný VBScript kód (kritické riziko). Jedná se o nebezpečnou útočnou techniku zaměřenou na systémy Windows."
+  },
+  "dangerousDataUri": {
+    "message": "KRITICKÉ: Tento odkaz obsahuje vložená data, která mohou spustit kód (kritické riziko). Data URI mohou být použity pro phishing nebo šíření malwaru."
+  },
+  "criticalSecurityThreat": {
+    "message": "KRITICKÁ BEZPEČNOSTNÍ HROZBA: Tento odkaz byl identifikován jako extrémně nebezpečný. Za žádných okolností neklikejte."
+  },
+  "mixedScriptAttack": {
+    "message": "KRITICKÉ: Tato webová adresa míchá znaky z různých abeced (např. latinky a cyrilice). Jedná se o sofistikovaný spoofingový útok, kde identické znaky pocházejí z různých písem."
+  },
+  "nonAsciiDomain": {
+    "message": "Tato doména obsahuje ne-ASCII znaky (vysoké riziko). Mezinárodní znaky v názvech domén mohou být použity k napodobování legitimních webů."
+  },
+  "homoglyphCharactersDetected": {
+    "message": "KRITICKÉ: V této doméně byly zjištěny homoglyfové znaky (kritické riziko). Znaky vypadající jako latinská písmena, ale pocházející z jiných písem (např. cyrilice), jsou používány k napodobování legitimního webu."
+  },
+  "dangerousBlobUri": {
+    "message": "KRITICKÉ: Tento odkaz obsahuje Blob URL (kritické riziko). Blob URL mohou být použity ke spuštění škodlivého kódu nebo šíření malwaru."
+  },
+  "dataUriBlocked": {
+    "message": "KRITICKÉ: Tento odkaz obsahuje URI data: (kritické riziko). URI data: mohou spouštět škodlivý obsah přímo ve vašem prohlížeči. Toto je běžný vektor útoku pro phishing a malware."
+  },
+  "javascriptUriBlocked": {
+    "message": "KRITICKÉ: Tento odkaz obsahuje URI javascript: (kritické riziko). URI JavaScript mohou spouštět libovolný kód v kontextu vašeho prohlížeče, potenciálně kradouce vaše data nebo přihlašovací údaje."
+  },
+  "vbscriptUriBlocked": {
+    "message": "KRITICKÉ: Tento odkaz obsahuje URI vbscript: (kritické riziko). URI VBScript mohou spouštět nebezpečný kód na systémech Windows. Toto je vážná bezpečnostní hrozba."
+  },
+  "blobUriBlocked": {
+    "message": "KRITICKÉ: Tento odkaz obsahuje URI blob: (kritické riziko). URI blob mohou spouštět libovolný kód nebo šířit malware. Tento odkaz byl zablokován pro vaši ochranu."
+  },
+  "mathematicalCharsDetected": {
+    "message": "Tato doména obsahuje matematické Unicode znaky (vysoké riziko). Matematické symboly, které vypadají jako normální písmena, jsou používány k napodobení legitimního webu."
+  },
+  "greekCharsDetected": {
+    "message": "Tato doména obsahuje řecká písmena smíchaná s latinskými (vysoké riziko). Řecká písmena jako omikron a ný jsou identická s latinskými 'o' a 'v', což z toho činí potenciální spoofingový útok."
+  },
+  "scriptCharsDetected": {
+    "message": "Tato doména obsahuje symboly podobné písmenům (vysoké riziko). Speciální skriptové Unicode znaky jsou používány k napodobení legitimního webu."
+  },
+  "digitInDomainDetected": {
+    "message": "Tato doména používá nahrazení číslic k napodobení známé značky (vysoké riziko). Čísla 0, 1, 3, 5 jsou používána místo písmen (např. g00gle, paypa1, amaz0n)."
+  },
+  "visualHijackingRisk": {
+    "message": "KRITICKÉ: Detekován vizuální únos (kritické riziko). Průhledná vrstva se pokouší zachytit vaše kliknutí a přesměrovat vás na škodlivý cíl. Tento odkaz byl zablokován pro vaši ochranu."
+  },
+  "fullwidthCharsDetected": {
+    "message": "Tato doména obsahuje Unicode znaky plné šířky (vysoké riziko). Znaky plné šířky (jako ａｐｐｌｅ) vypadají stejně jako běžné znaky, ale jsou to jiné znaky, běžně používané pro phishingové útoky."
+  },
+  "cherokeeCharsDetected": {
+    "message": "Tato doména obsahuje znaky písma Cherokee (vysoké riziko). Písmena Cherokee připomínají latinská písmena (např. ꮓ vypadá jako 'z') a používají se k vytváření přesvědčivých falešných domén."
+  },
+  "nonAsciiInBrandDomain": {
+    "message": "Tato doména obsahuje znaky mimo ASCII v kontextu značky (vysoké riziko). Speciální znaky se používají k napodobování legitimních webových stránek."
+  },
+  "maliciousDomainKeyword": {
+    "message": "KRITICKÉ: Tato doména obsahuje klíčová slova běžně spojovaná s phishingem nebo malwarem (kritické riziko). Samotný název domény naznačuje škodlivý záměr."
   }
 }

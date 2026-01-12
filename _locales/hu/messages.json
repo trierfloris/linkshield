@@ -1394,5 +1394,68 @@
   },
   "suspiciousContainerZIndex": {
     "message": "Ez a link egy gyanús z-index pozicionálású tárolóban van (kritikus kockázat). Az oldal megpróbálhatja rávenni, hogy rosszindulatú tartalomra kattintson."
+  },
+  "dangerousJavascriptUri": {
+    "message": "KRITIKUS: Ez a link futtatható JavaScript kódot tartalmaz (kritikus kockázat). A kattintás rosszindulatú szkripteket futtathat a böngészőben."
+  },
+  "dangerousVbscriptUri": {
+    "message": "KRITIKUS: Ez a link futtatható VBScript kódot tartalmaz (kritikus kockázat). Ez egy veszélyes támadási technika Windows rendszerek ellen."
+  },
+  "dangerousDataUri": {
+    "message": "KRITIKUS: Ez a link beágyazott adatokat tartalmaz, amelyek kódot futtathatnak (kritikus kockázat). A Data URI-k használhatók adathalászathoz vagy malware terjesztéséhez."
+  },
+  "criticalSecurityThreat": {
+    "message": "KRITIKUS BIZTONSÁGI FENYEGETÉS: Ez a link rendkívül veszélyesnek lett azonosítva. Semmilyen körülmények között ne kattintson."
+  },
+  "mixedScriptAttack": {
+    "message": "KRITIKUS: Ez a webcím különböző ábécék karaktereit keveri (pl. Latin és Cirill). Ez egy kifinomult hamisítási támadás, ahol azonos karakterek különböző írásrendszerekből származnak."
+  },
+  "nonAsciiDomain": {
+    "message": "Ez a domain nem-ASCII karaktereket tartalmaz (magas kockázat). A nemzetközi karakterek a domain nevekben használhatók legitim weboldalak megszemélyesítésére."
+  },
+  "homoglyphCharactersDetected": {
+    "message": "KRITIKUS: Homoglif karakterek észlelve ebben a domainben (kritikus kockázat). Latin betűknek látszó, de más írásrendszerekből származó karakterek (pl. Cirill) használatával próbálják megszemélyesíteni a legitim weboldalt."
+  },
+  "dangerousBlobUri": {
+    "message": "KRITIKUS: Ez a link Blob URL-t tartalmaz (kritikus kockázat). A Blob URL-ek használhatók rosszindulatú kód futtatására vagy malware terjesztésére."
+  },
+  "dataUriBlocked": {
+    "message": "KRITIKUS: Ez a link data: URI-t tartalmaz (kritikus kockázat). A data: URI-k rosszindulatú tartalmat futtathatnak közvetlenül a böngészőben. Ez egy gyakori támadási vektor az adathalászathoz és a malware-hez."
+  },
+  "javascriptUriBlocked": {
+    "message": "KRITIKUS: Ez a link javascript: URI-t tartalmaz (kritikus kockázat). A JavaScript URI-k tetszőleges kódot futtathatnak a böngésző kontextusában, potenciálisan ellopva az adatait vagy hitelesítő adatait."
+  },
+  "vbscriptUriBlocked": {
+    "message": "KRITIKUS: Ez a link vbscript: URI-t tartalmaz (kritikus kockázat). A VBScript URI-k veszélyes kódot futtathatnak Windows rendszereken. Ez súlyos biztonsági fenyegetés."
+  },
+  "blobUriBlocked": {
+    "message": "KRITIKUS: Ez a link blob: URI-t tartalmaz (kritikus kockázat). A blob URI-k tetszőleges kódot futtathatnak vagy malware-t terjeszthetnek. Ez a link blokkolva lett az Ön védelme érdekében."
+  },
+  "mathematicalCharsDetected": {
+    "message": "Ez a domain matematikai Unicode karaktereket tartalmaz (magas kockázat). A normál betűkhöz hasonló matematikai szimbólumokat használnak egy legitim weboldal megszemélyesítésére."
+  },
+  "greekCharsDetected": {
+    "message": "Ez a domain görög betűket tartalmaz latin betűkkel keverve (magas kockázat). A görög betűk, mint az omikron és a nü, azonosak a latin 'o' és 'v' betűkkel, ami potenciális spoofing támadássá teszi."
+  },
+  "scriptCharsDetected": {
+    "message": "Ez a domain betűhöz hasonló szimbólumokat tartalmaz (magas kockázat). Speciális Unicode script karaktereket használnak egy legitim weboldal megszemélyesítésére."
+  },
+  "digitInDomainDetected": {
+    "message": "Ez a domain számhelyettesítést használ egy ismert márka megszemélyesítésére (magas kockázat). A 0, 1, 3, 5 számokat betűk helyett használják (pl. g00gle, paypa1, amaz0n)."
+  },
+  "visualHijackingRisk": {
+    "message": "KRITIKUS: Vizuális eltérítési támadás észlelve (kritikus kockázat). Egy átlátszó réteg próbálja elfogni kattintásait és átirányítani egy rosszindulatú célra. Ez a link blokkolva lett az Ön védelme érdekében."
+  },
+  "fullwidthCharsDetected": {
+    "message": "Ez a domain teljes szélességű Unicode karaktereket tartalmaz (magas kockázat). A teljes szélességű betűk (mint ａｐｐｌｅ) azonosnak tűnnek a normál betűkkel, de különböző karakterek, amelyeket gyakran használnak adathalász támadásokhoz."
+  },
+  "cherokeeCharsDetected": {
+    "message": "Ez a domain Cherokee írásjeleket tartalmaz (magas kockázat). A Cherokee betűk hasonlítanak a latin betűkre (például ꮓ úgy néz ki, mint 'z') és meggyőző hamis domainek létrehozására használják."
+  },
+  "nonAsciiInBrandDomain": {
+    "message": "Ez a domain nem-ASCII karaktereket tartalmaz márkaszerű kontextusban (magas kockázat). Speciális karaktereket használnak egy legitim weboldal megszemélyesítésére."
+  },
+  "maliciousDomainKeyword": {
+    "message": "KRITIKUS: Ez a domain gyakran adathalászattal vagy rosszindulatú programokkal kapcsolatos kulcsszavakat tartalmaz (kritikus kockázat). Maga a domain név rosszindulatú szándékra utal."
   }
 }

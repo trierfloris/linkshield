@@ -1388,5 +1388,11 @@
   },
   "fullscreenPointerEventsNone": {
     "message": "Sobreposição invisível em tela cheia detectada (risco crítico). Esta página pode estar tentando capturar suas interações."
+  },
+  "suspiciousLinkZIndex": {
+    "message": "Este link usa posicionamento z-index extremamente alto (risco crítico). Esta é uma técnica de ataque de sequestro de clique onde links maliciosos são colocados acima do conteúdo legítimo."
+  },
+  "suspiciousContainerZIndex": {
+    "message": "Este link está dentro de um contêiner com posicionamento z-index suspeito (risco crítico). A página pode estar tentando enganá-lo para clicar em conteúdo malicioso."
   }
 }

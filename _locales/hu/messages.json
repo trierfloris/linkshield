@@ -1388,5 +1388,11 @@
   },
   "fullscreenPointerEventsNone": {
     "message": "Teljes képernyős láthatatlan réteg észlelve (kritikus kockázat). Ez az oldal megpróbálhatja rögzíteni az interakcióit."
+  },
+  "suspiciousLinkZIndex": {
+    "message": "Ez a link rendkívül magas z-index pozicionálást használ (kritikus kockázat). Ez egy kattintás-eltérítési támadási technika, ahol a rosszindulatú linkeket a legitim tartalom fölé helyezik."
+  },
+  "suspiciousContainerZIndex": {
+    "message": "Ez a link egy gyanús z-index pozicionálású tárolóban van (kritikus kockázat). Az oldal megpróbálhatja rávenni, hogy rosszindulatú tartalomra kattintson."
   }
 }

@@ -3994,13 +3994,22 @@ function showVisualHijackingWarning(reason, targetUrl) {
 }
 
 /**
- * SECURITY FIX v8.0.1 (Vector 3 - Visual Hijack v2):
+ * SECURITY FIX v8.0.2 (Vector 3 - Visual Hijack v2):
  * Globale click interceptor die ALTIJD visual hijacking detecteert voor externe links,
  * ongeacht de risk score. Dit voorkomt click-through aanvallen op "safe" looking links.
+ *
+ * Detecteert:
+ * 1. Overlays met pointer-events: none die clicks doorlaten
+ * 2. Links ZELF met verdacht hoge z-index (INT_MAX aanval)
+ * 3. Fixed/absolute positioned links die over content liggen
  *
  * Draait in capture phase om voor alle andere handlers te komen.
  */
 function initGlobalVisualHijackProtection() {
+  // INT_MAX threshold voor verdachte z-index
+  const SUSPICIOUS_Z_INDEX = 999999;
+  const INT_MAX = 2147483647;
+
   document.addEventListener('click', (event) => {
     // Vind de dichtstbijzijnde link (in geval van nested elements)
     const link = event.target.closest('a[href]');
@@ -4023,7 +4032,50 @@ function initGlobalVisualHijackProtection() {
       return;
     }
 
-    // SECURITY FIX v8.0.1: Detecteer visual hijacking op ELKE externe link click
+    // SECURITY FIX v8.0.2: Check of de LINK ZELF verdacht hoge z-index heeft
+    const linkStyle = window.getComputedStyle(link);
+    const linkZIndex = parseInt(linkStyle.zIndex, 10) || 0;
+    const linkPosition = linkStyle.position;
+
+    // Detecteer INT_MAX z-index aanval op de link zelf
+    if (linkZIndex >= SUSPICIOUS_Z_INDEX) {
+      // Link heeft verdacht hoge z-index - mogelijk clickjack aanval
+      const isPositioned = linkPosition === 'fixed' || linkPosition === 'absolute' || linkPosition === 'relative';
+
+      if (isPositioned) {
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+
+        logDebug(`[Vector3-Global] BLOCKED: Link has suspicious z-index ${linkZIndex} with position: ${linkPosition}`);
+        showVisualHijackingWarning('suspiciousLinkZIndex', link.href);
+        return false;
+      }
+    }
+
+    // Check ook parent elementen voor hoge z-index
+    let parent = link.parentElement;
+    let depth = 0;
+    while (parent && parent !== document.body && depth < 10) {
+      const parentStyle = window.getComputedStyle(parent);
+      const parentZIndex = parseInt(parentStyle.zIndex, 10) || 0;
+      const parentPosition = parentStyle.position;
+
+      if (parentZIndex >= SUSPICIOUS_Z_INDEX &&
+          (parentPosition === 'fixed' || parentPosition === 'absolute')) {
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+
+        logDebug(`[Vector3-Global] BLOCKED: Link parent has suspicious z-index ${parentZIndex}`);
+        showVisualHijackingWarning('suspiciousContainerZIndex', link.href);
+        return false;
+      }
+      parent = parent.parentElement;
+      depth++;
+    }
+
+    // SECURITY FIX v8.0.1: Detecteer visual hijacking overlays op ELKE externe link click
     const hijackCheck = detectVisualHijacking(event.clientX, event.clientY, link);
 
     if (hijackCheck.isHijacked) {
@@ -4040,7 +4092,6 @@ function initGlobalVisualHijackProtection() {
     }
 
     // Extra check: pointer-events manipulatie detectie
-    const linkStyle = window.getComputedStyle(link);
     if (linkStyle.pointerEvents === 'none') {
       // Link heeft pointer-events: none maar kreeg toch een click - verdacht!
       const elementsAtClick = document.elementsFromPoint(event.clientX, event.clientY);

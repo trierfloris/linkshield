@@ -1388,5 +1388,11 @@
   },
   "fullscreenPointerEventsNone": {
     "message": "检测到全屏不可见覆盖层（严重风险）。此页面可能正在尝试捕获您的交互。"
+  },
+  "suspiciousLinkZIndex": {
+    "message": "此链接使用极高的z-index定位（严重风险）。这是一种点击劫持攻击技术，恶意链接被放置在合法内容之上。"
+  },
+  "suspiciousContainerZIndex": {
+    "message": "此链接位于具有可疑z-index定位的容器内（严重风险）。该页面可能试图诱骗您点击恶意内容。"
   }
 }

@@ -1388,5 +1388,11 @@
   },
   "fullscreenPointerEventsNone": {
     "message": "전체 화면 보이지 않는 오버레이 감지 (심각한 위험). 이 페이지가 상호 작용을 캡처하려고 할 수 있습니다."
+  },
+  "suspiciousLinkZIndex": {
+    "message": "이 링크는 매우 높은 z-index 위치 지정을 사용합니다 (심각한 위험). 이것은 악성 링크가 합법적인 콘텐츠 위에 배치되는 클릭 하이재킹 공격 기술입니다."
+  },
+  "suspiciousContainerZIndex": {
+    "message": "이 링크는 의심스러운 z-index 위치 지정을 가진 컨테이너 안에 있습니다 (심각한 위험). 페이지가 악성 콘텐츠를 클릭하도록 속이려고 할 수 있습니다."
   }
 }

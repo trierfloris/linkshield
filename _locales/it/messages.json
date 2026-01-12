@@ -1388,5 +1388,11 @@
   },
   "fullscreenPointerEventsNone": {
     "message": "Rilevata sovrapposizione invisibile a schermo intero (rischio critico). Questa pagina potrebbe tentare di catturare le tue interazioni."
+  },
+  "suspiciousLinkZIndex": {
+    "message": "Questo link utilizza un posizionamento z-index estremamente alto (rischio critico). Questa è una tecnica di attacco click hijacking in cui i link dannosi vengono sovrapposti al contenuto legittimo."
+  },
+  "suspiciousContainerZIndex": {
+    "message": "Questo link è all'interno di un contenitore con posizionamento z-index sospetto (rischio critico). La pagina potrebbe tentare di indurti a cliccare su contenuti dannosi."
   }
 }

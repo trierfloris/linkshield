@@ -1388,5 +1388,11 @@
   },
   "fullscreenPointerEventsNone": {
     "message": "Lapisan tak terlihat layar penuh terdeteksi (risiko kritis). Halaman ini mungkin mencoba menangkap interaksi Anda."
+  },
+  "suspiciousLinkZIndex": {
+    "message": "Tautan ini menggunakan posisi z-index yang sangat tinggi (risiko kritis). Ini adalah teknik serangan pembajakan klik di mana tautan berbahaya ditempatkan di atas konten yang sah."
+  },
+  "suspiciousContainerZIndex": {
+    "message": "Tautan ini berada di dalam wadah dengan posisi z-index yang mencurigakan (risiko kritis). Halaman ini mungkin mencoba menipu Anda untuk mengklik konten berbahaya."
   }
 }

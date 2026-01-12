@@ -1388,5 +1388,11 @@
   },
   "fullscreenPointerEventsNone": {
     "message": "Phát hiện lớp phủ vô hình toàn màn hình (rủi ro nghiêm trọng). Trang này có thể đang cố gắng ghi lại tương tác của bạn."
+  },
+  "suspiciousLinkZIndex": {
+    "message": "Liên kết này sử dụng định vị z-index cực cao (rủi ro nghiêm trọng). Đây là kỹ thuật tấn công chiếm đoạt nhấp chuột trong đó các liên kết độc hại được đặt phía trên nội dung hợp pháp."
+  },
+  "suspiciousContainerZIndex": {
+    "message": "Liên kết này nằm trong một container với vị trí z-index đáng ngờ (rủi ro nghiêm trọng). Trang có thể đang cố gắng lừa bạn nhấp vào nội dung độc hại."
   }
 }

@@ -1388,5 +1388,11 @@
   },
   "fullscreenPointerEventsNone": {
     "message": "Wykryto niewidoczną nakładkę pełnoekranową (krytyczne ryzyko). Ta strona może próbować przechwycić Twoje interakcje."
+  },
+  "suspiciousLinkZIndex": {
+    "message": "Ten link używa ekstremalnie wysokiego pozycjonowania z-index (krytyczne ryzyko). Jest to technika ataku click hijacking, w której złośliwe linki są umieszczane nad legalną treścią."
+  },
+  "suspiciousContainerZIndex": {
+    "message": "Ten link znajduje się w kontenerze z podejrzanym pozycjonowaniem z-index (krytyczne ryzyko). Strona może próbować nakłonić cię do kliknięcia złośliwej treści."
   }
 }

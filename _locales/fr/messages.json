@@ -1388,5 +1388,11 @@
   },
   "fullscreenPointerEventsNone": {
     "message": "Superposition invisible plein écran détectée (risque critique). Cette page pourrait tenter de capturer vos interactions."
+  },
+  "suspiciousLinkZIndex": {
+    "message": "Ce lien utilise un positionnement z-index extrêmement élevé (risque critique). C'est une technique d'attaque de détournement de clic où des liens malveillants sont superposés au contenu légitime."
+  },
+  "suspiciousContainerZIndex": {
+    "message": "Ce lien se trouve dans un conteneur avec un positionnement z-index suspect (risque critique). La page pourrait tenter de vous inciter à cliquer sur du contenu malveillant."
   }
 }

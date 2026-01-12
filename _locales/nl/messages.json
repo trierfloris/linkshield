@@ -1366,5 +1366,11 @@
   },
   "fullscreenPointerEventsNone": {
     "message": "Volledig scherm onzichtbare overlay gedetecteerd (kritiek risico). Deze pagina probeert mogelijk uw interacties vast te leggen."
+  },
+  "suspiciousLinkZIndex": {
+    "message": "Deze link gebruikt een extreem hoge z-index positionering (kritiek risico). Dit is een click hijacking aanvalstechniek waarbij kwaadaardige links boven legitieme content worden geplaatst."
+  },
+  "suspiciousContainerZIndex": {
+    "message": "Deze link bevindt zich in een container met verdachte z-index positionering (kritiek risico). De pagina probeert u mogelijk te misleiden om op kwaadaardige content te klikken."
   }
 }

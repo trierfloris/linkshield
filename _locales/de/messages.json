@@ -1388,5 +1388,11 @@
   },
   "fullscreenPointerEventsNone": {
     "message": "Bildschirmfüllende unsichtbare Überlagerung erkannt (kritisches Risiko). Diese Seite versucht möglicherweise, Ihre Interaktionen abzufangen."
+  },
+  "suspiciousLinkZIndex": {
+    "message": "Dieser Link verwendet eine extrem hohe Z-Index-Positionierung (kritisches Risiko). Dies ist eine Click-Hijacking-Angriffstechnik, bei der bösartige Links über legitimen Inhalten platziert werden."
+  },
+  "suspiciousContainerZIndex": {
+    "message": "Dieser Link befindet sich in einem Container mit verdächtiger Z-Index-Positionierung (kritisches Risiko). Die Seite versucht möglicherweise, Sie zum Klicken auf bösartige Inhalte zu verleiten."
   }
 }

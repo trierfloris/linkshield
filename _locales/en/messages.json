@@ -1366,5 +1366,11 @@
   },
   "fullscreenPointerEventsNone": {
     "message": "Full-screen invisible overlay detected (critical risk). This page may be attempting to capture your interactions."
+  },
+  "suspiciousLinkZIndex": {
+    "message": "This link uses an extremely high z-index positioning (critical risk). This is a click hijacking attack technique where malicious links are layered above legitimate content."
+  },
+  "suspiciousContainerZIndex": {
+    "message": "This link is inside a container with suspicious z-index positioning (critical risk). The page may be attempting to trick you into clicking malicious content."
   }
 }

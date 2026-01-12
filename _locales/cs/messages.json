@@ -1388,5 +1388,11 @@
   },
   "fullscreenPointerEventsNone": {
     "message": "Detekována celoobrazovková neviditelná vrstva (kritické riziko). Tato stránka se možná pokouší zachytit vaše interakce."
+  },
+  "suspiciousLinkZIndex": {
+    "message": "Tento odkaz používá extrémně vysoké z-index umístění (kritické riziko). Jedná se o techniku útoku click hijacking, kde jsou škodlivé odkazy umístěny nad legitimním obsahem."
+  },
+  "suspiciousContainerZIndex": {
+    "message": "Tento odkaz je uvnitř kontejneru s podezřelým z-index umístěním (kritické riziko). Stránka se vás možná pokouší přimět kliknout na škodlivý obsah."
   }
 }

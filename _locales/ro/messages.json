@@ -1388,5 +1388,11 @@
   },
   "fullscreenPointerEventsNone": {
     "message": "Suprapunere invizibilă pe tot ecranul detectată (risc critic). Această pagină ar putea încerca să vă captureze interacțiunile."
+  },
+  "suspiciousLinkZIndex": {
+    "message": "Acest link utilizează o poziționare z-index extrem de înaltă (risc critic). Aceasta este o tehnică de atac click hijacking în care linkurile malițioase sunt plasate deasupra conținutului legitim."
+  },
+  "suspiciousContainerZIndex": {
+    "message": "Acest link este într-un container cu poziționare z-index suspectă (risc critic). Pagina ar putea încerca să vă păcălească să faceți clic pe conținut malițios."
   }
 }

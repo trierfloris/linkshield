@@ -1388,5 +1388,11 @@
   },
   "fullscreenPointerEventsNone": {
     "message": "Tam ekran görünmez kaplama algılandı (kritik risk). Bu sayfa etkileşimlerinizi yakalamaya çalışıyor olabilir."
+  },
+  "suspiciousLinkZIndex": {
+    "message": "Bu bağlantı aşırı yüksek z-index konumlandırması kullanıyor (kritik risk). Bu, kötü amaçlı bağlantıların meşru içeriğin üzerine yerleştirildiği bir tıklama kaçırma saldırı tekniğidir."
+  },
+  "suspiciousContainerZIndex": {
+    "message": "Bu bağlantı şüpheli z-index konumlandırmasına sahip bir kapsayıcının içinde (kritik risk). Sayfa sizi kötü amaçlı içeriğe tıklamaya kandırmaya çalışıyor olabilir."
   }
 }

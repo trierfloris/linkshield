@@ -150,7 +150,10 @@ window.CONFIG = {
         'bubbleapps.io', 'typedream.app', 'codeanyapp.com', 'carrd.co',
         'surge.sh', 'replit.dev', 'repl.co',
         // Edge/CDN platforms
-        'edgecompute.app', 'durable.co', 'liveblocks.io'
+        'edgecompute.app', 'durable.co', 'liveblocks.io',
+        // AI/ML hosting platforms (veel misbruikt voor AI-gegenereerde phishing in 2026)
+        'huggingface.co', 'hf.space', 'spaces.huggingface.co', 'gradio.app',
+        'streamlit.app', 'replicate.com'
     ],
 
     // Verkorte URL Domeinen (algemene shorteners - mogelijk verdacht)
@@ -519,21 +522,10 @@ SUSPICIOUS_URL_PATTERNS: [
             controlClasses: /\b(close|minimize|maximize|window-control|btn-close|modal-close|title-?bar|window-?header|traffic-?light)\b/i
         },
 
-        // Domeinen waar BitB detectie wordt uitgeschakeld (legitieme OAuth providers)
-        // Deze domeinen hosten zelf login functionaliteit en zullen geen BitB attacks hosten
-        domainWhitelist: [
-            'facebook.com',           // Facebook login & Business Manager
-            'business.facebook.com',  // Meta Business Suite
-            'meta.com',               // Meta platforms
-            'accounts.google.com',    // Google OAuth
-            'login.microsoftonline.com', // Microsoft OAuth
-            'appleid.apple.com',      // Apple ID
-            'github.com',             // GitHub OAuth
-            'auth0.com',              // Auth0 identity
-            'okta.com',               // Okta identity
-            'login.yahoo.com',        // Yahoo login
-            'accounts.zoho.com'       // Zoho accounts
-        ],
+        // DEPRECATED: domainWhitelist is no longer used here.
+        // All trusted domains are now centrally managed in TrustedDomains.json
+        // The isTrustedDomain() function in content.js checks this list for ALL scans
+        // (ClickFix, BitB, risk analysis, etc.)
 
         // Score thresholds voor alert levels
         thresholds: {
@@ -561,5 +553,54 @@ SUSPICIOUS_URL_PATTERNS: [
     // Domein Risicogewichten (verfijnd met recente data)
     domainRiskWeights: {
         'microsoft.com': 10, 'paypal.com': 8, 'outlook.com': 7, 'apple.com': 6, 'google.com': 5, 'linkedin.com': 4, 'chat.openai.com': 4, 'amazon.com': 3, 'facebook.com': 3, 'instagram.com': 3, 'opensea.io': 3, 'auth0.com': 3, 'teladoc.com': 3, 'zoom.us': 3, 'signal.org': 3, 'cloudflare.com': 3, 'nokia.com': 3, 'idquantique.com': 3, 'neuralink.com': 3, 'netflix.com': 2, 'whatsapp.com': 2, 'x.com': 2, 'decentraland.org': 2, 'ecosia.org': 2, 'smartcityexpo.com': 2, 'alibaba.com': 1, 'adobe.com': 1, 'dropbox.com': 1
+    },
+
+    // WebTransport/HTTP3 Monitoring - Detecteert misbruik van moderne protocols voor C2/exfiltration
+    WEBTRANSPORT_MONITORING: {
+        enabled: true,
+
+        // Verdachte endpoint patronen
+        suspiciousEndpoints: [
+            /^https?:\/\/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/i,  // Direct IP address
+            /^https?:\/\/[^\/]+:\d{5,}/i,                        // High port numbers (10000+)
+            /^https?:\/\/[^\/]+\.onion/i,                        // Tor hidden services
+            /^https?:\/\/[a-z0-9]{32,}\.[^\/]+/i,                // Random subdomain (C2 indicator)
+            /^https?:\/\/[^\/]+\.(tk|ml|ga|cf|gq)\//i,           // Free TLDs often used for C2
+        ],
+
+        // Bekende legitieme WebTransport endpoints (whitelist)
+        trustedEndpoints: [
+            /^https:\/\/[^\/]*\.google\.com/i,
+            /^https:\/\/[^\/]*\.googleapis\.com/i,
+            /^https:\/\/[^\/]*\.cloudflare\.com/i,
+            /^https:\/\/[^\/]*\.fastly\.com/i,
+            /^https:\/\/[^\/]*\.akamai\.com/i,
+            /^https:\/\/[^\/]*\.microsoft\.com/i,
+            /^https:\/\/[^\/]*\.azure\.com/i,
+            /^https:\/\/[^\/]*\.amazonaws\.com/i,
+            /^https:\/\/[^\/]*\.facebook\.com/i,
+            /^https:\/\/[^\/]*\.meta\.com/i,
+        ],
+
+        // Gedragsdrempels
+        thresholds: {
+            maxConnectionsPerMinute: 10,      // Meer = verdacht
+            maxDatagramsPerSecond: 100,       // Bulk data = verdacht
+            maxStreamsPerConnection: 50,      // Veel streams = C2 indicator
+            connectionTrackingWindowMs: 300000, // 5 minuten tracking window
+        },
+
+        // Risk scores per indicator type
+        scores: {
+            directIP: 8,           // Direct IP connection
+            highPort: 4,           // Unusual port number
+            randomSubdomain: 6,    // Random C2-like subdomain
+            freeTLD: 5,            // Free TLD endpoint
+            nrdEndpoint: 10,       // Newly registered domain endpoint
+            highConnectionRate: 5, // Too many connections
+            highDatagramRate: 6,   // Bulk data transfer
+            obfuscatedUrl: 7,      // Base64/encoded URL components
+            invalidUrl: 5,         // Malformed URL
+        }
     }
 };

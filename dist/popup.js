@@ -1,461 +1,429 @@
 // =============================
-// popup.js - Volledig meertalige versie
+// popup.js - Premium Business Card Edition
 // =============================
 
 document.addEventListener('DOMContentLoaded', function () {
-    // Elementverwijzingen - Basis
-    const saveButton = document.getElementById('saveSettings');
+    // Elements
+    const statusCard = document.getElementById('statusCard');
+    const statusIcon = document.getElementById('statusIcon');
+    const statusTitle = document.getElementById('statusTitle');
+    const statusSubText = document.getElementById('statusSubText');
+    const premiumBadge = document.getElementById('premiumBadge');
+    const trialProgress = document.getElementById('trialProgress');
+    const ctaButton = document.getElementById('ctaButton');
+    const ctaText = document.getElementById('ctaText');
+    const ctaPrice = document.getElementById('ctaPrice');
+    const divider = document.getElementById('divider');
+    const licenseSection = document.getElementById('licenseSection');
+    const licenseInput = document.getElementById('licenseInput');
+    const activateBtn = document.getElementById('activateBtn');
+    const activateBtnText = document.getElementById('activateBtnText');
+    const spinner = document.getElementById('spinner');
+    const licenseError = document.getElementById('licenseError');
+    const premiumManagement = document.getElementById('premiumManagement');
+    const premiumEmail = document.getElementById('premiumEmail');
+    const manageBtn = document.getElementById('manageBtn');
+    const manageBtnText = document.getElementById('manageBtnText');
+    const transferBtn = document.getElementById('transferBtn');
+    const transferBtnText = document.getElementById('transferBtnText');
+    const deactivateConfirm = document.getElementById('deactivateConfirm');
+    const deactivateText = document.getElementById('deactivateText');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const confirmBtn = document.getElementById('confirmBtn');
+    const sectionLabel = document.getElementById('sectionLabel');
+    const toggle1Title = document.getElementById('toggle1Title');
+    const toggle1Desc = document.getElementById('toggle1Desc');
+    const toggle2Title = document.getElementById('toggle2Title');
+    const toggle2Desc = document.getElementById('toggle2Desc');
     const backgroundSecurity = document.getElementById('backgroundSecurity');
     const integratedProtection = document.getElementById('integratedProtection');
-    const lastRuleUpdateDisplay = document.getElementById('lastRuleUpdateDisplay');
-    const confirmationMessage = document.getElementById('confirmationMessage');
+    const toggle1Help = document.getElementById('toggle1Help');
+    const toggle1Tooltip = document.getElementById('toggle1Tooltip');
+    const premiumTag = document.getElementById('premiumTag');
+    const liveBadge = document.getElementById('liveBadge');
+    const footer = document.getElementById('footer');
+    const toast = document.getElementById('toast');
+    const licenseToggleLink = document.getElementById('licenseToggleLink');
 
-    // Licentie-elementen
-    const licenseStatusBox = document.getElementById('licenseStatusBox');
-    const licenseTrialView = document.getElementById('licenseTrialView');
-    const licenseExpiredView = document.getElementById('licenseExpiredView');
-    const licensePremiumView = document.getElementById('licensePremiumView');
-    const licenseTrialTitle = document.getElementById('licenseTrialTitle');
-    const premiumEmail = document.getElementById('premiumEmail');
-    const premiumBadge = document.getElementById('premiumBadge');
-    const licenseKeyInput = document.getElementById('licenseKeyInput');
-    const activateLicenseBtn = document.getElementById('activateLicenseBtn');
-    const licenseErrorMsg = document.getElementById('licenseErrorMsg');
-
-    // Trial status cache
     let trialStatus = null;
+    let licenseExpanded = false;
+    const TRIAL_DAYS = 30;
 
-    // -------------------------------
-    // i18n Hulpfuncties
-    // -------------------------------
+    // Icons
+    const ICONS = {
+        check: '<polyline points="20 6 9 17 4 12"/>',
+        warning: '<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>'
+    };
 
-    /**
-     * Haalt een vertaling op met optionele placeholders
-     * @param {string} key - i18n sleutel
-     * @param {Array} substitutions - Optionele waarden voor placeholders
-     * @returns {string}
-     */
-    function getMessage(key, substitutions = []) {
-        return chrome.i18n.getMessage(key, substitutions) || key;
+    // i18n
+    function msg(key, subs = []) {
+        return chrome.i18n.getMessage(key, subs) || key;
     }
 
-    /**
-     * Stelt tekst in voor een element met fallback
-     * @param {string} id - Element ID
-     * @param {string} messageKey - i18n sleutel
-     * @param {Array} substitutions - Optionele placeholders
-     */
-    function setText(id, messageKey, substitutions = []) {
-        const element = document.getElementById(id);
-        if (element) {
-            element.textContent = getMessage(messageKey, substitutions);
-        }
+    // Toast
+    function showToast(message, duration = 2000) {
+        toast.textContent = message;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), duration);
     }
 
-    /**
-     * Stelt placeholder attribuut in voor een input element
-     * @param {string} id - Element ID
-     * @param {string} messageKey - i18n sleutel
-     */
-    function setPlaceholder(id, messageKey) {
-        const element = document.getElementById(id);
-        if (element) {
-            element.placeholder = getMessage(messageKey);
-        }
-    }
-
-    // -------------------------------
-    // Vertalingen laden
-    // -------------------------------
+    // Load translations
     function loadTranslations() {
-        // Basis elementen
-        setText('extName', 'extNameFull');
-        setText('extDescription', 'extDescriptionFull');
+        sectionLabel.textContent = msg('sectionProtection');
+        toggle1Title.textContent = msg('backgroundAnalysisFeature');
+        toggle1Desc.textContent = msg('backgroundAnalysisDescription');
+        toggle2Title.textContent = msg('integratedProtectionFeature');
+        toggle2Desc.textContent = msg('integratedProtectionDescription');
+        toggle1Tooltip.textContent = msg('backgroundSecurityHelp');
 
-        // Sectie titels en features
-        setText('backgroundAnalysisTitle', 'backgroundAnalysisTitle');
-        setText('backgroundAnalysisFeature', 'backgroundAnalysisFeature');
-        setText('backgroundAnalysisDescription', 'backgroundAnalysisDescription');
-        setText('integratedProtectionFeature', 'integratedProtectionFeature');
-        setText('integratedProtectionDescription', 'integratedProtectionDescription');
-        setText('premiumBadge', 'premiumBadge');
-
-        // Knoppen
-        setText('saveSettings', 'saveSettings');
-        setText('activateLicenseBtn', 'licenseActivateButton');
-
-        // Licentie - Trial view
-        setText('licenseTrialSubtitle', 'licenseTrialSubtitle');
-        setText('licenseUpgradeLink', 'licenseUpgradeLink');
-
-        // Licentie - Expired view
-        setText('licenseExpiredTitle', 'licenseExpiredTitle');
-        setText('licenseExpiredSubtitle', 'licenseExpiredSubtitle');
-        setText('licenseBenefitsLabel', 'licenseBenefitsLabel');
-        setText('licenseBenefitsText', 'licenseBenefitsText');
-        setText('licenseBuyLink', 'licenseBuyLink');
-        setPlaceholder('licenseKeyInput', 'licenseKeyPlaceholder');
-
-        // Licentie - Premium view
-        setText('licensePremiumTitle', 'licensePremiumTitle');
-        setText('premiumEmail', 'licensePremiumSubtitle');
-
-        // Debug panel
-        setText('debugModeTitle', 'debugModeTitle');
-        setText('debugTrial30', 'debugTrial30');
-        setText('debugTrial3', 'debugTrial3');
-        setText('debugExpired', 'debugExpired');
-        setText('debugPremium', 'debugPremium');
-        setText('debugReset', 'debugReset');
+        licenseInput.placeholder = msg('licenseKeyPlaceholder');
+        activateBtnText.textContent = msg('licenseActivateShort');
+        manageBtnText.textContent = msg('manageBtnText');
+        transferBtnText.textContent = msg('transferBtnText');
+        deactivateText.textContent = msg('licenseDeactivateConfirm');
+        cancelBtn.textContent = msg('licenseDeactivateCancel');
+        confirmBtn.textContent = msg('deactivateDeviceBtn');
     }
 
-    // -------------------------------
-    // Centrale foutafhandeling
-    // -------------------------------
-    function handleError(error, context) {
-        console.error(`[${context}] ${error.message}`, error);
-        showConfirmationMessage(getMessage('errorOccurred'), 'red');
-    }
-
-    // -------------------------------
-    // Proefperiode en UI-hulpfuncties
-    // -------------------------------
-
-    /**
-     * Haalt de proefperiode status op
-     */
+    // Get trial status
     async function getTrialStatus() {
         if (trialStatus) return trialStatus;
 
         try {
             const response = await new Promise((resolve, reject) => {
-                chrome.runtime.sendMessage({ action: 'checkTrialStatus' }, (response) => {
-                    if (chrome.runtime.lastError) {
-                        reject(chrome.runtime.lastError);
-                    } else if (response) {
-                        resolve(response);
-                    } else {
-                        reject(new Error('No response from background'));
-                    }
+                chrome.runtime.sendMessage({ action: 'checkTrialStatus' }, (res) => {
+                    if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+                    else if (res) resolve(res);
+                    else reject(new Error('No response'));
                 });
             });
             trialStatus = response;
             return response;
-        } catch (error) {
-            console.warn('[Popup] Background unavailable, checking storage directly:', error.message);
+        } catch (e) {
+            console.warn('[Popup] Background unavailable:', e.message);
         }
 
-        // Fallback: check storage direct
+        // Fallback
         try {
             const data = await chrome.storage.sync.get(['installDate', 'trialDays', 'licenseValid']);
-
             if (data.licenseValid === true) {
                 trialStatus = { isActive: false, daysRemaining: 0, isExpired: false, hasLicense: true };
                 return trialStatus;
             }
-
-            const TRIAL_DAYS = data.trialDays || 30;
-            const MS_PER_DAY = 24 * 60 * 60 * 1000;
-
+            const days = data.trialDays || TRIAL_DAYS;
+            const MS_PER_DAY = 86400000;
             if (!data.installDate) {
-                await chrome.storage.sync.set({ installDate: Date.now(), trialDays: TRIAL_DAYS });
-                trialStatus = { isActive: true, daysRemaining: TRIAL_DAYS, isExpired: false, hasLicense: false };
+                await chrome.storage.sync.set({ installDate: Date.now(), trialDays: days });
+                trialStatus = { isActive: true, daysRemaining: days, isExpired: false, hasLicense: false };
                 return trialStatus;
             }
-
-            const daysSinceInstall = Math.floor((Date.now() - data.installDate) / MS_PER_DAY);
-            const daysRemaining = Math.max(0, TRIAL_DAYS - daysSinceInstall);
-            const isExpired = daysRemaining <= 0;
-
-            trialStatus = {
-                isActive: !isExpired,
-                daysRemaining: daysRemaining,
-                isExpired: isExpired,
-                hasLicense: false
-            };
+            const daysSince = Math.floor((Date.now() - data.installDate) / MS_PER_DAY);
+            const remaining = Math.max(0, days - daysSince);
+            trialStatus = { isActive: remaining > 0, daysRemaining: remaining, isExpired: remaining <= 0, hasLicense: false };
             return trialStatus;
-        } catch (storageError) {
-            console.error('[Popup] Storage check failed:', storageError);
-            return { isActive: true, daysRemaining: 30, isExpired: false, hasLicense: false };
+        } catch (e) {
+            return { isActive: true, daysRemaining: TRIAL_DAYS, isExpired: false, hasLicense: false };
         }
     }
 
-    function showConfirmationMessage(message, color = 'green', duration = 3000) {
-        if (confirmationMessage) {
-            confirmationMessage.textContent = message;
-            confirmationMessage.style.display = 'block';
-            confirmationMessage.style.color = color;
-            setTimeout(() => {
-                confirmationMessage.style.display = 'none';
-            }, duration);
-        }
-    }
-
-    /**
-     * Update de licentie-UI gebaseerd op trial status
-     */
-    async function updateUIForTrialPeriod() {
+    // Update UI
+    async function updateUI() {
         const status = await getTrialStatus();
         const hasAccess = status.hasLicense || status.isActive;
-        const isExpiredWithoutLicense = !status.isActive && !status.hasLicense;
 
-        // Checkbox status forceren bij verlopen trial
-        if (backgroundSecurity) {
-            backgroundSecurity.disabled = !hasAccess;
-
-            // Forceer checkbox UIT bij verlopen trial zonder licentie
-            if (isExpiredWithoutLicense) {
-                backgroundSecurity.checked = false;
-                // Ook opslaan in storage om consistentie te garanderen
-                chrome.storage.sync.set({ backgroundSecurity: false });
-            }
-        }
-
-        // Reset alle views
-        if (licenseTrialView) licenseTrialView.style.display = 'none';
-        if (licenseExpiredView) licenseExpiredView.style.display = 'none';
-        if (licensePremiumView) licensePremiumView.style.display = 'none';
+        // Toggle states
+        backgroundSecurity.disabled = !hasAccess;
 
         if (status.hasLicense) {
-            // Premium actief
-            if (licenseStatusBox) licenseStatusBox.className = 'license-status-box premium';
-            if (licensePremiumView) licensePremiumView.style.display = 'block';
-            if (premiumBadge) premiumBadge.style.display = 'inline';
+            // === PREMIUM ===
+            statusCard.className = 'status-card premium';
+            statusIcon.innerHTML = ICONS.check;
+            statusTitle.textContent = msg('statusProtected');
+            statusSubText.textContent = msg('statusPremiumSub');
 
-            // Toon email indien beschikbaar
+            // Hide help icon and PRO tag for premium users (they already have it)
+            toggle1Help.style.display = 'none';
+            premiumTag.classList.add('hidden');
+
+            ctaButton.style.display = 'none';
+            licenseToggleLink.classList.add('hidden');
+            divider.classList.add('hidden');
+            licenseSection.classList.remove('show');
+            premiumManagement.classList.add('show');
+
             const data = await chrome.storage.sync.get(['licenseEmail']);
-            if (premiumEmail && data.licenseEmail) {
-                premiumEmail.textContent = data.licenseEmail;
-            }
+            premiumEmail.textContent = data.licenseEmail || '';
+
         } else if (status.isActive) {
-            // Trial actief
-            if (licenseStatusBox) licenseStatusBox.className = 'license-status-box trial';
-            if (licenseTrialView) licenseTrialView.style.display = 'block';
-            if (licenseTrialTitle) {
-                licenseTrialTitle.textContent = getMessage('licenseTrialTitle', [status.daysRemaining.toString()]);
+            // === TRIAL ===
+            statusCard.className = 'status-card trial';
+            statusIcon.innerHTML = ICONS.check;
+            statusTitle.textContent = msg('statusProtected');
+            statusSubText.textContent = msg('statusTrialSub', [status.daysRemaining.toString()]);
+
+            // Progress bar with dynamic color
+            const progress = (status.daysRemaining / TRIAL_DAYS) * 100;
+            trialProgress.style.width = progress + '%';
+
+            // Change color based on days remaining: green > 5 days, orange <= 5 days
+            if (status.daysRemaining <= 5) {
+                trialProgress.style.background = 'linear-gradient(90deg, #f59e0b 0%, #fbbf24 100%)';
+                statusCard.classList.add('urgent');
+            } else {
+                trialProgress.style.background = 'linear-gradient(90deg, #10b981 0%, #34d399 100%)';
+                statusCard.classList.remove('urgent');
             }
-            if (premiumBadge) premiumBadge.style.display = 'none';
+
+            ctaButton.style.display = 'block';
+            ctaButton.className = 'cta-button';
+            ctaText.textContent = msg('ctaUpgradeText');
+            ctaPrice.textContent = msg('ctaUpgradePrice');
+
+            // Trial: compact view - hide license section by default, show toggle link
+            licenseToggleLink.classList.remove('hidden');
+            licenseToggleLink.textContent = msg('useLicenseKey') || 'Use license key';
+            if (!licenseExpanded) {
+                divider.classList.add('hidden');
+                licenseSection.classList.remove('show');
+            } else {
+                divider.classList.remove('hidden');
+                licenseSection.classList.add('show');
+            }
+            premiumManagement.classList.remove('show');
+
+            // Show help icon and PRO tag for trial users to understand premium value
+            toggle1Help.style.display = 'block';
+            premiumTag.classList.remove('hidden');
+
         } else {
-            // Trial verlopen - STRIKTE RESTRICTIES
-            if (licenseStatusBox) licenseStatusBox.className = 'license-status-box expired';
-            if (licenseExpiredView) licenseExpiredView.style.display = 'block';
+            // === EXPIRED ===
+            statusCard.className = 'status-card expired';
+            statusIcon.innerHTML = ICONS.warning;
+            statusTitle.textContent = msg('statusExpired');
+            statusSubText.textContent = msg('statusExpiredSub');
 
-            // Premium badge duidelijk zichtbaar om upgrade te stimuleren
-            if (premiumBadge) {
-                premiumBadge.style.display = 'inline';
-                premiumBadge.style.color = '#dc2626'; // Rode kleur voor urgentie
-                premiumBadge.style.fontWeight = 'bold';
-            }
+            trialProgress.style.width = '0%';
+
+            ctaButton.style.display = 'block';
+            ctaButton.className = 'cta-button red';
+            ctaText.textContent = msg('ctaRenewText');
+            ctaPrice.textContent = msg('ctaUpgradePrice');
+
+            // Expired: show license section directly (more urgent to activate)
+            licenseToggleLink.classList.add('hidden');
+            divider.classList.remove('hidden');
+            licenseSection.classList.add('show');
+            premiumManagement.classList.remove('show');
+
+            // Show help icon and PRO tag for expired users
+            toggle1Help.style.display = 'block';
+            premiumTag.classList.remove('hidden');
+
+            backgroundSecurity.checked = false;
+            await chrome.storage.sync.set({ backgroundSecurity: false });
         }
     }
 
-    // -------------------------------
-    // Instellingen initialiseren
-    // -------------------------------
-    async function initializeSettings() {
+    // Auto-save
+    async function autoSave(key, value) {
+        const status = await getTrialStatus();
+        if (key === 'backgroundSecurity' && value && !(status.hasLicense || status.isActive)) {
+            backgroundSecurity.checked = false;
+            return;
+        }
         try {
-            let result = await chrome.storage.sync.get(['backgroundSecurity', 'integratedProtection']);
-            result = result || {};
-
-            if (typeof result !== "object" || !("backgroundSecurity" in result) || !("integratedProtection" in result)) {
-                result = { backgroundSecurity: false, integratedProtection: false };
-            }
-
-            if (backgroundSecurity) backgroundSecurity.checked = result.backgroundSecurity;
-            if (integratedProtection) integratedProtection.checked = result.integratedProtection;
-
-            await updateUIForTrialPeriod();
-        } catch (error) {
-            handleError(error, "initializeSettings");
+            await chrome.storage.sync.set({ [key]: value });
+            showToast(msg('settingsSaved'));
+        } catch (e) {
+            showToast(msg('errorOccurred'));
         }
     }
 
-    async function displayLastRuleUpdate() {
+    // Init settings
+    async function initSettings() {
+        try {
+            const r = await chrome.storage.sync.get(['backgroundSecurity', 'integratedProtection']);
+            backgroundSecurity.checked = r.backgroundSecurity || false;
+            integratedProtection.checked = r.integratedProtection || false;
+        } catch (e) {}
+    }
+
+    // Last update with dynamic Live badge
+    async function displayLastUpdate() {
         try {
             const { lastRuleUpdate } = await chrome.storage.local.get('lastRuleUpdate');
-            if (lastRuleUpdate && lastRuleUpdateDisplay) {
-                const locale = chrome.i18n.getUILanguage() || 'en-US';
-                lastRuleUpdateDisplay.innerHTML = getMessage("lastRuleUpdate") +
-                    "<br>" +
-                    new Intl.DateTimeFormat(locale, {
-                        day: '2-digit',
-                        month: 'long',
-                        year: 'numeric',
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        second: '2-digit',
-                        hour12: false,
-                        timeZone: 'Europe/Amsterdam'
-                    }).format(new Date(lastRuleUpdate));
-            } else if (lastRuleUpdateDisplay) {
-                lastRuleUpdateDisplay.textContent = getMessage("lastRuleUpdateNone");
-            }
-        } catch (error) {
-            handleError(error, "displayLastRuleUpdate");
-        }
-    }
+            if (lastRuleUpdate) {
+                const now = Date.now();
+                const updateTime = new Date(lastRuleUpdate).getTime();
+                const minutesAgo = Math.floor((now - updateTime) / 60000);
 
-    // -------------------------------
-    // Save Button Handler
-    // -------------------------------
-    if (saveButton) {
-        saveButton.addEventListener('click', async function () {
-            // Haal actuele trial status op voor beveiliging
-            const status = await getTrialStatus();
-            const isExpiredWithoutLicense = !status.isActive && !status.hasLicense;
-
-            // Bepaal backgroundSecurity waarde met bescherming tegen manipulatie
-            let backgroundSecurityValue = backgroundSecurity ? backgroundSecurity.checked : false;
-
-            // BEVEILIGING: Forceer false bij verlopen trial zonder licentie
-            // Dit voorkomt dat gebruikers via HTML manipulatie de beveiliging omzeilen
-            if (isExpiredWithoutLicense && backgroundSecurityValue === true) {
-                backgroundSecurityValue = false;
-                console.warn('[Popup] Poging om backgroundSecurity in te schakelen zonder geldige licentie geblokkeerd');
-            }
-
-            const settings = {
-                backgroundSecurity: backgroundSecurityValue,
-                integratedProtection: integratedProtection ? integratedProtection.checked : false,
-            };
-
-            try {
-                await chrome.storage.sync.set(settings);
-                showConfirmationMessage(getMessage("settingsSaved"));
-            } catch (error) {
-                handleError(error, "saveSettings");
-            }
-        });
-    }
-
-    // -------------------------------
-    // Lemon Squeezy Error Vertaling
-    // -------------------------------
-
-    /**
-     * Vertaalt Lemon Squeezy API foutmeldingen via i18n
-     */
-    function translateLicenseError(errorMessage) {
-        if (!errorMessage) return getMessage('licenseErrorUnknown');
-
-        // Mapping van Lemon Squeezy errors naar i18n keys
-        const errorKeyMap = {
-            // Lemon Squeezy specifieke foutmeldingen
-            'license key was not found': 'licenseErrorNotFound',
-            'license key not found': 'licenseErrorNotFound',
-            'has been disabled': 'licenseErrorDisabled',
-            'has expired': 'licenseErrorExpired',
-            'activation limit': 'licenseErrorActivationLimit',
-            'instance not found': 'licenseErrorInstanceNotFound',
-            'invalid': 'licenseErrorInvalid',
-            // Generieke netwerkfouten
-            'network': 'licenseErrorNetwork',
-            'timeout': 'licenseErrorNetwork',
-            'fetch': 'licenseErrorNetwork'
-        };
-
-        const lowerError = errorMessage.toLowerCase();
-
-        // Zoek gedeeltelijke match (case-insensitive)
-        for (const [pattern, key] of Object.entries(errorKeyMap)) {
-            if (lowerError.includes(pattern.toLowerCase())) {
-                const translated = getMessage(key);
-                // Als i18n key niet bestaat, gebruik fallback
-                return translated !== key ? translated : errorMessage;
-            }
-        }
-
-        // Fallback: originele foutmelding
-        return errorMessage;
-    }
-
-    // -------------------------------
-    // Licentie Activatie Handler
-    // -------------------------------
-    if (activateLicenseBtn && licenseKeyInput) {
-        activateLicenseBtn.addEventListener('click', async function () {
-            const licenseCode = licenseKeyInput.value.trim();
-
-            if (!licenseCode) {
-                if (licenseErrorMsg) {
-                    licenseErrorMsg.textContent = getMessage('licenseEmptyError');
-                    licenseErrorMsg.style.display = 'block';
-                }
-                return;
-            }
-
-            // Loading state
-            activateLicenseBtn.textContent = getMessage('licenseActivating');
-            activateLicenseBtn.disabled = true;
-            licenseKeyInput.disabled = true;
-            if (licenseErrorMsg) licenseErrorMsg.style.display = 'none';
-
-            try {
-                const response = await new Promise((resolve, reject) => {
-                    chrome.runtime.sendMessage(
-                        { type: 'validateLicense', licenseKey: licenseCode },
-                        (response) => {
-                            if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
-                            else resolve(response);
-                        }
-                    );
-                });
-
-                activateLicenseBtn.textContent = getMessage('licenseActivateButton');
-                activateLicenseBtn.disabled = false;
-                licenseKeyInput.disabled = false;
-
-                if (!response || !response.success) {
-                    if (licenseErrorMsg) {
-                        licenseErrorMsg.textContent = translateLicenseError(response?.error);
-                        licenseErrorMsg.style.display = 'block';
+                // Show "Live" badge if updated within last 60 minutes
+                if (minutesAgo <= 60) {
+                    liveBadge.classList.add('show');
+                    if (minutesAgo < 5) {
+                        liveBadge.textContent = msg('liveNow') || 'Live';
+                    } else {
+                        liveBadge.textContent = msg('updatedMinAgo', [minutesAgo.toString()]) || `${minutesAgo}m ago`;
                     }
                 } else {
-                    trialStatus = null;
-                    showConfirmationMessage(getMessage('licenseActivatedSuccess'), 'green', 4000);
-                    await updateUIForTrialPeriod();
+                    liveBadge.classList.remove('show');
                 }
-            } catch (error) {
-                activateLicenseBtn.textContent = getMessage('licenseActivateButton');
-                activateLicenseBtn.disabled = false;
-                licenseKeyInput.disabled = false;
-                if (licenseErrorMsg) {
-                    licenseErrorMsg.textContent = getMessage('licenseConnectionError');
-                    licenseErrorMsg.style.display = 'block';
-                }
-                console.error('[Popup] License validation error:', error);
-            }
-        });
 
-        // Enter key support
-        licenseKeyInput.addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                activateLicenseBtn.click();
+                const d = new Intl.DateTimeFormat(chrome.i18n.getUILanguage() || 'en', {
+                    day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
+                }).format(new Date(lastRuleUpdate));
+                footer.textContent = msg('lastRuleUpdate') + ' ' + d;
             }
-        });
+        } catch (e) {}
     }
 
-    // -------------------------------
-    // Initialisatie
-    // -------------------------------
-    (async function initializePopup() {
-        loadTranslations();
-        if (confirmationMessage) confirmationMessage.style.display = 'none';
+    // Error translation
+    function translateError(err) {
+        if (!err) return msg('licenseErrorUnknown');
+        const l = err.toLowerCase();
+        if (l.includes('not found')) return msg('licenseErrorNotFound');
+        if (l.includes('disabled')) return msg('licenseErrorDisabled');
+        if (l.includes('expired')) return msg('licenseErrorExpired');
+        if (l.includes('activation limit')) return msg('licenseErrorActivationLimit');
+        if (l.includes('network') || l.includes('fetch')) return msg('licenseErrorNetwork');
+        return err;
+    }
 
-        await initializeSettings();
-        await displayLastRuleUpdate();
+    // =============================
+    // EVENT LISTENERS
+    // =============================
+
+    backgroundSecurity.addEventListener('change', () => autoSave('backgroundSecurity', backgroundSecurity.checked));
+    integratedProtection.addEventListener('change', () => autoSave('integratedProtection', integratedProtection.checked));
+
+    // License toggle link (expand/collapse license input in trial mode)
+    licenseToggleLink.addEventListener('click', () => {
+        licenseExpanded = !licenseExpanded;
+        if (licenseExpanded) {
+            divider.classList.remove('hidden');
+            licenseSection.classList.add('show');
+            licenseToggleLink.classList.add('hidden');
+            licenseInput.focus();
+        } else {
+            divider.classList.add('hidden');
+            licenseSection.classList.remove('show');
+            licenseToggleLink.classList.remove('hidden');
+        }
+    });
+
+    // License activation
+    activateBtn.addEventListener('click', async () => {
+        const code = licenseInput.value.trim();
+        if (!code) {
+            licenseError.textContent = msg('licenseEmptyError');
+            licenseError.classList.add('show');
+            return;
+        }
+
+        spinner.classList.add('show');
+        activateBtnText.textContent = msg('licenseActivating');
+        activateBtn.disabled = true;
+        licenseInput.disabled = true;
+        licenseError.classList.remove('show');
+
+        try {
+            const res = await new Promise((resolve, reject) => {
+                chrome.runtime.sendMessage({ type: 'validateLicense', licenseKey: code }, (r) => {
+                    if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+                    else resolve(r);
+                });
+            });
+
+            spinner.classList.remove('show');
+            activateBtnText.textContent = msg('licenseActivateShort');
+            activateBtn.disabled = false;
+            licenseInput.disabled = false;
+
+            if (!res || !res.success) {
+                licenseError.textContent = translateError(res?.error);
+                licenseError.classList.add('show');
+            } else {
+                trialStatus = null;
+                showToast(msg('licenseActivatedSuccess'), 3000);
+                await updateUI();
+                // Trigger success glow animation
+                statusCard.classList.add('success-glow');
+                setTimeout(() => statusCard.classList.remove('success-glow'), 1500);
+            }
+        } catch (e) {
+            spinner.classList.remove('show');
+            activateBtnText.textContent = msg('licenseActivateShort');
+            activateBtn.disabled = false;
+            licenseInput.disabled = false;
+            // Specific network error message
+            licenseError.textContent = msg('licenseNetworkError');
+            licenseError.classList.add('show');
+        }
+    });
+
+    licenseInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') activateBtn.click();
+    });
+
+    // Transfer/Deactivate
+    transferBtn.addEventListener('click', () => {
+        deactivateConfirm.classList.add('show');
+        transferBtn.style.display = 'none';
+    });
+
+    cancelBtn.addEventListener('click', () => {
+        deactivateConfirm.classList.remove('show');
+        transferBtn.style.display = 'flex';
+    });
+
+    confirmBtn.addEventListener('click', async () => {
+        confirmBtn.disabled = true;
+        cancelBtn.disabled = true;
+        confirmBtn.textContent = msg('licenseDeactivating');
+
+        try {
+            const res = await new Promise((resolve, reject) => {
+                chrome.runtime.sendMessage({ type: 'deactivateLicense' }, (r) => {
+                    if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+                    else resolve(r);
+                });
+            });
+
+            confirmBtn.disabled = false;
+            cancelBtn.disabled = false;
+            confirmBtn.textContent = msg('deactivateDeviceBtn');
+
+            if (res && res.success) {
+                trialStatus = null;
+                showToast(msg('licenseDeactivatedSuccess'), 3000);
+                await updateUI();
+            } else {
+                showToast(res?.error || msg('licenseErrorUnknown'));
+            }
+
+            deactivateConfirm.classList.remove('show');
+            transferBtn.style.display = 'flex';
+        } catch (e) {
+            confirmBtn.disabled = false;
+            cancelBtn.disabled = false;
+            confirmBtn.textContent = msg('deactivateDeviceBtn');
+            showToast(msg('licenseNetworkError'));
+            deactivateConfirm.classList.remove('show');
+            transferBtn.style.display = 'flex';
+        }
+    });
+
+    // =============================
+    // INIT
+    // =============================
+    (async () => {
+        loadTranslations();
+        await initSettings();
+        await updateUI();
+        await displayLastUpdate();
     })();
 });
 
-// Containerbreedte instellen
-const container = document.querySelector('.container');
-if (container) {
-    container.style.width = "280px";
-}
-
-// =============================
-// SECURITY: Debug Panel UITGESCHAKELD voor productie
-// =============================
-// Debug functionaliteit is verwijderd om security risico's te voorkomen.
-// Gebruikers kunnen niet langer trial/premium status manipuleren.
-// Voor development, gebruik een aparte development build met debug features.
+// Container
+const c = document.querySelector('.container');
+if (c) c.style.width = '280px';

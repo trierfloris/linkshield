@@ -271,6 +271,119 @@ describe('LinkShield Popup E2E Tests', () => {
       expect(updateDisplay).not.toBeNull();
     });
   });
+
+  describe('License Deactivation UI', () => {
+    test('deactivate link exists in premium view', async () => {
+      const popupUrl = `chrome-extension://${extensionId}/popup.html`;
+      await page.goto(popupUrl, { waitUntil: 'networkidle0' });
+
+      // Deactivate link should exist (even if hidden initially)
+      const deactivateLink = await page.$('#deactivateLicenseLink');
+      expect(deactivateLink).not.toBeNull();
+    });
+
+    test('deactivate confirmation panel exists', async () => {
+      const popupUrl = `chrome-extension://${extensionId}/popup.html`;
+      await page.goto(popupUrl, { waitUntil: 'networkidle0' });
+
+      const confirmPanel = await page.$('#deactivateConfirm');
+      expect(confirmPanel).not.toBeNull();
+    });
+
+    test('deactivate confirmation has cancel and confirm buttons', async () => {
+      const popupUrl = `chrome-extension://${extensionId}/popup.html`;
+      await page.goto(popupUrl, { waitUntil: 'networkidle0' });
+
+      const cancelBtn = await page.$('#deactivateCancelBtn');
+      const confirmBtn = await page.$('#deactivateConfirmBtn');
+
+      expect(cancelBtn).not.toBeNull();
+      expect(confirmBtn).not.toBeNull();
+    });
+
+    test('clicking deactivate link shows confirmation panel', async () => {
+      const popupUrl = `chrome-extension://${extensionId}/popup.html`;
+      await page.goto(popupUrl, { waitUntil: 'networkidle0' });
+
+      // Make premium view visible (simulate active license)
+      await page.evaluate(() => {
+        document.getElementById('licenseTrialView').style.display = 'none';
+        document.getElementById('licenseExpiredView').style.display = 'none';
+        document.getElementById('licensePremiumView').style.display = 'block';
+        document.getElementById('licenseStatusBox').className = 'license-status-box premium';
+      });
+
+      // Click deactivate link
+      await page.click('#deactivateLicenseLink');
+
+      // Wait for panel to show
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      // Check if confirmation panel is visible
+      const isVisible = await page.$eval('#deactivateConfirm', el => {
+        return el.classList.contains('show') || window.getComputedStyle(el).display !== 'none';
+      });
+
+      expect(isVisible).toBe(true);
+    });
+
+    test('clicking cancel hides confirmation panel', async () => {
+      const popupUrl = `chrome-extension://${extensionId}/popup.html`;
+      await page.goto(popupUrl, { waitUntil: 'networkidle0' });
+
+      // Make premium view visible and show confirmation
+      await page.evaluate(() => {
+        document.getElementById('licenseTrialView').style.display = 'none';
+        document.getElementById('licensePremiumView').style.display = 'block';
+        document.getElementById('deactivateConfirm').classList.add('show');
+        document.getElementById('deactivateLicenseLink').style.display = 'none';
+      });
+
+      // Click cancel
+      await page.click('#deactivateCancelBtn');
+
+      // Wait for state change
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      // Check if confirmation panel is hidden
+      const isHidden = await page.$eval('#deactivateConfirm', el => {
+        return !el.classList.contains('show');
+      });
+
+      expect(isHidden).toBe(true);
+    });
+
+    test('deactivate link has correct text from i18n', async () => {
+      const popupUrl = `chrome-extension://${extensionId}/popup.html`;
+      await page.goto(popupUrl, { waitUntil: 'networkidle0' });
+
+      // Wait for i18n to load
+      await new Promise(resolve => setTimeout(resolve, 500));
+
+      const linkText = await page.$eval('#deactivateLicenseLink', el => el.textContent);
+
+      // Should have some text (from i18n)
+      expect(linkText.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('Subscription Management Link', () => {
+    test('subscription management link exists in premium view', async () => {
+      const popupUrl = `chrome-extension://${extensionId}/popup.html`;
+      await page.goto(popupUrl, { waitUntil: 'networkidle0' });
+
+      const manageLink = await page.$('#manageSubscriptionLink');
+      expect(manageLink).not.toBeNull();
+    });
+
+    test('subscription management link points to Lemon Squeezy', async () => {
+      const popupUrl = `chrome-extension://${extensionId}/popup.html`;
+      await page.goto(popupUrl, { waitUntil: 'networkidle0' });
+
+      const href = await page.$eval('#manageSubscriptionLink', el => el.href);
+      expect(href).toContain('lemonsqueezy.com');
+    });
+  });
 });
 
 describe('LinkShield Alert Page E2E Tests', () => {

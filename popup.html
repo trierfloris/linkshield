@@ -3,305 +3,918 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="pageTitle">LinkShield Dashboard</title>
+    <title>LinkShield</title>
     <link rel="stylesheet" href="shared.css">
     <style>
-        /* Popup-specific background */
         body {
             background-color: var(--color-background);
         }
 
-        /* Page title */
-        h1 {
-            color: var(--color-primary);
-        }
-
-        /* License Status Box */
-        .license-status-box {
-            margin: var(--gap-lg) 0;
-            padding: var(--padding-section);
-            border-radius: var(--radius-md);
-            text-align: center;
-        }
-
-        .license-status-box.trial {
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            border: 1px solid #f59e0b;
-        }
-
-        .license-status-box.expired {
-            background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
-            border: 1px solid #ef4444;
-        }
-
-        .license-status-box.premium {
-            background: linear-gradient(135deg, #ecfdf5 0%, #a7f3d0 100%);
-            border: 1px solid #10b981;
-        }
-
-        .license-status-icon {
+        /* ================================
+           HEADER
+           ================================ */
+        .header {
             display: flex;
-            justify-content: center;
-            margin-bottom: var(--gap-sm);
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
         }
 
-        .license-status-icon svg {
-            width: 32px;
-            height: 32px;
-        }
-
-        .license-status-title {
-            font-size: var(--font-size-base);
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .license-status-box.trial .license-status-title { color: #b45309; }
-        .license-status-box.expired .license-status-title { color: #dc2626; }
-        .license-status-box.premium .license-status-title { color: #059669; }
-
-        .license-status-subtitle {
-            font-size: var(--font-size-xs);
-            color: var(--color-text-secondary);
-            margin-bottom: 10px;
-        }
-
-        .license-input-group {
-            margin-top: var(--gap-md);
-        }
-
-        .license-input-group input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #d1d5db;
-            border-radius: var(--radius-sm);
-            font-size: var(--font-size-sm);
-            margin-bottom: var(--gap-sm);
-            text-align: center;
-        }
-
-        .license-input-group input:focus {
-            outline: none;
-            border-color: var(--color-primary);
-            box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
-        }
-
-        .license-upgrade-link {
-            display: inline-block;
-            margin-top: var(--gap-sm);
-            font-size: var(--font-size-xs);
+        .header svg {
+            width: 20px;
+            height: 20px;
             color: var(--color-primary);
-            text-decoration: none;
-            font-weight: 500;
         }
 
-        .license-upgrade-link:hover {
-            text-decoration: underline;
-        }
-
-        .license-error {
-            color: var(--color-danger);
-            font-size: var(--font-size-xs);
-            margin-top: var(--gap-sm);
-        }
-
-        .license-benefits {
-            font-size: var(--font-size-xs);
-            color: var(--color-text-secondary);
-            margin-top: var(--gap-sm);
-            line-height: 1.4;
-        }
-
-        .license-benefits strong {
+        .header span {
+            font-size: 15px;
+            font-weight: 600;
             color: var(--color-text-primary);
         }
 
-        /* Manage subscription link with tooltip */
-        .manage-subscription-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            margin-top: var(--gap-md);
-            font-size: var(--font-size-xs);
-            color: var(--color-primary);
-            text-decoration: none;
-            font-weight: 500;
+        /* ================================
+           STATUS CARD - The Business Card
+           ================================ */
+        .status-card {
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
             position: relative;
-            cursor: pointer;
+            overflow: hidden;
         }
 
-        .manage-subscription-link:hover {
+        /* Subtle pattern background */
+        .status-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .status-card.trial {
+            background: linear-gradient(135deg, #fef9e7 0%, #fef3c7 50%, #fde68a 100%);
+            border: 1px solid #f59e0b;
+            padding: 12px 16px;
+        }
+
+        .status-card.trial::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(60deg, transparent 10%, rgba(255,255,255,0.4) 50%, transparent 90%);
+            animation: shimmer 4s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .status-card.premium {
+            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 50%, #a7f3d0 100%);
+            border: 1px solid #10b981;
+        }
+
+        .status-card.premium::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(60deg, transparent 10%, rgba(255,255,255,0.5) 50%, transparent 90%);
+            animation: shimmer 4s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            25% { left: 100%; }
+            100% { left: 100%; }
+        }
+
+        .status-card.expired {
+            background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 50%, #fecaca 100%);
+            border: 1px solid #ef4444;
+        }
+
+        /* Status Header */
+        .status-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .status-main {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .status-card.trial .status-icon,
+        .status-card.premium .status-icon {
+            background: rgba(16, 185, 129, 0.15);
+        }
+
+        .status-card.expired .status-icon {
+            background: rgba(239, 68, 68, 0.15);
+        }
+
+        .status-icon svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .status-card.trial .status-icon svg,
+        .status-card.premium .status-icon svg {
+            stroke: #059669;
+        }
+
+        .status-card.expired .status-icon svg {
+            stroke: #dc2626;
+        }
+
+        .status-title {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .status-card.trial .status-title,
+        .status-card.premium .status-title {
+            color: #059669;
+        }
+
+        .status-card.expired .status-title {
+            color: #dc2626;
+        }
+
+        /* Premium Badge */
+        .premium-badge {
+            display: none;
+            padding: 4px 10px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+        }
+
+        .status-card.premium .premium-badge {
+            display: inline-block;
+        }
+
+        /* Progress Bar (Trial) */
+        .trial-progress {
+            display: none;
+            height: 4px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 2px;
+            margin: 12px 0;
+            overflow: hidden;
+        }
+
+        .status-card.trial .trial-progress {
+            display: block;
+        }
+
+        .trial-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981 0%, #34d399 100%);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        /* Status Subtitle - More prominent */
+        .status-sub {
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-sub .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #10b981;
+        }
+
+        .status-card.expired .status-sub .dot {
+            background: #ef4444;
+        }
+
+        /* Divider - Subtle */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 12px 0;
+            color: #b0b0b0;
+            font-size: 10px;
+            text-transform: lowercase;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: rgba(0,0,0,0.06);
+        }
+
+        .divider.hidden {
+            display: none;
+        }
+
+        /* CTA Button - Compact for better viewport */
+        .cta-button {
+            display: block;
+            width: 100%;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+            text-decoration: none;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.35);
+            transition: all 0.2s ease;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(245, 158, 11, 0.45);
+        }
+
+        .cta-button.red {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);
+        }
+
+        .cta-button.red:hover {
+            box-shadow: 0 6px 16px rgba(239, 68, 68, 0.45);
+        }
+
+        .cta-button .price {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            color: #fffef5;
+            margin-top: 2px;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+            letter-spacing: 0.2px;
+        }
+
+        /* License Key Toggle Link */
+        .license-toggle-link {
+            display: block;
+            text-align: center;
+            margin-top: 10px;
+            font-size: 11px;
+            color: #92400e;
+            text-decoration: none;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .license-toggle-link:hover {
+            opacity: 1;
             text-decoration: underline;
         }
 
-        .manage-subscription-link svg {
+        .license-toggle-link.hidden {
+            display: none;
+        }
+
+        /* License Input (inline in card) */
+        .license-section {
+            display: none;
+        }
+
+        .license-section.show {
+            display: block;
+        }
+
+        .license-input-row {
+            display: flex;
+            gap: 6px;
+        }
+
+        .license-input-row input {
+            flex: 1;
+            min-width: 0;
+            padding: 10px 10px;
+            border: 2px solid rgba(0,0,0,0.1);
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: monospace;
+            letter-spacing: 0.5px;
+            background: white;
+            transition: border-color 0.2s;
+        }
+
+        .license-input-row input:focus {
+            outline: none;
+            border-color: var(--color-primary);
+        }
+
+        .license-input-row input::placeholder {
+            color: #999;
+        }
+
+        .license-input-row button {
+            padding: 10px 12px;
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
+            transition: background 0.2s;
+        }
+
+        .license-input-row button:hover {
+            background: var(--color-primary-dark);
+        }
+
+        .license-input-row button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .license-error {
+            color: #dc2626;
+            font-size: 11px;
+            margin-top: 8px;
+            display: none;
+        }
+
+        .license-error.show {
+            display: block;
+        }
+
+        /* Premium Management (inside card) */
+        .premium-management {
+            display: none;
+        }
+
+        .premium-management.show {
+            display: block;
+        }
+
+        .premium-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .premium-email {
+            font-size: 12px;
+            color: #374151;
+            font-weight: 500;
+            padding: 5px 8px;
+            background: rgba(255,255,255,0.6);
+            border-radius: 5px;
+        }
+
+        /* Deactivate as subtle text link next to email */
+        .deactivate-link {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            padding: 4px 6px;
+            background: none;
+            border: none;
+            font-size: 10px;
+            font-weight: 500;
+            color: #9ca3af;
+            text-decoration: none;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .deactivate-link:hover {
+            color: #ef4444;
+        }
+
+        .deactivate-link svg {
+            width: 10px;
+            height: 10px;
+        }
+
+        .premium-action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px 16px;
+            background: rgba(255,255,255,0.7);
+            border: 1px solid rgba(0,0,0,0.08);
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #374151;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .premium-action-btn:hover {
+            background: rgba(255,255,255,0.9);
+            border-color: rgba(0,0,0,0.15);
+        }
+
+        .premium-action-btn svg {
             width: 14px;
             height: 14px;
+            opacity: 0.7;
+        }
+
+        /* Deactivate Confirmation */
+        .deactivate-confirm {
+            display: none;
+            margin-top: 12px;
+            padding: 12px;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+        }
+
+        .deactivate-confirm.show {
+            display: block;
+        }
+
+        .deactivate-confirm p {
+            font-size: 11px;
+            color: #991b1b;
+            margin: 0 0 10px 0;
+            line-height: 1.4;
+        }
+
+        .deactivate-confirm-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .deactivate-confirm-buttons button {
+            padding: 6px 12px;
+            font-size: 11px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: none;
+            font-weight: 500;
+        }
+
+        .btn-cancel {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            color: white;
+        }
+
+        /* ================================
+           PROTECTION SECTION
+           ================================ */
+        .section-label {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #9ca3af;
+            margin-bottom: 10px;
+        }
+
+        .toggle-card {
+            background: #f9fafb;
+            border: 1px solid #f3f4f6;
+            border-radius: 10px;
+            padding: 12px 14px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .toggle-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .toggle-card .toggle-switch {
+            flex-shrink: 0;
+            margin-left: auto;
+        }
+
+        .toggle-header {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 3px;
+        }
+
+        .toggle-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .live-badge {
+            display: none;
+            font-size: 8px;
+            font-weight: 600;
+            padding: 2px 5px;
+            margin-left: 4px;
+            background: #10b981;
+            color: white;
+            border-radius: 3px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            animation: livePulse 2s ease-in-out infinite;
+        }
+
+        .live-badge.show {
+            display: inline-block;
+        }
+
+        @keyframes livePulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .toggle-subtitle {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 2px;
+        }
+
+        .premium-tag {
+            display: inline-block;
+            font-size: 8px;
+            font-weight: 700;
+            padding: 2px 4px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border-radius: 3px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .premium-tag.hidden {
+            display: none;
+        }
+
+        .toggle-desc {
+            font-size: 11px;
+            color: #6b7280;
+            line-height: 1.4;
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
             flex-shrink: 0;
         }
 
-        /* Tooltip styling */
-        .tooltip-wrapper {
-            position: relative;
-            display: inline-flex;
-        }
-
-        .tooltip-wrapper .tooltip-text {
-            visibility: hidden;
+        .toggle-switch input {
             opacity: 0;
-            width: 200px;
-            background-color: #1f2937;
-            color: #fff;
-            text-align: center;
-            border-radius: 6px;
-            padding: 8px 10px;
-            position: absolute;
-            z-index: 100;
-            bottom: 125%;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 11px;
-            font-weight: 400;
-            line-height: 1.4;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-            transition: opacity 0.2s ease, visibility 0.2s ease;
+            width: 0;
+            height: 0;
         }
 
-        .tooltip-wrapper .tooltip-text::after {
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #d1d5db;
+            border-radius: 24px;
+            transition: 0.2s;
+        }
+
+        .toggle-slider::before {
+            content: "";
+            position: absolute;
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            border-radius: 50%;
+            transition: 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .toggle-switch input:checked + .toggle-slider::before {
+            transform: translateX(20px);
+        }
+
+        .toggle-switch input:disabled + .toggle-slider {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Help tooltip */
+        .toggle-help {
+            display: none;
+            position: relative;
+            margin-left: 4px;
+        }
+
+        .toggle-help svg {
+            width: 14px;
+            height: 14px;
+            color: #9ca3af;
+            cursor: help;
+        }
+
+        .toggle-help:hover svg {
+            color: var(--color-primary);
+        }
+
+        .tooltip {
+            display: none;
+            position: absolute;
+            bottom: 24px;
+            right: -8px;
+            width: 180px;
+            padding: 8px 10px;
+            background: #1f2937;
+            color: white;
+            font-size: 11px;
+            line-height: 1.4;
+            border-radius: 6px;
+            z-index: 100;
+        }
+
+        .tooltip::after {
             content: "";
             position: absolute;
             top: 100%;
-            left: 50%;
-            margin-left: -5px;
-            border-width: 5px;
-            border-style: solid;
-            border-color: #1f2937 transparent transparent transparent;
+            right: 12px;
+            border: 5px solid transparent;
+            border-top-color: #1f2937;
         }
 
-        .tooltip-wrapper:hover .tooltip-text {
-            visibility: visible;
-            opacity: 1;
+        .toggle-help:hover .tooltip {
+            display: block;
         }
 
-        .risk-level {
-            font-weight: bold;
-            color: var(--color-success);
-            font-size: var(--font-size-xs);
-        }
-
-        #lastRuleUpdateDisplay {
-            margin-top: 10px;
-            font-size: var(--font-size-xs);
-            color: var(--color-text-secondary);
+        /* ================================
+           FOOTER
+           ================================ */
+        .footer {
+            margin-top: 16px;
             text-align: center;
+            font-size: 10px;
+            color: #9ca3af;
+        }
+
+        /* ================================
+           TOAST
+           ================================ */
+        .toast {
+            position: fixed;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #1f2937;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 12px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Spinner */
+        .spinner {
+            width: 12px;
+            height: 12px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: none;
+        }
+
+        .spinner.show {
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Success Glow Animation */
+        @keyframes successGlow {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); }
+            50% { box-shadow: 0 0 20px 4px rgba(16, 185, 129, 0.6); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        .status-card.success-glow {
+            animation: successGlow 1.5s ease-out;
+        }
+
+        /* Urgent state for trial <= 5 days */
+        .status-card.trial.urgent {
+            border-color: #f59e0b;
+        }
+
+        .status-card.trial.urgent .status-sub .dot {
+            background: #f59e0b;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Branded Header -->
-        <div class="brand-header">
-            <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <!-- Header -->
+        <div class="header">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
             </svg>
-            <span class="brand-text">LinkShield Security</span>
+            <span>LinkShield</span>
         </div>
 
-        <h1 id="extName"></h1>
-        <p id="extDescription" class="subtitle"></p>
-
-        <!-- License Status Box -->
-        <div id="licenseStatusBox" class="license-status-box trial">
-            <!-- Trial view -->
-            <div id="licenseTrialView">
-                <div class="license-status-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#b45309" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                    </svg>
-                </div>
-                <div class="license-status-title" id="licenseTrialTitle"></div>
-                <div class="license-status-subtitle" id="licenseTrialSubtitle"></div>
-                <a href="https://linkshield.lemonsqueezy.com/checkout/buy/98bd4872-bebd-470b-bb6e-508a7a1bbae2" target="_blank" class="license-upgrade-link" id="licenseUpgradeLink"></a>
-            </div>
-
-            <!-- Expired view -->
-            <div id="licenseExpiredView" style="display: none;">
-                <div class="license-status-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-                        <line x1="12" y1="9" x2="12" y2="13"/>
-                        <line x1="12" y1="17" x2="12.01" y2="17"/>
-                    </svg>
-                </div>
-                <div class="license-status-title" id="licenseExpiredTitle"></div>
-                <div class="license-status-subtitle" id="licenseExpiredSubtitle"></div>
-                <div class="license-benefits">
-                    <strong id="licenseBenefitsLabel"></strong> <span id="licenseBenefitsText"></span>
-                </div>
-                <div class="license-input-group">
-                    <input type="text" id="licenseKeyInput" placeholder="">
-                    <button id="activateLicenseBtn" class="button blue"></button>
-                </div>
-                <a href="https://linkshield.lemonsqueezy.com/checkout/buy/98bd4872-bebd-470b-bb6e-508a7a1bbae2" target="_blank" class="license-upgrade-link" id="licenseBuyLink"></a>
-                <div id="licenseErrorMsg" class="license-error" style="display: none;"></div>
-            </div>
-
-            <!-- Premium view -->
-            <div id="licensePremiumView" style="display: none;">
-                <div class="license-status-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                        <polyline points="22 4 12 14.01 9 11.01"/>
-                    </svg>
-                </div>
-                <div class="license-status-title" id="licensePremiumTitle"></div>
-                <div class="license-status-subtitle" id="premiumEmail"></div>
-                <div class="tooltip-wrapper">
-                    <a href="https://app.lemonsqueezy.com/my-orders" target="_blank" class="manage-subscription-link" id="manageSubscriptionLink">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="3"/>
-                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        <!-- Status Card -->
+        <div id="statusCard" class="status-card trial">
+            <!-- Header Row -->
+            <div class="status-header">
+                <div class="status-main">
+                    <div class="status-icon">
+                        <svg id="statusIcon" viewBox="0 0 24 24" fill="none" stroke-width="2.5">
+                            <polyline points="20 6 9 17 4 12"/>
                         </svg>
-                        <span id="manageSubscriptionText"></span>
-                    </a>
-                    <span class="tooltip-text" id="manageSubscriptionTooltip"></span>
+                    </div>
+                    <span class="status-title" id="statusTitle">Protected</span>
+                </div>
+                <span class="premium-badge" id="premiumBadge">Premium</span>
+            </div>
+
+            <!-- Trial Progress Bar -->
+            <div class="trial-progress">
+                <div class="trial-progress-bar" id="trialProgress" style="width: 100%"></div>
+            </div>
+
+            <!-- Subtitle -->
+            <div class="status-sub" id="statusSub"><span class="dot"></span><span id="statusSubText">Trial · 30 days left</span></div>
+
+            <!-- CTA Button (Trial/Expired) -->
+            <a href="https://linkshield.lemonsqueezy.com/checkout/buy/98bd4872-bebd-470b-bb6e-508a7a1bbae2" target="_blank" class="cta-button" id="ctaButton">
+                <span id="ctaText">Upgrade to Premium</span>
+                <span class="price" id="ctaPrice">€1.99/month · 3 devices</span>
+            </a>
+
+            <!-- License Toggle Link (shown in trial, hidden when license section is open) -->
+            <span class="license-toggle-link" id="licenseToggleLink">Use license key</span>
+
+            <!-- Divider (hidden by default, shown in expired or when license section is open) -->
+            <div class="divider hidden" id="divider"><span id="dividerText">or</span></div>
+
+            <!-- License Input (hidden by default) -->
+            <div class="license-section" id="licenseSection">
+                <div class="license-input-row">
+                    <input type="text" id="licenseInput" placeholder="XXXX-XXXX-XXXX">
+                    <button id="activateBtn">
+                        <span class="spinner" id="spinner"></span>
+                        <span id="activateBtnText">Activate</span>
+                    </button>
+                </div>
+                <div class="license-error" id="licenseError"></div>
+            </div>
+
+            <!-- Premium Management -->
+            <div class="premium-management" id="premiumManagement">
+                <div class="premium-header-row">
+                    <div class="premium-email" id="premiumEmail">info@linkshield.nl</div>
+                    <button class="deactivate-link" id="transferBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="15" y1="9" x2="9" y2="15"/>
+                            <line x1="9" y1="9" x2="15" y2="15"/>
+                        </svg>
+                        <span id="transferBtnText">Deactivate</span>
+                    </button>
+                </div>
+                <a href="https://app.lemonsqueezy.com/my-orders" target="_blank" class="premium-action-btn" id="manageBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                    </svg>
+                    <span id="manageBtnText">Manage subscription</span>
+                </a>
+
+                <!-- Deactivate Confirmation -->
+                <div class="deactivate-confirm" id="deactivateConfirm">
+                    <p id="deactivateText">This will free up a device slot so you can use your license elsewhere.</p>
+                    <div class="deactivate-confirm-buttons">
+                        <button class="btn-cancel" id="cancelBtn">Cancel</button>
+                        <button class="btn-danger" id="confirmBtn">Transfer</button>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="section-title" id="backgroundAnalysisTitle"></div>
+        <!-- Protection Section -->
+        <div class="section-label" id="sectionLabel">Protection</div>
 
-        <div class="toggle-section">
-            <label class="checkbox-label">
-                <input type="checkbox" id="backgroundSecurity" disabled>
-                <div>
-                    <div class="feature-info">
-                        <span class="feature-title" id="backgroundAnalysisFeature"></span>
-                        <span id="premiumBadge" class="risk-level" style="display: none;"></span>
+        <div class="toggle-card">
+            <div class="toggle-info">
+                <div class="toggle-header">
+                    <span class="toggle-title" id="toggle1Title">Automatic protection</span>
+                    <span class="live-badge" id="liveBadge">Live</span>
+                    <div class="toggle-help" id="toggle1Help">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                            <line x1="12" y1="17" x2="12.01" y2="17"/>
+                        </svg>
+                        <div class="tooltip" id="toggle1Tooltip">Requires Premium to enable this feature.</div>
                     </div>
-                    <div class="feature-description" id="backgroundAnalysisDescription"></div>
                 </div>
+                <div class="toggle-subtitle">
+                    <span class="premium-tag" id="premiumTag">PRO</span>
+                    <span class="toggle-desc" id="toggle1Desc">Stops even the newest threats hourly</span>
+                </div>
+            </div>
+            <label class="toggle-switch">
+                <input type="checkbox" id="backgroundSecurity">
+                <span class="toggle-slider"></span>
             </label>
         </div>
 
-        <div class="toggle-section">
-            <label class="checkbox-label">
+        <div class="toggle-card">
+            <div class="toggle-info">
+                <div class="toggle-title" id="toggle2Title">Smart link scanning</div>
+                <div class="toggle-desc" id="toggle2Desc">Warns before you click risky links</div>
+            </div>
+            <label class="toggle-switch">
                 <input type="checkbox" id="integratedProtection">
-                <div>
-                    <div class="feature-info">
-                        <span class="feature-title" id="integratedProtectionFeature"></span>
-                    </div>
-                    <div class="feature-description" id="integratedProtectionDescription"></div>
-                </div>
+                <span class="toggle-slider"></span>
             </label>
         </div>
 
-        <button class="button green" id="saveSettings"></button>
-
-        <div id="confirmationMessage" style="display: none;"></div>
-
-        <div id="lastRuleUpdateDisplay"></div>
+        <!-- Footer -->
+        <div class="footer" id="footer"></div>
     </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
 
     <script src="popup.js"></script>
 </body>

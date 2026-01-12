@@ -189,7 +189,7 @@ const OPTIONAL_KEYS = [
   'trustedDomainSkipped'
 ];
 
-const LOCALES_DIR = path.join(__dirname, '..', 'dist', '_locales');
+const LOCALES_DIR = path.join(__dirname, '..', '_locales');
 
 /**
  * Get all available locale directories

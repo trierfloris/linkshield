@@ -14,6 +14,8 @@
   "tiktok\\.com$",
   "microsoft\\.com$",
   "x\\.com$",
+  "grok\\.com$",
+  "x\\.ai$",
   "de\\.wikipedia\\.org$",
   "twitter\\.com$",
   "fr\\.wikipedia\\.org$",
@@ -129,5 +131,15 @@
   "bing\\.com$",
   "duckduckgo\\.com$",
   "yahoo\\.com$",
-  "aol\\.com$"
+  "aol\\.com$",
+  "meta\\.com$",
+  "anthropic\\.com$",
+  "claude\\.ai$",
+  "claude\\.com$",
+  "auth0\\.com$",
+  "okta\\.com$",
+  "zoho\\.com$",
+  "gitlab\\.com$",
+  "stackexchange\\.com$",
+  "dev\\.to$"
 ]

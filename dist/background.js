@@ -2,31 +2,112 @@
 // LINKSHIELD BACKGROUND SERVICE WORKER - PRODUCTIE
 // =================================================================================
 
-// ==== DEBUG: Expose functions to global scope for testing ====
-// VERWIJDER DEZE SECTIE VOOR PRODUCTIE RELEASE
-const DEBUG_EXPOSE_FUNCTIONS = false; // PRODUCTIE: functies niet toegankelijk via console
-
 // ==== Globale Instellingen en Debugging ====
 const IS_PRODUCTION = true; // Zet op 'true' voor productie build.
 const CACHE_TTL = 24 * 60 * 60 * 1000;
-const API_TIMEOUT_MS = 10000; // 10 seconden timeout voor API calls
+const API_TIMEOUT_MS = 5000; // 5 seconden timeout voor API calls (verlaagd van 10s)
+
+/**
+ * PERFORMANCE FIX v8.1.0: Non-blocking protection initialization
+ * Called IMMEDIATELY at startup to enable protection using cached status.
+ * Does NOT wait for network - protection is active within milliseconds.
+ */
+async function initializeProtectionImmediately() {
+    const startTime = Date.now();
+    try {
+        // Read cached status - this is fast (local storage)
+        const data = await chrome.storage.sync.get([
+            'licenseValid',
+            'trialStartDate',
+            'backgroundSecurity'
+        ]);
+
+        // Calculate trial status locally (no network)
+        const now = Date.now();
+        const trialStart = data.trialStartDate || now;
+        const trialDays = Math.floor((now - trialStart) / (1000 * 60 * 60 * 24));
+        const isInTrial = trialDays < (globalThresholds.TRIAL_DAYS || 30);
+        const hasLicense = data.licenseValid === true;
+
+        // Enable protection if user has license OR is in trial
+        const shouldProtect = hasLicense || isInTrial;
+
+        if (shouldProtect || FAIL_SAFE_MODE) {
+            // CRITICAL: Enable DNR rules immediately
+            await manageDNRules();
+            console.log(`[INIT-FAST] Protection enabled in ${Date.now() - startTime}ms (license: ${hasLicense}, trial: ${isInTrial})`);
+        } else {
+            console.log(`[INIT-FAST] Protection not enabled - trial expired and no license`);
+        }
+
+        return { initialized: true, hasLicense, isInTrial, timeMs: Date.now() - startTime };
+    } catch (err) {
+        console.error("[INIT-FAST] Error:", err);
+        // FAIL-SAFE: On any error, try to enable protection anyway
+        if (FAIL_SAFE_MODE) {
+            try {
+                await manageDNRules();
+                console.warn("[INIT-FAST] FAIL-SAFE: Protection enabled despite error");
+            } catch (e) { /* ignore */ }
+        }
+        return { initialized: false, error: err.message };
+    }
+}
 
 // ==== SSL Labs Rate Limiting & Caching ====
 const SSL_LABS_MIN_INTERVAL_MS = 10000; // Minimaal 10 seconden tussen requests
 const SSL_LABS_CACHE_TTL = 24 * 60 * 60 * 1000; // 24 uur cache
 const SSL_LABS_ERROR_CACHE_TTL = 30 * 60 * 1000; // 30 minuten cache voor errors (voorkomt spam bij 529)
-let sslLabsLastRequestTime = 0;
-const sslLabsRequestQueue = []; // Queue voor pending requests
-let sslLabsQueueProcessing = false;
+
+// SECURITY FIX v7.9.3: Persistente state voor Service Worker resilience
+// In-memory state wordt aangevuld met chrome.storage.session voor persistentie
+let sslLabsLastRequestTime = 0; // In-memory cache (snel), backed by storage.session
+
+/**
+ * Laadt SSL Labs rate limit state uit chrome.storage.session
+ * Wordt aangeroepen bij SW startup om state te herstellen
+ */
+async function loadSslLabsRateLimitState() {
+    try {
+        const data = await chrome.storage.session.get(['sslLabsLastRequestTime']);
+        if (data.sslLabsLastRequestTime) {
+            sslLabsLastRequestTime = data.sslLabsLastRequestTime;
+            if (globalThresholds.DEBUG_MODE) {
+                console.log(`[SSL Labs] Rate limit state hersteld: laatste request ${Date.now() - sslLabsLastRequestTime}ms geleden`);
+            }
+        }
+    } catch (error) {
+        // storage.session niet beschikbaar (oudere Chrome versie) - gebruik alleen in-memory
+        console.error('[SSL Labs] Kon rate limit state niet laden:', error);
+    }
+}
+
+/**
+ * Slaat SSL Labs rate limit timestamp op in chrome.storage.session
+ * @param {number} timestamp - De timestamp om op te slaan
+ */
+async function saveSslLabsRateLimitState(timestamp) {
+    try {
+        await chrome.storage.session.set({ sslLabsLastRequestTime: timestamp });
+    } catch (error) {
+        // storage.session niet beschikbaar - negeer, in-memory werkt nog steeds
+        if (globalThresholds.DEBUG_MODE) {
+            console.error('[SSL Labs] Kon rate limit state niet opslaan:', error);
+        }
+    }
+}
+
+// Laad rate limit state bij SW startup
+loadSslLabsRateLimitState();
 
 // Overschrijf console-functies voor productieomgeving
 if (IS_PRODUCTION) {
-    console.log = function() {};
-    console.warn = function() {};
-    console.info = function() {};
+    console.log = function () { };
+    console.warn = function () { };
+    console.info = function () { };
     // SECURITY FIX: Ook console.error sanitizen om gevoelige data te verbergen
     const originalError = console.error;
-    console.error = function(...args) {
+    console.error = function (...args) {
         // Filter gevoelige informatie uit error logs
         const sanitizedArgs = args.map(arg => {
             if (typeof arg === 'string') {
@@ -82,6 +163,11 @@ const MS_PER_DAY = 24 * 60 * 60 * 1000;
 const TRIAL_DAYS = 30;
 const LICENSE_GRACE_PERIOD_DAYS = 7;
 const LICENSE_GRACE_PERIOD_MS = LICENSE_GRACE_PERIOD_DAYS * MS_PER_DAY;
+
+// ==== SECURITY FIX: Fail-Safe Mode ====
+// Bij licentie-validatie fouten: BEHOUD bestaande bescherming in plaats van uitschakelen
+// Dit voorkomt dat een aanvaller via DDoS op de licentieserver alle gebruikers kan "ontwapenen"
+const FAIL_SAFE_MODE = true;
 
 /**
  * Controleert of de licentie grace period is verlopen
@@ -142,60 +228,201 @@ async function loadThresholdsFromStorage() {
 
 // Laad de drempels direct bij het opstarten van de service worker
 loadThresholdsFromStorage()
-  .then(() => restoreIconState())
-  .catch(err => console.error("[INIT] Fout bij laden thresholds of herstellen icon:", err));
+    .then(() => restoreIconState())
+    .catch(err => console.error("[INIT] Fout bij laden thresholds of herstellen icon:", err));
 
 /**
  * Voert licentie/trial check uit bij startup en past instellingen aan indien nodig
  * Deze functie wordt aangeroepen nadat alle functies gedefinieerd zijn
+ *
+ * SECURITY FIX v7.9.1: Implementeert FAIL_SAFE_MODE
+ * Bij netwerk fouten of server outages wordt bescherming BEHOUDEN in plaats van uitgeschakeld
+ *
+ * SECURITY FIX v7.9.2: Respecteert explicitlyInvalidated flag
+ * Wanneer de server EXPLICIET bevestigt dat een licentie ongeldig is, wordt FAIL_SAFE genegeerd
+ *
+ * SECURITY FIX v8.0.0: KRITIEK - manageDNRules() wordt ALTIJD aangeroepen
+ * Voorheen werd manageDNRules() overgeslagen bij early returns, waardoor DNR rulesets
+ * niet werden geactiveerd bij browser restart tijdens server outage
  */
 async function performStartupLicenseCheck() {
-  try {
-    const data = await chrome.storage.sync.get(['licenseValid', 'lastSuccessfulValidation']);
+    // Track of de server EXPLICIET heeft gezegd dat de licentie ongeldig is
+    // Dit onderscheidt "server onbereikbaar" van "server zegt NEE"
+    let explicitlyInvalidated = false;
 
-    // Als er een licentie is, controleer grace period en forceer revalidatie indien nodig
-    if (data.licenseValid) {
-      const graceStatus = await checkLicenseGracePeriod();
+    try {
+        const data = await chrome.storage.sync.get(['licenseValid', 'lastSuccessfulValidation']);
 
-      // Als meer dan 3 dagen sinds laatste validatie, forceer online check
-      // Dit zorgt ervoor dat we niet wachten tot het laatste moment
-      const REVALIDATION_THRESHOLD_DAYS = 3;
-      if (graceStatus.daysSinceValidation >= REVALIDATION_THRESHOLD_DAYS) {
-        if (globalThresholds.DEBUG_MODE) {
-          console.log(`[INIT] ${graceStatus.daysSinceValidation} dagen sinds laatste validatie, forceer revalidatie...`);
+        // Als er een licentie is, controleer grace period en forceer revalidatie indien nodig
+        if (data.licenseValid) {
+            const graceStatus = await checkLicenseGracePeriod();
+
+            // Als meer dan 3 dagen sinds laatste validatie, forceer online check
+            // Dit zorgt ervoor dat we niet wachten tot het laatste moment
+            const REVALIDATION_THRESHOLD_DAYS = 3;
+            if (graceStatus.daysSinceValidation >= REVALIDATION_THRESHOLD_DAYS) {
+                if (globalThresholds.DEBUG_MODE) {
+                    console.log(`[INIT] ${graceStatus.daysSinceValidation} dagen sinds laatste validatie, forceer revalidatie...`);
+                }
+
+                const result = await revalidateLicense();
+
+                // SECURITY FIX: Onderscheid netwerk errors van echte invalidatie
+                if (result.networkError && FAIL_SAFE_MODE) {
+                    // Netwerk error + FAIL_SAFE: behoud bescherming, toon waarschuwing
+                    console.warn("[INIT] Revalidatie gefaald door netwerk - FAIL_SAFE mode actief, bescherming behouden");
+                    await showFailSafeNotification('network_error');
+                    // SECURITY FIX v8.0.0: ALTIJD manageDNRules() aanroepen om rulesets te activeren!
+                    await manageDNRules();
+                    return;
+                }
+
+                if (!result.revalidated && graceStatus.expired) {
+                    // Revalidatie mislukt EN grace period verlopen
+                    if (FAIL_SAFE_MODE) {
+                        // FAIL_SAFE: Bij twijfel, behoud bescherming
+                        console.warn("[INIT] Grace period verlopen maar FAIL_SAFE mode actief - bescherming behouden");
+                        await showFailSafeNotification('grace_expired_failsafe');
+                        // SECURITY FIX v8.0.0: ALTIJD manageDNRules() aanroepen om rulesets te activeren!
+                        await manageDNRules();
+                        return;
+                    }
+
+                    if (globalThresholds.DEBUG_MODE) {
+                        console.log("[INIT] Revalidatie mislukt en grace period verlopen - licentie wordt ongeldig");
+                    }
+                    await chrome.storage.sync.set({ licenseValid: false });
+                    invalidateTrialCache();
+                } else if (result.revalidated && !result.valid) {
+                    // Server zegt EXPLICIET dat licentie ongeldig is - dit is GEEN fail-safe scenario
+                    // De server heeft bevestigd dat de licentie niet meer geldig is
+                    if (globalThresholds.DEBUG_MODE) {
+                        console.log("[INIT] Licentie is niet meer geldig volgens server");
+                    }
+
+                    // SECURITY FIX v7.9.2: Markeer als expliciet geïnvalideerd
+                    // Dit zorgt ervoor dat FAIL_SAFE_MODE wordt genegeerd voor deze sessie
+                    if (result.explicitlyInvalidated) {
+                        explicitlyInvalidated = true;
+                        console.log("[INIT] Server heeft licentie EXPLICIET geïnvalideerd - FAIL_SAFE wordt genegeerd");
+                    }
+
+                    invalidateTrialCache();
+                }
+            }
         }
 
-        const result = await revalidateLicense();
+        // Check of achtergrondbeveiliging toegestaan is
+        const isAllowed = await isBackgroundSecurityAllowed();
 
-        if (!result.revalidated && graceStatus.expired) {
-          // Revalidatie mislukt EN grace period verlopen
-          if (globalThresholds.DEBUG_MODE) {
-            console.log("[INIT] Revalidatie mislukt en grace period verlopen - licentie wordt ongeldig");
-          }
-          await chrome.storage.sync.set({ licenseValid: false });
-          invalidateTrialCache();
-        } else if (result.revalidated && !result.valid) {
-          // Server zegt licentie is ongeldig
-          if (globalThresholds.DEBUG_MODE) {
-            console.log("[INIT] Licentie is niet meer geldig volgens server");
-          }
-          invalidateTrialCache();
+        if (!isAllowed) {
+            // SECURITY FIX v7.9.2: Check of licentie EXPLICIET is geïnvalideerd
+            // Als de server heeft bevestigd dat de licentie ongeldig is, negeer FAIL_SAFE
+            if (explicitlyInvalidated) {
+                console.log("[INIT] Licentie expliciet ongeldig - bescherming wordt uitgeschakeld ondanks FAIL_SAFE");
+                await chrome.storage.sync.set({ backgroundSecurity: false });
+                await clearDynamicRules();
+                await manageDNRules();
+                return;
+            }
+
+            // SECURITY FIX v7.9.1: Check of we in FAIL_SAFE_MODE zijn (alleen als NIET expliciet geïnvalideerd)
+            if (FAIL_SAFE_MODE) {
+                // Check of er bestaande regels zijn die we kunnen behouden
+                const existingRules = await chrome.declarativeNetRequest.getDynamicRules();
+
+                if (existingRules.length > 0) {
+                    // Er zijn bestaande regels - behoud ze in fail-safe mode
+                    console.warn("[INIT] Trial/licentie niet toegestaan maar FAIL_SAFE: behoud bestaande regels");
+                    await showFailSafeNotification('protection_preserved');
+                    // SECURITY FIX v8.0.0: ALTIJD manageDNRules() aanroepen om rulesets te activeren!
+                    // Dit zorgt ervoor dat statische rulesets (manifest) ook actief worden
+                    await manageDNRules();
+                    return;
+                }
+            }
+
+            // Trial verlopen zonder licentie OF grace period verlopen - forceer backgroundSecurity uit
+            // Dit pad wordt alleen bereikt als FAIL_SAFE_MODE uit staat OF er geen bestaande regels zijn
+            await chrome.storage.sync.set({ backgroundSecurity: false });
+            await clearDynamicRules();
+            await manageDNRules();
+        } else {
+            // SECURITY FIX v8.0.0: Ook als isAllowed=true, activeer rulesets
+            // Dit is cruciaal voor nieuwe sessies waar de SW net is opgestart
+            await manageDNRules();
         }
-      }
+    } catch (err) {
+        console.error("[INIT] Fout bij startup licentie check:", err);
+        // SECURITY FIX: Bij ELKE error, behoud bescherming als FAIL_SAFE_MODE actief is
+        // MAAR niet als de licentie al expliciet is geïnvalideerd
+        if (FAIL_SAFE_MODE && !explicitlyInvalidated) {
+            console.warn("[INIT] Error tijdens licentie check - FAIL_SAFE: bescherming behouden");
+            await showFailSafeNotification('error_failsafe');
+        }
+        // SECURITY FIX v8.0.0: Ook bij errors, probeer rulesets te activeren
+        // Dit zorgt voor bescherming zelfs als de licentie check faalt
+        try {
+            await manageDNRules();
+        } catch (ruleError) {
+            console.error("[INIT] Kon DNR rules niet activeren na error:", ruleError);
+        }
     }
+}
 
-    // Check of achtergrondbeveiliging toegestaan is
-    const isAllowed = await isBackgroundSecurityAllowed();
+/**
+ * Toont een notificatie aan de gebruiker dat fail-safe mode actief is
+ * @param {string} reason - Reden voor fail-safe ('network_error', 'grace_expired_failsafe', 'protection_preserved', 'error_failsafe')
+ */
+async function showFailSafeNotification(reason) {
+    try {
+        // Toon badge waarschuwing
+        await chrome.action.setBadgeText({ text: '!' });
+        await chrome.action.setBadgeBackgroundColor({ color: '#f59e0b' }); // Amber/warning
 
-    if (!isAllowed) {
-      // Trial verlopen zonder licentie OF grace period verlopen - forceer backgroundSecurity uit
-      await chrome.storage.sync.set({ backgroundSecurity: false });
-      await clearDynamicRules();
-      await manageDNRules();
+        // Bepaal notificatie tekst op basis van reden
+        let title, message;
+        switch (reason) {
+            case 'network_error':
+                title = chrome.i18n.getMessage('failSafeNetworkTitle') || 'License Check Failed';
+                message = chrome.i18n.getMessage('failSafeNetworkMessage') ||
+                    'Could not verify license due to network issues. Protection remains active in safe mode.';
+                break;
+            case 'grace_expired_failsafe':
+                title = chrome.i18n.getMessage('failSafeGraceTitle') || 'License Verification Needed';
+                message = chrome.i18n.getMessage('failSafeGraceMessage') ||
+                    'Please connect to the internet to verify your license. Protection remains active.';
+                break;
+            case 'protection_preserved':
+                title = chrome.i18n.getMessage('failSafePreservedTitle') || 'Protection Active';
+                message = chrome.i18n.getMessage('failSafePreservedMessage') ||
+                    'Your protection rules are preserved. Please verify your license when possible.';
+                break;
+            default:
+                title = chrome.i18n.getMessage('failSafeDefaultTitle') || 'Safe Mode Active';
+                message = chrome.i18n.getMessage('failSafeDefaultMessage') ||
+                    'LinkShield is running in safe mode. Protection remains active.';
+        }
+
+        // Maak notificatie aan
+        chrome.notifications.create(`failsafe_${reason}_${Date.now()}`, {
+            type: 'basic',
+            iconUrl: 'icons/icon128.png',
+            title: title,
+            message: message,
+            priority: 1
+        });
+
+        // Sla fail-safe status op voor popup weergave
+        await chrome.storage.local.set({
+            failSafeActive: true,
+            failSafeReason: reason,
+            failSafeTimestamp: Date.now()
+        });
+
+    } catch (error) {
+        console.error("[FAIL_SAFE] Error showing notification:", error);
     }
-  } catch (err) {
-    console.error("[INIT] Fout bij startup licentie check:", err);
-  }
 }
 
 
@@ -261,34 +488,38 @@ function startSmoothIconAnimation(duration = 30000, interval = 500) {
 
 /** Resets the icon to a neutral state (green) */
 function resetIconToNeutral() {
-    chrome.action.setIcon({
-        path: {
-            "16": "icons/green-circle-16.png",
-            "48": "icons/green-circle-48.png",
-            "128": "icons/green-circle-128.png"
-        }
-    });
-    clearBadge();
-    chrome.action.setTitle({ title: chrome.i18n.getMessage("neutralIconTitle") || "Performing safety check..." });
+    try {
+        chrome.action.setIcon({
+            path: {
+                "16": "icons/green-circle-16.png",
+                "48": "icons/green-circle-48.png",
+                "128": "icons/green-circle-128.png"
+            }
+        });
+        clearBadge();
+        chrome.action.setTitle({ title: chrome.i18n.getMessage("neutralIconTitle") || "Performing safety check..." });
+    } catch (error) {
+        console.error("[ERROR] resetIconToNeutral error:", error);
+    }
 }
 
 
- // === ICON STATE RESTORE BIJ STARTUP/INSTALL ===
+// === ICON STATE RESTORE BIJ STARTUP/INSTALL ===
 /** Haalt de laatste status uit storage en zet het icoon correct */
 async function restoreIconState() {
-  try {
-    const { currentSiteStatus } = await chrome.storage.local.get("currentSiteStatus");
-    if (currentSiteStatus && currentSiteStatus.level) {
-      await updateIconBasedOnSafety(
-        currentSiteStatus.level,
-        currentSiteStatus.reasons,
-        currentSiteStatus.risk,
-        currentSiteStatus.url
-      );
+    try {
+        const { currentSiteStatus } = await chrome.storage.local.get("currentSiteStatus");
+        if (currentSiteStatus && currentSiteStatus.level) {
+            await updateIconBasedOnSafety(
+                currentSiteStatus.level,
+                currentSiteStatus.reasons,
+                currentSiteStatus.risk,
+                currentSiteStatus.url
+            );
+        }
+    } catch (e) {
+        console.error("[RESTORE ICON] Fout bij herstellen icon state:", e);
     }
-  } catch (e) {
-    console.error("[RESTORE ICON] Fout bij herstellen icon state:", e);
-  }
 }
 
 
@@ -330,9 +561,9 @@ async function updateIconBasedOnSafety(level, reasons, risk, url) {
 
     // 3) Icon mapping
     const iconMap = {
-        safe:    { "16": "icons/green-circle-16.png",  "48": "icons/green-circle-48.png",  "128": "icons/green-circle-128.png" },
+        safe: { "16": "icons/green-circle-16.png", "48": "icons/green-circle-48.png", "128": "icons/green-circle-128.png" },
         caution: { "16": "icons/yellow-circle-16.png", "48": "icons/yellow-circle-48.png", "128": "icons/yellow-circle-128.png" },
-        alert:   { "16": "icons/red-circle-16.png",    "48": "icons/red-circle-48.png",    "128": "icons/red-circle-128.png" }
+        alert: { "16": "icons/red-circle-16.png", "48": "icons/red-circle-48.png", "128": "icons/red-circle-128.png" }
     };
     chrome.action.setIcon({ path: iconMap[lvl] });
 
@@ -340,8 +571,8 @@ async function updateIconBasedOnSafety(level, reasons, risk, url) {
     const titleKey = lvl === 'alert' ?
         'siteAlertTitle' :
         lvl === 'caution' ?
-        'siteCautionTitle' :
-        'siteSafeTitle';
+            'siteCautionTitle' :
+            'siteSafeTitle';
 
     let tooltip = chrome.i18n.getMessage(titleKey) || '';
     if (Array.isArray(reasons) && reasons.length) {
@@ -619,8 +850,61 @@ async function updateLastRuleUpdate() {
 // ==== Redirect Chain Analysis (v7.1) ====
 
 // Cache voor redirect chain resultaten (voorkomt dubbele scans)
+// SECURITY FIX v8.0.1 (Vector 4): Persistente cache voor SW resilience
 const redirectChainCache = new Map();
 const REDIRECT_CACHE_TTL = 30 * 60 * 1000; // 30 minuten cache
+const REDIRECT_CACHE_MAX_PERSIST = 100; // Max entries om op te slaan (voorkom quota overschrijding)
+
+/**
+ * Laadt redirect chain cache uit chrome.storage.session
+ * SECURITY FIX v8.0.1: Voorkomt state verlies bij SW suspension
+ */
+async function loadRedirectChainCache() {
+    try {
+        const data = await chrome.storage.session.get(['redirectChainCacheData']);
+        if (data.redirectChainCacheData && Array.isArray(data.redirectChainCacheData)) {
+            const now = Date.now();
+            let restored = 0;
+            for (const [url, entry] of data.redirectChainCacheData) {
+                // Alleen nog geldige entries herstellen
+                if (entry && entry.timestamp && (now - entry.timestamp < REDIRECT_CACHE_TTL)) {
+                    redirectChainCache.set(url, entry);
+                    restored++;
+                }
+            }
+            if (globalThresholds.DEBUG_MODE && restored > 0) {
+                console.log(`[RedirectChain] Cache hersteld: ${restored} entries`);
+            }
+        }
+    } catch (error) {
+        if (globalThresholds.DEBUG_MODE) {
+            console.error('[RedirectChain] Kon cache niet laden:', error);
+        }
+    }
+}
+
+/**
+ * Slaat redirect chain cache op in chrome.storage.session
+ * SECURITY FIX v8.0.1: Beperkt tot recente entries voor performance
+ */
+async function saveRedirectChainCache() {
+    try {
+        // Converteer Map naar Array en beperk tot meest recente entries
+        const entries = [...redirectChainCache.entries()]
+            .filter(([_, entry]) => Date.now() - entry.timestamp < REDIRECT_CACHE_TTL)
+            .sort((a, b) => b[1].timestamp - a[1].timestamp)
+            .slice(0, REDIRECT_CACHE_MAX_PERSIST);
+
+        await chrome.storage.session.set({ redirectChainCacheData: entries });
+    } catch (error) {
+        if (globalThresholds.DEBUG_MODE) {
+            console.error('[RedirectChain] Kon cache niet opslaan:', error);
+        }
+    }
+}
+
+// Laad redirect chain cache bij SW startup
+loadRedirectChainCache();
 
 // Bekende URL shorteners (moet synchroon beschikbaar zijn)
 const KNOWN_SHORTENERS = new Set([
@@ -710,7 +994,7 @@ async function traceRedirectChain(url, timeout = 3000) {
                                 if (!visitedDomains.has(finalDomain)) {
                                     visitedDomains.add(finalDomain);
                                 }
-                            } catch (e) {}
+                            } catch (e) { }
 
                             chain.push(finalUrl);
                             currentUrl = finalUrl;
@@ -802,6 +1086,10 @@ async function traceRedirectChain(url, timeout = 3000) {
                 if (redirectChainCache.size <= 300) break;
             }
         }
+
+        // SECURITY FIX v8.0.1 (Vector 4): Persist cache voor SW resilience
+        // Gebruik debounced save om storage spam te voorkomen
+        saveRedirectChainCache();
 
         return result;
 
@@ -1039,7 +1327,71 @@ async function validateLicenseKey(licenseKey) {
     }
 }
 
-/** Revalidates stored license key in the background via Lemon Squeezy /validate endpoint */
+/**
+ * Deactiveert de huidige licentiesleutel via de Lemon Squeezy License API.
+ * Gebruikt het /deactivate endpoint om de licentie-instance vrij te geven.
+ * @returns {Promise<{success: boolean, error?: string}>}
+ */
+async function deactivateLicenseKey() {
+    try {
+        const data = await chrome.storage.sync.get(['licenseKey', 'licenseInstanceId']);
+
+        if (!data.licenseKey || !data.licenseInstanceId) {
+            return { success: false, error: 'Geen actieve licentie gevonden om te deactiveren.' };
+        }
+
+        // Lemon Squeezy License Deactivation API
+        const response = await fetchWithTimeout('https://api.lemonsqueezy.com/v1/licenses/deactivate', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                license_key: data.licenseKey,
+                instance_id: data.licenseInstanceId
+            })
+        }, 15000);
+
+        const result = await response.json();
+
+        if (globalThresholds.DEBUG_MODE) {
+            console.log('[License] Lemon Squeezy deactivate response:', result);
+        }
+
+        if (result.deactivated === true || (result.meta && result.meta.store_id)) {
+            // Deactivatie geslaagd - verwijder lokale licentiegegevens
+            await chrome.storage.sync.remove(['licenseKey', 'licenseValid', 'licenseEmail', 'licenseInstanceId', 'lastLicenseValidation']);
+
+            // Invalideer cache
+            invalidateTrialCache();
+
+            console.log('[License] Licentie succesvol gedeactiveerd');
+            return { success: true };
+        }
+
+        // Check voor foutmeldingen
+        if (result.error) {
+            return { success: false, error: result.error };
+        }
+
+        return { success: false, error: 'Deactivatie mislukt. Probeer het opnieuw.' };
+
+    } catch (error) {
+        console.error('[License] Fout tijdens Lemon Squeezy deactivatie:', error);
+        return { success: false, error: 'Netwerkfout tijdens deactivatie.' };
+    }
+}
+
+/**
+ * Revalidates stored license key in the background via Lemon Squeezy /validate endpoint
+ *
+ * SECURITY FIX v7.9.2: Verbeterde response handling
+ * - Check response.ok VOOR JSON parsing (voorkomt dat HTTP 500 met JSON body als invalidatie wordt gezien)
+ * - Retourneert explicitlyInvalidated flag wanneer server EXPLICIET zegt dat licentie ongeldig is
+ *
+ * @returns {Promise<{revalidated: boolean, valid?: boolean, networkError?: boolean, explicitlyInvalidated?: boolean}>}
+ */
 async function revalidateLicense() {
     try {
         const data = await chrome.storage.sync.get(['licenseKey', 'licenseValid', 'licenseInstanceId']);
@@ -1047,6 +1399,8 @@ async function revalidateLicense() {
         if (!data.licenseKey || !data.licenseValid) {
             return { revalidated: false, reason: 'No valid license to revalidate' };
         }
+
+
 
         try {
             // Lemon Squeezy License Validation API
@@ -1062,6 +1416,13 @@ async function revalidateLicense() {
                 })
             }, API_TIMEOUT_MS);
 
+            // SECURITY FIX Test 2: Check response.ok VOOR JSON parsing
+            // Dit voorkomt dat HTTP 500 errors met JSON body als invalidatie worden behandeld
+            if (!response.ok) {
+                console.warn(`[License] Server returned HTTP ${response.status} - treating as network error`);
+                return { revalidated: false, reason: `HTTP ${response.status}`, networkError: true };
+            }
+
             const result = await response.json();
 
             // Lemon Squeezy retourneert valid: true en license_key.status moet 'active' zijn
@@ -1076,13 +1437,25 @@ async function revalidateLicense() {
                 return { revalidated: true, valid: true };
             }
 
-            // Licentie is niet meer geldig (expired, disabled, etc.)
+            // SECURITY FIX Test 4: Server zegt EXPLICIET dat licentie ongeldig is
+            // Dit is GEEN fail-safe scenario - de server heeft definitief bevestigd dat de licentie niet geldig is
+            // Markeer dit met explicitlyInvalidated flag zodat performStartupLicenseCheck dit kan onderscheiden
             await chrome.storage.sync.set({
                 licenseValid: false,
                 licenseValidatedAt: Date.now()
                 // Let op: lastSuccessfulValidation wordt NIET bijgewerkt
             });
-            return { revalidated: true, valid: false };
+
+            if (globalThresholds.DEBUG_MODE) {
+                console.log("[License] Server explicitly invalidated license:", result.license_key?.status || 'unknown status');
+            }
+
+            return {
+                revalidated: true,
+                valid: false,
+                explicitlyInvalidated: true,  // CRITICAL: Dit signaleert dat FAIL_SAFE NIET van toepassing is
+                reason: result.license_key?.status || 'invalid'
+            };
 
         } catch (err) {
             console.error('[License] Error revalidating with Lemon Squeezy:', err);
@@ -1277,6 +1650,10 @@ async function saveSslCacheToStorage() {
 /**
  * Rate-limited SSL Labs API call
  * Wacht tot het veilig is om een request te doen
+ *
+ * SECURITY FIX v7.9.3: Rate limit state wordt gepersisteerd naar chrome.storage.session
+ * Dit voorkomt dat de SW na suspend/restart de rate limit "vergeet" en API spam veroorzaakt
+ *
  * @param {string} domain - Het domein om te checken
  * @returns {Promise<{isValid: boolean, reason: string}>}
  */
@@ -1293,8 +1670,11 @@ async function checkSslLabsWithRateLimit(domain) {
         await new Promise(resolve => setTimeout(resolve, waitTime));
     }
 
-    // Update timestamp VOOR de request
-    sslLabsLastRequestTime = Date.now();
+    // Update timestamp VOOR de request (in-memory + persistent)
+    const requestTimestamp = Date.now();
+    sslLabsLastRequestTime = requestTimestamp;
+    // SECURITY FIX v7.9.3: Persisteer naar storage.session (fire-and-forget, niet await)
+    saveSslLabsRateLimitState(requestTimestamp);
 
     try {
         const response = await fetchWithTimeout(
@@ -1444,8 +1824,8 @@ chrome.runtime.onInstalled.addListener(async (details) => {
             chrome.notifications.create("pinReminder", {
                 type: "basic",
                 iconUrl: "icons/icon128.png",
-                title: chrome.i18n.getMessage("installNotificationTitle") || "Extensie Geïnstalleerd!",
-                message: chrome.i18n.getMessage("installNotificationMessage") || "Speld de extensie vast aan je werkbalk voor snelle toegang. Klik op het extensie-icoon en selecteer 'Vastzetten'. Dit icoon waarschuwt je als een site onveilig is.",
+                title: chrome.i18n.getMessage("installNotificationTitle") || "Extension Installed!",
+                message: chrome.i18n.getMessage("installNotificationMessage") || "Pin the extension to your toolbar for quick access. Click the extension icon and select 'Pin'. This icon will warn you when a site is unsafe.",
                 priority: 2
             });
         }
@@ -1496,11 +1876,49 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
             try {
                 const result = await revalidateLicense();
 
+                // SECURITY FIX v7.9.1: Onderscheid netwerk errors van echte invalidatie
+                if (result.networkError && FAIL_SAFE_MODE) {
+                    // Netwerk error + FAIL_SAFE: behoud bescherming
+                    console.warn("[Alarm] Revalidatie gefaald door netwerk - FAIL_SAFE mode: bescherming behouden");
+                    await showFailSafeNotification('network_error');
+                    // SECURITY FIX v8.0.0: Zorg dat rulesets actief blijven
+                    await manageDNRules();
+                    return;
+                }
+
+                // SECURITY FIX v7.9.2: Check of server EXPLICIET heeft gezegd dat licentie ongeldig is
+                const explicitlyInvalidated = result.explicitlyInvalidated === true;
+
                 // Als revalidatie mislukt, check of grace period verlopen is
                 if (!result.revalidated || !result.valid) {
                     const graceStatus = await checkLicenseGracePeriod();
 
                     if (graceStatus.expired) {
+                        // SECURITY FIX v7.9.2: Bij expliciete invalidatie, negeer FAIL_SAFE
+                        if (explicitlyInvalidated) {
+                            console.log("[Alarm] Licentie EXPLICIET ongeldig door server - bescherming wordt uitgeschakeld");
+                            await chrome.storage.sync.set({ licenseValid: false });
+                            invalidateTrialCache();
+                            await chrome.storage.sync.set({ backgroundSecurity: false });
+                            await clearDynamicRules();
+                            await manageDNRules();
+                            return;
+                        }
+
+                        // SECURITY FIX v7.9.1: Check FAIL_SAFE_MODE (alleen als NIET expliciet geïnvalideerd)
+                        if (FAIL_SAFE_MODE) {
+                            // Check of er bestaande regels zijn
+                            const existingRules = await chrome.declarativeNetRequest.getDynamicRules();
+
+                            if (existingRules.length > 0) {
+                                console.warn("[Alarm] Grace period verlopen maar FAIL_SAFE: behoud bestaande regels");
+                                await showFailSafeNotification('grace_expired_failsafe');
+                                // SECURITY FIX v8.0.0: Zorg dat rulesets actief blijven
+                                await manageDNRules();
+                                return;
+                            }
+                        }
+
                         if (globalThresholds.DEBUG_MODE) {
                             console.log("[Alarm] Grace period verlopen na mislukte revalidatie - licentie wordt ongeldig");
                         }
@@ -1513,6 +1931,13 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
                 }
             } catch (error) {
                 console.error("[ERROR] Error in license revalidation alarm:", error.message);
+                // SECURITY FIX: Bij error, behoud bescherming als FAIL_SAFE_MODE actief is
+                if (FAIL_SAFE_MODE) {
+                    console.warn("[Alarm] Error tijdens revalidatie - FAIL_SAFE: bescherming behouden");
+                    await showFailSafeNotification('error_failsafe');
+                    // SECURITY FIX v8.0.0: Zorg dat rulesets actief blijven
+                    await manageDNRules();
+                }
             }
         })();
     }
@@ -1540,6 +1965,31 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
     if (alarm.name === "clearAlertBadge") {
         clearBadge();
         if (globalThresholds.DEBUG_MODE) console.log("Alert badge cleared via alarm.");
+    }
+
+    // SECURITY FIX v8.0.0 (Vector 3): Auto-cleanup voor Visual Hijacking block rules
+    if (alarm.name.startsWith("cleanup_visual_hijack_")) {
+        const ruleId = parseInt(alarm.name.replace("cleanup_visual_hijack_", ""), 10);
+
+        (async () => {
+            try {
+                // Verwijder de DNR regel
+                await chrome.declarativeNetRequest.updateDynamicRules({
+                    removeRuleIds: [ruleId]
+                });
+
+                // Verwijder uit tracking
+                const { visualHijackingRules = [] } = await chrome.storage.session.get('visualHijackingRules');
+                const filtered = visualHijackingRules.filter(r => r.ruleId !== ruleId);
+                await chrome.storage.session.set({ visualHijackingRules: filtered });
+
+                if (globalThresholds.DEBUG_MODE) {
+                    console.log(`[Visual Hijacking Protection] Auto-cleaned rule ${ruleId}`);
+                }
+            } catch (error) {
+                console.error('[Visual Hijacking Protection] Cleanup error:', error);
+            }
+        })();
     }
 });
 
@@ -1592,6 +2042,21 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 .catch(error => {
                     console.error("[validateLicense] Error:", error);
                     sendResponse({ success: false, error: "License validation failed" });
+                });
+            return true;
+
+        case 'deactivateLicense':
+            deactivateLicenseKey()
+                .then(result => {
+                    if (result.success) {
+                        // Heractiveer achtergrondbeveiliging met nieuwe status (nu trial/free)
+                        manageDNRules();
+                    }
+                    sendResponse(result);
+                })
+                .catch(error => {
+                    console.error("[deactivateLicense] Error:", error);
+                    sendResponse({ success: false, error: "License deactivation failed" });
                 });
             return true;
 
@@ -1852,6 +2317,140 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             sendResponse({ received: true, action: 'bitb_warning_shown' });
             return true;
 
+        case 'webTransportDetected':
+            // WebTransport/HTTP3 verdachte activiteit gedetecteerd door content script
+            if (globalThresholds.DEBUG_MODE) {
+                console.log(`[WebTransport] Suspicious activity on tab ${sender.tab?.id}:`, request.data);
+            }
+
+            // Update badge en icon gebaseerd op score
+            if (sender.tab?.id && request.data?.score) {
+                const score = request.data.score;
+
+                if (score >= 10) {
+                    // Hoge score = alert niveau
+                    chrome.action.setBadgeText({ text: '!', tabId: sender.tab.id });
+                    chrome.action.setBadgeBackgroundColor({ color: '#f59e0b', tabId: sender.tab.id }); // Amber/warning
+                    chrome.action.setTitle({
+                        title: chrome.i18n.getMessage('webTransportWarningTitle') || 'Suspicious Network Activity Detected',
+                        tabId: sender.tab.id
+                    });
+
+                    // Log de activiteit
+                    console.warn(`[WebTransport] Suspicious activity on ${sender.tab.url || 'unknown URL'}. ` +
+                        `Endpoint: ${request.data.endpointUrl || 'N/A'}. ` +
+                        `Score: ${score}. ` +
+                        `Reasons: ${JSON.stringify(request.data.reasons || [])}`);
+                } else if (score >= 5) {
+                    // Medium score = caution niveau
+                    chrome.action.setBadgeText({ text: '?', tabId: sender.tab.id });
+                    chrome.action.setBadgeBackgroundColor({ color: '#ffc107', tabId: sender.tab.id });
+                }
+            }
+
+            sendResponse({ received: true, score: request.data?.score || 0 });
+            return true;
+
+        // =========================================================================
+        // SECURITY FIX v8.0.0 (Vector 3): Network-level blocking voor Visual Hijacking
+        // =========================================================================
+        // Deze handler blokkeert navigatie naar gevaarlijke URLs op netwerk-niveau.
+        // Dit voorkomt dat aanvallers via z-index/pointer-events manipulatie
+        // gebruikers naar malicieuze sites kunnen leiden.
+        case 'blockMaliciousNavigation': {
+            const targetUrl = request.url;
+            const reason = request.reason || 'visual_hijacking_protection';
+            const tabId = sender.tab?.id;
+
+            (async () => {
+                try {
+                    // Genereer unieke regel ID (base + timestamp modulo om binnen limiet te blijven)
+                    // DNR regel IDs moeten positieve integers zijn
+                    const ruleId = 900000 + (Date.now() % 99999);
+
+                    // Extraheer hostname voor URL filter
+                    let urlFilter;
+                    try {
+                        const urlObj = new URL(targetUrl);
+                        // Gebruik volledige URL voor specifieke blocking
+                        urlFilter = targetUrl;
+                    } catch (e) {
+                        // Fallback naar ruwe URL als parsing faalt
+                        urlFilter = targetUrl;
+                    }
+
+                    // Voeg tijdelijke DNR regel toe
+                    await chrome.declarativeNetRequest.updateDynamicRules({
+                        addRules: [{
+                            id: ruleId,
+                            priority: 1,
+                            action: {
+                                type: 'redirect',
+                                redirect: {
+                                    // Redirect naar onze blocked page met context
+                                    extensionPath: `/alert.html?blocked=true&url=${encodeURIComponent(targetUrl)}&reason=${encodeURIComponent(reason)}`
+                                }
+                            },
+                            condition: {
+                                urlFilter: urlFilter,
+                                resourceTypes: ['main_frame']
+                            }
+                        }]
+                    });
+
+                    if (globalThresholds.DEBUG_MODE) {
+                        console.log(`[Visual Hijacking Protection] Blocked URL: ${targetUrl}, Rule ID: ${ruleId}`);
+                    }
+
+                    // Sla regel ID op voor cleanup tracking
+                    const { visualHijackingRules = [] } = await chrome.storage.session.get('visualHijackingRules');
+                    visualHijackingRules.push({
+                        ruleId,
+                        url: targetUrl,
+                        tabId,
+                        createdAt: Date.now()
+                    });
+                    await chrome.storage.session.set({ visualHijackingRules });
+
+                    // Schedule auto-cleanup na 5 minuten
+                    chrome.alarms.create(`cleanup_visual_hijack_${ruleId}`, {
+                        delayInMinutes: 5
+                    });
+
+                    sendResponse({ blocked: true, ruleId });
+
+                } catch (error) {
+                    console.error('[Visual Hijacking Protection] Error adding block rule:', error);
+                    sendResponse({ blocked: false, error: error.message });
+                }
+            })();
+            return true;
+        }
+
+        // Handler voor het verwijderen van visual hijacking block rules
+        case 'unblockMaliciousNavigation': {
+            const ruleId = request.ruleId;
+
+            (async () => {
+                try {
+                    await chrome.declarativeNetRequest.updateDynamicRules({
+                        removeRuleIds: [ruleId]
+                    });
+
+                    // Verwijder uit tracking
+                    const { visualHijackingRules = [] } = await chrome.storage.session.get('visualHijackingRules');
+                    const filtered = visualHijackingRules.filter(r => r.ruleId !== ruleId);
+                    await chrome.storage.session.set({ visualHijackingRules: filtered });
+
+                    sendResponse({ unblocked: true });
+                } catch (error) {
+                    console.error('[Visual Hijacking Protection] Error removing block rule:', error);
+                    sendResponse({ unblocked: false, error: error.message });
+                }
+            })();
+            return true;
+        }
+
         default:
             console.warn("[onMessage] Onbekend berichttype:", request.type || request.action);
             sendResponse({ success: false, error: "Unknown message type" });
@@ -1870,18 +2469,26 @@ chrome.runtime.setUninstallURL("https://linkshield.nl/#uninstall");
 
 // Luister naar tab updates en activatie om de status te resetten
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-    // Reageer alleen als de URL daadwerkelijk is veranderd (en het een volledige URL is)
-    if (changeInfo.url && tab.url && tab.url.startsWith('http')) {
-        stopIconAnimation(); // Stop animatie bij navigatie
-        await resetCurrentSiteStatus(); // Reset de opgeslagen status voor de nieuwe URL
-        resetIconToNeutral(); // Zet icoon naar neutraal (groen)
+    try {
+        // Reageer alleen als de URL daadwerkelijk is veranderd (en het een volledige URL is)
+        if (changeInfo.url && tab?.url && tab.url.startsWith('http')) {
+            stopIconAnimation(); // Stop animatie bij navigatie
+            await resetCurrentSiteStatus(); // Reset de opgeslagen status voor de nieuwe URL
+            resetIconToNeutral(); // Zet icoon naar neutraal (groen)
+        }
+    } catch (error) {
+        console.error("[ERROR] chrome.tabs.onUpdated error:", error);
     }
 });
 
 chrome.tabs.onActivated.addListener(async ({ tabId }) => {
-    stopIconAnimation(); // Stop animatie bij tab-switch
-    await resetCurrentSiteStatus(); // Reset de opgeslagen status
-    resetIconToNeutral(); // Zet icoon naar neutraal (groen)
+    try {
+        stopIconAnimation(); // Stop animatie bij tab-switch
+        await resetCurrentSiteStatus(); // Reset de opgeslagen status
+        resetIconToNeutral(); // Zet icoon naar neutraal (groen)
+    } catch (error) {
+        console.error("[ERROR] chrome.tabs.onActivated error:", error);
+    }
 });
 
 
@@ -1907,114 +2514,130 @@ let lastStatusKey = null;
 // Listener voor wijzigingen in storage.
 // Reageert op wijzigingen in sync (voor rules fetch) en local (voor icon updates).
 chrome.storage.onChanged.addListener(async (changes, area) => {
-  if (area === "sync") {
-    // Update thresholds als sync config verandert
-    if (
-      'LOW_THRESHOLD' in changes ||
-      'MEDIUM_THRESHOLD' in changes ||
-      'HIGH_THRESHOLD' in changes ||
-      'DOMAIN_AGE_MIN_RISK' in changes ||
-      'YOUNG_DOMAIN_RISK' in changes ||
-      'YOUNG_DOMAIN_THRESHOLD_DAYS' in changes ||
-      'DEBUG_MODE' in changes
-    ) {
-      await loadThresholdsFromStorage();
-    }
+    try {
+        if (area === "sync") {
+            // Update thresholds als sync config verandert
+            if (
+                'LOW_THRESHOLD' in changes ||
+                'MEDIUM_THRESHOLD' in changes ||
+                'HIGH_THRESHOLD' in changes ||
+                'DOMAIN_AGE_MIN_RISK' in changes ||
+                'YOUNG_DOMAIN_RISK' in changes ||
+                'YOUNG_DOMAIN_THRESHOLD_DAYS' in changes ||
+                'DEBUG_MODE' in changes
+            ) {
+                await loadThresholdsFromStorage();
+            }
 
-    // LICENTIE/TRIAL SYNCHRONISATIE: Reageer op wijzigingen in licentie of trial status
-    if ('licenseValid' in changes || 'installDate' in changes || 'trialDays' in changes) {
-      invalidateTrialCache();
+            // LICENTIE/TRIAL SYNCHRONISATIE: Reageer op wijzigingen in licentie of trial status
+            if ('licenseValid' in changes || 'installDate' in changes || 'trialDays' in changes) {
+                invalidateTrialCache();
 
-      // Controleer of achtergrondbeveiliging (de)geactiveerd moet worden
-      const isAllowed = await isBackgroundSecurityAllowed();
+                // Controleer of achtergrondbeveiliging (de)geactiveerd moet worden
+                const isAllowed = await isBackgroundSecurityAllowed();
 
-      // Update DNR regels op basis van nieuwe status
-      await manageDNRules();
+                // Update DNR regels op basis van nieuwe status
+                await manageDNRules();
 
-      // Als licentie nu geldig is (was ongeldig), herlaad regels
-      if ('licenseValid' in changes && changes.licenseValid.newValue === true) {
-        await fetchAndLoadRules();
-      }
+                // Als licentie nu geldig is (was ongeldig), herlaad regels
+                if ('licenseValid' in changes && changes.licenseValid.newValue === true) {
+                    await fetchAndLoadRules();
+                }
 
-      // Als licentie nu ongeldig is (was geldig) of trial verlopen, verwijder regels
-      if (!isAllowed) {
-        await clearDynamicRules();
-      }
-    }
+                // Als licentie nu ongeldig is (was geldig) of trial verlopen, verwijder regels
+                if (!isAllowed) {
+                    await clearDynamicRules();
+                }
+            }
 
-    // Regel updates als backgroundSecurity verandert
-    if ("backgroundSecurity" in changes) {
-      const now = Date.now();
-      if (now - lastUpdate < 300000) { // 5 minuten debounce
-        if (globalThresholds.DEBUG_MODE) {
-          console.log("Too soon for another rules update. Skipping.");
+            // Regel updates als backgroundSecurity verandert
+            if ("backgroundSecurity" in changes) {
+                const now = Date.now();
+                if (now - lastUpdate < 300000) { // 5 minuten debounce
+                    if (globalThresholds.DEBUG_MODE) {
+                        console.log("Too soon for another rules update. Skipping.");
+                    }
+                    return;
+                }
+                lastUpdate = now;
+                if (globalThresholds.DEBUG_MODE) {
+                    console.log("backgroundSecurity changed. Updating DNR rules.");
+                }
+                await fetchAndLoadRules();
+                await manageDNRules();
+            }
         }
-        return;
-      }
-      lastUpdate = now;
-      if (globalThresholds.DEBUG_MODE) {
-        console.log("backgroundSecurity changed. Updating DNR rules.");
-      }
-      await fetchAndLoadRules();
-      await manageDNRules();
+
+        // Reageer op veranderingen in currentSiteStatus om het icoon bij te werken
+        if (area === "local" && changes.currentSiteStatus) {
+            const { oldValue, newValue } = changes.currentSiteStatus;
+
+            // Negeer deletes, duplicate writes en writes vanuit updateIcon (aanwezigheid van isSafe)
+            if (
+                !newValue ||
+                JSON.stringify(oldValue) === JSON.stringify(newValue) ||
+                newValue.hasOwnProperty('isSafe')
+            ) {
+                if (globalThresholds.DEBUG_MODE) {
+                    console.log("[STORAGE LISTENER] currentSiteStatus ignored:", { oldValue, newValue });
+                }
+                return;
+            }
+
+            const { level, reasons, risk, url } = newValue;
+            await updateIconBasedOnSafety(level, reasons, risk, url);
+        }
+    } catch (error) {
+        console.error("[ERROR] chrome.storage.onChanged error:", error);
     }
-  }
-
-  // Reageer op veranderingen in currentSiteStatus om het icoon bij te werken
-  if (area === "local" && changes.currentSiteStatus) {
-    const { oldValue, newValue } = changes.currentSiteStatus;
-
-    // Negeer deletes, duplicate writes en writes vanuit updateIcon (aanwezigheid van isSafe)
-    if (
-      !newValue ||
-      JSON.stringify(oldValue) === JSON.stringify(newValue) ||
-      newValue.hasOwnProperty('isSafe')
-    ) {
-      if (globalThresholds.DEBUG_MODE) {
-        console.log("[STORAGE LISTENER] currentSiteStatus ignored:", { oldValue, newValue });
-      }
-      return;
-    }
-
-    const { level, reasons, risk, url } = newValue;
-    await updateIconBasedOnSafety(level, reasons, risk, url);
-  }
 });
 
 
 
 chrome.runtime.onStartup.addListener(async () => {
-  await restoreIconState();
-  // Voer licentie check uit bij browser startup
-  await performStartupLicenseCheck();
+    try {
+        // PERFORMANCE FIX v8.1.0: Initialize protection IMMEDIATELY (non-blocking)
+        await initializeProtectionImmediately();
+        await restoreIconState();
+
+        // Run license validation in BACKGROUND (don't await - non-blocking)
+        performStartupLicenseCheck().catch(err =>
+            console.error("[INIT] Background license check failed:", err)
+        );
+    } catch (error) {
+        console.error("[ERROR] chrome.runtime.onStartup error:", error);
+    }
 });
 
 chrome.runtime.onInstalled.addListener(async (details) => {
-  if (details.reason === "install" || details.reason === "update") {
-    await restoreIconState();
-    // Voer licentie check uit na installatie of update
-    await performStartupLicenseCheck();
-  }
+    try {
+        if (details.reason === "install" || details.reason === "update") {
+            // PERFORMANCE FIX v8.1.0: Initialize protection IMMEDIATELY
+            await initializeProtectionImmediately();
+            await restoreIconState();
+
+            // Run license validation in BACKGROUND (don't await)
+            performStartupLicenseCheck().catch(err =>
+                console.error("[INIT] Background license check failed:", err)
+            );
+        }
+    } catch (error) {
+        console.error("[ERROR] chrome.runtime.onInstalled (second) error:", error);
+    }
 });
 
-// Voer ook direct een licentie check uit wanneer de service worker start
-// Dit vangt gevallen op waarin de browser al open was
-setTimeout(() => {
-  performStartupLicenseCheck().catch(err =>
-    console.error("[INIT] Vertraagde licentie check mislukt:", err)
-  );
-}, 1000); // 1 seconde vertraging om te zorgen dat alle functies geladen zijn
+// PERFORMANCE FIX v8.1.0: Initialize protection immediately when service worker starts
+// This is the fastest path - protection is active within milliseconds
+initializeProtectionImmediately().then(result => {
+    console.log("[INIT] Immediate initialization complete:", result);
+}).catch(err => {
+    console.error("[INIT] Immediate initialization failed:", err);
+});
 
-// ==== DEBUG: Expose functions to global scope for console testing ====
-// VERWIJDER VOOR PRODUCTIE - Dit maakt functies toegankelijk via console
-if (DEBUG_EXPOSE_FUNCTIONS) {
-    self.checkLicenseGracePeriod = checkLicenseGracePeriod;
-    self.checkTrialStatus = checkTrialStatus;
-    self.isBackgroundSecurityAllowed = isBackgroundSecurityAllowed;
-    self.invalidateTrialCache = invalidateTrialCache;
-    self.revalidateLicense = revalidateLicense;
-    self.validateLicenseKey = validateLicenseKey;
-    self.isPremiumActive = isPremiumActive;
-    self.globalThresholds = globalThresholds;
-    console.info("[DEBUG] License functions exposed to global scope for testing");
-}
+// Run full license validation after 2 seconds (background, non-blocking)
+setTimeout(() => {
+    performStartupLicenseCheck().catch(err =>
+        console.error("[INIT] Delayed license check failed:", err)
+    );
+}, 2000);
+

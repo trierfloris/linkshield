@@ -419,8 +419,9 @@ describe('3. CONTENT.JS - 2026 THREAT SHIELD', () => {
     });
 
     test('BitB warning buttons should use i18n', () => {
-      expect(contentCode).toContain('bitbClosePageButton');
-      expect(contentCode).toContain('bitbDismissButton');
+      // BitB buttons use exitPage and understandRisk keys
+      expect(contentCode).toContain("getMessage('exitPage')");
+      expect(contentCode).toContain("getMessage('understandRisk')");
       recordAuditResult('BitB', 'i18n button support', 'Yes', 'PASS', 'M');
     });
   });

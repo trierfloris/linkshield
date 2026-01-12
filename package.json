@@ -10,7 +10,11 @@
     "test:url": "jest tests/url-analysis.test.js",
     "test:core": "jest tests/core-functions.test.js",
     "test:e2e": "jest --config jest.e2e.config.js",
-    "validate:i18n": "node scripts/validate-i18n.js"
+    "test:security-audit": "jest --config jest.e2e.config.js tests/e2e/security-audit-complete.test.js",
+    "test:security-critical": "jest --config jest.e2e.config.js tests/e2e/security-audit-complete.test.js -t 'CRITICAL'",
+    "test:security-high": "jest --config jest.e2e.config.js tests/e2e/security-audit-complete.test.js -t 'HIGH'",
+    "validate:i18n": "node scripts/validate-i18n.js",
+    "validate:reasons": "node scripts/validate-reason-keys.js"
   },
   "devDependencies": {
     "jest": "^29.7.0",

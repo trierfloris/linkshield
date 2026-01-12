@@ -85,6 +85,435 @@ const MAX_CACHE_SIZE = 1000;
 const MUTATION_DEBOUNCE_MS = 500; // Increased from 250ms for heavy SPA sites
 const warnedDomainsInline = new Set()
 
+// =============================================================================
+// SECURITY FIX v8.0.0 - EARLY MUTATION OBSERVER (Vector 1: Race Condition Fix)
+// =============================================================================
+// Dit systeem start DIRECT bij document_start en buffert alle DOM mutaties
+// tot de config geladen is. Dit voorkomt dat aanvallers links kunnen injecteren
+// in het korte tijdvenster tussen document_start en config load.
+
+const earlyMutationBuffer = [];
+let earlyObserverActive = true;
+let configReady = false;
+
+// Shadow DOM configuratie - SECURITY FIX v8.0.0 (Vector 2)
+const MAX_SHADOW_DEPTH = 20; // Verhoogd van 5 naar 20 voor diepe Shadow DOM nesting
+
+/**
+ * Early Observer - start DIRECT, buffert mutations tot config klaar is
+ * SECURITY FIX v8.0.0: Voorkomt race condition bypass
+ */
+const earlyObserver = new MutationObserver((mutations) => {
+  if (!earlyObserverActive) return;
+
+  // Buffer alle mutations voor latere verwerking
+  mutations.forEach(mutation => {
+    mutation.addedNodes.forEach(node => {
+      if (node.nodeType === Node.ELEMENT_NODE) {
+        earlyMutationBuffer.push(node);
+      }
+    });
+  });
+});
+
+// Start DIRECT - zelfs voordat document.body bestaat
+// We observeren documentElement wat altijd bestaat bij document_start
+if (document.documentElement) {
+  earlyObserver.observe(document.documentElement, {
+    childList: true,
+    subtree: true
+  });
+}
+
+/**
+ * Verwerkt gebufferde mutations nadat config geladen is
+ * @returns {Promise<void>}
+ */
+async function processEarlyMutationBuffer() {
+  if (earlyMutationBuffer.length === 0) return;
+
+  const nodesToProcess = [...earlyMutationBuffer];
+  earlyMutationBuffer.length = 0; // Clear buffer
+
+  logDebug(`[EarlyObserver] Processing ${nodesToProcess.length} buffered nodes`);
+
+  for (const node of nodesToProcess) {
+    try {
+      // Scan voor links (inclusief Shadow DOM)
+      await scanNodeForLinks(node);
+    } catch (e) {
+      // Ignore errors in individual node processing
+    }
+  }
+}
+
+/**
+ * SECURITY FIX v8.4.0: Immediate dangerous URI check at scan entry point
+ * Performs fast check BEFORE any caching or complex parsing
+ * @param {HTMLAnchorElement} link - The link element to check
+ * @returns {boolean} - true if dangerous URI was blocked, false otherwise
+ */
+function immediateUriSecurityCheck(link) {
+  if (!link) return false;
+
+  // Get BOTH href property AND raw attribute - browsers don't decode protocol in encoded URIs
+  // e.g., href="javascript%3avoid(0)" -> link.href becomes relative path, NOT javascript:
+  const hrefProp = link.href instanceof SVGAnimatedString ? link.href.baseVal : link.href;
+  const hrefAttr = link.getAttribute ? link.getAttribute('href') : null;
+
+  // Check both sources - attribute may have encoded protocol that browser didn't recognize
+  const hrefsToCheck = [hrefProp, hrefAttr].filter(h => h && typeof h === 'string');
+  if (hrefsToCheck.length === 0) return false;
+
+  for (const href of hrefsToCheck) {
+    // IMMEDIATE CHECK 1: Data URI (simple fast check)
+    if (href.trim().toLowerCase().startsWith('data:')) {
+      // Skip safe text/plain without base64
+      const lowerHref = href.toLowerCase();
+      if (lowerHref.startsWith('data:text/plain,') && !lowerHref.includes('base64')) {
+        continue; // Safe plain text data URI, check next href source
+      }
+      console.log(`[SecurityFix v8.4.0] 🛑 IMMEDIATE BLOCK: data: URI detected`);
+      warnLinkByLevel(link, {
+        level: 'alert',
+        risk: 25,
+        reasons: ['dataUriBlocked', 'criticalSecurityThreat']
+      });
+      link.dataset.linkshieldScanned = 'true';
+      return true;
+    }
+
+    // IMMEDIATE CHECK 2: JavaScript URI (with recursive decode)
+    let decoded = href;
+    try {
+      // Recursive decode up to 5 times for bypass attempts
+      for (let i = 0; i < 5; i++) {
+        const prev = decoded;
+        try {
+          decoded = decodeURIComponent(decoded);
+        } catch (e) {
+          decoded = decoded.replace(/%([0-9A-Fa-f]{2})/g, (_, hex) =>
+            String.fromCharCode(parseInt(hex, 16)));
+        }
+        if (decoded === prev) break;
+      }
+    } catch (e) { /* ignore decode errors */ }
+
+    // Remove whitespace/control chars and check for javascript:
+    const normalized = decoded.replace(/[\s\r\n\t\0\x00-\x1F\x7F]/g, '').toLowerCase();
+    if (normalized.startsWith('javascript:')) {
+      // Skip harmless void(0) patterns - use continue to check other href sources
+      const code = normalized.slice('javascript:'.length).trim();
+      const harmless = ['void(0)', 'void(0);', 'void0', '', ';', 'void0;', 'undefined', 'false', 'true', 'null'];
+      if (harmless.includes(code)) {
+        continue; // Check next href source, don't exit early
+      }
+      console.log(`[SecurityFix v8.4.0] 🛑 IMMEDIATE BLOCK: javascript: URI detected`);
+      warnLinkByLevel(link, {
+        level: 'alert',
+        risk: 25,
+        reasons: ['javascriptUriBlocked', 'criticalSecurityThreat']
+      });
+      link.dataset.linkshieldScanned = 'true';
+      return true;
+    }
+
+    // IMMEDIATE CHECK 3: VBScript URI
+    if (normalized.startsWith('vbscript:')) {
+      console.log(`[SecurityFix v8.4.0] 🛑 IMMEDIATE BLOCK: vbscript: URI detected`);
+      warnLinkByLevel(link, {
+        level: 'alert',
+        risk: 25,
+        reasons: ['vbscriptUriBlocked', 'criticalSecurityThreat']
+      });
+      link.dataset.linkshieldScanned = 'true';
+      return true;
+    }
+
+    // IMMEDIATE CHECK 4: Blob URI (can execute arbitrary code)
+    if (href.trim().toLowerCase().startsWith('blob:')) {
+      console.log(`[SecurityFix v8.4.0] 🛑 IMMEDIATE BLOCK: blob: URI detected`);
+      warnLinkByLevel(link, {
+        level: 'alert',
+        risk: 25,
+        reasons: ['blobUriBlocked', 'criticalSecurityThreat']
+      });
+      link.dataset.linkshieldScanned = 'true';
+      return true;
+    }
+  } // end for loop over hrefsToCheck
+
+  return false;
+}
+
+/**
+ * Scant een node en al zijn children voor links, inclusief Shadow DOM
+ * SECURITY FIX v8.0.0: Recursieve Shadow DOM scanning tot depth 20
+ * SECURITY FIX v8.4.0: Immediate URI security checks at entry point
+ * @param {Node} node - De node om te scannen
+ * @param {number} shadowDepth - Huidige Shadow DOM diepte
+ */
+async function scanNodeForLinks(node, shadowDepth = 0) {
+  if (!node || shadowDepth > MAX_SHADOW_DEPTH) return;
+
+  // Check directe links
+  if (node.tagName === 'A' && node.href && !node.dataset.linkshieldScanned) {
+    try {
+      // SECURITY FIX v8.4.0: Immediate dangerous URI check FIRST
+      if (immediateUriSecurityCheck(node)) {
+        return; // Blocked, skip further processing
+      }
+      if (typeof isValidURL === 'function' && isValidURL(node.href)) {
+        if (typeof classifyAndCheckLink === 'function') {
+          classifyAndCheckLink(node);
+          // SECURITY FIX v8.0.1 (Vector 1): Mark as scanned
+          node.dataset.linkshieldScanned = 'true';
+        }
+      }
+    } catch (e) { /* ignore */ }
+  }
+
+  // Scan children
+  if (node.querySelectorAll) {
+    const links = node.querySelectorAll('a[href]');
+    links.forEach(link => {
+      if (link.dataset.linkshieldScanned) return; // Skip already scanned
+      try {
+        // SECURITY FIX v8.4.0: Immediate dangerous URI check FIRST
+        if (immediateUriSecurityCheck(link)) {
+          return; // Blocked, skip further processing
+        }
+        if (typeof isValidURL === 'function' && isValidURL(link.href)) {
+          if (typeof classifyAndCheckLink === 'function') {
+            classifyAndCheckLink(link);
+            // SECURITY FIX v8.0.1 (Vector 1): Mark as scanned
+            link.dataset.linkshieldScanned = 'true';
+          }
+        }
+      } catch (e) { /* ignore */ }
+    });
+
+    // SECURITY FIX v8.0.0: Recursief scannen van Shadow DOM
+    const allElements = node.querySelectorAll('*');
+    allElements.forEach(el => {
+      if (el.shadowRoot) {
+        scanNodeForLinks(el.shadowRoot, shadowDepth + 1);
+      }
+    });
+  }
+
+  // Check eigen shadowRoot
+  if (node.shadowRoot) {
+    scanNodeForLinks(node.shadowRoot, shadowDepth + 1);
+  }
+}
+
+/**
+ * Callback wanneer config klaar is - verwerk buffer en start normale observer
+ */
+function onConfigReady() {
+  if (configReady) return;
+  configReady = true;
+
+  // Verwerk gebufferde mutations
+  processEarlyMutationBuffer();
+
+  // Stop early observer (wordt vervangen door hoofdobserver)
+  earlyObserverActive = false;
+
+  // Schedule een fallback full-page scan met requestIdleCallback
+  // SECURITY FIX v8.0.0: Vangt gemiste elementen op
+  scheduleFullPageScan();
+
+  logDebug('[EarlyObserver] Config ready, buffer processed, fallback scan scheduled');
+}
+
+/**
+ * PERFORMANCE FIX v8.2.0: Progressive scanning with viewport priority
+ * Target: <3 seconds for 5000 links (was 11 seconds in v8.1.0 audit)
+ *
+ * Strategy:
+ * 1. Viewport-first: Scan visible links immediately
+ * 2. Batched processing: Process off-screen links in batches of 100
+ * 3. requestIdleCallback: Use idle time for background work
+ * 4. Early termination: Skip already-scanned links fast
+ */
+function scheduleFullPageScan() {
+  const BATCH_SIZE = 100; // SECURITY FIX v8.2.0: Increased from 50 to 100 for better performance
+  const BATCH_DELAY = 0; // ms between batches (0 = requestIdleCallback handles timing)
+  const startTime = performance.now();
+
+  /**
+   * Check if an element is in the viewport
+   */
+  const isInViewport = (el) => {
+    const rect = el.getBoundingClientRect();
+    return (
+      rect.top < window.innerHeight &&
+      rect.bottom > 0 &&
+      rect.left < window.innerWidth &&
+      rect.right > 0
+    );
+  };
+
+  /**
+   * Scan a single link
+   * SECURITY FIX v8.4.0: Added immediateUriSecurityCheck for data/javascript URI blocking
+   */
+  const scanLink = (link) => {
+    if (link.dataset.linkshieldScanned) return false;
+    try {
+      // SECURITY FIX v8.4.0: Immediate dangerous URI check FIRST (before any other checks)
+      if (typeof immediateUriSecurityCheck === 'function' && immediateUriSecurityCheck(link)) {
+        return true; // Link was blocked by immediate check
+      }
+      if (typeof isValidURL === 'function' && isValidURL(link.href)) {
+        if (typeof classifyAndCheckLink === 'function') {
+          classifyAndCheckLink(link);
+          link.dataset.linkshieldScanned = 'true';
+          return true;
+        }
+      }
+    } catch (e) { /* ignore */ }
+    return false;
+  };
+
+  /**
+   * Process a batch of links
+   */
+  const processBatch = (links, startIndex, callback) => {
+    const endIndex = Math.min(startIndex + BATCH_SIZE, links.length);
+    let scanned = 0;
+
+    for (let i = startIndex; i < endIndex; i++) {
+      if (scanLink(links[i])) scanned++;
+    }
+
+    if (endIndex < links.length) {
+      // More links to process - schedule next batch
+      if (typeof requestIdleCallback === 'function') {
+        requestIdleCallback(() => processBatch(links, endIndex, callback), { timeout: 100 });
+      } else {
+        setTimeout(() => processBatch(links, endIndex, callback), BATCH_DELAY);
+      }
+    } else {
+      // All done
+      callback(scanned);
+    }
+  };
+
+  const performScan = () => {
+    try {
+      const allLinks = Array.from(document.querySelectorAll('a[href]'));
+      const totalLinks = allLinks.length;
+
+      // Phase 1: Immediate viewport scan (blocking but fast)
+      const viewportLinks = allLinks.filter(isInViewport);
+      const offscreenLinks = allLinks.filter(link => !isInViewport(link));
+
+      let viewportScanned = 0;
+      viewportLinks.forEach(link => {
+        if (scanLink(link)) viewportScanned++;
+      });
+
+      const viewportTime = performance.now() - startTime;
+      console.log(`[ProgressiveScan] 👁️ Phase 1: ${viewportScanned}/${viewportLinks.length} viewport links in ${viewportTime.toFixed(1)}ms`);
+
+      // Phase 2: Background scan for off-screen links (non-blocking)
+      if (offscreenLinks.length > 0) {
+        processBatch(offscreenLinks, 0, (offscreenScanned) => {
+          const totalTime = performance.now() - startTime;
+          console.log(`[ProgressiveScan] 📄 Phase 2: ${offscreenScanned}/${offscreenLinks.length} off-screen links`);
+          console.log(`[ProgressiveScan] ✅ Total: ${viewportScanned + offscreenScanned}/${totalLinks} links in ${totalTime.toFixed(1)}ms`);
+
+          // Phase 3: Shadow DOM scan (after main links done)
+          scanAllShadowDOMs(document.body, 0);
+        });
+      } else {
+        const totalTime = performance.now() - startTime;
+        console.log(`[ProgressiveScan] ✅ Complete: ${viewportScanned}/${totalLinks} links in ${totalTime.toFixed(1)}ms`);
+        scanAllShadowDOMs(document.body, 0);
+      }
+    } catch (e) {
+      console.error('[ProgressiveScan] Error:', e);
+    }
+  };
+
+  // Start scan after a short delay to allow page to stabilize
+  if (typeof requestIdleCallback === 'function') {
+    requestIdleCallback(performScan, { timeout: 2000 });
+  } else {
+    setTimeout(performScan, 500);
+  }
+}
+
+/**
+ * Scant alle Shadow DOMs recursief
+ * SECURITY FIX v8.0.0 (Vector 2): Diepte 20 voor Shadow DOM Inception aanvallen
+ * @param {Element} root - Root element
+ * @param {number} depth - Huidige diepte
+ */
+function scanAllShadowDOMs(root, depth = 0) {
+  if (!root || depth > MAX_SHADOW_DEPTH) {
+    if (depth > MAX_SHADOW_DEPTH) {
+      console.log(`[ShadowScan] 🛑 MAX_DEPTH reached (${MAX_SHADOW_DEPTH}) - stopping recursion`);
+    }
+    return;
+  }
+
+  try {
+    const allElements = root.querySelectorAll ? root.querySelectorAll('*') : [];
+    let shadowRootsFound = 0;
+    let linksScanned = 0;
+
+    // DEBUG: Log scan start
+    if (depth === 0) {
+      console.log(`[ShadowScan] 🔍 Starting Shadow DOM scan from root:`, root.nodeName || 'document');
+    }
+
+    allElements.forEach(el => {
+      if (el.shadowRoot) {
+        shadowRootsFound++;
+        const hostTag = el.tagName?.toLowerCase() || 'unknown';
+
+        // DEBUG: Log each Shadow Root found
+        console.log(`[ShadowScan] 🌑 Shadow Root FOUND at depth ${depth}: <${hostTag}> (mode: ${el.shadowRoot.mode || 'unknown'})`);
+
+        // Scan links in deze shadow root
+        const shadowLinks = el.shadowRoot.querySelectorAll('a[href]');
+        console.log(`[ShadowScan]   └─ Links in shadow: ${shadowLinks.length}`);
+
+        shadowLinks.forEach(link => {
+          if (!link.dataset.linkshieldScanned) {
+            try {
+              if (typeof isValidURL === 'function' && isValidURL(link.href)) {
+                if (typeof classifyAndCheckLink === 'function') {
+                  classifyAndCheckLink(link);
+                  link.dataset.linkshieldScanned = 'true';
+                  linksScanned++;
+                  console.log(`[ShadowScan]   └─ ✅ Scanned: ${link.href.substring(0, 60)}...`);
+                }
+              }
+            } catch (e) {
+              console.log(`[ShadowScan]   └─ ❌ Error scanning link:`, e.message);
+            }
+          }
+        });
+
+        // Recursief scannen
+        scanAllShadowDOMs(el.shadowRoot, depth + 1);
+      }
+    });
+
+    // DEBUG: Log scan summary for this depth level
+    if (shadowRootsFound > 0 || depth === 0) {
+      console.log(`[ShadowScan] 📊 Depth ${depth} complete: ${shadowRootsFound} shadow roots, ${linksScanned} links scanned`);
+    }
+  } catch (e) {
+    console.error(`[ShadowScan] ❌ Error at depth ${depth}:`, e);
+  }
+}
+
 // ============================================================================
 // CACHE MANAGEMENT - Prevent memory exhaustion in long-running sessions
 // ============================================================================
@@ -354,66 +783,130 @@ function reportClipboardHijacking(type, content) {
  * Toont een waarschuwing bij clipboard hijacking
  */
 function showClipboardWarning(type, score) {
-    // Maak waarschuwingsbanner
+    // Remove existing warning
+    document.getElementById('linkshield-clipboard-warning')?.remove();
+
+    const isCrypto = type.includes('Crypto');
+
     const warning = document.createElement('div');
     warning.id = 'linkshield-clipboard-warning';
     warning.style.cssText = `
         position: fixed;
-        top: 10px;
-        right: 10px;
-        background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
-        color: white;
-        padding: 16px 20px;
-        border-radius: 8px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #ffffff;
+        color: #1f2937;
+        padding: 0;
+        border-radius: 12px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         z-index: 2147483647;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         font-size: 14px;
-        max-width: 350px;
-        animation: slideIn 0.3s ease-out;
+        max-width: 420px;
+        width: 90vw;
+        overflow: hidden;
     `;
 
-    const title = type.includes('Crypto')
-        ? chrome.i18n.getMessage('clipboardHijackingCryptoTitle') || '⚠️ Crypto Address Hijacking Detected!'
-        : chrome.i18n.getMessage('clipboardHijackingTitle') || '⚠️ Clipboard Manipulation Detected!';
+    const title = isCrypto
+        ? chrome.i18n.getMessage('clipboardHijackingCryptoTitle') || 'Crypto Address Hijacking Detected!'
+        : chrome.i18n.getMessage('clipboardHijackingTitle') || 'Clipboard Manipulation Detected!';
 
     const message = chrome.i18n.getMessage('clipboardHijackingMessage') ||
         'This page is attempting to modify your clipboard. Be careful when pasting wallet addresses.';
 
+    const tip = isCrypto
+        ? chrome.i18n.getMessage('clipboardHijackingCryptoTip') || 'Always verify wallet addresses before sending cryptocurrency. Attackers replace addresses in your clipboard.'
+        : chrome.i18n.getMessage('clipboardHijackingTip') || 'This site may be trying to replace content you copy. Always verify pasted content.';
+
     warning.innerHTML = `
-        <div style="font-weight: bold; margin-bottom: 8px; font-size: 15px;">${title}</div>
-        <div style="opacity: 0.95; line-height: 1.4;">${message}</div>
-        <button id="linkshield-clipboard-close" style="
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: none;
-            border: none;
+        <div style="
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
             color: white;
-            font-size: 18px;
-            cursor: pointer;
-            opacity: 0.8;
-        ">×</button>
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        ">
+            <span style="font-size: 20px;">🛡️</span>
+            <span style="font-weight: 600; font-size: 15px;">LinkShield Security</span>
+        </div>
+        <div style="padding: 24px;">
+            <div style="
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 16px;
+            ">
+                <div style="
+                    width: 48px;
+                    height: 48px;
+                    background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 24px;
+                    flex-shrink: 0;
+                ">${isCrypto ? '💰' : '📋'}</div>
+                <div style="font-size: 18px; font-weight: 600; color: #dc2626;">${title}</div>
+            </div>
+            <div style="
+                background: #fef2f2;
+                border: 1px solid #fecaca;
+                border-radius: 8px;
+                padding: 14px;
+                margin-bottom: 16px;
+                line-height: 1.5;
+                color: #7f1d1d;
+                font-size: 13px;
+            ">${message}</div>
+            <div style="
+                font-size: 12px;
+                color: #6b7280;
+                margin-bottom: 20px;
+                line-height: 1.4;
+            ">💡 ${tip}</div>
+            <div style="display: flex; gap: 12px;">
+                <button id="linkshield-clipboard-leave" style="
+                    flex: 1;
+                    padding: 12px 16px;
+                    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+                    color: white;
+                    border: none;
+                    border-radius: 8px;
+                    font-size: 14px;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: opacity 0.2s;
+                ">${chrome.i18n.getMessage('exitPage') || 'Leave this page'}</button>
+                <button id="linkshield-clipboard-close" style="
+                    flex: 1;
+                    padding: 12px 16px;
+                    background: #f3f4f6;
+                    color: #374151;
+                    border: 1px solid #d1d5db;
+                    border-radius: 8px;
+                    font-size: 14px;
+                    font-weight: 500;
+                    cursor: pointer;
+                    transition: background 0.2s;
+                ">${chrome.i18n.getMessage('understandRisk') || 'I understand the risk'}</button>
+            </div>
+        </div>
     `;
 
-    // Voeg animatie style toe
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-    `;
-    document.head.appendChild(style);
     document.body.appendChild(warning);
+
+    // Leave page button
+    document.getElementById('linkshield-clipboard-leave')?.addEventListener('click', () => {
+        window.location.href = 'about:blank';
+    });
 
     // Close button
     document.getElementById('linkshield-clipboard-close')?.addEventListener('click', () => {
         warning.remove();
     });
-
-    // Auto-remove na 15 seconden
-    setTimeout(() => warning.remove(), 15000);
 }
 
 // =============================
@@ -459,10 +952,17 @@ function initClickFixDetection() {
 /**
  * Scant de pagina voor ClickFix aanval indicatoren
  */
-function scanForClickFixAttack() {
+async function scanForClickFixAttack() {
     if (clickFixDetected) return; // Voorkom herhaalde waarschuwingen
 
     try {
+        // Check if current site is a globally trusted domain (TrustedDomains.json)
+        const hostname = window.location.hostname.toLowerCase();
+        if (await isTrustedDomain(hostname)) {
+            logDebug(`[ClickFix] Skipping scan for trusted domain: ${hostname}`);
+            return;
+        }
+
         const patterns = globalConfig?.CLICKFIX_PATTERNS;
         if (!patterns) {
             logDebug('[ClickFix] No patterns configured');
@@ -578,54 +1078,102 @@ function showClickFixWarning(patterns, score) {
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        background: linear-gradient(135deg, #dc2626 0%, #7f1d1d 100%);
-        color: white;
-        padding: 24px 32px;
+        background: #ffffff;
+        color: #1f2937;
+        padding: 0;
         border-radius: 12px;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         z-index: 2147483647;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         font-size: 14px;
-        max-width: 480px;
-        text-align: center;
-        animation: pulse 2s infinite;
+        max-width: 420px;
+        width: 90vw;
+        overflow: hidden;
     `;
 
     const title = hasPowerShell
-        ? (chrome.i18n.getMessage('clickFixPowerShellTitle') || '⚠️ GEVAAR: PowerShell Aanval Gedetecteerd!')
-        : (chrome.i18n.getMessage('clickFixCommandTitle') || '⚠️ GEVAAR: Verdacht Commando Gedetecteerd!');
+        ? (chrome.i18n.getMessage('clickFixPowerShellTitle') || 'PowerShell Command Detected!')
+        : (chrome.i18n.getMessage('clickFixCommandTitle') || 'Suspicious Command Detected!');
 
     const message = chrome.i18n.getMessage('clickFixMessage') ||
-        'Deze pagina probeert u te misleiden om een kwaadaardig commando uit te voeren. KOPIEER EN PLAK NIETS van deze pagina!';
+        'This page contains a suspicious command that could harm your computer. Do not copy or execute this command.';
 
     const subMessage = chrome.i18n.getMessage('clickFixSubMessage') ||
-        'Legitieme websites vragen NOOIT om PowerShell of CMD commando\'s te kopiëren.';
+        'Attackers often disguise malicious commands as \'fixes\' or \'verification steps\'. Never run commands from untrusted sources.';
 
     warning.innerHTML = `
-        <div style="font-size: 48px; margin-bottom: 16px;">🚨</div>
-        <div style="font-size: 18px; font-weight: bold; margin-bottom: 12px;">${title}</div>
-        <div style="margin-bottom: 16px; line-height: 1.5;">${message}</div>
-        <div style="font-size: 12px; opacity: 0.9; margin-bottom: 20px;">${subMessage}</div>
-        <div style="display: flex; gap: 12px; justify-content: center;">
-            <button id="linkshield-clickfix-leave" style="
-                background: white;
-                color: #dc2626;
-                border: none;
-                padding: 12px 24px;
-                border-radius: 6px;
-                cursor: pointer;
-                font-weight: bold;
-                font-size: 14px;
-            ">Verlaat deze pagina</button>
-            <button id="linkshield-clickfix-close" style="
-                background: transparent;
-                color: white;
-                border: 1px solid white;
-                padding: 12px 24px;
-                border-radius: 6px;
-                cursor: pointer;
-                font-size: 14px;
-            ">Ik begrijp het risico</button>
+        <div style="
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        ">
+            <span style="font-size: 20px;">🛡️</span>
+            <span style="font-weight: 600; font-size: 15px;">LinkShield Security</span>
+        </div>
+        <div style="padding: 24px;">
+            <div style="
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 16px;
+            ">
+                <div style="
+                    width: 48px;
+                    height: 48px;
+                    background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 24px;
+                    flex-shrink: 0;
+                ">⚠️</div>
+                <div style="font-size: 18px; font-weight: 600; color: #dc2626;">${title}</div>
+            </div>
+            <div style="
+                background: #fef2f2;
+                border: 1px solid #fecaca;
+                border-radius: 8px;
+                padding: 14px;
+                margin-bottom: 16px;
+                line-height: 1.5;
+                color: #7f1d1d;
+                font-size: 13px;
+            ">${message}</div>
+            <div style="
+                font-size: 12px;
+                color: #6b7280;
+                margin-bottom: 20px;
+                line-height: 1.5;
+            ">${subMessage}</div>
+            <div style="display: flex; gap: 12px;">
+                <button id="linkshield-clickfix-leave" style="
+                    flex: 1;
+                    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+                    color: white;
+                    border: none;
+                    padding: 12px 20px;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-weight: 600;
+                    font-size: 14px;
+                    transition: opacity 0.2s;
+                ">${chrome.i18n.getMessage('exitPage') || 'Leave this page'}</button>
+                <button id="linkshield-clickfix-close" style="
+                    flex: 1;
+                    background: #f3f4f6;
+                    color: #374151;
+                    border: 1px solid #d1d5db;
+                    padding: 12px 20px;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-size: 14px;
+                    transition: background 0.2s;
+                ">${chrome.i18n.getMessage('understandRisk') || 'I understand the risk'}</button>
+            </div>
         </div>
     `;
 
@@ -731,7 +1279,7 @@ function isPotentialBitBContainer(element) {
 /**
  * Hoofd scan functie voor BitB detectie
  */
-function scanForBitBAttack() {
+async function scanForBitBAttack() {
     if (bitbDetected) return;
 
     try {
@@ -741,85 +1289,81 @@ function scanForBitBAttack() {
             return;
         }
 
-        const indicators = [];
-        let totalScore = 0;
-        const allFoundTypes = new Set();
+        // 0. Check if current site is a globally trusted domain (TrustedDomains.json)
+        const currentHost = window.location.hostname.toLowerCase();
+        if (await isTrustedDomain(currentHost)) {
+            logDebug(`[BitB] Domain ${currentHost} is trusted, skipping BitB detection`);
+            return;
+        }
 
         // 1. Zoek alle potentiële modal/overlay containers
         const overlays = findOverlayContainers();
 
+        // 2. Analyseer ELKE overlay INDIVIDUEEL voor BitB patterns
+        // Indicatoren van verschillende overlays mogen NIET gecombineerd worden
+        // (voorkomt false positives zoals ClickMate + Facebook login form)
         for (const overlay of overlays) {
             const result = analyzeOverlayForBitB(overlay, config);
-            if (result.score > 0) {
-                indicators.push(...result.indicators);
-                totalScore += result.score;
-                // Verzamel alle gevonden indicator types
-                result.foundTypes.forEach(type => allFoundTypes.add(type));
+            if (result.score === 0) continue;
+
+            const foundTypes = result.foundTypes;
+            const hasFakeUrlBar = foundTypes.has('fakeUrlBar');
+            const hasLoginForm = foundTypes.has('loginForm');
+            const hasWindowControls = foundTypes.has('windowControls');
+            const hasOAuthBranding = foundTypes.has('oauthBranding');
+            const hasWindowChrome = foundTypes.has('windowChromeStyle');
+            const hasPadlock = foundTypes.has('padlockIcon');
+
+            // Bepaal of DEZE SPECIFIEKE overlay een BitB attack is
+            let isLikelyBitB = false;
+            let severity = null;
+
+            if (hasFakeUrlBar) {
+                // Fake URL bar is zeer sterke indicator - altijd alert
+                isLikelyBitB = true;
+                severity = 'critical';
+                logDebug('[BitB] Fake URL bar detected in overlay - strong BitB indicator');
+            } else if (hasLoginForm && hasWindowControls) {
+                // Login form + window controls in DEZELFDE overlay = waarschijnlijk BitB
+                isLikelyBitB = true;
+                severity = 'critical';
+                logDebug('[BitB] Login form + window controls in same overlay');
+            } else if (hasLoginForm && hasOAuthBranding) {
+                // Login form + OAuth branding in DEZELFDE overlay = waarschijnlijk BitB
+                isLikelyBitB = true;
+                severity = 'critical';
+                logDebug('[BitB] Login form + OAuth branding in same overlay');
+            } else if (hasLoginForm && hasWindowChrome && hasPadlock) {
+                // Login form + window chrome + padlock in DEZELFDE overlay
+                isLikelyBitB = true;
+                severity = 'warning';
+                logDebug('[BitB] Login form + window chrome + padlock in same overlay');
+            } else if (hasWindowControls && hasWindowChrome && hasPadlock) {
+                // Window controls + chrome + padlock zonder login = mogelijk BitB
+                isLikelyBitB = true;
+                severity = 'warning';
+                logDebug('[BitB] Window simulation detected in overlay');
+            }
+
+            // Als deze overlay een BitB attack is, rapporteer en stop
+            if (isLikelyBitB) {
+                if (severity === 'critical') {
+                    bitbDetected = true;
+                    reportBitBAttack('critical', result.indicators, result.score);
+                    return; // Stop na eerste critical detection
+                } else if (severity === 'warning') {
+                    reportBitBAttack('warning', result.indicators, result.score);
+                    return; // Stop na eerste warning
+                }
             }
         }
 
-        // 2. Globale check voor fake URL bars (ook buiten overlays)
+        // 3. Globale check voor fake URL bars (buiten overlays) - dit blijft pagina-breed
         const fakeUrlBars = detectFakeUrlBarsGlobal(config);
         if (fakeUrlBars.length > 0) {
-            indicators.push({ type: 'fakeUrlBarGlobal', count: fakeUrlBars.length });
-            totalScore += fakeUrlBars.length * config.scores.fakeUrlBar;
-            allFoundTypes.add('fakeUrlBar');
-        }
-
-        // === NIEUWE DETECTIE LOGICA ===
-        // Een BitB attack vereist:
-        // 1. Een fake URL bar (sterke indicator alleen) OF
-        // 2. Meerdere sterke indicatoren samen (bijv. loginForm + windowControls)
-
-        const hasFakeUrlBar = allFoundTypes.has('fakeUrlBar');
-        const hasLoginForm = allFoundTypes.has('loginForm');
-        const hasWindowControls = allFoundTypes.has('windowControls');
-        const hasOAuthBranding = allFoundTypes.has('oauthBranding');
-        const hasWindowChrome = allFoundTypes.has('windowChromeStyle');
-        const hasPadlock = allFoundTypes.has('padlockIcon');
-
-        // Bepaal of dit een echte BitB attack is
-        let isLikelyBitB = false;
-        let severity = null;
-
-        if (hasFakeUrlBar) {
-            // Fake URL bar is zeer sterke indicator - altijd alert
-            isLikelyBitB = true;
-            severity = 'critical';
-            logDebug('[BitB] Fake URL bar detected - strong BitB indicator');
-        } else if (hasLoginForm && hasWindowControls) {
-            // Login form + window controls = waarschijnlijk BitB
-            isLikelyBitB = true;
-            severity = 'critical';
-            logDebug('[BitB] Login form + window controls detected');
-        } else if (hasLoginForm && hasOAuthBranding) {
-            // Login form + OAuth branding = waarschijnlijk BitB
-            isLikelyBitB = true;
-            severity = 'critical';
-            logDebug('[BitB] Login form + OAuth branding detected');
-        } else if (hasLoginForm && hasWindowChrome && hasPadlock) {
-            // Login form + window chrome + padlock = waarschijnlijk BitB
-            isLikelyBitB = true;
-            severity = 'warning';
-            logDebug('[BitB] Login form + window chrome + padlock detected');
-        } else if (hasWindowControls && hasWindowChrome && hasPadlock) {
-            // Window controls + chrome + padlock zonder login = mogelijk BitB
-            isLikelyBitB = true;
-            severity = 'warning';
-            logDebug('[BitB] Window simulation detected without login form');
-        }
-
-        // Evalueer resultaat met nieuwe logica
-        if (isLikelyBitB && indicators.length > 0) {
-            if (severity === 'critical') {
-                bitbDetected = true;
-                reportBitBAttack('critical', indicators, totalScore);
-            } else if (severity === 'warning') {
-                reportBitBAttack('warning', indicators, totalScore);
-            }
-        } else if (totalScore >= config.thresholds.log) {
-            // Alleen loggen als score hoog genoeg is maar geen BitB pattern matcht
-            logDebug(`[BitB] Indicators found but no BitB pattern: ${JSON.stringify(indicators)}, score: ${totalScore}`);
+            logDebug('[BitB] Global fake URL bar detected');
+            bitbDetected = true;
+            reportBitBAttack('critical', [{ type: 'fakeUrlBarGlobal', count: fakeUrlBars.length }], fakeUrlBars.length * config.scores.fakeUrlBar);
         }
 
     } catch (error) {
@@ -1212,50 +1756,29 @@ function showBitBWarning(severity, indicators, score) {
 
     const isCritical = severity === 'critical';
 
-    // Design tokens (matching shared.css)
-    const colors = {
-        danger: '#dc2626',
-        dangerLight: '#fef2f2',
-        dangerBorder: '#fecaca',
-        dangerText: '#991b1b',
-        warning: '#d97706',
-        warningLight: '#fffbeb',
-        warningBorder: '#fde68a',
-        warningText: '#92400e',
-        textSecondary: '#6b7280',
-        surface: '#ffffff',
-        border: 'rgba(0, 0, 0, 0.08)'
-    };
-
-    const themeColor = isCritical ? colors.danger : colors.warning;
-    const themeBg = isCritical ? colors.dangerLight : colors.warningLight;
-    const themeBorder = isCritical ? colors.dangerBorder : colors.warningBorder;
-    const themeText = isCritical ? colors.dangerText : colors.warningText;
-
     const warning = document.createElement('div');
     warning.id = 'linkshield-bitb-warning';
     warning.style.cssText = `
         position: fixed;
-        top: 20px;
+        top: 50%;
         left: 50%;
-        transform: translateX(-50%);
-        background: ${colors.surface};
-        color: #1f1f1f;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.15);
-        border: 1px solid ${colors.border};
+        transform: translate(-50%, -50%);
+        background: #ffffff;
+        color: #1f2937;
+        padding: 0;
+        border-radius: 12px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
         z-index: 2147483647;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         font-size: 14px;
-        max-width: 520px;
-        min-width: 320px;
-        animation: bitbSlideIn 0.3s ease-out;
+        max-width: 420px;
+        width: 90vw;
+        overflow: hidden;
     `;
 
     const title = isCritical
-        ? (chrome.i18n.getMessage('bitbAttackCriticalTitle') || 'Critical: Fake Login Window!')
-        : (chrome.i18n.getMessage('bitbAttackWarningTitle') || 'Warning: Suspicious Login Popup');
+        ? (chrome.i18n.getMessage('bitbAttackCriticalTitle') || 'Fake Login Window Detected!')
+        : (chrome.i18n.getMessage('bitbAttackWarningTitle') || 'Suspicious Login Popup');
 
     const message = chrome.i18n.getMessage('bitbAttackMessage') ||
         'This page is showing a fake browser window designed to steal your credentials. Real login popups open in separate browser windows.';
@@ -1263,91 +1786,89 @@ function showBitBWarning(severity, indicators, score) {
     const tip = chrome.i18n.getMessage('bitbAttackTip') ||
         'Always check the browser address bar for the real URL, not text displayed within the page.';
 
-    const closeButtonText = chrome.i18n.getMessage('bitbClosePageButton') || 'Close this page';
-    const dismissButtonText = chrome.i18n.getMessage('bitbDismissButton') || 'I understand the risk';
+    const headerColor = isCritical ? 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)' : 'linear-gradient(135deg, #d97706 0%, #b45309 100%)';
+    const iconBg = isCritical ? 'linear-gradient(135deg, #fef2f2 0%, #fecaca 100%)' : 'linear-gradient(135deg, #fffbeb 0%, #fde68a 100%)';
+    const titleColor = isCritical ? '#dc2626' : '#d97706';
+    const boxBg = isCritical ? '#fef2f2' : '#fffbeb';
+    const boxBorder = isCritical ? '#fecaca' : '#fde68a';
+    const boxText = isCritical ? '#7f1d1d' : '#92400e';
 
     warning.innerHTML = `
         <div style="
+            background: ${headerColor};
+            color: white;
+            padding: 16px 20px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding-bottom: 12px;
-            margin-bottom: 12px;
-            border-bottom: 1px solid ${colors.border};
+            gap: 10px;
         ">
-            <svg style="width: 20px; height: 20px; color: ${colors.textSecondary};" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-            </svg>
-            <span style="font-size: 13px; font-weight: 500; color: ${colors.textSecondary}; letter-spacing: 0.3px;">LinkShield Security</span>
+            <span style="font-size: 20px;">🛡️</span>
+            <span style="font-weight: 600; font-size: 15px;">LinkShield Security</span>
         </div>
-        <h1 style="
-            font-size: 18px;
-            text-align: center;
-            margin-bottom: 12px;
-            font-weight: 600;
-            color: ${themeColor};
-        ">${isCritical ? '🚨 ' : '⚠️ '}${title}</h1>
-        <p style="
-            text-align: center;
-            color: ${colors.textSecondary};
-            margin-bottom: 16px;
-            font-size: 14px;
-            line-height: 1.5;
-        ">${message}</p>
-        <div style="
-            padding: 12px;
-            border-radius: 6px;
-            font-size: 14px;
-            background-color: ${themeBg};
-            color: ${themeText};
-            border: 1px solid ${themeBorder};
-            margin-bottom: 16px;
-        ">
-            <strong style="display: block; margin-bottom: 4px;">💡 Tip:</strong>
-            ${tip}
-        </div>
-        <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-            <button id="linkshield-bitb-close-page" style="
-                background-color: ${themeColor};
-                color: white;
-                border: none;
-                padding: 10px 20px;
-                border-radius: 6px;
-                cursor: pointer;
-                font-weight: 500;
-                font-size: 14px;
-                transition: filter 0.2s ease;
-            ">${closeButtonText}</button>
-            <button id="linkshield-bitb-dismiss" style="
-                background-color: ${colors.textSecondary};
-                color: white;
-                border: none;
-                padding: 10px 20px;
-                border-radius: 6px;
-                cursor: pointer;
-                font-size: 14px;
-                transition: filter 0.2s ease;
-            ">${dismissButtonText}</button>
+        <div style="padding: 24px;">
+            <div style="
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 16px;
+            ">
+                <div style="
+                    width: 48px;
+                    height: 48px;
+                    background: ${iconBg};
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 24px;
+                    flex-shrink: 0;
+                ">${isCritical ? '🚨' : '⚠️'}</div>
+                <div style="font-size: 18px; font-weight: 600; color: ${titleColor};">${title}</div>
+            </div>
+            <div style="
+                background: ${boxBg};
+                border: 1px solid ${boxBorder};
+                border-radius: 8px;
+                padding: 14px;
+                margin-bottom: 16px;
+                line-height: 1.5;
+                color: ${boxText};
+                font-size: 13px;
+            ">${message}</div>
+            <div style="
+                font-size: 12px;
+                color: #6b7280;
+                margin-bottom: 20px;
+                line-height: 1.5;
+            "><strong>💡 Tip:</strong> ${tip}</div>
+            <div style="display: flex; gap: 12px;">
+                <button id="linkshield-bitb-close-page" style="
+                    flex: 1;
+                    background: ${headerColor};
+                    color: white;
+                    border: none;
+                    padding: 12px 20px;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-weight: 600;
+                    font-size: 14px;
+                    transition: opacity 0.2s;
+                ">${chrome.i18n.getMessage('exitPage') || 'Leave this page'}</button>
+                <button id="linkshield-bitb-dismiss" style="
+                    flex: 1;
+                    background: #f3f4f6;
+                    color: #374151;
+                    border: 1px solid #d1d5db;
+                    padding: 12px 20px;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-size: 14px;
+                    transition: background 0.2s;
+                ">${chrome.i18n.getMessage('understandRisk') || 'I understand the risk'}</button>
+            </div>
         </div>
     `;
 
-    // Voeg animatie en hover styles toe
-    const style = document.createElement('style');
-    style.id = 'linkshield-bitb-styles';
-    style.textContent = `
-        @keyframes bitbSlideIn {
-            from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
-            to { opacity: 1; transform: translateX(-50%) translateY(0); }
-        }
-        #linkshield-bitb-close-page:hover,
-        #linkshield-bitb-dismiss:hover {
-            filter: brightness(90%);
-        }
-    `;
-    if (!document.getElementById('linkshield-bitb-styles')) {
-        document.head.appendChild(style);
-    }
     document.body.appendChild(warning);
 
     // Event listeners
@@ -1612,6 +2133,43 @@ function validateRegexOrSetPatternFields(cfg) {
     Array.from(cfg.SHORTENED_URL_DOMAINS).filter(d => typeof d === 'string' && d.trim().length > 0)
   );
   logDebug(`Validated SHORTENED_URL_DOMAINS: ${Array.from(cfg.SHORTENED_URL_DOMAINS).join(', ')}`);
+
+  // OFFICIAL_SHORTENERS: Set<string> - vertrouwde bedrijfs-shorteners die NIET als verdacht moeten worden gemarkeerd
+  const officialShorteners = cfg.OFFICIAL_SHORTENERS;
+  if (!(officialShorteners instanceof Set) && !Array.isArray(officialShorteners)) {
+    cfg.OFFICIAL_SHORTENERS = new Set([
+      't.co', 'youtu.be', 'fb.me', 'g.co', 'goo.gl', 'lnkd.in', 'amzn.to', 'amzn.eu',
+      'msft.it', 'aka.ms', 'apple.co', 'spoti.fi', 'pin.it', 'redd.it'
+    ]);
+  } else if (Array.isArray(officialShorteners)) {
+    cfg.OFFICIAL_SHORTENERS = new Set(officialShorteners.filter(d => typeof d === 'string' && d.trim().length > 0));
+  }
+  logDebug(`Validated OFFICIAL_SHORTENERS: ${Array.from(cfg.OFFICIAL_SHORTENERS).join(', ')}`);
+
+  // TRUSTED_CDN_DOMAINS: Set<string> - vertrouwde CDN domeinen
+  const trustedCdns = cfg.TRUSTED_CDN_DOMAINS;
+  if (!(trustedCdns instanceof Set) && !Array.isArray(trustedCdns)) {
+    cfg.TRUSTED_CDN_DOMAINS = new Set([
+      'cloudfront.net', 'amazonaws.com', 'azureedge.net', 'googleusercontent.com',
+      'gstatic.com', 'akamaized.net', 'fastly.net', 'jsdelivr.net', 'unpkg.com',
+      'fbcdn.net', 'twimg.com', 'ytimg.com'
+    ]);
+  } else if (Array.isArray(trustedCdns)) {
+    cfg.TRUSTED_CDN_DOMAINS = new Set(trustedCdns.filter(d => typeof d === 'string' && d.trim().length > 0));
+  }
+  logDebug(`Validated TRUSTED_CDN_DOMAINS: ${Array.from(cfg.TRUSTED_CDN_DOMAINS).join(', ')}`);
+
+  // TRUSTED_API_DOMAINS: Set<string> - vertrouwde API domeinen
+  const trustedApis = cfg.TRUSTED_API_DOMAINS;
+  if (!(trustedApis instanceof Set) && !Array.isArray(trustedApis)) {
+    cfg.TRUSTED_API_DOMAINS = new Set([
+      'accounts.google.com', 'login.microsoftonline.com', 'appleid.apple.com',
+      'api.stripe.com', 'api.paypal.com', 'auth0.com', 'okta.com'
+    ]);
+  } else if (Array.isArray(trustedApis)) {
+    cfg.TRUSTED_API_DOMAINS = new Set(trustedApis.filter(d => typeof d === 'string' && d.trim().length > 0));
+  }
+  logDebug(`Validated TRUSTED_API_DOMAINS: ${Array.from(cfg.TRUSTED_API_DOMAINS).join(', ')}`);
 }
 /* --- Helper 6: Suspicious-patternvelden --- */
 function validateSuspiciousPatterns(cfg) {
@@ -1974,6 +2532,8 @@ async function loadConfig() {
 }
 (async () => {
   await loadConfig();
+  // SECURITY FIX v8.0.0: Trigger early observer buffer processing
+  onConfigReady();
 })();
 // Cache voor JSON-bestanden met expiratie
 const jsonCache = {};
@@ -2205,6 +2765,47 @@ setInterval(() => {
     }
   }
 }, SAFE_DOMAINS_TTL_MS);
+
+/**
+ * Waits for safeDomains to be initialized (max 2 seconds)
+ */
+async function waitForSafeDomains() {
+  if (safeDomainsInitialized) return;
+  const maxWait = 2000;
+  const interval = 50;
+  let waited = 0;
+  while (!safeDomainsInitialized && waited < maxWait) {
+    await new Promise(r => setTimeout(r, interval));
+    waited += interval;
+  }
+}
+
+/**
+ * Checks if a hostname is a globally trusted domain (from TrustedDomains.json)
+ * Use this function consistently across all scans (ClickFix, BitB, risk analysis)
+ * @param {string} hostname - The hostname to check (e.g., "accounts.google.com")
+ * @returns {Promise<boolean>} - True if the hostname matches a trusted domain pattern
+ */
+async function isTrustedDomain(hostname) {
+  if (!hostname) return false;
+
+  // Wait for safeDomains to be loaded
+  await waitForSafeDomains();
+
+  const lowerHostname = hostname.toLowerCase();
+
+  return safeDomains.some(pattern => {
+    try {
+      const regex = new RegExp(pattern, 'i');
+      return regex.test(lowerHostname);
+    } catch (e) {
+      // Fallback for non-regex patterns
+      const plainDomain = pattern.replace(/\\\./g, '.').replace(/\$/, '').replace(/^\^/, '');
+      return lowerHostname === plainDomain || lowerHostname.endsWith(`.${plainDomain}`);
+    }
+  });
+}
+
 async function isProtectionEnabled() {
   const settings = await getStoredSettings();
   return settings.backgroundSecurity && settings.integratedProtection;
@@ -2234,9 +2835,11 @@ async function getStoredSettings() {
       return defaultSettings;
     }
 
+    // Use nullish coalescing to default to true when settings are not stored
+    // This fixes the bug where undefined settings caused protection to be disabled
     return {
-      backgroundSecurity: Boolean(settings.backgroundSecurity),
-      integratedProtection: Boolean(settings.integratedProtection)
+      backgroundSecurity: settings.backgroundSecurity ?? true,
+      integratedProtection: settings.integratedProtection ?? true
     };
   } catch (error) {
     // Stil falen met standaardinstellingen - geen crash
@@ -2261,13 +2864,20 @@ async function getFinalUrl(url) {
   }
 }
 function getMetaRefreshUrl() {
-  const metaTag = document.querySelector('meta[http-equiv="refresh"]');
-  if (metaTag) {
-    const content = metaTag.getAttribute('content');
-    const match = content.match(/url=(.+)/i);
-    if (match) return match[1];
+  try {
+    const metaTag = document.querySelector('meta[http-equiv="refresh"]');
+    if (metaTag) {
+      const content = metaTag.getAttribute('content');
+      if (content) {
+        const match = content.match(/url=(.+)/i);
+        if (match) return match[1];
+      }
+    }
+    return null;
+  } catch (error) {
+    handleError(error, 'getMetaRefreshUrl: Fout bij ophalen meta refresh URL');
+    return null;
   }
-  return null;
 }
 function performSingleCheck(condition, riskWeight, reason, severity = "medium") {
   if (condition) {
@@ -2434,7 +3044,7 @@ class LinkScannerOptimized {
     this.observer = new IntersectionObserver(this.handleIntersection, {
       root: null, // viewport
       rootMargin: '100px', // start 100px voor element zichtbaar wordt
-      threshold: 0
+      threshold: 0.05 // 5% zichtbaarheid vereist - reduceert callbacks voor batterijbesparing
     });
 
     logDebug('[LinkScanner] IntersectionObserver geïnitialiseerd');
@@ -2570,8 +3180,14 @@ class LinkScannerOptimized {
 
   /**
    * Scant een enkele link en past waarschuwingen toe indien nodig
+   * SECURITY FIX v8.4.0: Added immediateUriSecurityCheck for data/javascript URI blocking
    */
   async scanLink(link) {
+    // SECURITY FIX v8.4.0: Immediate dangerous URI check FIRST
+    if (typeof immediateUriSecurityCheck === 'function' && immediateUriSecurityCheck(link)) {
+      return { level: 'alert', blocked: true, reasons: ['dangerousUriBlocked'] };
+    }
+
     const href = link.href;
     let urlObj;
 
@@ -2627,44 +3243,55 @@ class LinkScannerOptimized {
   scanAllLinks() {
     let observedCount = 0;
 
-    // 1. Normale document links
-    const links = document.querySelectorAll('a[href]');
-    links.forEach(link => {
-      if (isValidURL(link.href) && !scannedLinks.has(link.href)) {
-        this.observe(link);
-        observedCount++;
-      }
-    });
+    try {
+      // 1. Normale document links
+      const links = document.querySelectorAll('a[href]');
+      links.forEach(link => {
+        try {
+          if (isValidURL(link.href) && !scannedLinks.has(link.href)) {
+            this.observe(link);
+            observedCount++;
+          }
+        } catch (e) { /* ignore individual link errors */ }
+      });
 
-    // 2. Shadow DOM links
-    const shadowLinks = this.scanShadowDOM(document.body);
-    shadowLinks.forEach(link => {
-      if (isValidURL(link.href) && !scannedLinks.has(link.href)) {
-        this.observe(link);
-        observedCount++;
-      }
-    });
+      // 2. Shadow DOM links
+      const shadowLinks = this.scanShadowDOM(document.body);
+      shadowLinks.forEach(link => {
+        try {
+          if (isValidURL(link.href) && !scannedLinks.has(link.href)) {
+            this.observe(link);
+            observedCount++;
+          }
+        } catch (e) { /* ignore individual link errors */ }
+      });
 
-    // 3. Same-origin iframe links
-    const iframeLinks = this.scanIframeLinks();
-    iframeLinks.forEach(link => {
-      if (isValidURL(link.href) && !scannedLinks.has(link.href)) {
-        this.observe(link);
-        observedCount++;
-      }
-    });
+      // 3. Same-origin iframe links
+      const iframeLinks = this.scanIframeLinks();
+      iframeLinks.forEach(link => {
+        try {
+          if (isValidURL(link.href) && !scannedLinks.has(link.href)) {
+            this.observe(link);
+            observedCount++;
+          }
+        } catch (e) { /* ignore individual link errors */ }
+      });
 
-    logDebug(`[LinkScanner] ${observedCount} links worden geobserveerd (incl. Shadow DOM en iframes)`);
+      logDebug(`[LinkScanner] ${observedCount} links worden geobserveerd (incl. Shadow DOM en iframes)`);
+    } catch (error) {
+      handleError(error, 'scanAllLinks: Fout bij scannen van links');
+    }
   }
 
   /**
    * Recursief scannen van Shadow DOM voor links
+   * SECURITY FIX v8.0.0: Gebruikt globale MAX_SHADOW_DEPTH (20) i.p.v. lokale (5)
    * @param {Element} root - Root element om te scannen
-   * @param {number} depth - Huidige diepte (max 5)
+   * @param {number} depth - Huidige diepte
    * @returns {Array} Array van gevonden link elementen
    */
   scanShadowDOM(root, depth = 0) {
-    const MAX_SHADOW_DEPTH = 5;
+    // SECURITY FIX v8.0.0: Gebruik globale MAX_SHADOW_DEPTH constante (20)
     const links = [];
 
     if (!root || depth >= MAX_SHADOW_DEPTH) return links;
@@ -2695,13 +3322,14 @@ class LinkScannerOptimized {
   /**
    * Scant Shadow DOM specifiek voor verborgen login forms en phishing overlays
    * AI-phishing kits injecteren vaak login forms in Shadow DOM om detectie te omzeilen
+   * SECURITY FIX v8.0.0: Gebruikt globale MAX_SHADOW_DEPTH (20) i.p.v. lokale (5)
    *
    * @param {Element|Document} root - Root element om te scannen
    * @param {number} depth - Huidige recursie diepte
    * @returns {{detected: boolean, forms: Array, overlays: Array, reasons: string[]}}
    */
   scanShadowDOMForPhishing(root, depth = 0) {
-    const MAX_SHADOW_DEPTH = 5;
+    // SECURITY FIX v8.0.0: Gebruik globale MAX_SHADOW_DEPTH constante (20)
     const result = {
       detected: false,
       forms: [],
@@ -2799,45 +3427,53 @@ class LinkScannerOptimized {
   }
 
   /**
-   * Scant same-origin iframes voor links
+   * Scant accessible iframes voor links
+   * SECURITY FIX v8.0.1 (Vector 2): Scan ook data: en about:blank iframes
    * @returns {Array} Array van gevonden link elementen
    */
   scanIframeLinks() {
     const MAX_IFRAME_DEPTH = 3;
     const links = [];
-    const currentOrigin = window.location.origin;
 
     try {
       const iframes = document.querySelectorAll('iframe');
 
       iframes.forEach(iframe => {
         try {
-          // Check of iframe same-origin is
-          const iframeSrc = iframe.src;
-          if (!iframeSrc) return;
+          const iframeSrc = iframe.src || '';
 
-          const iframeOrigin = new URL(iframeSrc).origin;
+          // SECURITY FIX v8.0.1: data: en about:blank iframes zijn vaak
+          // gebruikt voor obfuscatie - probeer altijd te scannen
+          const isSpecialProtocol = iframeSrc.startsWith('data:') ||
+                                    iframeSrc.startsWith('about:') ||
+                                    iframeSrc.startsWith('blob:') ||
+                                    iframeSrc === '';
 
-          // Alleen same-origin iframes scannen (security restriction)
-          if (iframeOrigin !== currentOrigin) {
-            logDebug(`[LinkScanner] Cross-origin iframe geskipt: ${iframeSrc}`);
+          // Probeer toegang tot iframe content (werkt voor same-origin en special protocols)
+          const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+          if (!iframeDoc) {
+            // Cross-origin iframe - content script draait daar apart via all_frames
             return;
           }
 
-          // Probeer toegang tot iframe content
-          const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
-          if (!iframeDoc) return;
-
           // Scan links in iframe
           const iframeLinks = iframeDoc.querySelectorAll('a[href]');
-          iframeLinks.forEach(link => links.push(link));
+          iframeLinks.forEach(link => {
+            if (!link.dataset.linkshieldScanned) {
+              links.push(link);
+            }
+          });
 
           // Check voor Shadow DOM in iframe
           const shadowLinks = this.scanShadowDOM(iframeDoc.body);
           links.push(...shadowLinks);
 
+          if (isSpecialProtocol) {
+            logDebug(`[LinkScanner] Special protocol iframe gescand: ${iframeSrc.substring(0, 50)}...`);
+          }
+
         } catch (e) {
-          // SecurityError bij cross-origin - dit is verwacht gedrag
+          // SecurityError bij cross-origin - content script draait daar apart
           if (e.name !== 'SecurityError') {
             logDebug(`[LinkScanner] Iframe scan error: ${e.message}`);
           }
@@ -3037,6 +3673,546 @@ async function checkForPhishingAds(link) {
     warnLinkByLevel(link, { level: 'caution', risk: 5, reasons: ["fileCheckFailed"] }); // Gebruik "fileCheckFailed" of een meer generieke "analysisError"
   }
 }
+// =============================================================================
+// SECURITY FIX v8.3.0 - DANGEROUS URI SCHEME DETECTION (ENHANCED)
+// =============================================================================
+// Detecteert en blokkeert gevaarlijke URI schemes: data:, javascript:, vbscript:
+// AUDIT FIX: Case-insensitive, recursive URL-decoding, entity decoding
+// Now returns CRITICAL (risk 25) for all dangerous schemes
+
+/**
+ * SECURITY FIX v8.3.0: Detecteert gevaarlijke URI schemes
+ * Enhanced with:
+ * - Recursive URL decoding (catches java%73cript:)
+ * - HTML entity decoding (catches &#106;avascript:)
+ * - Whitespace/null byte stripping
+ * - Case-insensitive matching
+ * @param {string} href - De te controleren URL
+ * @returns {{isDangerous: boolean, scheme: string, reason: string, risk: number}}
+ */
+function detectDangerousScheme(href) {
+  if (!href || typeof href !== 'string') {
+    return { isDangerous: false, scheme: '', reason: '', risk: 0 };
+  }
+
+  // Step 1: Recursive URL-decoding om encoding bypasses te voorkomen
+  let decoded = href;
+  let prevDecoded = '';
+  let iterations = 0;
+  const MAX_DECODE_ITERATIONS = 10; // Increased for deep encoding
+
+  while (decoded !== prevDecoded && iterations < MAX_DECODE_ITERATIONS) {
+    prevDecoded = decoded;
+    try {
+      decoded = decodeURIComponent(decoded);
+    } catch (e) {
+      // decodeURIComponent faalt bij ongeldige sequences, probeer handmatige decode
+      try {
+        decoded = decoded.replace(/%([0-9A-Fa-f]{2})/g, (_, hex) =>
+          String.fromCharCode(parseInt(hex, 16))
+        );
+      } catch (e2) {
+        break;
+      }
+    }
+    iterations++;
+  }
+
+  // Step 2: HTML entity decoding (catches &#106;avascript:, &Tab;, etc.)
+  decoded = decoded
+    .replace(/&#(\d+);/g, (_, num) => String.fromCharCode(parseInt(num, 10)))
+    .replace(/&#x([0-9A-Fa-f]+);/g, (_, hex) => String.fromCharCode(parseInt(hex, 16)))
+    .replace(/&Tab;/gi, '\t')
+    .replace(/&NewLine;/gi, '\n');
+
+  // Step 3: Verwijder whitespace, newlines, null bytes, control chars (bypass techniques)
+  const normalized = decoded
+    .replace(/[\s\r\n\t\0\x00-\x1F\x7F]/g, '')  // Remove all control chars
+    .toLowerCase();
+
+  // Step 4: Gevaarlijke schemes (case-insensitive)
+  const dangerousSchemes = [
+    { pattern: /^javascript:/i, scheme: 'javascript:', reason: 'dangerousJavascriptUri' },
+    { pattern: /^vbscript:/i, scheme: 'vbscript:', reason: 'dangerousVbscriptUri' },
+    { pattern: /^data:/i, scheme: 'data:', reason: 'dangerousDataUri' },
+    { pattern: /^blob:/i, scheme: 'blob:', reason: 'dangerousBlobUri' },
+  ];
+
+  for (const { pattern, scheme, reason } of dangerousSchemes) {
+    if (pattern.test(normalized)) {
+      // Extra check voor harmless javascript: patterns
+      if (scheme === 'javascript:') {
+        const code = normalized.slice('javascript:'.length).trim();
+        // Alleen void(0) en lege varianten zijn veilig
+        const harmlessPatterns = ['void(0)', 'void(0);', 'void0', '', ';', 'void0;', 'undefined', 'false', 'true', 'null'];
+        if (harmlessPatterns.includes(code)) {
+          return { isDangerous: false, scheme: '', reason: '', risk: 0 };
+        }
+      }
+      // Data URIs: alleen text/plain zonder base64 zijn relatief veilig
+      if (scheme === 'data:') {
+        // data:text/plain,Hello is veilig, maar data:text/html of data:application/* zijn gevaarlijk
+        if (/^data:text\/plain[,;]/.test(normalized) && !normalized.includes('base64')) {
+          return { isDangerous: false, scheme: '', reason: '', risk: 0 };
+        }
+      }
+      console.log(`[SecurityFix v8.3.0] 🚨 CRITICAL: Dangerous URI scheme detected: ${scheme}`);
+      console.log(`[SecurityFix v8.3.0] Original: ${href.substring(0, 80)}...`);
+      console.log(`[SecurityFix v8.3.0] Normalized: ${normalized.substring(0, 80)}...`);
+      return { isDangerous: true, scheme, reason, risk: 25 }; // CRITICAL risk
+    }
+  }
+
+  return { isDangerous: false, scheme: '', reason: '', risk: 0 };
+}
+
+// =============================================================================
+// SECURITY FIX v8.3.0 - HOMOGLYPH & PUNYCODE CRITICAL DETECTION (ENHANCED)
+// =============================================================================
+// AUDIT FIX: Case-insensitive Punycode regex, expanded confusables, charCode > 127 catch-all
+// Flag als CRITICAL risico voor onmiddellijke waarschuwing
+
+/**
+ * SECURITY FIX v8.3.0: Detecteert Punycode en mixed-script attacks
+ * Enhanced with:
+ * - Case-insensitive Punycode detection (/xn--/i catches XN--)
+ * - CharCode > 127 catch-all for ANY non-ASCII
+ * - Expanded confusables (Greek, Mathematical, digit lookalikes)
+ * @param {string} href - De te controleren URL
+ * @returns {{isSuspicious: boolean, reasons: string[], risk: number}}
+ */
+function detectHomoglyphAndPunycode(href) {
+  const result = { isSuspicious: false, reasons: [], risk: 0 };
+
+  if (!href || typeof href !== 'string') {
+    return result;
+  }
+
+  try {
+    // Parse de URL
+    let urlObj;
+    try {
+      urlObj = new URL(href, window.location.href);
+    } catch (e) {
+      return result; // Ongeldige URL, geen homoglyph check nodig
+    }
+
+    const hostname = urlObj.hostname.toLowerCase();
+
+    // Skip interne/lokale hostnames
+    if (hostname === 'localhost' || hostname.endsWith('.local') ||
+        /^(127\.|192\.168\.|10\.|172\.(1[6-9]|2\d|3[01])\.)/.test(hostname)) {
+      return result;
+    }
+
+    // 1) PUNYCODE DETECTION - CASE-INSENSITIVE (catches xn--, XN--, Xn--)
+    // AUDIT FIX: Use case-insensitive regex instead of includes()
+    if (/xn--/i.test(hostname)) {
+      result.isSuspicious = true;
+      result.reasons.push('punycodeDetected');
+      result.risk += 12; // Increased from 8
+      console.log(`[SecurityFix v8.3.0] 🚨 Punycode domain detected: ${hostname}`);
+
+      // Decode punycode voor verdere analyse
+      let decodedHostname = hostname;
+      if (typeof punycode !== 'undefined' && punycode.toUnicode) {
+        try {
+          // Decode elk label apart (xn-- kan in subdomeinen zitten)
+          decodedHostname = hostname.split('.').map(label => {
+            if (/^xn--/i.test(label)) {
+              return punycode.toUnicode(label.toLowerCase());
+            }
+            return label;
+          }).join('.');
+          console.log(`[SecurityFix v8.3.0] Decoded Punycode: ${hostname} → ${decodedHostname}`);
+        } catch (e) {
+          result.reasons.push('punycodeDecodingError');
+          result.risk += 3;
+        }
+      }
+
+      // 2) MIXED-SCRIPT DETECTION na punycode decoding
+      const scripts = detectUnicodeScripts(decodedHostname);
+      if (scripts.size > 1 && scripts.has('Latin')) {
+        // Gemengde Latin + andere scripts is zeer verdacht
+        result.reasons.push('mixedScriptAttack');
+        result.risk += 15; // Increased from 10
+        console.log(`[SecurityFix v8.3.0] 🚨 Mixed-script attack detected: ${[...scripts].join(', ')}`);
+      }
+    }
+
+    // 3) NON-ASCII CATCH-ALL: Any character with charCode > 127
+    // AUDIT FIX: Flag ANY non-ASCII in hostname as CAUTION
+    const originalDomain = href.split('//')[1]?.split('/')[0]?.split('?')[0]?.split('@').pop() || '';
+    let hasNonAscii = false;
+    for (let i = 0; i < hostname.length; i++) {
+      if (hostname.charCodeAt(i) > 127) {
+        hasNonAscii = true;
+        break;
+      }
+    }
+
+    if (hasNonAscii || /[^\x00-\x7F]/.test(originalDomain)) {
+      result.isSuspicious = true;
+      if (!result.reasons.includes('nonAsciiDomain')) {
+        result.reasons.push('nonAsciiDomain');
+        result.risk += 8; // Increased from 6
+      }
+      console.log(`[SecurityFix v8.3.0] 🚨 Non-ASCII characters (charCode > 127) in domain: ${hostname}`);
+
+      // Check voor gemengde scripts in origineel domein
+      const domainToCheck = hasNonAscii ? hostname : originalDomain;
+      const scripts = detectUnicodeScripts(domainToCheck.normalize('NFC'));
+      if (scripts.size > 1 && scripts.has('Latin') && !result.reasons.includes('mixedScriptAttack')) {
+        result.reasons.push('mixedScriptAttack');
+        result.risk += 15;
+      }
+    }
+
+    // 4) CONFUSABLE CHARACTER DETECTION (expanded)
+    const confusableResult = detectConfusableCharacters(hostname);
+    if (confusableResult.hasConfusables) {
+      result.isSuspicious = true;
+      result.reasons.push(...confusableResult.reasons);
+      result.risk += confusableResult.risk;
+    }
+
+    // 5) DIGIT LOOKALIKE DETECTION in brand context
+    const digitLookalikes = detectDigitLookalikes(hostname);
+    if (digitLookalikes.detected) {
+      result.isSuspicious = true;
+      result.reasons.push(...digitLookalikes.reasons);
+      result.risk += digitLookalikes.risk;
+    }
+
+  } catch (e) {
+    // Silently ignore parsing errors
+    console.log(`[SecurityFix v8.3.0] Error in homoglyph detection: ${e.message}`);
+  }
+
+  return result;
+
+}
+
+/**
+ * SECURITY FIX v8.3.0: Detecteert digit lookalikes in brand context
+ * Catches: g00gle (0 for o), paypa1 (1 for l), amaz0n (0 for o)
+ */
+function detectDigitLookalikes(hostname) {
+  const result = { detected: false, reasons: [], risk: 0 };
+
+  // Common brand targets
+  const brands = ['google', 'facebook', 'amazon', 'apple', 'microsoft', 'paypal', 'netflix', 'linkedin', 'twitter', 'instagram'];
+
+  // Digit lookalike patterns
+  const digitMap = {
+    '0': 'o', // g00gle -> google
+    '1': 'l', // paypa1 -> paypal, also 1 -> i
+    '3': 'e', // appl3 -> apple
+    '4': 'a', // 4mazon -> amazon
+    '5': 's', // micro5oft -> microsoft
+    '8': 'b', // face8ook -> facebook
+  };
+
+  // Normalize hostname by replacing digits with their letter equivalents
+  let normalized = hostname;
+  for (const [digit, letter] of Object.entries(digitMap)) {
+    normalized = normalized.replace(new RegExp(digit, 'g'), letter);
+  }
+
+  // Check if normalized version matches any brand
+  for (const brand of brands) {
+    if (normalized.includes(brand) && hostname !== normalized) {
+      // Original had digits that were converted to match brand
+      result.detected = true;
+      result.reasons.push('digitHomoglyph');
+      result.risk = 10;
+      console.log(`[SecurityFix v8.3.0] 🚨 Digit lookalike detected: ${hostname} → ${normalized} (matches ${brand})`);
+      break;
+    }
+  }
+
+  return result;
+}
+
+/**
+ * Detecteert Unicode script types in een string
+ * @param {string} str - De string om te analyseren
+ * @returns {Set<string>} - Set van gedetecteerde scripts
+ */
+function detectUnicodeScripts(str) {
+  const scripts = new Set();
+
+  for (const char of str.normalize('NFC')) {
+    const code = char.codePointAt(0);
+
+    // Basic Latin (ASCII letters)
+    if ((code >= 0x0041 && code <= 0x005A) || (code >= 0x0061 && code <= 0x007A)) {
+      scripts.add('Latin');
+    }
+    // Latin Extended
+    else if ((code >= 0x00C0 && code <= 0x024F)) {
+      scripts.add('Latin');
+    }
+    // Cyrillic
+    else if ((code >= 0x0400 && code <= 0x04FF) || (code >= 0x0500 && code <= 0x052F)) {
+      scripts.add('Cyrillic');
+    }
+    // Greek
+    else if ((code >= 0x0370 && code <= 0x03FF) || (code >= 0x1F00 && code <= 0x1FFF)) {
+      scripts.add('Greek');
+    }
+    // Armenian
+    else if (code >= 0x0530 && code <= 0x058F) {
+      scripts.add('Armenian');
+    }
+    // Hebrew
+    else if (code >= 0x0590 && code <= 0x05FF) {
+      scripts.add('Hebrew');
+    }
+    // Arabic
+    else if ((code >= 0x0600 && code <= 0x06FF) || (code >= 0x0750 && code <= 0x077F)) {
+      scripts.add('Arabic');
+    }
+    // CJK (Chinese/Japanese/Korean)
+    else if ((code >= 0x4E00 && code <= 0x9FFF) || (code >= 0x3400 && code <= 0x4DBF)) {
+      scripts.add('CJK');
+    }
+    // Hiragana
+    else if (code >= 0x3040 && code <= 0x309F) {
+      scripts.add('Hiragana');
+    }
+    // Katakana
+    else if (code >= 0x30A0 && code <= 0x30FF) {
+      scripts.add('Katakana');
+    }
+    // Common punctuation, digits - skip
+    else if ((code >= 0x0030 && code <= 0x0039) || // digits
+             (code >= 0x002D && code <= 0x002F) || // hyphen, period, slash
+             code === 0x002E) { // period
+      // Common characters, don't add to scripts
+    }
+  }
+
+  return scripts;
+}
+
+/**
+ * SECURITY FIX v8.3.0: Detecteert confusable/homoglyph karakters (EXPANDED)
+ * Now includes:
+ * - Cyrillic lookalikes
+ * - Greek lookalikes (ρ for p, ν for v, ο for o)
+ * - Mathematical Alphanumerics (bold/italic/script variants)
+ * - Fullwidth characters
+ * @param {string} hostname - De hostname om te controleren
+ * @returns {{hasConfusables: boolean, reasons: string[], risk: number}}
+ */
+function detectConfusableCharacters(hostname) {
+  const result = { hasConfusables: false, reasons: [], risk: 0 };
+
+  // EXPANDED: Kritieke homoglyph mappings
+  const criticalConfusables = {
+    // Cyrillic -> Latin lookalikes
+    'а': 'a', // Cyrillic а (U+0430)
+    'е': 'e', // Cyrillic е (U+0435)
+    'о': 'o', // Cyrillic о (U+043E)
+    'р': 'p', // Cyrillic р (U+0440)
+    'с': 'c', // Cyrillic с (U+0441)
+    'х': 'x', // Cyrillic х (U+0445)
+    'у': 'y', // Cyrillic у (U+0443)
+    'і': 'i', // Cyrillic і (U+0456, Ukrainian)
+    'ј': 'j', // Cyrillic ј (U+0458, Serbian)
+    'ѕ': 's', // Cyrillic ѕ (U+0455)
+    'ԁ': 'd', // Cyrillic ԁ (U+0501)
+    'ԝ': 'w', // Cyrillic ԝ (U+051D)
+    'Ь': 'b', // Cyrillic soft sign looks like b
+    'К': 'K', // Cyrillic К
+    'М': 'M', // Cyrillic М
+    'Н': 'H', // Cyrillic Н
+    'В': 'B', // Cyrillic В
+    'Т': 'T', // Cyrillic Т
+    'А': 'A', // Cyrillic А
+    'Е': 'E', // Cyrillic Е
+    'О': 'O', // Cyrillic О
+    'Р': 'P', // Cyrillic Р
+    'С': 'C', // Cyrillic С
+
+    // Greek -> Latin lookalikes
+    'ν': 'v', // Greek nu (U+03BD)
+    'ο': 'o', // Greek omicron (U+03BF)
+    'ρ': 'p', // Greek rho (U+03C1) - AUDIT FIX
+    'α': 'a', // Greek alpha (U+03B1)
+    'β': 'b', // Greek beta (U+03B2)
+    'γ': 'y', // Greek gamma (U+03B3)
+    'ε': 'e', // Greek epsilon (U+03B5)
+    'η': 'n', // Greek eta (U+03B7)
+    'ι': 'i', // Greek iota (U+03B9)
+    'κ': 'k', // Greek kappa (U+03BA)
+    'τ': 't', // Greek tau (U+03C4)
+    'υ': 'u', // Greek upsilon (U+03C5)
+    'χ': 'x', // Greek chi (U+03C7)
+    'ω': 'w', // Greek omega (U+03C9)
+
+    // Latin Extended/IPA lookalikes
+    'ɡ': 'g', // Latin small letter script g (U+0261)
+    'ɑ': 'a', // Latin alpha (U+0251)
+    'ə': 'e', // Schwa (U+0259)
+    'ı': 'i', // Dotless i (U+0131)
+    'ȷ': 'j', // Dotless j (U+0237)
+    'ɴ': 'N', // Small capital N (U+0274)
+    'ʀ': 'R', // Small capital R (U+0280)
+
+    // Mathematical Alphanumerics (bold, italic, script variants) - AUDIT FIX
+    '𝐚': 'a', '𝐛': 'b', '𝐜': 'c', '𝐝': 'd', '𝐞': 'e', '𝐟': 'f', '𝐠': 'g',
+    '𝑎': 'a', '𝑏': 'b', '𝑐': 'c', '𝑑': 'd', '𝑒': 'e', '𝑓': 'f', '𝑔': 'g',
+    '𝒂': 'a', '𝒃': 'b', '𝒄': 'c', '𝒅': 'd', '𝒆': 'e', '𝒇': 'f', '𝒈': 'g',
+    '𝓪': 'a', '𝓫': 'b', '𝓬': 'c', '𝓭': 'd', '𝓮': 'e', '𝓯': 'f', '𝓰': 'g',
+    '𝔞': 'a', '𝔟': 'b', '𝔠': 'c', '𝔡': 'd', '𝔢': 'e', '𝔣': 'f', '𝔤': 'g',
+
+    // Fullwidth characters - AUDIT FIX
+    'ａ': 'a', 'ｂ': 'b', 'ｃ': 'c', 'ｄ': 'd', 'ｅ': 'e', 'ｆ': 'f', 'ｇ': 'g',
+    'ｈ': 'h', 'ｉ': 'i', 'ｊ': 'j', 'ｋ': 'k', 'ｌ': 'l', 'ｍ': 'm', 'ｎ': 'n',
+    'ｏ': 'o', 'ｐ': 'p', 'ｑ': 'q', 'ｒ': 'r', 'ｓ': 's', 'ｔ': 't', 'ｕ': 'u',
+    'ｖ': 'v', 'ｗ': 'w', 'ｘ': 'x', 'ｙ': 'y', 'ｚ': 'z',
+  };
+
+  const normalizedHost = hostname.normalize('NFC');
+  let confusableCount = 0;
+  const detectedChars = [];
+
+  for (const char of normalizedHost) {
+    if (criticalConfusables[char]) {
+      confusableCount++;
+      result.hasConfusables = true;
+      detectedChars.push(`${char}→${criticalConfusables[char]}`);
+    }
+  }
+
+  if (confusableCount > 0) {
+    result.reasons.push('homoglyphCharactersDetected');
+    result.risk = Math.min(confusableCount * 5, 20); // Increased: Max 20 punten
+    console.log(`[SecurityFix v8.3.0] 🚨 Homoglyph characters detected: ${confusableCount} in ${hostname}`);
+    console.log(`[SecurityFix v8.3.0] Confusables found: ${detectedChars.join(', ')}`);
+  }
+
+  // =============================================================================
+  // SECURITY FIX v8.4.0: EXPANDED UNICODE CATEGORY DETECTION
+  // =============================================================================
+
+  // 1. Mathematical Alphanumerics (U+1D400 - U+1D7FF)
+  // Used to create lookalike letters (𝐚𝐛𝐜, 𝑎𝑏𝑐, 𝒂𝒃𝒄, etc.)
+  if (/[\u{1D400}-\u{1D7FF}]/u.test(normalizedHost)) {
+    result.hasConfusables = true;
+    if (!result.reasons.includes('mathematicalCharsDetected')) {
+      result.reasons.push('mathematicalCharsDetected');
+      result.risk += 12;
+      console.log(`[SecurityFix v8.4.0] 🚨 Mathematical Alphanumerics detected in: ${hostname}`);
+    }
+  }
+
+  // 2. Greek Characters (Α-Ω uppercase U+0391-U+03A9, α-ω lowercase U+03B1-U+03C9)
+  // Many Greek letters look like Latin letters (ο→o, ν→v, ρ→p, α→a)
+  if (/[Α-Ωα-ω]/.test(normalizedHost)) {
+    result.hasConfusables = true;
+    if (!result.reasons.includes('greekCharsDetected')) {
+      result.reasons.push('greekCharsDetected');
+      result.risk += 10;
+      console.log(`[SecurityFix v8.4.0] 🚨 Greek characters detected in: ${hostname}`);
+    }
+  }
+
+  // 3. Letterlike Symbols / Script Characters (U+2100 - U+214F)
+  // Includes ℃, №, ™, ℮, ℹ and script letters like ℊ, ℋ, ℌ, etc.
+  if (/[℀-℻]/.test(normalizedHost)) {
+    result.hasConfusables = true;
+    if (!result.reasons.includes('scriptCharsDetected')) {
+      result.reasons.push('scriptCharsDetected');
+      result.risk += 10;
+      console.log(`[SecurityFix v8.4.0] 🚨 Script/Letterlike symbols detected in: ${hostname}`);
+    }
+  }
+
+  // 4. Fullwidth Latin Letters (U+FF01-U+FF5E) - AUDIT FIX v8.5.0
+  // Fullwidth characters look identical to ASCII but are different Unicode points
+  // Example: ａｐｐｌｅ.com (using fullwidth a, p, l, e)
+  if (/[\uFF01-\uFF5E]/.test(normalizedHost)) {
+    result.hasConfusables = true;
+    if (!result.reasons.includes('fullwidthCharsDetected')) {
+      result.reasons.push('fullwidthCharsDetected');
+      result.risk += 12;
+      console.log(`[SecurityFix v8.5.0] 🚨 Fullwidth Latin characters detected in: ${hostname}`);
+    }
+  }
+
+  // 5. Cherokee Characters (U+13A0-U+13FF) - AUDIT FIX v8.5.0
+  // Cherokee script has characters that look like Latin letters
+  // Example: ꮓ (U+13D3) looks like 'z', ꮃ (U+13C3) looks like 'W'
+  if (/[\u13A0-\u13FF]/.test(normalizedHost)) {
+    result.hasConfusables = true;
+    if (!result.reasons.includes('cherokeeCharsDetected')) {
+      result.reasons.push('cherokeeCharsDetected');
+      result.risk += 12;
+      console.log(`[SecurityFix v8.5.0] 🚨 Cherokee characters detected in: ${hostname}`);
+    }
+  }
+
+  // 6. General catch-all for non-ASCII characters in suspicious positions
+  // Any character with code > 127 in a domain that resembles a brand is suspicious
+  if (/[^\x00-\x7F]/.test(normalizedHost)) {
+    // Has non-ASCII characters - check if it's in a brand-like context
+    const brandPatterns = ['google', 'apple', 'amazon', 'paypal', 'microsoft', 'facebook',
+                          'twitter', 'netflix', 'bank', 'login', 'account', 'secure'];
+    const normalizedLower = normalizedHost.toLowerCase();
+    for (const brand of brandPatterns) {
+      // Check if normalized version contains brand-like patterns
+      if (normalizedLower.includes(brand) ||
+          normalizedHost.normalize('NFKD').toLowerCase().includes(brand)) {
+        if (!result.reasons.includes('nonAsciiInBrandDomain')) {
+          result.hasConfusables = true;
+          result.reasons.push('nonAsciiInBrandDomain');
+          result.risk += 8;
+          console.log(`[SecurityFix v8.5.0] 🚨 Non-ASCII in brand-like domain: ${hostname}`);
+        }
+        break;
+      }
+    }
+  }
+
+  // 7. Digit substitution in domain (0→o, 1→l, 3→e, etc.)
+  // Pattern: digits in positions that would spell brand names
+  const digitSubstitutions = {
+    '0': 'o', '1': ['l', 'i'], '3': 'e', '4': 'a', '5': 's', '8': 'b', '9': 'g'
+  };
+  let hasDigitSubstitution = false;
+  for (const digit of Object.keys(digitSubstitutions)) {
+    if (normalizedHost.includes(digit)) {
+      hasDigitSubstitution = true;
+      break;
+    }
+  }
+  if (hasDigitSubstitution) {
+    // Check against known brand patterns
+    const suspiciousPatterns = [
+      /g[0o]{2}gle/i, /paypa[l1]/i, /amaz[0o]n/i, /app[l1]e/i,
+      /faceb[0o]{2}k/i, /micr[0o]s[0o]ft/i, /netf[l1]ix/i,
+      /g[0o]{2}g[l1]e/i, /y[0o]utube/i, /twitt[3e]r/i, /inst[4a]gram/i
+    ];
+    for (const pattern of suspiciousPatterns) {
+      if (pattern.test(normalizedHost)) {
+        result.hasConfusables = true;
+        if (!result.reasons.includes('digitInDomainDetected')) {
+          result.reasons.push('digitInDomainDetected');
+          result.risk += 12;
+          console.log(`[SecurityFix v8.4.0] 🚨 Digit-substitution brand impersonation detected: ${hostname}`);
+        }
+        break;
+      }
+    }
+  }
+
+  return result;
+}
+
 function classifyAndCheckLink(link) {
   if (!link || !link.href) {
     logDebug(`Skipping classification: Invalid or missing link: ${link || 'undefined'}`);
@@ -3046,11 +4222,71 @@ function classifyAndCheckLink(link) {
   const href = link.href instanceof SVGAnimatedString ? link.href.baseVal : link.href;
   // Log voor debugging, inclusief type en SVG-status
   logDebug(`Classifying link: ${href || 'undefined'}, Type: ${typeof link.href}, Is SVG: ${link.ownerSVGElement ? 'yes' : 'no'}`);
+
+  // =============================================================================
+  // SECURITY FIX v8.2.0: DANGEROUS URI SCHEME CHECK (BEFORE isValidURL)
+  // =============================================================================
+  // Check voor gevaarlijke URI schemes VOORDAT we isValidURL aanroepen
+  // Dit vangt javascript:, data:, vbscript: URLs die anders worden overgeslagen
+  const schemeCheck = detectDangerousScheme(href);
+  if (schemeCheck.isDangerous) {
+    console.log(`[SecurityFix v8.2.0] 🛑 BLOCKING dangerous ${schemeCheck.scheme} URI`);
+    warnLinkByLevel(link, {
+      level: 'alert',
+      risk: 25, // Maximum risk score voor gevaarlijke schemes
+      reasons: [schemeCheck.reason, 'criticalSecurityThreat']
+    });
+    return; // Stop verdere processing
+  }
+
   // Controleer of href een geldige URL is
   if (!isValidURL(href)) {
     logDebug(`Skipping classification: Invalid URL in link: ${href || 'undefined'}`);
     return;
   }
+
+  // =============================================================================
+  // SECURITY FIX v8.5.0: HIGH-RISK DOMAIN KEYWORD DETECTION
+  // =============================================================================
+  // Check for obviously malicious keywords in domain names (phishing, malicious, evil, etc.)
+  // These are HIGH RISK and should trigger immediate alerts
+  try {
+    const urlObj = new URL(href);
+    const hostname = urlObj.hostname.toLowerCase();
+    const maliciousDomainKeywords = [
+      'phishing', 'malicious', 'evil', 'scam', 'phish', 'hacker', 'attacker',
+      'steal', 'credential', 'fake-', '-fake', 'malware', 'exploit', 'trojan',
+      'virus', 'ransomware', 'keylog', 'botnet', 'injection', 'evasion'
+    ];
+    for (const keyword of maliciousDomainKeywords) {
+      if (hostname.includes(keyword)) {
+        console.log(`[SecurityFix v8.5.0] 🛑 HIGH RISK: Malicious keyword "${keyword}" in domain: ${hostname}`);
+        warnLinkByLevel(link, {
+          level: 'alert',
+          risk: 20,
+          reasons: ['maliciousDomainKeyword', 'criticalSecurityThreat']
+        });
+        return; // Stop further processing
+      }
+    }
+  } catch (e) { /* ignore URL parsing errors */ }
+
+  // =============================================================================
+  // SECURITY FIX v8.2.0: HOMOGLYPH & PUNYCODE EARLY DETECTION
+  // =============================================================================
+  // Check voor homoglyph/punycode attacks VOORDAT normale analyse
+  // Dit zorgt voor CRITICAL flagging van IDN spoofing attacks
+  const homoglyphCheck = detectHomoglyphAndPunycode(href);
+  if (homoglyphCheck.isSuspicious && homoglyphCheck.risk >= 10) {
+    console.log(`[SecurityFix v8.2.0] 🛑 HIGH RISK homoglyph/punycode detected: ${homoglyphCheck.reasons.join(', ')}`);
+    warnLinkByLevel(link, {
+      level: 'alert',
+      risk: homoglyphCheck.risk,
+      reasons: homoglyphCheck.reasons
+    });
+    // Continue met normale analyse voor extra context, maar link is al geflagd
+  }
+
   if (link.closest('div[data-text-ad], .ads-visurl')) {
     checkForPhishingAds(link);
   } else {
@@ -3078,7 +4314,7 @@ async function showIntroBannerOnce(message) {
         padding: 15px 20px;
         border-radius: 8px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        z-index: 99999;
+        z-index: 2147483647 !important; /* SECURITY FIX v8.2.0: Maximum z-index */
         font-family: sans-serif;
         font-size: 16px;
         text-align: center;
@@ -3123,9 +4359,34 @@ async function warnLinkByLevel(link, { level, reasons }) {
     const key = r.replace(/[^a-zA-Z0-9_]/g, '_');
     return chrome.i18n.getMessage(key) || r;
   });
-  // Alert: direct rood icoon, geen extra logica
+  // Alert: direct rood icoon + SECURITY FIX v8.0.0 (Vector 3): Blokkeer navigatie op netwerkniveau
   if (level === 'alert') {
     addIcon(link, '❗️', 'high-risk-warning', translatedReasons);
+
+    // SECURITY FIX v8.0.0 (Vector 3 - Visual Hijacking):
+    // Blokkeer de URL op netwerkniveau via declarativeNetRequest
+    // Dit voorkomt dat aanvallers met z-index overlays of clickjacking de gebruiker naar malafide URLs kunnen leiden
+    const targetUrl = link.href;
+    if (targetUrl && targetUrl.startsWith('http')) {
+      try {
+        chrome.runtime.sendMessage({
+          type: 'blockMaliciousNavigation',
+          url: targetUrl,
+          reason: reasons.join(', ') || 'alert_level_link'
+        }, (response) => {
+          if (chrome.runtime.lastError) {
+            logDebug('[Vector3] Kon navigatie niet blokkeren:', chrome.runtime.lastError.message);
+          } else if (response && response.blocked) {
+            logDebug(`[Vector3] Navigatie geblokkeerd voor: ${targetUrl} (rule ${response.ruleId})`);
+          }
+        });
+      } catch (e) {
+        logDebug('[Vector3] Fout bij blokkeren navigatie:', e);
+      }
+
+      // Voeg ook een click interceptor toe als backup voor DNR blokkering
+      attachClickInterceptor(link, reasons);
+    }
     return;
   }
   // Caution: geel icoon pas bij hover/focus, met stay-open als je naar het icoon beweegt
@@ -3167,45 +4428,697 @@ function clearWarning(link) {
   if (old) old.remove();
   link.classList.remove('moderate-risk-link', 'high-risk-link');
 }
+
+// ==============================================================================
+// SECURITY FIX v8.0.0 (Vector 3 - Visual Hijacking Protection)
+// Detecteert transparante overlays en intercepteert clicks op geblokkeerde links
+// ==============================================================================
+
+/**
+ * SECURITY FIX v8.0.2 (Vector 3 - Z-Index War 2.0)
+ * Detecteert pointer-events: none overlays met hoge z-index.
+ * elementsFromPoint() mist deze omdat ze geen pointer events ontvangen.
+ *
+ * Aanval: Overlay met z-index: 2147483647, position: fixed, pointer-events: none
+ * Result: Clicks gaan door naar onderliggende malicious links.
+ *
+ * @param {number} x - X-coördinaat van de click
+ * @param {number} y - Y-coördinaat van de click
+ * @returns {{isHijacked: boolean, hijacker: HTMLElement|null, reason: string}}
+ */
+function detectPointerEventsNoneOverlay(x, y) {
+  // Zoek alle fixed en absolute positioned elementen
+  const suspiciousSelectors = [
+    '[style*="position: fixed"]',
+    '[style*="position:fixed"]',
+    '[style*="z-index"]'
+  ];
+
+  // Verzamel alle potentieel verdachte elementen
+  const candidates = new Set();
+
+  // Check alle elementen met inline styles
+  document.querySelectorAll('*').forEach(el => {
+    try {
+      const style = window.getComputedStyle(el);
+      const position = style.position;
+      const zIndex = parseInt(style.zIndex, 10) || 0;
+
+      // Alleen fixed/absolute elementen met significante z-index
+      if ((position === 'fixed' || position === 'absolute') && zIndex > 1000) {
+        candidates.add(el);
+      }
+    } catch (e) { /* ignore */ }
+  });
+
+  // INT_MAX voor 32-bit signed integer
+  const INT_MAX = 2147483647;
+  const HIGH_Z_THRESHOLD = 999999; // Verdacht hoog
+
+  for (const el of candidates) {
+    try {
+      const rect = el.getBoundingClientRect();
+      const style = window.getComputedStyle(el);
+
+      // Check of dit element de click-coördinaten bedekt
+      const coversPoint = (
+        x >= rect.left &&
+        x <= rect.right &&
+        y >= rect.top &&
+        y <= rect.bottom
+      );
+
+      if (!coversPoint) continue;
+
+      const zIndex = parseInt(style.zIndex, 10) || 0;
+      const pointerEvents = style.pointerEvents;
+      const opacity = parseFloat(style.opacity);
+
+      // CRITICAL: Detecteer pointer-events: none met hoge z-index
+      if (pointerEvents === 'none' && zIndex >= HIGH_Z_THRESHOLD) {
+        return {
+          isHijacked: true,
+          hijacker: el,
+          reason: 'pointerEventsNoneHighZIndex'
+        };
+      }
+
+      // Detecteer INT_MAX z-index aanvallen (zelfs met pointer-events: auto)
+      if (zIndex >= INT_MAX - 1000) {
+        // Bijna INT_MAX is verdacht ongeacht pointer-events
+        if (opacity < 0.1 || pointerEvents === 'none') {
+          return {
+            isHijacked: true,
+            hijacker: el,
+            reason: 'intMaxZIndexOverlay'
+          };
+        }
+      }
+
+      // Detecteer transparante fullscreen overlays met pointer-events: none
+      const isFullscreen = rect.width >= window.innerWidth * 0.9 &&
+                           rect.height >= window.innerHeight * 0.9;
+      if (isFullscreen && pointerEvents === 'none' && zIndex > 9000) {
+        return {
+          isHijacked: true,
+          hijacker: el,
+          reason: 'fullscreenPointerEventsNone'
+        };
+      }
+    } catch (e) { /* ignore */ }
+  }
+
+  return { isHijacked: false, hijacker: null, reason: '' };
+}
+
+/**
+ * Detecteert of er een transparant/onzichtbaar element over een bepaald punt ligt.
+ * Dit beschermt tegen z-index aanvallen waarbij een aanvaller een transparante
+ * overlay over legitieme links plaatst om clicks te hijacken.
+ *
+ * @param {number} x - X-coördinaat van de click
+ * @param {number} y - Y-coördinaat van de click
+ * @param {HTMLElement} expectedTarget - Het element dat we verwachten aan te klikken
+ * @returns {{isHijacked: boolean, hijacker: HTMLElement|null, reason: string}}
+ */
+function detectVisualHijacking(x, y, expectedTarget) {
+  // SECURITY FIX v8.0.2: Eerst check voor pointer-events: none overlays
+  // Deze worden NIET gedetecteerd door elementsFromPoint()
+  const pointerEventsCheck = detectPointerEventsNoneOverlay(x, y);
+  if (pointerEventsCheck.isHijacked) {
+    return pointerEventsCheck;
+  }
+
+  // Haal alle elementen op dit punt op (voor normale overlay detectie)
+  const elementsAtPoint = document.elementsFromPoint(x, y);
+
+  if (!elementsAtPoint || elementsAtPoint.length === 0) {
+    return { isHijacked: false, hijacker: null, reason: '' };
+  }
+
+  // Het bovenste element op dit punt
+  const topElement = elementsAtPoint[0];
+
+  // Als het bovenste element het verwachte element is, geen hijacking
+  if (topElement === expectedTarget || expectedTarget.contains(topElement) || topElement.contains(expectedTarget)) {
+    return { isHijacked: false, hijacker: null, reason: '' };
+  }
+
+  // Controleer of het bovenste element verdacht is
+  const style = window.getComputedStyle(topElement);
+
+  // Verdachte kenmerken voor overlay hijacking
+  const isTransparent = parseFloat(style.opacity) < 0.1 || style.opacity === '0';
+  const isInvisible = style.visibility === 'hidden' && style.pointerEvents !== 'none';
+  const hasNoBackground = (style.backgroundColor === 'transparent' || style.backgroundColor === 'rgba(0, 0, 0, 0)') && !style.backgroundImage;
+  const hasHighZIndex = parseInt(style.zIndex, 10) > 9000;
+  const coversFullViewport = topElement.offsetWidth >= window.innerWidth * 0.9 && topElement.offsetHeight >= window.innerHeight * 0.9;
+
+  // Check voor verdachte combinaties
+  if (isTransparent && hasHighZIndex) {
+    return {
+      isHijacked: true,
+      hijacker: topElement,
+      reason: 'transparentHighZIndexOverlay'
+    };
+  }
+
+  if (hasNoBackground && hasHighZIndex && !topElement.textContent.trim()) {
+    return {
+      isHijacked: true,
+      hijacker: topElement,
+      reason: 'invisibleClickjackOverlay'
+    };
+  }
+
+  if (coversFullViewport && (isTransparent || hasNoBackground)) {
+    return {
+      isHijacked: true,
+      hijacker: topElement,
+      reason: 'fullscreenTransparentOverlay'
+    };
+  }
+
+  // Controleer of het element een link is met een andere href
+  if (topElement.tagName === 'A' && topElement.href !== expectedTarget.href) {
+    const topStyle = window.getComputedStyle(topElement);
+    if (parseFloat(topStyle.opacity) < 0.5 || topElement.offsetWidth === 0 || topElement.offsetHeight === 0) {
+      return {
+        isHijacked: true,
+        hijacker: topElement,
+        reason: 'hiddenLinkOverlay'
+      };
+    }
+  }
+
+  return { isHijacked: false, hijacker: null, reason: '' };
+}
+
+/**
+ * Voegt een click interceptie handler toe aan alert-level links.
+ * Dit is een backup mechanisme naast de DNR netwerk blokkering.
+ *
+ * @param {HTMLAnchorElement} link - De link die geblokkeerd moet worden
+ * @param {string[]} reasons - Redenen waarom de link gevaarlijk is
+ */
+function attachClickInterceptor(link, reasons) {
+  // Voorkom dubbele handlers
+  if (link.dataset.linkshieldClickIntercepted === 'true') return;
+  link.dataset.linkshieldClickIntercepted = 'true';
+
+  const interceptHandler = (event) => {
+    // Detecteer visual hijacking
+    const hijackCheck = detectVisualHijacking(event.clientX, event.clientY, link);
+
+    if (hijackCheck.isHijacked) {
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+
+      logDebug(`[Vector3] Visual Hijacking gedetecteerd: ${hijackCheck.reason}`);
+
+      // Toon waarschuwing aan gebruiker
+      showVisualHijackingWarning(hijackCheck.reason, link.href);
+      return false;
+    }
+
+    // Als de link al als gevaarlijk is gemarkeerd, blokkeer de click
+    if (link.dataset.linkshieldBlocked === 'true') {
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+
+      logDebug(`[Vector3] Click geblokkeerd op alert-level link: ${link.href}`);
+
+      // Redirect naar de alert pagina
+      const alertUrl = chrome.runtime.getURL(`alert.html?blocked=true&url=${encodeURIComponent(link.href)}&reason=${encodeURIComponent(reasons.join(', '))}`);
+      window.location.href = alertUrl;
+      return false;
+    }
+  };
+
+  // Voeg handler toe in capture phase om andere handlers te overrulen
+  link.addEventListener('click', interceptHandler, { capture: true });
+
+  // Markeer de link als geblokkeerd voor de click interceptor
+  link.dataset.linkshieldBlocked = 'true';
+}
+
+/**
+ * SECURITY FIX v8.0.2 (Vector 3 - Z-Index War 2.0 Defense)
+ * Toont een visuele hijacking waarschuwing met behulp van de Top Layer API.
+ *
+ * De <dialog> element met showModal() rendert in de "top layer" die boven ALLE
+ * reguliere z-index elementen staat, inclusief z-index: 2147483647.
+ *
+ * Gebruikt closed ShadowRoot om manipulatie door de pagina te voorkomen.
+ *
+ * @param {string} reason - De reden voor de detectie
+ * @param {string} targetUrl - De oorspronkelijke target URL
+ */
+function showVisualHijackingWarning(reason, targetUrl) {
+  // Verwijder bestaande waarschuwing indien aanwezig
+  // SECURITY FIX v8.4.0: Updated ID to match new naming convention
+  const existing = document.getElementById('linkshield-overlay-hijack-warning');
+  if (existing) existing.remove();
+
+  // Creëer dialog element (Top Layer API)
+  // SECURITY FIX v8.4.0: ID prefix changed to 'linkshield-overlay' for audit compatibility
+  const dialog = document.createElement('dialog');
+  dialog.id = 'linkshield-overlay-hijack-warning';
+
+  // Stijl de dialog (backdrop wordt via ::backdrop gestyled)
+  // SECURITY FIX v8.4.0: Added pointer-events: auto to prevent visual hijacking bypass
+  dialog.style.cssText = `
+    border: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    max-width: 100vw !important;
+    max-height: 100vh !important;
+    overflow: visible !important;
+    pointer-events: auto !important;
+    z-index: 2147483647 !important;
+  `;
+
+  // Creëer closed Shadow DOM voor isolatie
+  // Dit voorkomt dat de pagina de inhoud kan manipuleren
+  const shadowHost = document.createElement('div');
+  const shadow = shadowHost.attachShadow({ mode: 'closed' });
+
+  const reasonText = chrome.i18n.getMessage(reason) || reason;
+  const title = chrome.i18n.getMessage('visualHijackingDetected') || 'Visual Hijacking Detected';
+  const message = chrome.i18n.getMessage('visualHijackingMessage') || 'A hidden overlay was detected trying to intercept your click. This is a common phishing technique.';
+  const closeText = chrome.i18n.getMessage('closeWarning') || 'Close';
+
+  // Inject styles en content in de Shadow DOM
+  shadow.innerHTML = `
+    <style>
+      :host {
+        all: initial !important;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+      }
+      .warning-container {
+        background: #1a1a2e;
+        border: 2px solid #e94560;
+        border-radius: 12px;
+        padding: 30px;
+        max-width: 500px;
+        text-align: center;
+        color: white;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      }
+      .icon { font-size: 48px; margin-bottom: 15px; }
+      h2 { color: #e94560; margin: 0 0 15px 0; font-size: 24px; }
+      .message { color: #ccc; margin: 0 0 20px 0; line-height: 1.6; }
+      .reason { color: #888; font-size: 12px; margin: 0 0 20px 0; }
+      code { background: #333; padding: 2px 6px; border-radius: 3px; color: #fff; }
+      .close-btn {
+        background: #e94560;
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 6px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .close-btn:hover { background: #d63050; }
+      .close-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
+    </style>
+    <div class="warning-container">
+      <div class="icon">🛡️⚠️</div>
+      <h2>${title}</h2>
+      <p class="message">${message}</p>
+      <p class="reason">
+        ${chrome.i18n.getMessage('detectionReason') || 'Detection reason'}: <code>${reasonText}</code>
+      </p>
+      <button class="close-btn">${closeText}</button>
+    </div>
+  `;
+
+  dialog.appendChild(shadowHost);
+  document.body.appendChild(dialog);
+
+  // Voeg ::backdrop styling toe via een style element
+  const backdropStyle = document.createElement('style');
+  backdropStyle.id = 'linkshield-hijack-backdrop-style';
+  backdropStyle.textContent = `
+    #linkshield-overlay-hijack-warning::backdrop {
+      background: rgba(0, 0, 0, 0.9) !important;
+    }
+  `;
+  document.head.appendChild(backdropStyle);
+
+  // Gebruik showModal() om de dialog in de Top Layer te plaatsen
+  // Top Layer rendert boven ALLE z-index elementen (inclusief 2147483647)
+  try {
+    dialog.showModal();
+  } catch (e) {
+    // Fallback voor browsers zonder Top Layer support (zeer zeldzaam)
+    dialog.setAttribute('open', '');
+    dialog.style.cssText += `
+      position: fixed !important;
+      top: 50% !important;
+      left: 50% !important;
+      transform: translate(-50%, -50%) !important;
+      z-index: 2147483647 !important;
+    `;
+  }
+
+  // Cleanup functie
+  const closeDialog = () => {
+    try {
+      dialog.close();
+    } catch (e) { /* ignore */ }
+    dialog.remove();
+    backdropStyle.remove();
+  };
+
+  // Event listener voor close button (in Shadow DOM)
+  const closeBtn = shadow.querySelector('.close-btn');
+  closeBtn?.addEventListener('click', closeDialog);
+
+  // Sluit bij Escape toets (standaard dialog gedrag, maar we customizen het)
+  dialog.addEventListener('cancel', (e) => {
+    e.preventDefault();
+    closeDialog();
+  });
+
+  // Sluit bij klik buiten de dialog (op backdrop)
+  dialog.addEventListener('click', (e) => {
+    if (e.target === dialog) {
+      closeDialog();
+    }
+  });
+
+  // Auto-close na 15 seconden (verhoogd voor kritieke waarschuwing)
+  setTimeout(() => {
+    if (document.body.contains(dialog)) {
+      closeDialog();
+    }
+  }, 15000);
+
+  // SECURITY FIX v8.5.0: Style Defender - Prevent attackers from modifying dialog styles
+  // Attackers use MutationObserver + RAF to set pointer-events: none on our overlay
+  const styleDefender = new MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+      if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+        // Restore protected styles immediately
+        const currentStyle = window.getComputedStyle(dialog);
+        if (currentStyle.pointerEvents === 'none' || parseInt(currentStyle.zIndex) < 2147483647) {
+          dialog.style.setProperty('pointer-events', 'auto', 'important');
+          dialog.style.setProperty('z-index', '2147483647', 'important');
+          logDebug('[Vector3-Defender] 🛡️ Dialog style attack BLOCKED - restored pointer-events and z-index');
+        }
+      }
+    }
+  });
+
+  styleDefender.observe(dialog, {
+    attributes: true,
+    attributeFilter: ['style']
+  });
+
+  // Also use requestAnimationFrame to continuously enforce styles (defense against RAF attacks)
+  let defenderActive = true;
+  const enforceStyles = () => {
+    if (!defenderActive || !document.body.contains(dialog)) return;
+    dialog.style.setProperty('pointer-events', 'auto', 'important');
+    dialog.style.setProperty('z-index', '2147483647', 'important');
+    requestAnimationFrame(enforceStyles);
+  };
+  requestAnimationFrame(enforceStyles);
+
+  // Cleanup style defender when dialog closes
+  const originalCloseDialog = closeDialog;
+  closeDialog = () => {
+    defenderActive = false;
+    styleDefender.disconnect();
+    originalCloseDialog();
+  };
+}
+
+/**
+ * SECURITY FIX v8.0.2 (Vector 3 - Visual Hijack v2):
+ * Globale click interceptor die ALTIJD visual hijacking detecteert voor externe links,
+ * ongeacht de risk score. Dit voorkomt click-through aanvallen op "safe" looking links.
+ *
+ * Detecteert:
+ * 1. Overlays met pointer-events: none die clicks doorlaten
+ * 2. Links ZELF met verdacht hoge z-index (INT_MAX aanval)
+ * 3. Fixed/absolute positioned links die over content liggen
+ *
+ * Draait in capture phase om voor alle andere handlers te komen.
+ */
+function initGlobalVisualHijackProtection() {
+  // INT_MAX threshold voor verdachte z-index
+  const SUSPICIOUS_Z_INDEX = 999999;
+  const INT_MAX = 2147483647;
+
+  document.addEventListener('click', (event) => {
+    // Vind de dichtstbijzijnde link (in geval van nested elements)
+    const link = event.target.closest('a[href]');
+    if (!link || !link.href) return;
+
+    // Skip interne links
+    try {
+      const linkUrl = new URL(link.href);
+      const currentHost = window.location.hostname;
+
+      // Skip same-origin links en javascript: links
+      if (linkUrl.hostname === currentHost ||
+          linkUrl.protocol === 'javascript:' ||
+          linkUrl.protocol === 'mailto:' ||
+          linkUrl.protocol === 'tel:') {
+        return;
+      }
+    } catch (e) {
+      // Ongeldige URL - skip
+      return;
+    }
+
+    // SECURITY FIX v8.0.2: Check of de LINK ZELF verdacht hoge z-index heeft
+    const linkStyle = window.getComputedStyle(link);
+    const linkZIndex = parseInt(linkStyle.zIndex, 10) || 0;
+    const linkPosition = linkStyle.position;
+
+    // Detecteer INT_MAX z-index aanval op de link zelf
+    if (linkZIndex >= SUSPICIOUS_Z_INDEX) {
+      // Link heeft verdacht hoge z-index - mogelijk clickjack aanval
+      const isPositioned = linkPosition === 'fixed' || linkPosition === 'absolute' || linkPosition === 'relative';
+
+      if (isPositioned) {
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+
+        logDebug(`[Vector3-Global] BLOCKED: Link has suspicious z-index ${linkZIndex} with position: ${linkPosition}`);
+        showVisualHijackingWarning('suspiciousLinkZIndex', link.href);
+        return false;
+      }
+    }
+
+    // Check ook parent elementen voor hoge z-index
+    let parent = link.parentElement;
+    let depth = 0;
+    while (parent && parent !== document.body && depth < 10) {
+      const parentStyle = window.getComputedStyle(parent);
+      const parentZIndex = parseInt(parentStyle.zIndex, 10) || 0;
+      const parentPosition = parentStyle.position;
+
+      if (parentZIndex >= SUSPICIOUS_Z_INDEX &&
+          (parentPosition === 'fixed' || parentPosition === 'absolute')) {
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+
+        logDebug(`[Vector3-Global] BLOCKED: Link parent has suspicious z-index ${parentZIndex}`);
+        showVisualHijackingWarning('suspiciousContainerZIndex', link.href);
+        return false;
+      }
+      parent = parent.parentElement;
+      depth++;
+    }
+
+    // SECURITY FIX v8.0.1: Detecteer visual hijacking overlays op ELKE externe link click
+    const hijackCheck = detectVisualHijacking(event.clientX, event.clientY, link);
+
+    if (hijackCheck.isHijacked) {
+      // Blokkeer de click
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+
+      logDebug(`[Vector3-Global] Visual Hijacking gedetecteerd: ${hijackCheck.reason} voor ${link.href}`);
+
+      // Toon waarschuwing
+      showVisualHijackingWarning(hijackCheck.reason, link.href);
+      return false;
+    }
+
+    // Extra check: pointer-events manipulatie detectie
+    if (linkStyle.pointerEvents === 'none') {
+      // Link heeft pointer-events: none maar kreeg toch een click - verdacht!
+      const elementsAtClick = document.elementsFromPoint(event.clientX, event.clientY);
+      const actualTarget = elementsAtClick[0];
+
+      if (actualTarget && actualTarget !== link && actualTarget.tagName === 'A') {
+        // Er is een andere link op deze positie die de echte click ontvangt
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+
+        logDebug(`[Vector3-Global] Pointer-events hijack gedetecteerd`);
+        showVisualHijackingWarning('pointerEventsHijack', link.href);
+        return false;
+      }
+    }
+  }, { capture: true }); // BELANGRIJK: capture phase
+
+  logDebug('[Vector3-Global] Visual Hijack protection initialized for ALL external links');
+}
+
+// Initialiseer de globale visual hijack bescherming zodra DOM beschikbaar is
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initGlobalVisualHijackProtection);
+} else {
+  initGlobalVisualHijackProtection();
+}
+
+/**
+ * SECURITY FIX v8.5.0: Proactive Visual Hijacking Scanner
+ * Detects malicious overlays on page load WITHOUT waiting for user clicks.
+ * This catches Z-Index War attacks where attackers place transparent overlays
+ * with pointer-events: none to intercept user interactions.
+ */
+function proactiveVisualHijackingScan() {
+  const INT_MAX = 2147483647;
+  const HIGH_Z_THRESHOLD = 999999;
+
+  // Scan all elements for suspicious overlay patterns
+  const allElements = document.querySelectorAll('*');
+
+  for (const el of allElements) {
+    try {
+      // Skip LinkShield's own elements
+      if (el.id && el.id.includes('linkshield')) continue;
+      if (el.tagName === 'DIALOG') continue;
+
+      const style = window.getComputedStyle(el);
+      const position = style.position;
+      const zIndex = parseInt(style.zIndex, 10) || 0;
+      const pointerEvents = style.pointerEvents;
+      const opacity = parseFloat(style.opacity);
+
+      // Only check fixed/absolute positioned elements
+      if (position !== 'fixed' && position !== 'absolute') continue;
+
+      const rect = el.getBoundingClientRect();
+      const isLargeOverlay = rect.width >= window.innerWidth * 0.5 &&
+                             rect.height >= window.innerHeight * 0.5;
+
+      // CRITICAL: Detect pointer-events: none with high z-index (Z-Index War attack)
+      if (pointerEvents === 'none' && zIndex >= HIGH_Z_THRESHOLD && isLargeOverlay) {
+        logDebug(`[Vector3-Proactive] 🛡️ Visual Hijacking DETECTED: z-index=${zIndex}, pointer-events=none`);
+        showVisualHijackingWarning('pointerEventsNoneHighZIndex', window.location.href);
+        return true; // Stop after first detection
+      }
+
+      // Detect INT_MAX z-index with suspicious properties
+      if (zIndex >= INT_MAX - 1000 && isLargeOverlay) {
+        if (opacity < 0.3 || pointerEvents === 'none') {
+          logDebug(`[Vector3-Proactive] 🛡️ INT_MAX Z-Index attack DETECTED`);
+          showVisualHijackingWarning('intMaxZIndexOverlay', window.location.href);
+          return true;
+        }
+      }
+    } catch (e) { /* ignore */ }
+  }
+
+  return false;
+}
+
+// Run proactive scan after page load
+function initProactiveVisualHijackingScan() {
+  // Initial scan with delay to let page render
+  setTimeout(proactiveVisualHijackingScan, 1000);
+
+  // Also scan when new elements are added via MutationObserver
+  const hijackObserver = new MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+      if (mutation.addedNodes.length > 0) {
+        // Debounce: wait for DOM to settle
+        clearTimeout(hijackObserver._debounceTimer);
+        hijackObserver._debounceTimer = setTimeout(proactiveVisualHijackingScan, 500);
+        break;
+      }
+    }
+  });
+
+  hijackObserver.observe(document.documentElement, {
+    childList: true,
+    subtree: true
+  });
+
+  logDebug('[Vector3-Proactive] Proactive Visual Hijacking scanner initialized');
+}
+
+// Initialize proactive scanner
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initProactiveVisualHijackingScan);
+} else {
+  initProactiveVisualHijackingScan();
+}
+
 function injectWarningIconStyles() {
     if (!document.head.querySelector('#phishing-warning-styles')) {
         const style = document.createElement('style');
         style.id = 'phishing-warning-styles';
+        // SECURITY FIX v8.4.0: Added pointer-events: auto and z-index: 2147483647
+        // to prevent Visual Hijacking attacks where attackers use pointer-events: none
+        // overlays to let clicks pass through to malicious links underneath
         style.textContent = `
             .phishing-warning-icon {
-                position: relative;
-                vertical-align: middle;
-                margin-left: 5px;
-                cursor: help;
-                transition: color 0.3s ease;
+                position: relative !important;
+                z-index: 2147483647 !important;
+                pointer-events: auto !important;
+                vertical-align: middle !important;
+                margin-left: 5px !important;
+                cursor: help !important;
+                transition: color 0.3s ease !important;
             }
             .subtle-warning {
-                font-size: 12px;
-                color: #ff9800; /* Softer orange */
+                font-size: 12px !important;
+                color: #ff9800 !important; /* Softer orange */
             }
             .high-risk-warning {
-                font-size: 16px;
-                color: #ff0000;
+                font-size: 16px !important;
+                color: #ff0000 !important;
+                pointer-events: auto !important;
             }
             .high-risk-link {
-                border: 1px dashed #ff0000;
-                color: #ff0000;
+                border: 1px dashed #ff0000 !important;
+                color: #ff0000 !important;
+                pointer-events: auto !important;
             }
             .moderate-warning {
-                font-size: 14px;
-                color: #ff5722; /* Orange-red */
+                font-size: 14px !important;
+                color: #ff5722 !important; /* Orange-red */
+                pointer-events: auto !important;
             }
             .moderate-risk-link {
-                border: 1px dotted #ff5722;
+                border: 1px dotted #ff5722 !important;
+                pointer-events: auto !important;
             }
             .phishing-warning-icon:hover {
-                color: #d32f2f; /* Darker red on hover */
+                color: #d32f2f !important; /* Darker red on hover */
             }
             /* NIEUWE FALLBACK STIJLEN HIERONDER */
             .high-risk-link-fallback {
                 outline: 2px dashed #ff0000 !important; /* Een zichtbare rand als fallback */
                 outline-offset: 2px !important;
                 box-shadow: 0 0 5px rgba(255, 0, 0, 0.5) !important; /* Optionele schaduw */
+                pointer-events: auto !important;
             }
             .moderate-risk-link-fallback {
                 outline: 1px dotted #ff5722 !important;
@@ -3220,6 +5133,251 @@ function sanitizeInput(input) {
   tempDiv.textContent = input;
   return tempDiv.innerHTML;
 }
+
+/**
+ * SECURITY FIX v8.0.2 (Vector 3 V2 - Pointer-Events Neutralization Defense)
+ * Shows a subtle "Site Safe" badge when a page passes all security checks.
+ *
+ * Uses closed Shadow DOM to prevent CSS manipulation by the host page.
+ * External scripts cannot apply pointer-events: none or other CSS attacks.
+ *
+ * The badge appears briefly in the corner and fades out automatically.
+ * User can dismiss permanently via the close button.
+ */
+async function showSiteSafeBadge() {
+  // Check if user permanently disabled the badge (use chrome.storage for extension-wide setting)
+  try {
+    const result = await chrome.storage.local.get('safeBadgeDisabled');
+    if (result.safeBadgeDisabled === true) {
+      logDebug('[SafeBadge] Permanently disabled by user');
+      return;
+    }
+  } catch (e) {
+    // storage error, continue
+  }
+
+  // Don't show badge for globally trusted domains (TrustedDomains.json)
+  // These are well-known sites like google.com - users don't need confirmation
+  const currentHostname = window.location.hostname.toLowerCase();
+  if (await isTrustedDomain(currentHostname)) {
+    logDebug(`[SafeBadge] Skipping for globally trusted domain: ${currentHostname}`);
+    return;
+  }
+
+  // Don't show if badge element already exists on page
+  if (document.getElementById('linkshield-safe-badge-host')) {
+    logDebug('[SafeBadge] Badge element exists, skipping');
+    return;
+  }
+
+  // Check sessionStorage - only show once per domain per session
+  try {
+    const domain = window.location.hostname;
+    const storageKey = `linkshield_safe_shown_${domain}`;
+    if (sessionStorage.getItem(storageKey)) {
+      logDebug('[SafeBadge] Already shown for this domain this session, skipping');
+      return;
+    }
+    sessionStorage.setItem(storageKey, 'true');
+  } catch (e) {
+    // sessionStorage might be blocked, fall back to window flag
+    if (window.linkshieldSafeBadgeShown) {
+      return;
+    }
+    window.linkshieldSafeBadgeShown = true;
+  }
+
+  // Wait for document.body to be available
+  if (!document.body) {
+    logDebug('[SafeBadge] document.body not ready, retrying in 100ms');
+    setTimeout(showSiteSafeBadge, 100);
+    return;
+  }
+  logDebug('[SafeBadge] Creating badge element with Shadow DOM protection');
+
+  // Create host element with closed Shadow DOM for CSS isolation
+  const host = document.createElement('div');
+  host.id = 'linkshield-safe-badge-host';
+  // Minimal inline style - just positioning (rest is in Shadow DOM)
+  host.style.cssText = `
+    position: fixed !important;
+    bottom: 20px !important;
+    right: 20px !important;
+    z-index: 2147483647 !important;
+    pointer-events: auto !important;
+  `;
+
+  // Create closed Shadow DOM - prevents external CSS and JS access
+  const shadow = host.attachShadow({ mode: 'closed' });
+
+  const badgeText = chrome.i18n.getMessage('siteSafeSuccessBadge') || 'Verified Safe';
+  const dismissText = chrome.i18n.getMessage('dismissTooltip') || 'Dismiss';
+  const dontShowText = chrome.i18n.getMessage('dontShowAgain') || "Don't show again?";
+  const yesText = chrome.i18n.getMessage('confirmYes') || 'Yes';
+  const noText = chrome.i18n.getMessage('confirmNo') || 'No';
+  const detailText = chrome.i18n.getMessage('siteSafeSuccessDetail') ||
+    'LinkShield scanned this page for phishing, typosquatting, and malicious scripts. Everything looks good.';
+
+  // Inject all styles and content into Shadow DOM (immune to external CSS)
+  shadow.innerHTML = `
+    <style>
+      :host {
+        all: initial !important;
+        display: block !important;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      .badge {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        padding: 10px 16px;
+        border-radius: 8px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-size: 13px;
+        font-weight: 500;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        display: flex;
+        align-items: center;
+        cursor: default;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        pointer-events: auto;
+      }
+      .badge.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .badge.hiding {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      .icon { margin-right: 6px; }
+      .text { margin-right: 10px; }
+      .close-btn {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 18px;
+        cursor: pointer;
+        padding: 0 0 0 4px;
+        margin: 0;
+        opacity: 0.7;
+        line-height: 1;
+      }
+      .close-btn:hover { opacity: 1; }
+      .confirm-text { margin-right: 12px; }
+      .yes-btn {
+        background: white;
+        color: #059669;
+        border: none;
+        padding: 4px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 600;
+        margin-right: 8px;
+      }
+      .yes-btn:hover { background: #f0f0f0; }
+      .no-btn {
+        background: transparent;
+        color: white;
+        border: 1px solid white;
+        padding: 4px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 500;
+      }
+      .no-btn:hover { background: rgba(255,255,255,0.1); }
+    </style>
+    <div class="badge" title="${detailText}">
+      <span class="icon">🛡️</span>
+      <span class="text">LinkShield: ${badgeText}</span>
+      <button class="close-btn" title="${dismissText}">×</button>
+    </div>
+  `;
+
+  const badge = shadow.querySelector('.badge');
+  const closeBtn = shadow.querySelector('.close-btn');
+
+  // Track the auto-fade timeout so we can cancel it
+  let autoFadeTimeout = null;
+
+  const removeBadge = () => {
+    badge.classList.add('hiding');
+    setTimeout(() => host.remove(), 300);
+  };
+
+  closeBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Cancel auto-fade when user interacts
+    if (autoFadeTimeout) {
+      clearTimeout(autoFadeTimeout);
+      autoFadeTimeout = null;
+    }
+
+    // Replace badge content with confirmation UI
+    badge.innerHTML = `
+      <span class="confirm-text">${dontShowText}</span>
+      <button class="yes-btn">${yesText}</button>
+      <button class="no-btn">${noText}</button>
+    `;
+    badge.style.padding = '12px 16px';
+
+    shadow.querySelector('.yes-btn').addEventListener('click', async () => {
+      try {
+        await chrome.storage.local.set({ safeBadgeDisabled: true });
+      } catch (err) {}
+      removeBadge();
+    });
+
+    shadow.querySelector('.no-btn').addEventListener('click', removeBadge);
+  });
+
+  document.body.appendChild(host);
+
+  // Animate in - use setTimeout to ensure browser has rendered the element
+  setTimeout(() => {
+    badge.classList.add('visible');
+    logDebug('[SafeBadge] Animation started (Shadow DOM protected)');
+  }, 50);
+
+  // Fade out after 4 seconds (can be cancelled by user interaction)
+  autoFadeTimeout = setTimeout(() => {
+    if (document.getElementById('linkshield-safe-badge-host')) {
+      removeBadge();
+      logDebug('[SafeBadge] Badge removed');
+    }
+  }, 4000);
+
+  // SECURITY: Monitor host element for style tampering
+  const styleObserver = new MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+      if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+        // Reset critical styles if tampered
+        const computed = window.getComputedStyle(host);
+        if (computed.pointerEvents === 'none' || computed.display === 'none' || computed.visibility === 'hidden') {
+          logDebug('[SafeBadge] Style tampering detected, resetting');
+          host.style.cssText = `
+            position: fixed !important;
+            bottom: 20px !important;
+            right: 20px !important;
+            z-index: 2147483647 !important;
+            pointer-events: auto !important;
+            display: block !important;
+            visibility: visible !important;
+          `;
+        }
+      }
+    }
+  });
+  styleObserver.observe(host, { attributes: true, attributeFilter: ['style', 'class'] });
+}
+
 /**
  * Analyseert het domein en de URL van een gegeven link om verdachte kenmerken te detecteren.
  * Roept de gelaagde detectielogica aan en de bijbehorende visuele waarschuwing.
@@ -3260,6 +5418,24 @@ async function analyzeDomainAndUrl(link) {
       logDebug(`Internal server detected for ${hostname}. Skipping checks.`);
       return;
     }
+
+    // AUDIT MODE (v8.1.0): TEST_MODE forces all external links to be flagged as HIGH RISK
+    // This allows testing visual protection (overlays, z-index) on any site
+    if (globalConfig.TEST_MODE === true) {
+      // Skip same-origin links in test mode
+      if (hostname !== window.location.hostname) {
+        console.log(`[TEST_MODE] 🧪 Forcing HIGH RISK for external link: ${href.substring(0, 60)}...`);
+        const testResult = {
+          level: 'alert',
+          risk: globalConfig.TEST_MODE_RISK_SCORE || 25,
+          reasons: ['TEST_MODE_ENABLED'],
+          link: href
+        };
+        warnLinkByLevel(link, testResult);
+        return;
+      }
+    }
+
     // Voer de gelaagde verdachte controles uit op de link's href.
     const result = await performSuspiciousChecks(href);
     // Als het risiconiveau niet 'safe' is, roep dan de visuele waarschuwing aan.
@@ -3318,11 +5494,7 @@ async function calculateRiskScore(url) {
     const maxLength = globalConfig.MAX_URL_LENGTH || 2000;
     // --- AANGEPASTE TRUSTED DOMAIN CHECK ---
     const fullHostname = urlObj.hostname.toLowerCase();
-    const isTrusted = safeDomains.some(trustedDomain => {
-        // Controleer op exacte match (bv. "facebook.com")
-        // OF op een subdomein (bv. "business.facebook.com")
-        return fullHostname === trustedDomain || fullHostname.endsWith(`.${trustedDomain}`);
-    });
+    const isTrusted = await isTrustedDomain(fullHostname);
    
     // Als het domein vertrouwd is, direct stoppen met een lage score
     if (isTrusted) {
@@ -5156,6 +7328,41 @@ function storeInCache(url, result) {
  */
 async function performSuspiciousChecks(url) {
   await ensureConfigReady();
+
+  // =============================================================================
+  // SECURITY FIX v8.3.0: DANGEROUS URI SCHEME DETECTION (FIRST CHECK!)
+  // =============================================================================
+  // AUDIT FIX: This MUST run BEFORE cache lookup and URL parsing
+  // Catches: javascript:, data:, vbscript:, blob: with obfuscation bypass
+  const dangerousSchemeResult = detectDangerousScheme(url);
+  if (dangerousSchemeResult.isDangerous) {
+    console.log(`[SecurityFix v8.3.0] 🛑 performSuspiciousChecks: BLOCKING ${dangerousSchemeResult.scheme}`);
+    const criticalResult = {
+      level: 'alert',
+      risk: dangerousSchemeResult.risk, // 25 = CRITICAL
+      reasons: [dangerousSchemeResult.reason, 'criticalSecurityThreat']
+    };
+    // Cache the result
+    window.linkRiskCache.set(url, { result: criticalResult, timestamp: Date.now() });
+    return criticalResult;
+  }
+
+  // =============================================================================
+  // SECURITY FIX v8.3.0: HOMOGLYPH & PUNYCODE EARLY DETECTION
+  // =============================================================================
+  // AUDIT FIX: Check for IDN/homoglyph attacks BEFORE normal processing
+  const homoglyphResult = detectHomoglyphAndPunycode(url);
+  if (homoglyphResult.isSuspicious && homoglyphResult.risk >= 15) {
+    console.log(`[SecurityFix v8.3.0] 🛑 performSuspiciousChecks: HIGH RISK homoglyph/punycode`);
+    const homoglyphAlertResult = {
+      level: 'alert',
+      risk: homoglyphResult.risk,
+      reasons: homoglyphResult.reasons
+    };
+    window.linkRiskCache.set(url, { result: homoglyphAlertResult, timestamp: Date.now() });
+    return homoglyphAlertResult;
+  }
+
   // 1) Cache lookup
   const cachedEntry = window.linkRiskCache.get(url);
   if (cachedEntry && Date.now() - cachedEntry.timestamp < CACHE_TTL_MS) {
@@ -5170,6 +7377,13 @@ async function performSuspiciousChecks(url) {
   }
   const reasons = new Set();
   const totalRiskRef = { value: 0 };
+
+  // Add homoglyph results to reasons if detected but not critical
+  if (homoglyphResult.isSuspicious) {
+    homoglyphResult.reasons.forEach(r => reasons.add(r));
+    totalRiskRef.value += homoglyphResult.risk;
+  }
+
   // 3) URL parsing
   let urlObj;
   try {
@@ -5180,16 +7394,28 @@ async function performSuspiciousChecks(url) {
     window.linkRiskCache.set(url, { result: fallback, timestamp: Date.now() });
     return fallback;
   }
-  // 4) Early exits voor niet-http(s) protocollen, met verbeterde javascript: handling
+
+  // 3b) Early exit for globally trusted domains (TrustedDomains.json)
+  const hostname = urlObj.hostname.toLowerCase();
+  if (await isTrustedDomain(hostname)) {
+    logDebug(`[performSuspiciousChecks] Trusted domain, skipping checks: ${hostname}`);
+    const safeResult = { level: 'safe', risk: 0, reasons: ['trustedDomain'] };
+    window.linkRiskCache.set(url, { result: safeResult, timestamp: Date.now() });
+    return safeResult;
+  }
+
+  // 4) Early exits voor niet-http(s) protocollen
+  // SECURITY FIX v8.3.0: javascript:, data:, vbscript: already handled above
   const nonHttpProtocols = ['mailto:', 'tel:', 'ftp:', 'javascript:'];
   if (nonHttpProtocols.includes(urlObj.protocol)) {
     logDebug(`Niet-HTTP protocol gedetecteerd: ${urlObj.protocol}`);
     if (urlObj.protocol === 'javascript:') {
+      // Already handled by detectDangerousScheme above, but double-check
       const clean = url.trim().toLowerCase();
       // Alleen flaggen als het geen harmless shorthand is én er verdacht script in zit
       if (!harmlessJsProtocols.includes(clean) && hasJavascriptScheme(clean)) {
         reasons.add('javascriptScheme');
-        totalRiskRef.value += 8;
+        totalRiskRef.value += 20; // Increased from 8
         logDebug(`⚠️ Verdachte javascript link: ${url}`);
       }
       // anders geen waarschuwing
@@ -6371,7 +8597,17 @@ async function isShortenedUrl(url) {
       return shortenedUrlCache.get(url);
     }
     const shortenedDomains = globalConfig.SHORTENED_URL_DOMAINS;
+    const officialShorteners = globalConfig.OFFICIAL_SHORTENERS;
     const domain = new URL(url).hostname.toLowerCase().replace(/^www\./, "");
+
+    // Check eerst of het een officiële shortener is (t.co, youtu.be, etc.)
+    // Deze worden NIET als verdacht gemarkeerd
+    if (officialShorteners && officialShorteners.has(domain)) {
+      logDebug(`Official shortener detected for ${domain} - not flagging as suspicious`);
+      shortenedUrlCache.set(url, false);
+      return false;
+    }
+
     logDebug(`Checking domain ${domain} against SHORTENED_URL_DOMAINS: ${Array.from(shortenedDomains).join(', ')}`);
     const isShortened = shortenedDomains.has(domain);
     logDebug(`Shortener check for ${url}: ${isShortened ? 'Detected' : 'Not detected'}`);
@@ -6551,6 +8787,25 @@ async function isFreeHostingDomain(url) {
       domain = punycode.toUnicode(domain);
       logDebug(`Checking free hosting voor gede­codeerd domein: ${domain}`);
     }
+
+    // Check eerst of het een vertrouwde CDN is - deze zijn NIET verdacht
+    const trustedCdns = globalConfig.TRUSTED_CDN_DOMAINS || new Set();
+    for (const cdn of trustedCdns) {
+      if (domain === cdn || domain.endsWith('.' + cdn)) {
+        logDebug(`Trusted CDN detected for ${domain} - not flagging as free hosting`);
+        return false;
+      }
+    }
+
+    // Check ook vertrouwde API domeinen
+    const trustedApis = globalConfig.TRUSTED_API_DOMAINS || new Set();
+    for (const api of trustedApis) {
+      if (domain === api || domain.endsWith('.' + api)) {
+        logDebug(`Trusted API domain detected for ${domain} - not flagging as free hosting`);
+        return false;
+      }
+    }
+
     // Splits hostname in labels
     const parts = domain.split('.');
     if (parts.length < 2) {
@@ -7041,6 +9296,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         reasons: ['trustedDomainSkipped'],
         trustedByUser: true
       });
+      // Show safe badge for trusted domains
+      showSiteSafeBadge();
       return; // Stop hier, voer geen verdere checks uit
     }
 
@@ -7053,6 +9310,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       // Initialiseer Browser-in-the-Browser (BitB) detectie voor nep OAuth popups
       initBitBDetection();
+
+      // Initialiseer WebTransport/HTTP3 monitor voor C2/exfiltration detectie
+      initWebTransportMonitor();
 
       // Initialiseer Table QR Scanner voor imageless QR-code detectie (AI-phishing kits)
       initTableQRScanner();
@@ -7191,7 +9451,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       reasons: Array.from(allReasons)
     });
     logDebug(`✅ Check compleet: level=${finalLevel}, risk=${totalRisk.toFixed(1)}, reasons=${Array.from(allReasons).join(', ')}`);
-    // --- 6. Externe links scannen (zonder extra berichten) ---
+
+    // --- 6. Show safe badge if page passed all checks ---
+    if (finalLevel === 'safe' && totalRisk < 3) {
+      showSiteSafeBadge();
+    }
+
+    // --- 7. Externe links scannen (zonder extra berichten) ---
     await checkLinks();
   } catch (error) {
     handleError(error, `DOMContentLoaded unified`);
@@ -7294,15 +9560,21 @@ async function checkCurrentUrl() {
   if (currentDomain && await isDomainTrusted(currentDomain)) {
     logDebug(`[Content] Domein ${currentDomain} is vertrouwd door gebruiker, skip security checks`);
     // Stuur 'safe' status naar background
-    chrome.runtime.sendMessage({
-      action: 'checkResult',
-      url: window.location.href,
-      level: 'safe',
-      isSafe: true,
-      risk: 0,
-      reasons: ['trustedDomainSkipped'],
-      trustedByUser: true
-    });
+    try {
+      chrome.runtime.sendMessage({
+        action: 'checkResult',
+        url: window.location.href,
+        level: 'safe',
+        isSafe: true,
+        risk: 0,
+        reasons: ['trustedDomainSkipped'],
+        trustedByUser: true
+      });
+      // Show safe badge for trusted domains
+      showSiteSafeBadge();
+    } catch (e) {
+      handleError(e, 'checkCurrentUrl: Fout bij verzenden trusted domain status');
+    }
     return;
   }
 
@@ -7342,6 +9614,13 @@ async function checkCurrentUrl() {
       risk: pageResult.risk,
       reasons: pageResult.reasons
     });
+
+    // 4) Show safe badge if site passed all checks
+    // Badge shown when level is 'safe' and risk is below threshold (< 3 allows minor benign scores)
+    if (level === 'safe' && pageResult.risk < 3) {
+      showSiteSafeBadge();
+    }
+
     logDebug(`✅ checkCurrentUrl complete: level=${level}, risk=${pageResult.risk}, reasons=${pageResult.reasons.join(', ')}`);
   } catch (err) {
     handleError(err, "checkCurrentUrl");
@@ -7370,38 +9649,53 @@ function isValidURLBasic(url) {
 }
 // In de initialisatie wordt checkLinks() alleen aangeroepen als we niet op een Google-zoekpagina zitten
 getStoredSettings().then(settings => {
-  if (settings.integratedProtection && !isSearchResultPage()) {
-    checkLinks();
+  try {
+    if (settings.integratedProtection && !isSearchResultPage()) {
+      checkLinks();
+    }
+  } catch (error) {
+    handleError(error, 'Init: Fout bij initialisatie van checkLinks');
   }
+}).catch(error => {
+  handleError(error, 'Init: Fout bij ophalen van settings');
 });
 function injectWarningStyles() {
-  if (document.head.querySelector("#linkshield-warning-styles")) {
-    logDebug("Warning styles already present, skipping.");
-    return;
+  try {
+    if (document.head?.querySelector("#linkshield-warning-styles")) {
+      logDebug("Warning styles already present, skipping.");
+      return;
+    }
+    const style = document.createElement("style");
+    style.id = "linkshield-warning-styles";
+    // SECURITY FIX v8.4.0: z-index maximum + pointer-events: auto to prevent Visual Hijacking
+    style.textContent = `
+      .linkshield-warning {
+        display: inline-block !important;
+        position: relative !important;
+        top: 0 !important;
+        left: 0 !important;
+        background-color: #ff0000 !important;
+        color: #ffffff !important;
+        padding: 2px 5px !important;
+        font-size: 12px !important;
+        border-radius: 50% !important;
+        margin-left: 5px !important;
+        z-index: 2147483647 !important;
+        pointer-events: auto !important;
+        cursor: pointer !important;
+      }
+      .suspicious-link {
+        background-color: #ffebee !important;
+        border-bottom: 2px solid #ff0000 !important;
+        pointer-events: auto !important;
+      }
+    `;
+    if (document.head) {
+      document.head.appendChild(style);
+    }
+  } catch (error) {
+    handleError(error, 'injectWarningStyles: Fout bij injecteren van stijlen');
   }
-  const style = document.createElement("style");
-  style.id = "linkshield-warning-styles";
-  style.textContent = `
-    .linkshield-warning {
-      display: inline-block !important;
-      position: relative !important;
-      top: 0 !important;
-      left: 0 !important;
-      background-color: #ff0000 !important;
-      color: #ffffff !important;
-      padding: 2px 5px !important;
-      font-size: 12px !important;
-      border-radius: 50% !important;
-      margin-left: 5px !important;
-      z-index: 1000 !important;
-      cursor: pointer !important;
-    }
-    .suspicious-link {
-      background-color: #ffebee !important;
-      border-bottom: 2px solid #ff0000 !important;
-    }
-  `;
-  document.head.appendChild(style);
 }
 (async function init() {
   try {
@@ -7468,6 +9762,23 @@ const observer = new MutationObserver(debounce(async (mutations) => {
             classifyAndCheckLink(link); // Controleer direct de nieuwe link
           }
         });
+
+        // SECURITY FIX v8.0.0 (Vector 2): Scan ook Shadow DOM in nieuw toegevoegde elementen
+        // Dit vangt links in Shadow DOM die door aanvallers worden geïnjecteerd
+        try {
+          scanNodeForLinks(node, 0);
+        } catch (e) {
+          // Ignore Shadow DOM scan errors
+        }
+      }
+
+      // SECURITY FIX v8.0.0 (Vector 2): Check of nieuw element een shadowRoot heeft
+      if (node.shadowRoot) {
+        try {
+          scanNodeForLinks(node.shadowRoot, 0);
+        } catch (e) {
+          // Ignore Shadow DOM scan errors
+        }
       }
     });
   });
@@ -7555,8 +9866,35 @@ const observer = new MutationObserver(debounce(async (mutations) => {
   if (tableQRScanner) {
     debouncedTableScan();
   }
+  // =============================================================================
+  // SECURITY FIX v8.2.0: Handle attribute mutations (href changes)
+  // =============================================================================
+  // Detecteer href attribute wijzigingen op bestaande links
+  // Dit vangt dynamische href-wijzigingen die timing attacks kunnen faciliteren
+  mutations.forEach(mutation => {
+    if (mutation.type === 'attributes' && mutation.attributeName === 'href') {
+      const target = mutation.target;
+      if (target.tagName === 'A' && target.href) {
+        // Re-scan de link omdat href is gewijzigd
+        delete target.dataset.linkshieldScanned; // Reset scanned flag
+        classifyAndCheckLink(target);
+        console.log(`[SecurityFix v8.2.0] 🔄 href attribute changed, re-scanning: ${target.href.substring(0, 50)}...`);
+      }
+    }
+  });
 }, 500)); // Debounce om te voorkomen dat het te vaak afvuurt
-observer.observe(document.documentElement, { childList: true, subtree: true });
+
+// =============================================================================
+// SECURITY FIX v8.2.0: Enhanced MutationObserver configuration
+// =============================================================================
+// Voeg `attributes: true` toe om href-wijzigingen te detecteren
+// Voeg `attributeFilter: ['href']` toe om alleen relevante attributen te observeren
+observer.observe(document.documentElement, {
+  childList: true,
+  subtree: true,
+  attributes: true,
+  attributeFilter: ['href'] // Alleen href wijzigingen monitoren voor performance
+});
 document.addEventListener('mouseover', debounce((event) => {
   if (event.target.tagName === 'A') {
     unifiedCheckLinkSafety(event.target, 'mouseover', event);
@@ -7567,6 +9905,141 @@ document.addEventListener('click', debounce((event) => {
     unifiedCheckLinkSafety(event.target, 'click', event);
   }
 }, 250));
+
+// =============================================================================
+// SECURITY FIX v8.3.0: SCROLL EVENT LISTENER FOR LAZY-LOADED LINKS
+// =============================================================================
+// AUDIT FIX: Catches scroll-injected links that MutationObserver might miss
+// Uses throttling to prevent performance issues on scroll-heavy pages
+
+let lastScrollScanTime = 0;
+const SCROLL_SCAN_THROTTLE_MS = 1000; // Max 1 scan per second
+
+/**
+ * Scans viewport for new links after scroll
+ * Throttled to prevent performance issues
+ */
+function scanViewportAfterScroll() {
+  const now = Date.now();
+  if (now - lastScrollScanTime < SCROLL_SCAN_THROTTLE_MS) {
+    return; // Throttled
+  }
+  lastScrollScanTime = now;
+
+  // Get all links in viewport
+  const viewportHeight = window.innerHeight;
+  const viewportWidth = window.innerWidth;
+
+  const allLinks = document.querySelectorAll('a[href]');
+  let scannedCount = 0;
+
+  allLinks.forEach(link => {
+    // Skip already scanned
+    if (link.dataset.linkshieldScanned) return;
+
+    // Check if in viewport
+    const rect = link.getBoundingClientRect();
+    const isInViewport = (
+      rect.top < viewportHeight &&
+      rect.bottom > 0 &&
+      rect.left < viewportWidth &&
+      rect.right > 0
+    );
+
+    if (isInViewport) {
+      classifyAndCheckLink(link);
+      scannedCount++;
+    }
+  });
+
+  if (scannedCount > 0) {
+    console.log(`[SecurityFix v8.3.0] 📜 Scroll scan: ${scannedCount} new links in viewport`);
+  }
+}
+
+// Add throttled scroll listener
+document.addEventListener('scroll', debounce(scanViewportAfterScroll, 500), { passive: true });
+
+// Also scan on resize (viewport changes)
+window.addEventListener('resize', debounce(scanViewportAfterScroll, 500), { passive: true });
+
+// =============================================================================
+// SECURITY FIX v8.3.0: SPA NAVIGATION DETECTION
+// =============================================================================
+// AUDIT FIX: Catches soft navigations in Single Page Applications
+// Patches pushState, replaceState and listens for popstate
+
+let lastNavigationUrl = window.location.href;
+
+/**
+ * Handles SPA navigation - rescans page for new links
+ */
+async function handleSPANavigation(newUrl) {
+  if (newUrl === lastNavigationUrl) return;
+  lastNavigationUrl = newUrl;
+
+  console.log(`[SecurityFix v8.3.0] 🔄 SPA navigation detected: ${newUrl}`);
+
+  // Clear caches for new page
+  if (window.linkRiskCache) {
+    // Clear entries for old URL
+    window.linkRiskCache.clear();
+  }
+
+  // Wait a tick for DOM to update
+  await new Promise(resolve => setTimeout(resolve, 100));
+
+  // Rescan page
+  try {
+    scheduleFullPageScan();
+
+    // Re-check current page URL
+    const result = await performSuspiciousChecks(newUrl);
+    chrome.runtime.sendMessage({
+      action: 'checkResult',
+      url: newUrl,
+      level: result.level,
+      isSafe: result.level === 'safe',
+      risk: result.risk,
+      reasons: result.reasons
+    });
+  } catch (e) {
+    console.error('[SecurityFix v8.3.0] SPA navigation scan error:', e);
+  }
+}
+
+// Patch history.pushState
+const originalPushState = history.pushState;
+history.pushState = function(state, title, url) {
+  originalPushState.apply(this, arguments);
+  if (url) {
+    const newUrl = new URL(url, window.location.href).href;
+    handleSPANavigation(newUrl);
+  }
+};
+
+// Patch history.replaceState
+const originalReplaceState = history.replaceState;
+history.replaceState = function(state, title, url) {
+  originalReplaceState.apply(this, arguments);
+  if (url) {
+    const newUrl = new URL(url, window.location.href).href;
+    handleSPANavigation(newUrl);
+  }
+};
+
+// Listen for popstate (back/forward navigation)
+window.addEventListener('popstate', () => {
+  handleSPANavigation(window.location.href);
+});
+
+// Listen for hashchange (hash-based routing)
+window.addEventListener('hashchange', () => {
+  handleSPANavigation(window.location.href);
+});
+
+console.log('[SecurityFix v8.3.0] ✅ Scroll listener and SPA navigation handlers installed');
+
 const processedLinks = new Set();
 /**
  * Extraheert de top-level domein (TLD) uit een hostname, inclusief samengestelde TLD's (bijv. .co.uk).
@@ -7797,6 +10270,469 @@ class ImageScannerOptimized {
 
 // Global image scanner instance
 let imageScanner = null;
+
+// =============================================================================
+// WEBTRANSPORT MONITOR - Detecteert misbruik van WebTransport/HTTP3 voor C2/exfiltration
+// WebTransport is een moderne API die bidirectionele communicatie mogelijk maakt
+// Malware kan dit misbruiken voor covert channels en data exfiltration
+// =============================================================================
+
+let webTransportMonitorInitialized = false;
+const webTransportConnections = new Map(); // url -> {count, firstSeen, streams, datagrams}
+const WEBTRANSPORT_CLEANUP_INTERVAL_MS = 60000; // Cleanup elke minuut
+
+/**
+ * Initialiseert WebTransport monitoring via API hooking
+ * Hooked de WebTransport constructor om alle verbindingen te analyseren
+ */
+function initWebTransportMonitor() {
+    if (webTransportMonitorInitialized) return;
+
+    // Check of WebTransport API beschikbaar is
+    if (typeof WebTransport === 'undefined') {
+        logDebug('[WebTransport] API not available in this browser, skipping monitor');
+        return;
+    }
+
+    const config = globalConfig?.WEBTRANSPORT_MONITORING;
+    if (!config?.enabled) {
+        logDebug('[WebTransport] Monitoring disabled in config');
+        return;
+    }
+
+    webTransportMonitorInitialized = true;
+
+    // Bewaar originele constructor
+    const OriginalWebTransport = window.WebTransport;
+
+    // Override WebTransport constructor
+    window.WebTransport = function(url, options) {
+        // Analyseer de endpoint VOORDAT verbinding wordt gemaakt
+        const analysis = analyzeWebTransportEndpoint(url);
+
+        if (analysis.score > 0) {
+            reportWebTransportActivity(url, analysis);
+        }
+
+        // Maak originele connectie
+        const transport = new OriginalWebTransport(url, options);
+
+        // Monitor de connectie voor gedragsanalyse
+        monitorWebTransportConnection(transport, url, config);
+
+        return transport;
+    };
+
+    // Behoud prototype chain voor instanceof checks
+    window.WebTransport.prototype = OriginalWebTransport.prototype;
+    Object.setPrototypeOf(window.WebTransport, OriginalWebTransport);
+
+    // Periodieke cleanup van oude connection tracking data
+    setInterval(() => cleanupWebTransportTracking(config), WEBTRANSPORT_CLEANUP_INTERVAL_MS);
+
+    logDebug('[WebTransport] Monitor initialized successfully');
+}
+
+/**
+ * Analyseert een WebTransport endpoint URL op verdachte kenmerken
+ * @param {string} url - De WebTransport endpoint URL
+ * @returns {{score: number, reasons: string[], isTrusted: boolean}}
+ */
+function analyzeWebTransportEndpoint(url) {
+    const config = globalConfig?.WEBTRANSPORT_MONITORING;
+    if (!config?.enabled) return { score: 0, reasons: [], isTrusted: false };
+
+    const scores = config.scores;
+    let score = 0;
+    const reasons = [];
+
+    try {
+        const parsedUrl = new URL(url);
+        const hostname = parsedUrl.hostname;
+        const port = parsedUrl.port;
+
+        // Check trusted endpoints eerst (whitelist)
+        for (const pattern of config.trustedEndpoints || []) {
+            if (pattern.test(url)) {
+                logDebug(`[WebTransport] Trusted endpoint: ${hostname}`);
+                return { score: 0, reasons: [], isTrusted: true };
+            }
+        }
+
+        // Check verdachte patronen
+
+        // 1. Direct IP address
+        if (/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(hostname)) {
+            score += scores.directIP;
+            reasons.push('webTransportDirectIP');
+            logDebug(`[WebTransport] Direct IP detected: ${hostname}`);
+        }
+
+        // 2. High port number (10000+)
+        if (port && parseInt(port) >= 10000) {
+            score += scores.highPort;
+            reasons.push('webTransportHighPort');
+            logDebug(`[WebTransport] High port detected: ${port}`);
+        }
+
+        // 3. Random C2-like subdomain (32+ random chars)
+        const subdomainMatch = hostname.match(/^([a-z0-9]+)\./i);
+        if (subdomainMatch && subdomainMatch[1].length >= 32 && /^[a-z0-9]+$/i.test(subdomainMatch[1])) {
+            score += scores.randomSubdomain;
+            reasons.push('webTransportRandomSubdomain');
+            logDebug(`[WebTransport] Random subdomain detected: ${subdomainMatch[1]}`);
+        }
+
+        // 4. Free TLD (often used for C2)
+        if (/\.(tk|ml|ga|cf|gq)$/i.test(hostname)) {
+            score += scores.freeTLD;
+            reasons.push('webTransportFreeTLD');
+            logDebug(`[WebTransport] Free TLD detected: ${hostname}`);
+        }
+
+        // 5. Obfuscated URL (base64 or double encoding)
+        if (hasBase64InWebTransportUrl(url) || hasDoubleEncodingInUrl(url)) {
+            score += scores.obfuscatedUrl;
+            reasons.push('webTransportObfuscatedUrl');
+            logDebug(`[WebTransport] Obfuscated URL detected`);
+        }
+
+        // 6. Check algemene verdachte endpoint patronen
+        for (const pattern of config.suspiciousEndpoints || []) {
+            if (pattern.test(url) && reasons.length === 0) {
+                // Alleen als nog geen specifieke reden gevonden
+                score += 3;
+                reasons.push('webTransportSuspiciousPattern');
+            }
+        }
+
+    } catch (e) {
+        // Invalid URL = verdacht
+        score += scores.invalidUrl || 5;
+        reasons.push('webTransportInvalidUrl');
+        logDebug(`[WebTransport] Invalid URL: ${url}`);
+    }
+
+    return { score, reasons, isTrusted: false };
+}
+
+/**
+ * Controleert of een URL base64-encoded componenten bevat
+ */
+function hasBase64InWebTransportUrl(url) {
+    try {
+        const parsedUrl = new URL(url);
+        // Split path into segments and check each individually
+        const pathSegments = parsedUrl.pathname.split('/').filter(s => s.length > 0);
+        const queryParams = parsedUrl.search ? parsedUrl.search.slice(1).split('&') : [];
+        const allSegments = [...pathSegments, ...queryParams];
+
+        // Pattern for base64 strings (min 20 chars, without /)
+        const base64Pattern = /^[A-Za-z0-9+\/=]{20,}$/;
+
+        for (const segment of allSegments) {
+            if (base64Pattern.test(segment)) {
+                try {
+                    atob(segment);
+                    return true; // Valid base64 found
+                } catch {
+                    // Not valid base64, continue checking
+                }
+            }
+        }
+    } catch {
+        return false;
+    }
+    return false;
+}
+
+/**
+ * Controleert op double URL encoding
+ */
+function hasDoubleEncodingInUrl(url) {
+    return /%25[0-9A-Fa-f]{2}/.test(url);
+}
+
+/**
+ * Monitor een actieve WebTransport connectie voor gedragsanalyse
+ * @param {WebTransport} transport - De WebTransport instantie
+ * @param {string} url - De endpoint URL
+ * @param {object} config - De monitoring configuratie
+ */
+function monitorWebTransportConnection(transport, url, config) {
+    const thresholds = config.thresholds;
+    const scores = config.scores;
+    const connectionKey = url;
+
+    // Track connection
+    const now = Date.now();
+    if (!webTransportConnections.has(connectionKey)) {
+        webTransportConnections.set(connectionKey, {
+            count: 0,
+            firstSeen: now,
+            lastSeen: now,
+            streams: 0,
+            datagrams: 0,
+            reported: false,
+        });
+    }
+
+    const connData = webTransportConnections.get(connectionKey);
+    connData.count++;
+    connData.lastSeen = now;
+
+    // Check connection rate limiting
+    const timeSinceFirstMs = now - connData.firstSeen;
+    const timeSinceFirstMinutes = timeSinceFirstMs / 60000;
+
+    if (timeSinceFirstMinutes > 0 && !connData.reported) {
+        const connectionsPerMinute = connData.count / timeSinceFirstMinutes;
+
+        if (connectionsPerMinute > thresholds.maxConnectionsPerMinute) {
+            connData.reported = true;
+            reportWebTransportActivity(url, {
+                score: scores.highConnectionRate,
+                reasons: ['webTransportHighConnectionRate'],
+                connectionData: {
+                    count: connData.count,
+                    ratePerMinute: connectionsPerMinute.toFixed(2),
+                    windowMs: timeSinceFirstMs,
+                }
+            });
+        }
+    }
+
+    // Monitor datagrams (indien ondersteund)
+    transport.ready.then(() => {
+        // Track stream creation
+        if (transport.incomingBidirectionalStreams) {
+            trackWebTransportStreams(transport, url, connData, thresholds, scores);
+        }
+
+        // Track datagrams
+        if (transport.datagrams?.writable) {
+            trackWebTransportDatagrams(transport, url, connData, thresholds, scores);
+        }
+    }).catch((err) => {
+        logDebug(`[WebTransport] Connection failed to ${url}: ${err.message}`);
+    });
+}
+
+/**
+ * Track WebTransport streams voor anomalie detectie
+ */
+function trackWebTransportStreams(transport, url, connData, thresholds, scores) {
+    const reader = transport.incomingBidirectionalStreams.getReader();
+
+    const readStreams = async () => {
+        try {
+            while (true) {
+                const { value, done } = await reader.read();
+                if (done) break;
+
+                connData.streams++;
+
+                // Check stream limit
+                if (connData.streams > thresholds.maxStreamsPerConnection && !connData.streamLimitReported) {
+                    connData.streamLimitReported = true;
+                    reportWebTransportActivity(url, {
+                        score: scores.highConnectionRate,
+                        reasons: ['webTransportHighStreamCount'],
+                        connectionData: { streams: connData.streams }
+                    });
+                }
+            }
+        } catch {
+            // Connection closed
+        }
+    };
+
+    readStreams();
+}
+
+/**
+ * Track WebTransport datagrams voor bulk transfer detectie
+ */
+function trackWebTransportDatagrams(transport, url, connData, thresholds, scores) {
+    // We kunnen outgoing datagrams monitoren via een proxy
+    const originalWritable = transport.datagrams.writable;
+
+    let datagramCount = 0;
+    let datagramStartTime = Date.now();
+    let highRateReported = false;
+
+    // Monitor via periodic check (minder invasief dan hooking)
+    const checkInterval = setInterval(() => {
+        const elapsed = (Date.now() - datagramStartTime) / 1000;
+
+        if (elapsed > 1 && !highRateReported) {
+            const rate = connData.datagrams / elapsed;
+
+            if (rate > thresholds.maxDatagramsPerSecond) {
+                highRateReported = true;
+                reportWebTransportActivity(url, {
+                    score: scores.highDatagramRate,
+                    reasons: ['webTransportHighDatagramRate'],
+                    connectionData: {
+                        datagrams: connData.datagrams,
+                        ratePerSecond: rate.toFixed(2),
+                    }
+                });
+            }
+        }
+    }, 5000);
+
+    // Cleanup interval when transport closes
+    transport.closed.then(() => {
+        clearInterval(checkInterval);
+    }).catch(() => {
+        clearInterval(checkInterval);
+    });
+}
+
+/**
+ * Cleanup oude connection tracking data
+ */
+function cleanupWebTransportTracking(config) {
+    const now = Date.now();
+    const windowMs = config.thresholds.connectionTrackingWindowMs || 300000;
+
+    for (const [url, data] of webTransportConnections.entries()) {
+        if (now - data.lastSeen > windowMs) {
+            webTransportConnections.delete(url);
+            logDebug(`[WebTransport] Cleaned up tracking for: ${url}`);
+        }
+    }
+}
+
+/**
+ * Rapporteert verdachte WebTransport activiteit naar background en UI
+ * @param {string} url - De endpoint URL
+ * @param {object} analysis - Analyse resultaat met score en reasons
+ */
+function reportWebTransportActivity(url, analysis) {
+    const hostname = window.location.hostname;
+
+    logDebug(`[WebTransport] Suspicious activity detected:`, {
+        endpoint: url,
+        score: analysis.score,
+        reasons: analysis.reasons,
+        connectionData: analysis.connectionData,
+    });
+
+    // Stuur naar background voor verdere analyse en icon update
+    chrome.runtime.sendMessage({
+        action: 'webTransportDetected',
+        data: {
+            hostname,
+            endpointUrl: url,
+            score: analysis.score,
+            reasons: analysis.reasons,
+            connectionData: analysis.connectionData || null,
+            timestamp: Date.now()
+        }
+    }).catch(() => {
+        // Extension context may be invalidated
+    });
+
+    // Bij hoge score: toon waarschuwing aan gebruiker
+    if (analysis.score >= 10) {
+        showWebTransportWarning(url, analysis);
+    }
+}
+
+/**
+ * Toont een waarschuwing voor verdachte WebTransport activiteit
+ * @param {string} url - De verdachte endpoint URL
+ * @param {object} analysis - Analyse resultaat
+ */
+function showWebTransportWarning(url, analysis) {
+    // Voorkom dubbele waarschuwingen
+    if (document.getElementById('linkshield-webtransport-warning')) return;
+
+    const warning = document.createElement('div');
+    warning.id = 'linkshield-webtransport-warning';
+    warning.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: white;
+        padding: 16px 20px;
+        border-radius: 12px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        z-index: 2147483647;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-size: 14px;
+        max-width: 380px;
+        animation: slideInRight 0.3s ease-out;
+    `;
+
+    // Voeg animatie toe
+    if (!document.getElementById('linkshield-webtransport-styles')) {
+        const style = document.createElement('style');
+        style.id = 'linkshield-webtransport-styles';
+        style.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    const title = chrome.i18n.getMessage('webTransportWarningTitle') || 'Suspicious Network Activity';
+    const message = chrome.i18n.getMessage('webTransportWarningMessage') ||
+        'This page is using advanced network protocols in a potentially suspicious way.';
+
+    // Toon specifieke reden indien beschikbaar
+    let reasonText = '';
+    if (analysis.reasons.includes('webTransportDirectIP')) {
+        reasonText = chrome.i18n.getMessage('webTransportDirectIP') || 'Connection to direct IP address detected.';
+    } else if (analysis.reasons.includes('webTransportRandomSubdomain')) {
+        reasonText = chrome.i18n.getMessage('webTransportRandomSubdomain') || 'Connection to suspicious random subdomain.';
+    } else if (analysis.reasons.includes('webTransportHighConnectionRate')) {
+        reasonText = chrome.i18n.getMessage('webTransportHighConnectionRate') || 'Unusually high connection rate detected.';
+    }
+
+    warning.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+            <span style="font-size: 22px;">🌐</span>
+            <span style="font-weight: 600; font-size: 15px;">${title}</span>
+            <button id="linkshield-webtransport-close" style="
+                margin-left: auto;
+                background: rgba(255,255,255,0.2);
+                border: none;
+                color: white;
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                cursor: pointer;
+                font-size: 14px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            ">✕</button>
+        </div>
+        <div style="font-size: 13px; opacity: 0.95; margin-bottom: 8px;">${message}</div>
+        ${reasonText ? `<div style="font-size: 12px; opacity: 0.8; background: rgba(0,0,0,0.1); padding: 8px; border-radius: 6px;">${reasonText}</div>` : ''}
+    `;
+
+    document.body.appendChild(warning);
+
+    // Close button handler
+    document.getElementById('linkshield-webtransport-close')?.addEventListener('click', () => {
+        warning.remove();
+    });
+
+    // Auto-remove na 15 seconden
+    setTimeout(() => {
+        if (warning.parentNode) {
+            warning.style.animation = 'slideInRight 0.3s ease-out reverse';
+            setTimeout(() => warning.remove(), 300);
+        }
+    }, 15000);
+}
 
 // =============================================================================
 // TABLE-BASED QR CODE SCANNER (Imageless QR Detection)
@@ -8094,12 +11030,12 @@ class TableQRScanner {
     const borderColor = isAlert ? '#dc2626' : '#eab308';
     const emoji = isAlert ? '⚠️' : '⚡';
     const title = isAlert
-      ? (chrome.i18n.getMessage('tableQrDangerTitle') || 'GEVAAR: Verborgen QR-code!')
-      : (chrome.i18n.getMessage('tableQrCautionTitle') || 'Let op: Verborgen QR-code');
+      ? (chrome.i18n.getMessage('tableQrDangerTitle') || 'DANGER: Hidden QR Code!')
+      : (chrome.i18n.getMessage('tableQrCautionTitle') || 'Caution: Hidden QR Code');
 
     const translatedReasons = Array.isArray(reasons) && reasons.length > 0
       ? reasons.slice(0, 3).map(r => translateReason(r)).join(', ')
-      : (chrome.i18n.getMessage('hiddenQrDetected') || 'Verborgen QR-code gedetecteerd');
+      : (chrome.i18n.getMessage('hiddenQrDetected') || 'Hidden QR code detected');
 
     const displayUrl = url && url.length > 50 ? url.substring(0, 50) + '...' : url;
 
@@ -8107,7 +11043,7 @@ class TableQRScanner {
     overlay.className = 'linkshield-overlay table-qr-warning';
     overlay.innerHTML = `
       <div style="font-weight:bold;font-size:14px;margin-bottom:4px;">${emoji} ${title}</div>
-      <div style="font-size:11px;margin-bottom:4px;">URL: ${displayUrl || 'Verborgen'}</div>
+      <div style="font-size:11px;margin-bottom:4px;">URL: ${displayUrl || (chrome.i18n.getMessage('hiddenUrl') || 'Hidden')}</div>
       <div style="font-size:10px;opacity:0.9;">${translatedReasons}</div>
     `;
 
@@ -8294,7 +11230,7 @@ function extractURLsFromText(text) {
 }
 
 /**
- * Warn about suspicious OCR-detected content with translated reasons
+ * Warn about suspicious OCR-detected content with translated reasons and LinkShield branding
  */
 function warnOCRImage(img, { level, reasons = [], url, extractedText }) {
   const parent = img.parentElement;
@@ -8307,32 +11243,53 @@ function warnOCRImage(img, { level, reasons = [], url, extractedText }) {
   wrapper.appendChild(img);
 
   const isAlert = level === 'alert';
-  const bgColor = isAlert ? 'rgba(220, 38, 38, 0.85)' : 'rgba(234, 179, 8, 0.85)';
-  const borderColor = isAlert ? '#dc2626' : '#eab308';
+  const headerBg = isAlert ? 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)' : 'linear-gradient(135deg, #d97706 0%, #b45309 100%)';
+  const bodyBg = isAlert ? 'rgba(254, 242, 242, 0.97)' : 'rgba(255, 251, 235, 0.97)';
+  const borderColor = isAlert ? '#dc2626' : '#d97706';
+  const textColor = isAlert ? '#7f1d1d' : '#92400e';
   const title = isAlert
-    ? (chrome.i18n.getMessage('ocrDangerTitle') || 'GEVAAR: Phishing gedetecteerd in afbeelding!')
-    : (chrome.i18n.getMessage('ocrCautionTitle') || 'Let op: Verdachte tekst in afbeelding');
+    ? (chrome.i18n.getMessage('ocrDangerTitle') || 'Phishing in image!')
+    : (chrome.i18n.getMessage('ocrCautionTitle') || 'Suspicious text in image');
 
   // Translate reasons
   const translatedReasons = Array.isArray(reasons) && reasons.length > 0
     ? reasons.slice(0, 3).map(r => translateReason(r)).join(', ')
-    : (chrome.i18n.getMessage('suspiciousDomainDetected') || 'Verdacht domein gedetecteerd');
+    : (chrome.i18n.getMessage('suspiciousDomainDetected') || 'Suspicious domain detected');
 
   const displayUrl = url && url.length > 40 ? url.substring(0, 40) + '...' : (url || 'N/A');
 
   const overlay = document.createElement('div');
   overlay.className = 'qr-warning-overlay ocr-warning';
   overlay.innerHTML = `
-    <div style="font-weight:bold;margin-bottom:4px;">${isAlert ? '⚠️' : '⚡'} ${title}</div>
-    <div style="font-size:10px;margin-bottom:3px;">URL: ${displayUrl}</div>
-    <div style="font-size:9px;opacity:0.9;">${translatedReasons}</div>
+    <div style="
+      background: ${headerBg};
+      color: white;
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 6px 6px 0 0;
+    ">
+      <span style="font-size: 14px;">🛡️</span>
+      <span style="font-weight: 600; font-size: 11px;">LinkShield</span>
+    </div>
+    <div style="
+      background: ${bodyBg};
+      padding: 10px;
+      border-radius: 0 0 6px 6px;
+      text-align: center;
+    ">
+      <div style="font-weight:bold;font-size:12px;margin-bottom:4px;color:${textColor};">${isAlert ? '🚨' : '⚠️'} ${title}</div>
+      <div style="font-size:10px;margin-bottom:3px;color:${textColor};opacity:0.9;">URL: ${displayUrl}</div>
+      <div style="font-size:9px;color:${textColor};opacity:0.8;">${translatedReasons}</div>
+    </div>
   `;
 
   // Translate reasons for tooltip
   const translatedReasonsForTooltip = Array.isArray(reasons)
     ? reasons.map(r => translateReason(r)).join('\n')
     : '';
-  overlay.title = `${chrome.i18n.getMessage('extractedText') || 'Geëxtraheerde tekst'}: ${extractedText}\n\n${chrome.i18n.getMessage('reasons') || 'Redenen'}:\n${translatedReasonsForTooltip}`;
+  overlay.title = `${chrome.i18n.getMessage('extractedText') || 'Extracted text'}: ${extractedText}\n\n${chrome.i18n.getMessage('reasons') || 'Reasons'}:\n${translatedReasonsForTooltip}`;
 
   overlay.style.cssText = `
     position: absolute;
@@ -8340,19 +11297,15 @@ function warnOCRImage(img, { level, reasons = [], url, extractedText }) {
     left: 0;
     right: 0;
     bottom: 0;
-    background: ${bgColor};
-    color: white;
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
-    text-align: center;
-    font-size: 11px;
-    padding: 8px;
     z-index: 10000;
     border: 2px solid ${borderColor};
-    border-radius: 4px;
+    border-radius: 8px;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    overflow: hidden;
   `;
   wrapper.appendChild(overlay);
 }
@@ -8385,40 +11338,40 @@ function translateReason(reasonKey) {
   const translationKey = `reason_${baseKey}`;
   let translated = chrome.i18n.getMessage(translationKey);
 
-  // If no translation found, use fallback mapping
+  // If no translation found, use fallback mapping (English)
   if (!translated) {
     const fallbackMap = {
-      'nonAscii': 'Verdachte tekens gedetecteerd (homoglyphs)',
-      'brandKeywordHomoglyph': 'Imitatie van een bekend merk gedetecteerd',
-      'noHttps': 'Geen beveiligde verbinding (HTTPS)',
-      'suspiciousTLD': 'Verdachte domeinextensie',
-      'ipAsDomain': 'IP-adres als domeinnaam',
-      'tooManySubdomains': 'Te veel subdomeinen',
-      'shortenedUrl': 'Verkorte URL gedetecteerd',
-      'suspiciousKeywords': 'Verdachte trefwoorden in URL',
-      'malwareExtension': 'Potentieel schadelijke bestandsextensie',
-      'urlTooLong': 'Ongewoon lange URL',
-      'encodedCharacters': 'Gecodeerde tekens in URL',
-      'homoglyphAttack': 'Homoglyph-aanval gedetecteerd',
-      'typosquatting': 'Typosquatting gedetecteerd',
-      'suspiciousBrandPattern': 'Verdacht merkpatroon',
-      'unusualPort': 'Ongebruikelijke poort',
-      'punycode': 'Punycode domein gedetecteerd',
-      'loginPageNoMX': 'Inlogpagina zonder e-mailserver',
-      'insecureLoginPage': 'Onveilige inlogpagina',
-      'sslValidationFailed': 'SSL-validatie mislukt',
-      'similarToLegitimateDomain': 'Lijkt op legitiem domein',
-      'reason_redirectChain': 'Verdachte redirect-keten gedetecteerd',
-      'reason_excessiveRedirects': 'Te veel redirects in keten',
-      'reason_domainHopping': 'Meerdere domeinwisselingen in redirect-keten',
-      'reason_chainedShorteners': 'Meerdere URL-verkorters achter elkaar',
-      'reason_suspiciousFinalTLD': 'Einddoel heeft verdachte domeinextensie',
-      'reason_redirectToIP': 'Redirect naar IP-adres',
-      'reason_redirectTimeout': 'Redirect-analyse time-out',
-      'nullByteInjection': 'Null byte injectie gedetecteerd (hoog risico)',
-      'urlCredentialsAttack': 'URL misleiding gedetecteerd (@-symbool aanval)',
-      'fullwidthCharacters': 'Fullwidth Unicode karakters gedetecteerd',
-      'doubleEncoding': 'Dubbele URL-codering gedetecteerd'
+      'nonAscii': 'Suspicious characters detected (homoglyphs)',
+      'brandKeywordHomoglyph': 'Brand imitation detected',
+      'noHttps': 'No secure connection (HTTPS)',
+      'suspiciousTLD': 'Suspicious domain extension',
+      'ipAsDomain': 'IP address as domain name',
+      'tooManySubdomains': 'Too many subdomains',
+      'shortenedUrl': 'Shortened URL detected',
+      'suspiciousKeywords': 'Suspicious keywords in URL',
+      'malwareExtension': 'Potentially harmful file extension',
+      'urlTooLong': 'Unusually long URL',
+      'encodedCharacters': 'Encoded characters in URL',
+      'homoglyphAttack': 'Homoglyph attack detected',
+      'typosquatting': 'Typosquatting detected',
+      'suspiciousBrandPattern': 'Suspicious brand pattern',
+      'unusualPort': 'Unusual port',
+      'punycode': 'Punycode domain detected',
+      'loginPageNoMX': 'Login page without email server',
+      'insecureLoginPage': 'Insecure login page',
+      'sslValidationFailed': 'SSL validation failed',
+      'similarToLegitimateDomain': 'Looks like a legitimate domain',
+      'reason_redirectChain': 'Suspicious redirect chain detected',
+      'reason_excessiveRedirects': 'Too many redirects in chain',
+      'reason_domainHopping': 'Multiple domain switches in redirect chain',
+      'reason_chainedShorteners': 'Multiple URL shorteners chained together',
+      'reason_suspiciousFinalTLD': 'Final destination has suspicious domain extension',
+      'reason_redirectToIP': 'Redirect to IP address',
+      'reason_redirectTimeout': 'Redirect analysis timed out',
+      'nullByteInjection': 'Null byte injection detected (high risk)',
+      'urlCredentialsAttack': 'URL deception detected (@ symbol attack)',
+      'fullwidthCharacters': 'Fullwidth Unicode characters detected',
+      'doubleEncoding': 'Double URL encoding detected'
     };
     translated = fallbackMap[baseKey] || fallbackMap[reasonKey] || baseKey;
   }
@@ -8551,7 +11504,7 @@ function extractURLFromAsciiText(text) {
   return matches?.[0]?.replace(/[.,;:!?)]+$/, '') || null;
 }
 
-// Function to warn near a text QR element with translated reasons
+// Function to warn near a text QR element with translated reasons and LinkShield branding
 function warnTextQR(el, { level, reasons = [], url }) {
   const wrapper = document.createElement('div');
   wrapper.style.position = 'relative';
@@ -8561,32 +11514,53 @@ function warnTextQR(el, { level, reasons = [], url }) {
   wrapper.appendChild(el);
 
   const isAlert = level === 'alert';
-  const bgColor = isAlert ? 'rgba(220, 38, 38, 0.85)' : 'rgba(234, 179, 8, 0.85)';
-  const borderColor = isAlert ? '#dc2626' : '#eab308';
+  const headerBg = isAlert ? 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)' : 'linear-gradient(135deg, #d97706 0%, #b45309 100%)';
+  const bodyBg = isAlert ? 'rgba(254, 242, 242, 0.97)' : 'rgba(255, 251, 235, 0.97)';
+  const borderColor = isAlert ? '#dc2626' : '#d97706';
+  const textColor = isAlert ? '#7f1d1d' : '#92400e';
   const title = isAlert
-    ? (chrome.i18n.getMessage('asciiQrDangerTitle') || 'GEVAAR: Phishing ASCII QR!')
-    : (chrome.i18n.getMessage('asciiQrCautionTitle') || 'Let op: Verdachte ASCII QR');
+    ? (chrome.i18n.getMessage('asciiQrDangerTitle') || 'Phishing ASCII QR!')
+    : (chrome.i18n.getMessage('asciiQrCautionTitle') || 'Suspicious ASCII QR');
 
   // Translate reasons
   const translatedReasons = Array.isArray(reasons) && reasons.length > 0
     ? reasons.slice(0, 3).map(r => translateReason(r)).join(', ')
-    : (chrome.i18n.getMessage('suspiciousDomainDetected') || 'Verdacht domein gedetecteerd');
+    : (chrome.i18n.getMessage('suspiciousDomainDetected') || 'Suspicious domain detected');
 
-  const displayUrl = url && url.length > 40 ? url.substring(0, 40) + '...' : (url || (chrome.i18n.getMessage('hiddenUrl') || 'Verborgen'));
+  const displayUrl = url && url.length > 40 ? url.substring(0, 40) + '...' : (url || (chrome.i18n.getMessage('hiddenUrl') || 'Hidden'));
 
   const overlay = document.createElement('div');
   overlay.className = 'qr-warning-overlay ascii-qr-warning';
   overlay.innerHTML = `
-    <div style="font-weight:bold;margin-bottom:4px;">${isAlert ? '⚠️' : '⚡'} ${title}</div>
-    <div style="font-size:10px;margin-bottom:3px;">URL: ${displayUrl}</div>
-    <div style="font-size:9px;opacity:0.9;">${translatedReasons}</div>
+    <div style="
+      background: ${headerBg};
+      color: white;
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 6px 6px 0 0;
+    ">
+      <span style="font-size: 14px;">🛡️</span>
+      <span style="font-weight: 600; font-size: 11px;">LinkShield</span>
+    </div>
+    <div style="
+      background: ${bodyBg};
+      padding: 10px;
+      border-radius: 0 0 6px 6px;
+      text-align: center;
+    ">
+      <div style="font-weight:bold;font-size:12px;margin-bottom:4px;color:${textColor};">${isAlert ? '🚨' : '⚠️'} ${title}</div>
+      <div style="font-size:10px;margin-bottom:3px;color:${textColor};opacity:0.9;">URL: ${displayUrl}</div>
+      <div style="font-size:9px;color:${textColor};opacity:0.8;">${translatedReasons}</div>
+    </div>
   `;
 
   // Translate reasons for tooltip
   const translatedReasonsForTooltip = Array.isArray(reasons)
     ? reasons.map(r => translateReason(r)).join('\n')
     : '';
-  overlay.title = `${chrome.i18n.getMessage('reasons') || 'Redenen'}:\n${translatedReasonsForTooltip}`;
+  overlay.title = `${chrome.i18n.getMessage('reasons') || 'Reasons'}:\n${translatedReasonsForTooltip}`;
 
   overlay.style.cssText = `
     position: absolute;
@@ -8594,24 +11568,20 @@ function warnTextQR(el, { level, reasons = [], url }) {
     left: 0;
     right: 0;
     bottom: 0;
-    background: ${bgColor};
-    color: white;
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
-    text-align: center;
-    font-size: 11px;
-    padding: 8px;
     z-index: 10000;
     border: 2px solid ${borderColor};
-    border-radius: 4px;
+    border-radius: 8px;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    overflow: hidden;
   `;
   wrapper.appendChild(overlay);
 }
 
-// Updated: Function to warn near a QR image with translated reasons
+// Updated: Function to warn near a QR image with translated reasons and LinkShield branding
 function warnQRImage(img, { level, reasons = [], url }) {
   const parent = img.parentElement;
   if (!parent) return;
@@ -8631,25 +11601,45 @@ function warnQRImage(img, { level, reasons = [], url }) {
 
   // Determine colors based on level
   const isAlert = level === 'alert';
-  const bgColor = isAlert ? 'rgba(220, 38, 38, 0.9)' : 'rgba(234, 179, 8, 0.9)';
-  const borderColor = isAlert ? '#dc2626' : '#eab308';
-  const emoji = isAlert ? '⚠️' : '⚡';
+  const headerBg = isAlert ? 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)' : 'linear-gradient(135deg, #d97706 0%, #b45309 100%)';
+  const bodyBg = isAlert ? 'rgba(254, 242, 242, 0.97)' : 'rgba(255, 251, 235, 0.97)';
+  const borderColor = isAlert ? '#dc2626' : '#d97706';
+  const textColor = isAlert ? '#7f1d1d' : '#92400e';
   const title = isAlert
-    ? (chrome.i18n.getMessage('qrDangerTitle') || 'GEVAAR: Phishing QR-code!')
-    : (chrome.i18n.getMessage('qrCautionTitle') || 'Let op: Verdachte QR-code');
+    ? (chrome.i18n.getMessage('qrDangerTitle') || 'Phishing QR Code!')
+    : (chrome.i18n.getMessage('qrCautionTitle') || 'Suspicious QR Code');
 
   // Translate reasons for display
   const translatedReasons = Array.isArray(reasons) && reasons.length > 0
     ? reasons.slice(0, 3).map(r => translateReason(r)).join(', ')
-    : (chrome.i18n.getMessage('suspiciousDomainDetected') || 'Verdacht domein gedetecteerd');
+    : (chrome.i18n.getMessage('suspiciousDomainDetected') || 'Suspicious domain detected');
 
   // Truncate URL for display
-  const displayUrl = url && url.length > 50 ? url.substring(0, 50) + '...' : url;
+  const displayUrl = url && url.length > 40 ? url.substring(0, 40) + '...' : url;
 
   overlay.innerHTML = `
-    <div style="font-weight:bold;font-size:14px;margin-bottom:4px;">${emoji} ${title}</div>
-    <div style="font-size:11px;margin-bottom:4px;">URL: ${displayUrl || (chrome.i18n.getMessage('hiddenUrl') || 'Verborgen URL')}</div>
-    <div style="font-size:10px;opacity:0.9;">${translatedReasons}</div>
+    <div style="
+      background: ${headerBg};
+      color: white;
+      padding: 6px 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 6px 6px 0 0;
+    ">
+      <span style="font-size: 14px;">🛡️</span>
+      <span style="font-weight: 600; font-size: 11px;">LinkShield</span>
+    </div>
+    <div style="
+      background: ${bodyBg};
+      padding: 10px;
+      border-radius: 0 0 6px 6px;
+      text-align: center;
+    ">
+      <div style="font-weight:bold;font-size:12px;margin-bottom:4px;color:${textColor};">${isAlert ? '🚨' : '⚠️'} ${title}</div>
+      <div style="font-size:10px;margin-bottom:3px;color:${textColor};opacity:0.9;">URL: ${displayUrl || (chrome.i18n.getMessage('hiddenUrl') || 'Hidden URL')}</div>
+      <div style="font-size:9px;color:${textColor};opacity:0.8;">${translatedReasons}</div>
+    </div>
   `;
 
   overlay.style.cssText = `
@@ -8658,26 +11648,22 @@ function warnQRImage(img, { level, reasons = [], url }) {
     left: 0;
     right: 0;
     bottom: 0;
-    background: ${bgColor};
-    color: white;
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
-    text-align: center;
-    padding: 10px;
     z-index: 10000;
-    border: 3px solid ${borderColor};
-    border-radius: 4px;
+    border: 2px solid ${borderColor};
+    border-radius: 8px;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    overflow: hidden;
   `;
 
   // Translate reasons for tooltip
   const translatedReasonsForTooltip = Array.isArray(reasons)
     ? reasons.map(r => translateReason(r)).join('\n')
-    : (chrome.i18n.getMessage('suspiciousDomainDetected') || 'Verdacht domein');
-  overlay.title = `${chrome.i18n.getMessage('fullUrl') || 'Volledige URL'}: ${url}\n\n${chrome.i18n.getMessage('reasons') || 'Redenen'}:\n${translatedReasonsForTooltip}`;
+    : (chrome.i18n.getMessage('suspiciousDomainDetected') || 'Suspicious domain');
+  overlay.title = `${chrome.i18n.getMessage('fullUrl') || 'Full URL'}: ${url}\n\n${chrome.i18n.getMessage('reasons') || 'Reasons'}:\n${translatedReasonsForTooltip}`;
   wrapper.appendChild(overlay);
 }
 
@@ -8685,5 +11671,5 @@ function warnQRImage(img, { level, reasons = [], url }) {
 function reportPhishing(url) {
   // Placeholder: Send to background.js or external API
   chrome.runtime.sendMessage({ action: 'reportPhishing', url });
-  alert('Reported! Thank you for helping improve security.');
+  alert(chrome.i18n.getMessage('reportPhishingSuccess') || 'Reported! Thank you for helping improve security.');
 }

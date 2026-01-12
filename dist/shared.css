@@ -38,11 +38,14 @@
 
   /* Typography */
   --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  --font-size-xs: 11px;
+  --font-size-xs: 12px;
   --font-size-sm: 13px;
   --font-size-base: 14px;
   --font-size-lg: 16px;
   --font-size-xl: 18px;
+
+  /* Focus Ring */
+  --focus-ring: 0 0 0 3px rgba(26, 115, 232, 0.3);
 
   /* Container */
   --container-max-width: 600px;

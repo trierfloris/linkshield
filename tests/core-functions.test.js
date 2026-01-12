@@ -534,3 +534,364 @@ describe('Edge Cases', () => {
     expect(containsHomoglyphs('аpple.com')).toBe(true);
   });
 });
+
+// ============================================================================
+// LICENSE DEACTIVATION TESTS
+// ============================================================================
+
+/**
+ * License Deactivation - simulates background.js deactivateLicenseKey()
+ */
+async function deactivateLicenseKey(storage, fetchFn) {
+  try {
+    const data = await storage.sync.get(['licenseKey', 'licenseInstanceId']);
+
+    if (!data.licenseKey || !data.licenseInstanceId) {
+      return { success: false, error: 'Geen actieve licentie gevonden om te deactiveren.' };
+    }
+
+    const response = await fetchFn('https://api.lemonsqueezy.com/v1/licenses/deactivate', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        license_key: data.licenseKey,
+        instance_id: data.licenseInstanceId
+      })
+    });
+
+    const result = await response.json();
+
+    if (result.deactivated === true || (result.meta && result.meta.store_id)) {
+      await storage.sync.remove(['licenseKey', 'licenseValid', 'licenseEmail', 'licenseInstanceId', 'lastLicenseValidation']);
+      return { success: true };
+    }
+
+    if (result.error) {
+      return { success: false, error: result.error };
+    }
+
+    return { success: false, error: 'Deactivatie mislukt. Probeer het opnieuw.' };
+
+  } catch (error) {
+    return { success: false, error: 'Netwerkfout tijdens deactivatie.' };
+  }
+}
+
+describe('License Deactivation', () => {
+  describe('deactivateLicenseKey', () => {
+    test('returns error when no license key exists', async () => {
+      mockStorage.sync.data = {};
+      const mockFetch = jest.fn();
+
+      const result = await deactivateLicenseKey(mockStorage, mockFetch);
+
+      expect(result.success).toBe(false);
+      expect(result.error).toContain('Geen actieve licentie');
+      expect(mockFetch).not.toHaveBeenCalled();
+    });
+
+    test('returns error when no instance ID exists', async () => {
+      mockStorage.sync.data = { licenseKey: 'TEST-LICENSE-KEY' };
+      const mockFetch = jest.fn();
+
+      const result = await deactivateLicenseKey(mockStorage, mockFetch);
+
+      expect(result.success).toBe(false);
+      expect(result.error).toContain('Geen actieve licentie');
+      expect(mockFetch).not.toHaveBeenCalled();
+    });
+
+    test('successfully deactivates license', async () => {
+      mockStorage.sync.data = {
+        licenseKey: 'TEST-LICENSE-KEY',
+        licenseInstanceId: 'test-instance-123',
+        licenseValid: true,
+        licenseEmail: 'test@example.com'
+      };
+
+      const mockFetch = jest.fn().mockResolvedValue({
+        json: () => Promise.resolve({ deactivated: true })
+      });
+
+      const result = await deactivateLicenseKey(mockStorage, mockFetch);
+
+      expect(result.success).toBe(true);
+      expect(mockFetch).toHaveBeenCalledWith(
+        'https://api.lemonsqueezy.com/v1/licenses/deactivate',
+        expect.objectContaining({
+          method: 'POST',
+          body: expect.stringContaining('TEST-LICENSE-KEY')
+        })
+      );
+
+      // Verify storage was cleared
+      expect(mockStorage.sync.data.licenseKey).toBeUndefined();
+      expect(mockStorage.sync.data.licenseValid).toBeUndefined();
+    });
+
+    test('handles API error response', async () => {
+      mockStorage.sync.data = {
+        licenseKey: 'INVALID-KEY',
+        licenseInstanceId: 'test-instance-123'
+      };
+
+      const mockFetch = jest.fn().mockResolvedValue({
+        json: () => Promise.resolve({ error: 'License not found' })
+      });
+
+      const result = await deactivateLicenseKey(mockStorage, mockFetch);
+
+      expect(result.success).toBe(false);
+      expect(result.error).toBe('License not found');
+    });
+
+    test('handles network error', async () => {
+      mockStorage.sync.data = {
+        licenseKey: 'TEST-LICENSE-KEY',
+        licenseInstanceId: 'test-instance-123'
+      };
+
+      const mockFetch = jest.fn().mockRejectedValue(new Error('Network error'));
+
+      const result = await deactivateLicenseKey(mockStorage, mockFetch);
+
+      expect(result.success).toBe(false);
+      expect(result.error).toContain('Netwerkfout');
+    });
+
+    test('handles meta.store_id response format', async () => {
+      mockStorage.sync.data = {
+        licenseKey: 'TEST-LICENSE-KEY',
+        licenseInstanceId: 'test-instance-123'
+      };
+
+      const mockFetch = jest.fn().mockResolvedValue({
+        json: () => Promise.resolve({ meta: { store_id: 12345 } })
+      });
+
+      const result = await deactivateLicenseKey(mockStorage, mockFetch);
+
+      expect(result.success).toBe(true);
+    });
+
+    test('handles unknown response format', async () => {
+      mockStorage.sync.data = {
+        licenseKey: 'TEST-LICENSE-KEY',
+        licenseInstanceId: 'test-instance-123'
+      };
+
+      const mockFetch = jest.fn().mockResolvedValue({
+        json: () => Promise.resolve({ unknown: 'response' })
+      });
+
+      const result = await deactivateLicenseKey(mockStorage, mockFetch);
+
+      expect(result.success).toBe(false);
+      expect(result.error).toContain('Deactivatie mislukt');
+    });
+  });
+});
+
+// ============================================================================
+// LICENSE ACTIVATION TESTS
+// ============================================================================
+
+/**
+ * License Activation - simulates background.js activateLicense()
+ */
+async function activateLicense(licenseKey, storage, fetchFn) {
+  if (!licenseKey || licenseKey.trim() === '') {
+    return { success: false, error: 'License key is required' };
+  }
+
+  try {
+    const response = await fetchFn('https://api.lemonsqueezy.com/v1/licenses/activate', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        license_key: licenseKey.trim(),
+        instance_name: 'LinkShield Browser Extension'
+      })
+    });
+
+    const result = await response.json();
+
+    if (result.activated === true) {
+      await storage.sync.set({
+        licenseKey: licenseKey.trim(),
+        licenseValid: true,
+        licenseInstanceId: result.instance?.id,
+        lastSuccessfulValidation: Date.now()
+      });
+      return { success: true, data: result };
+    }
+
+    if (result.error) {
+      return { success: false, error: result.error };
+    }
+
+    return { success: false, error: 'Activation failed' };
+
+  } catch (error) {
+    return { success: false, error: 'Network error during activation' };
+  }
+}
+
+describe('License Activation', () => {
+  describe('activateLicense', () => {
+    test('returns error for empty license key', async () => {
+      const mockFetch = jest.fn();
+      const result = await activateLicense('', mockStorage, mockFetch);
+
+      expect(result.success).toBe(false);
+      expect(result.error).toContain('required');
+      expect(mockFetch).not.toHaveBeenCalled();
+    });
+
+    test('returns error for whitespace-only license key', async () => {
+      const mockFetch = jest.fn();
+      const result = await activateLicense('   ', mockStorage, mockFetch);
+
+      expect(result.success).toBe(false);
+      expect(mockFetch).not.toHaveBeenCalled();
+    });
+
+    test('successfully activates valid license', async () => {
+      const mockFetch = jest.fn().mockResolvedValue({
+        json: () => Promise.resolve({
+          activated: true,
+          instance: { id: 'instance-abc-123' }
+        })
+      });
+
+      mockStorage.sync.data = {};
+      const result = await activateLicense('VALID-LICENSE-KEY', mockStorage, mockFetch);
+
+      expect(result.success).toBe(true);
+      expect(mockStorage.sync.data.licenseKey).toBe('VALID-LICENSE-KEY');
+      expect(mockStorage.sync.data.licenseValid).toBe(true);
+      expect(mockStorage.sync.data.licenseInstanceId).toBe('instance-abc-123');
+    });
+
+    test('handles activation limit reached error', async () => {
+      const mockFetch = jest.fn().mockResolvedValue({
+        json: () => Promise.resolve({
+          error: 'Activation limit reached. Please deactivate another device first.'
+        })
+      });
+
+      const result = await activateLicense('USED-LICENSE-KEY', mockStorage, mockFetch);
+
+      expect(result.success).toBe(false);
+      expect(result.error).toContain('Activation limit');
+    });
+
+    test('handles license not found error', async () => {
+      const mockFetch = jest.fn().mockResolvedValue({
+        json: () => Promise.resolve({
+          error: 'license_key not found'
+        })
+      });
+
+      const result = await activateLicense('INVALID-KEY', mockStorage, mockFetch);
+
+      expect(result.success).toBe(false);
+      expect(result.error).toContain('not found');
+    });
+
+    test('handles network error', async () => {
+      const mockFetch = jest.fn().mockRejectedValue(new Error('Network error'));
+
+      const result = await activateLicense('VALID-KEY', mockStorage, mockFetch);
+
+      expect(result.success).toBe(false);
+      expect(result.error).toContain('Network error');
+    });
+
+    test('trims license key before sending', async () => {
+      const mockFetch = jest.fn().mockResolvedValue({
+        json: () => Promise.resolve({ activated: true, instance: { id: 'test' } })
+      });
+
+      await activateLicense('  LICENSE-KEY  ', mockStorage, mockFetch);
+
+      const callBody = JSON.parse(mockFetch.mock.calls[0][1].body);
+      expect(callBody.license_key).toBe('LICENSE-KEY');
+    });
+  });
+});
+
+// ============================================================================
+// ERROR MESSAGE MAPPING TESTS (from popup.js)
+// ============================================================================
+
+const errorKeyMap = {
+  'license key was not found': 'licenseErrorNotFound',
+  'license key not found': 'licenseErrorNotFound',
+  'license_key not found': 'licenseErrorNotFound',
+  'not found': 'licenseErrorNotFound',
+  'has been disabled': 'licenseErrorDisabled',
+  'disabled': 'licenseErrorDisabled',
+  'has expired': 'licenseErrorExpired',
+  'expired': 'licenseErrorExpired',
+  'activation limit': 'licenseErrorLimit',
+  'limit reached': 'licenseErrorLimit'
+};
+
+function getErrorMessageKey(error) {
+  const errorLower = (error || '').toLowerCase();
+  for (const [pattern, key] of Object.entries(errorKeyMap)) {
+    if (errorLower.includes(pattern)) {
+      return key;
+    }
+  }
+  return 'licenseErrorGeneric';
+}
+
+describe('Error Message Mapping', () => {
+  describe('getErrorMessageKey', () => {
+    test('maps "license key was not found" to licenseErrorNotFound', () => {
+      expect(getErrorMessageKey('license key was not found')).toBe('licenseErrorNotFound');
+    });
+
+    test('maps "license_key not found" to licenseErrorNotFound', () => {
+      expect(getErrorMessageKey('license_key not found')).toBe('licenseErrorNotFound');
+    });
+
+    test('maps generic "not found" to licenseErrorNotFound', () => {
+      expect(getErrorMessageKey('This key was not found')).toBe('licenseErrorNotFound');
+    });
+
+    test('maps "has been disabled" to licenseErrorDisabled', () => {
+      expect(getErrorMessageKey('This license has been disabled')).toBe('licenseErrorDisabled');
+    });
+
+    test('maps "expired" to licenseErrorExpired', () => {
+      expect(getErrorMessageKey('License has expired')).toBe('licenseErrorExpired');
+    });
+
+    test('maps "activation limit" to licenseErrorLimit', () => {
+      expect(getErrorMessageKey('Activation limit reached. Please deactivate another device first.')).toBe('licenseErrorLimit');
+    });
+
+    test('maps unknown errors to licenseErrorGeneric', () => {
+      expect(getErrorMessageKey('Some unknown error occurred')).toBe('licenseErrorGeneric');
+    });
+
+    test('handles null/undefined error', () => {
+      expect(getErrorMessageKey(null)).toBe('licenseErrorGeneric');
+      expect(getErrorMessageKey(undefined)).toBe('licenseErrorGeneric');
+    });
+
+    test('is case-insensitive', () => {
+      expect(getErrorMessageKey('LICENSE KEY WAS NOT FOUND')).toBe('licenseErrorNotFound');
+      expect(getErrorMessageKey('HAS EXPIRED')).toBe('licenseErrorExpired');
+    });
+  });
+});

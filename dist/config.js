@@ -6,9 +6,10 @@ window.CONFIG = {
 
     // Verdachte Top-Level Domeinen (TLD's)
     // Uitgebreid met nieuwe TLD's die in 2025-2026 veel voor phishing worden gebruikt
+    // NOTE: .dev, .app, .io VERWIJDERD - dit zijn legitieme Google TLDs gebruikt door developers
     SUSPICIOUS_TLDS: new RegExp('\\.(' + Array.from(new Set([
         // Originele verdachte TLD's
-        'beauty', 'bond', 'buzz', 'cc', 'cf', 'club', 'cn', 'dev', 'es', 'ga', 'gq',
+        'beauty', 'bond', 'buzz', 'cc', 'cf', 'club', 'cn', 'es', 'ga', 'gq',
         'hair', 'li', 'live', 'ml', 'mov', 'pro', 'rest', 'ru', 'sbs', 'shop', 'tk',
         'top', 'uno', 'win', 'xin', 'xyz', 'zip',
         // Nieuwe TLD's 2025-2026 (veel misbruikt voor phishing)
@@ -35,6 +36,14 @@ window.CONFIG = {
 
     // Debug Modus
     DEBUG_MODE: false, // Zet op true voor debugging, false voor productie
+
+    // AUDIT MODE (v8.1.0): Voor functionele tests
+    // Wanneer true: ELKE externe link wordt als HIGH RISK gemarkeerd
+    // Dit maakt het mogelijk om visuele bescherming (overlays, z-index) te testen
+    // op willekeurige sites zonder echte phishing-domeinen te gebruiken
+    // WAARSCHUWING: Alleen voor testen - zet op false voor productie!
+    TEST_MODE: false,
+    TEST_MODE_RISK_SCORE: 25, // Score die wordt toegekend in test mode
 
     // Toegestane URL Protocollen
     ALLOWED_PROTOCOLS: ['http:', 'https:', 'mailto:', 'tel:', 'ftp:'],
@@ -149,14 +158,105 @@ window.CONFIG = {
         'bubbleapps.io', 'typedream.app', 'codeanyapp.com', 'carrd.co',
         'surge.sh', 'replit.dev', 'repl.co',
         // Edge/CDN platforms
-        'edgecompute.app', 'durable.co', 'liveblocks.io'
+        'edgecompute.app', 'durable.co', 'liveblocks.io',
+        // AI/ML hosting platforms (veel misbruikt voor AI-gegenereerde phishing in 2026)
+        'huggingface.co', 'hf.space', 'spaces.huggingface.co', 'gradio.app',
+        'streamlit.app', 'replicate.com'
     ],
 
-    // Verkorte URL Domeinen
+    // Verkorte URL Domeinen (algemene shorteners - mogelijk verdacht)
     SHORTENED_URL_DOMAINS: [
-        "bit.ly", "tinyurl.com", "goo.gl", "t.co", "ow.ly", "is.gd", "buff.ly", "su.pr", "tiny.cc", "x.co", "rebrand.ly", "mcaf.ee", "po.st", "adf.ly", "cutt.ly", "qrco.de", "yourls.org", "shrtco.de", "chilp.it", "clck.ru", "rb.gy", "shorturl.at", "lnkd.in", "shorte.st", "cli.re", "surl.li", "tny.im", "zi.ma", "t1p.de", "urlz.fr", "did.li", "v.ht", "short.cm", "bit.do", "t.ly", "4gp.me", "linktr.ee", "tiny.ie", "1url.com", "hyperurl.co", "lnk.to", "snip.ly", "flip.to", "adcrun.ch", "short.to", "t.co.uk", "kutt.it", "flic.kr", "qr.net", "trk.li", "smll.co", "xurl.es", "xup.pl", "b.link", "x.gd", "n9.cl", "zi.pe", "qr.ae", "0rz.tw", "qqc.co", "h6y.eu", "fw.to", "lnk2.me", "shurl.net", "mrk.to", "clk.im", "u.to", "ezurl.cc", "fur.ly", "v.gd", "2ty.cc", "sh.ky", "s.coop", "cutt.us", "bitly.com", "q.gs", "i.cut", "s.id", "linklyhq.com", "slkt.io", "pp.gg", "short.url", "zpr.io", "me.qr", "short.io", "dub.co", "cl.ly", "bl.ink", "go.ly", "soo.gd", "jmp.sh", "u.nu", "t2m.io", "short.link", "tiny.one", "shr.link", "linkly.me", "cut.link", "shorty.ai", "link.ai", "tiny.ai", "cut.ai"
+        "bit.ly", "tinyurl.com", "goo.gl", "ow.ly", "is.gd", "buff.ly", "su.pr", "tiny.cc", "x.co", "rebrand.ly", "mcaf.ee", "po.st", "adf.ly", "cutt.ly", "qrco.de", "yourls.org", "shrtco.de", "chilp.it", "clck.ru", "rb.gy", "shorturl.at", "shorte.st", "cli.re", "surl.li", "tny.im", "zi.ma", "t1p.de", "urlz.fr", "did.li", "v.ht", "short.cm", "bit.do", "t.ly", "4gp.me", "linktr.ee", "tiny.ie", "1url.com", "hyperurl.co", "lnk.to", "snip.ly", "flip.to", "adcrun.ch", "short.to", "t.co.uk", "kutt.it", "flic.kr", "qr.net", "trk.li", "smll.co", "xurl.es", "xup.pl", "b.link", "x.gd", "n9.cl", "zi.pe", "qr.ae", "0rz.tw", "qqc.co", "h6y.eu", "fw.to", "lnk2.me", "shurl.net", "mrk.to", "clk.im", "u.to", "ezurl.cc", "fur.ly", "v.gd", "2ty.cc", "sh.ky", "s.coop", "cutt.us", "bitly.com", "q.gs", "i.cut", "s.id", "linklyhq.com", "slkt.io", "pp.gg", "short.url", "zpr.io", "me.qr", "short.io", "dub.co", "cl.ly", "bl.ink", "go.ly", "soo.gd", "jmp.sh", "u.nu", "t2m.io", "short.link", "tiny.one", "shr.link", "linkly.me", "cut.link", "shorty.ai", "link.ai", "tiny.ai", "cut.ai"
     ],
 
+    // Officiële URL shorteners van bekende bedrijven - NIET verdacht markeren
+    // Dit zijn shorteners die eigendom zijn van grote tech-bedrijven en veilig worden beheerd
+    OFFICIAL_SHORTENERS: [
+        "t.co",       // Twitter/X - officiële shortener
+        "youtu.be",   // YouTube/Google - officiële shortener
+        "fb.me",      // Facebook/Meta - officiële shortener
+        "g.co",       // Google - officiële shortener
+        "goo.gl",     // Google - legacy shortener (nog in gebruik)
+        "lnkd.in",    // LinkedIn - officiële shortener
+        "amzn.to",    // Amazon - officiële shortener
+        "amzn.eu",    // Amazon EU - officiële shortener
+        "msft.it",    // Microsoft - officiële shortener
+        "aka.ms",     // Microsoft Azure - officiële shortener
+        "apple.co",   // Apple - officiële shortener
+        "spoti.fi",   // Spotify - officiële shortener
+        "pin.it",     // Pinterest - officiële shortener
+        "redd.it",    // Reddit - officiële shortener
+        "vimeo.com",  // Vimeo - officiële links
+        "twitch.tv"   // Twitch - officiële links
+    ],
+
+    // Vertrouwde CDN domeinen - legitieme content delivery networks
+    // Deze domeinen worden gebruikt door bedrijven voor hosting van assets
+    // en moeten niet automatisch als verdacht worden gemarkeerd
+    TRUSTED_CDN_DOMAINS: [
+        // AWS CDN en hosting
+        "cloudfront.net",        // AWS CloudFront CDN
+        "amazonaws.com",         // AWS S3, API Gateway, etc.
+        "awsstatic.com",         // AWS static assets
+        // Microsoft Azure CDN en hosting
+        "azureedge.net",         // Azure CDN
+        "azure.com",             // Azure services
+        "msecnd.net",            // Microsoft CDN
+        "aspnetcdn.com",         // ASP.NET CDN
+        // Google Cloud CDN
+        "googleusercontent.com", // Google user content
+        "gstatic.com",           // Google static content
+        "googleapis.com",        // Google APIs
+        "ggpht.com",             // Google Photos
+        // Cloudflare
+        "cloudflare.com",        // Cloudflare services
+        "cloudflareinsights.com",// Cloudflare analytics
+        // Andere grote CDNs
+        "akamaized.net",         // Akamai CDN
+        "akamaihd.net",          // Akamai HD
+        "fastly.net",            // Fastly CDN
+        "edgecastcdn.net",       // Verizon/Edgecast CDN
+        "stackpathcdn.com",      // StackPath CDN
+        "jsdelivr.net",          // jsDelivr open source CDN
+        "unpkg.com",             // npm CDN
+        "cdnjs.cloudflare.com",  // Cloudflare CDNJS
+        // Social media CDNs
+        "fbcdn.net",             // Facebook CDN
+        "twimg.com",             // Twitter images
+        "pinimg.com",            // Pinterest images
+        "ytimg.com",             // YouTube thumbnails
+        "licdn.com"              // LinkedIn CDN
+    ],
+
+    // Vertrouwde API domeinen - legitieme API endpoints
+    // OAuth, authenticatie en API services van bekende providers
+    TRUSTED_API_DOMAINS: [
+        // OAuth providers
+        "accounts.google.com",
+        "oauth.google.com",
+        "login.microsoftonline.com",
+        "login.live.com",
+        "appleid.apple.com",
+        "api.twitter.com",
+        "api.x.com",
+        "graph.facebook.com",
+        "api.linkedin.com",
+        "api.github.com",
+        "oauth.reddit.com",
+        // Payment APIs
+        "api.stripe.com",
+        "api.paypal.com",
+        "checkout.stripe.com",
+        // Authentication services
+        "auth0.com",
+        "okta.com",
+        "login.okta.com",
+        // Andere APIs
+        "api.spotify.com",
+        "api.twitch.tv",
+        "api.dropbox.com",
+        "api.slack.com"
+    ],
 
 SUSPICIOUS_URL_PATTERNS: [
   // 1. Hoog risico: oplichtings-/phishing-termen
@@ -430,6 +530,11 @@ SUSPICIOUS_URL_PATTERNS: [
             controlClasses: /\b(close|minimize|maximize|window-control|btn-close|modal-close|title-?bar|window-?header|traffic-?light)\b/i
         },
 
+        // DEPRECATED: domainWhitelist is no longer used here.
+        // All trusted domains are now centrally managed in TrustedDomains.json
+        // The isTrustedDomain() function in content.js checks this list for ALL scans
+        // (ClickFix, BitB, risk analysis, etc.)
+
         // Score thresholds voor alert levels
         thresholds: {
             log: 6,       // Alleen loggen, geen waarschuwing
@@ -456,5 +561,54 @@ SUSPICIOUS_URL_PATTERNS: [
     // Domein Risicogewichten (verfijnd met recente data)
     domainRiskWeights: {
         'microsoft.com': 10, 'paypal.com': 8, 'outlook.com': 7, 'apple.com': 6, 'google.com': 5, 'linkedin.com': 4, 'chat.openai.com': 4, 'amazon.com': 3, 'facebook.com': 3, 'instagram.com': 3, 'opensea.io': 3, 'auth0.com': 3, 'teladoc.com': 3, 'zoom.us': 3, 'signal.org': 3, 'cloudflare.com': 3, 'nokia.com': 3, 'idquantique.com': 3, 'neuralink.com': 3, 'netflix.com': 2, 'whatsapp.com': 2, 'x.com': 2, 'decentraland.org': 2, 'ecosia.org': 2, 'smartcityexpo.com': 2, 'alibaba.com': 1, 'adobe.com': 1, 'dropbox.com': 1
+    },
+
+    // WebTransport/HTTP3 Monitoring - Detecteert misbruik van moderne protocols voor C2/exfiltration
+    WEBTRANSPORT_MONITORING: {
+        enabled: true,
+
+        // Verdachte endpoint patronen
+        suspiciousEndpoints: [
+            /^https?:\/\/\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/i,  // Direct IP address
+            /^https?:\/\/[^\/]+:\d{5,}/i,                        // High port numbers (10000+)
+            /^https?:\/\/[^\/]+\.onion/i,                        // Tor hidden services
+            /^https?:\/\/[a-z0-9]{32,}\.[^\/]+/i,                // Random subdomain (C2 indicator)
+            /^https?:\/\/[^\/]+\.(tk|ml|ga|cf|gq)\//i,           // Free TLDs often used for C2
+        ],
+
+        // Bekende legitieme WebTransport endpoints (whitelist)
+        trustedEndpoints: [
+            /^https:\/\/[^\/]*\.google\.com/i,
+            /^https:\/\/[^\/]*\.googleapis\.com/i,
+            /^https:\/\/[^\/]*\.cloudflare\.com/i,
+            /^https:\/\/[^\/]*\.fastly\.com/i,
+            /^https:\/\/[^\/]*\.akamai\.com/i,
+            /^https:\/\/[^\/]*\.microsoft\.com/i,
+            /^https:\/\/[^\/]*\.azure\.com/i,
+            /^https:\/\/[^\/]*\.amazonaws\.com/i,
+            /^https:\/\/[^\/]*\.facebook\.com/i,
+            /^https:\/\/[^\/]*\.meta\.com/i,
+        ],
+
+        // Gedragsdrempels
+        thresholds: {
+            maxConnectionsPerMinute: 10,      // Meer = verdacht
+            maxDatagramsPerSecond: 100,       // Bulk data = verdacht
+            maxStreamsPerConnection: 50,      // Veel streams = C2 indicator
+            connectionTrackingWindowMs: 300000, // 5 minuten tracking window
+        },
+
+        // Risk scores per indicator type
+        scores: {
+            directIP: 8,           // Direct IP connection
+            highPort: 4,           // Unusual port number
+            randomSubdomain: 6,    // Random C2-like subdomain
+            freeTLD: 5,            // Free TLD endpoint
+            nrdEndpoint: 10,       // Newly registered domain endpoint
+            highConnectionRate: 5, // Too many connections
+            highDatagramRate: 6,   // Bulk data transfer
+            obfuscatedUrl: 7,      // Base64/encoded URL components
+            invalidUrl: 5,         // Malformed URL
+        }
     }
 };

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homoglyph Cyrillic Test - Security Audit 4.1</title>
+    <style>
+        body {
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+
+        .test-item {
+            margin: 15px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background: #f9f9f9;
+        }
+
+        .fake-link {
+            color: red;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .real-link {
+            color: green;
+            font-size: 14px;
+        }
+
+        .explanation {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Homoglyph Attack Test - Cyrillic/Latin Character Substitution</h1>
+    <p>LinkShield must detect these lookalike domains that use Cyrillic characters.</p>
+
+    <div class="test-item">
+        <h3>Test 1: Apple.com</h3>
+        <a href="http://аpple.com/login" class="fake-link">аpple.com/login</a>
+        <div class="explanation">
+            ⚠️ Uses Cyrillic 'а' (U+0430) instead of Latin 'a'. Real: <span class="real-link">apple.com</span>
+        </div>
+    </div>
+
+    <div class="test-item">
+        <h3>Test 2: Google.com</h3>
+        <a href="http://gооgle.com/signin" class="fake-link">gооgle.com/signin</a>
+        <div class="explanation">
+            ⚠️ Uses Cyrillic 'о' (U+043E) instead of Latin 'o'. Real: <span class="real-link">google.com</span>
+        </div>
+    </div>
+
+    <div class="test-item">
+        <h3>Test 3: Microsoft.com</h3>
+        <a href="http://mіcrosoft.com/account" class="fake-link">mіcrosoft.com/account</a>
+        <div class="explanation">
+            ⚠️ Uses Cyrillic 'і' (U+0456) instead of Latin 'i'. Real: <span class="real-link">microsoft.com</span>
+        </div>
+    </div>
+
+    <div class="test-item">
+        <h3>Test 4: Amazon.com (Mixed)</h3>
+        <a href="http://аmаzоn.com/signin" class="fake-link">аmаzоn.com/signin</a>
+        <div class="explanation">
+            ⚠️ Uses mixed Cyrillic 'а' and 'о'. Real: <span class="real-link">amazon.com</span>
+        </div>
+    </div>
+
+    <div class="test-item">
+        <h3>Test 5: PayPal.com</h3>
+        <a href="http://pаypаl.com/login" class="fake-link">pаypаl.com/login</a>
+        <div class="explanation">
+            ⚠️ Uses Cyrillic 'а' (U+0430). Real: <span class="real-link">paypal.com</span>
+        </div>
+    </div>
+
+    <div class="test-item">
+        <h3>Test 6: Facebook.com</h3>
+        <a href="http://fаcebook.com/login" class="fake-link">fаcebook.com/login</a>
+        <div class="explanation">
+            ⚠️ Uses Cyrillic 'а' (U+0430). Real: <span class="real-link">facebook.com</span>
+        </div>
+    </div>
+
+    <div class="test-item">
+        <h3>Test 7: Twitter.com</h3>
+        <a href="http://twіtter.com/i/flow/login" class="fake-link">twіtter.com/i/flow/login</a>
+        <div class="explanation">
+            ⚠️ Uses Cyrillic 'і' (U+0456). Real: <span class="real-link">twitter.com</span>
+        </div>
+    </div>
+
+    <div class="test-item">
+        <h3>Test 8: Netflix.com</h3>
+        <a href="http://netflіx.com/login" class="fake-link">netflіx.com/login</a>
+        <div class="explanation">
+            ⚠️ Uses Cyrillic 'і' (U+0456). Real: <span class="real-link">netflix.com</span>
+        </div>
+    </div>
+
+    <script>
+        console.log('[HOMOGLYPH CYRILLIC] Loaded 8 test cases with Cyrillic character substitution');
+
+        // Log character codes for verification
+        const tests = [
+            { fake: 'аpple.com', real: 'apple.com' },
+            { fake: 'gооgle.com', real: 'google.com' },
+            { fake: 'mіcrosoft.com', real: 'microsoft.com' },
+            { fake: 'аmаzоn.com', real: 'amazon.com' }
+        ];
+
+        tests.forEach(test => {
+            console.log(`[HOMOGLYPH] Fake: ${test.fake} | Real: ${test.real}`);
+            console.log(`  Fake chars:`, Array.from(test.fake).map(c => c.charCodeAt(0)));
+            console.log(`  Real chars:`, Array.from(test.real).map(c => c.charCodeAt(0)));
+        });
+    </script>
+</body>
+
+</html>

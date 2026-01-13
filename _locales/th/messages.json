@@ -1457,5 +1457,95 @@
   },
   "maliciousDomainKeyword": {
     "message": "วิกฤต: โดเมนนี้มีคำหลักที่มักเกี่ยวข้องกับฟิชชิงหรือมัลแวร์ (ความเสี่ยงวิกฤต) ชื่อโดเมนเองบ่งบอกถึงเจตนาร้าย"
+  },
+  "enclosedAlphanumericsDetected": {
+    "message": "โดเมนนี้มีตัวอักษรและตัวเลขในวงกลม (ความเสี่ยงสูง) ตัวอักษรเช่น ①②③ หรือ ⓐⓑⓒ ถูกใช้สร้างโดเมนที่คล้ายกันเพื่อฟิชชิ่ง"
+  },
+  "superscriptSubscriptDetected": {
+    "message": "โดเมนนี้มีตัวอักษรยกหรือห้อย (ความเสี่ยงสูง) ตัวอักษรเช่น ¹²³ หรือ ₀₁₂ ถูกใช้สร้างโดเมนหลอกลวงที่คล้ายกัน"
+  },
+  "numberFormsDetected": {
+    "message": "โดเมนนี้มีตัวอักษรรูปแบบตัวเลข (ความเสี่ยงปานกลาง) ตัวอักษรเช่น ⅓, ⅔ หรือเลขโรมันสามารถใช้สร้างชื่อโดเมนที่สับสน"
+  },
+  "nonAsciiCharactersDetected": {
+    "message": "โดเมนนี้มีตัวอักษรที่ไม่ใช่ ASCII (ความเสี่ยงปานกลาง) ตัวอักษรพิเศษนอกตัวอักษรมาตรฐานอาจบ่งชี้ถึงความพยายามหลอกลวงผู้ใช้"
+  },
+  "failSafeFreshInstallTitle": {
+    "message": "เปิดใช้งานการป้องกัน"
+  },
+  "failSafeFreshInstallMessage": {
+    "message": "การป้องกัน LinkShield ทำงานอยู่ กรุณาตรวจสอบใบอนุญาตของคุณเมื่อเป็นไปได้"
+  },
+  "universalNonAsciiDetected": {
+    "message": "ตรวจพบอักขระที่ไม่เป็นมาตรฐานใน URL",
+    "description": ""
+  },
+  "emergencyModeTitle": {
+    "message": "โหมดการป้องกันฉุกเฉิน",
+    "description": ""
+  },
+  "emergencyModeMessage": {
+    "message": "LinkShield ทำงานในโหมดฉุกเฉิน การป้องกันยังคงใช้งานได้เต็มที่ กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ต",
+    "description": ""
+  },
+  "mathematicalAlphanumericsDetected": {
+    "message": "Mathematical symbol lookalikes detected",
+    "description": ""
+  },
+  "fullwidthCharactersDetected": {
+    "message": "Fullwidth characters detected in URL",
+    "description": ""
+  },
+  "greekLettersDetected": {
+    "message": "Greek letter substitution detected",
+    "description": ""
+  },
+  "cyrillicCharactersDetected": {
+    "message": "Cyrillic character substitution detected",
+    "description": ""
+  },
+  "cherokeeCharactersDetected": {
+    "message": "Cherokee character lookalikes detected",
+    "description": ""
+  },
+  "scriptSymbolsDetected": {
+    "message": "Script symbol lookalikes detected",
+    "description": ""
+  },
+  "asciiLookalikePaypal": {
+    "message": "Possible PayPal impersonation (1 vs l)",
+    "description": ""
+  },
+  "asciiLookalikeAmazon": {
+    "message": "Possible Amazon impersonation (rn vs m)",
+    "description": ""
+  },
+  "asciiLookalikeMicrosoft": {
+    "message": "Possible Microsoft impersonation (0 vs o)",
+    "description": ""
+  },
+  "asciiLookalikeGoogle": {
+    "message": "Possible Google impersonation (0 vs o)",
+    "description": ""
+  },
+  "asciiLookalikeTwitter": {
+    "message": "Possible Twitter impersonation (l vs i)",
+    "description": ""
+  },
+  "asciiLookalikeFacebook": {
+    "message": "Possible Facebook impersonation (0 vs o)",
+    "description": ""
+  },
+  "asciiLookalikeApple": {
+    "message": "Possible Apple impersonation (1 vs l)",
+    "description": ""
+  },
+  "asciiLookalikeWww": {
+    "message": "Suspicious WWW substitution (vvv vs w)",
+    "description": ""
+  },
+  "brandImpersonation": {
+    "message": "Possible brand impersonation attempt",
+    "description": ""
   }
 }

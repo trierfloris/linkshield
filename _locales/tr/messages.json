@@ -1457,5 +1457,95 @@
   },
   "maliciousDomainKeyword": {
     "message": "KRİTİK: Bu alan adı yaygın olarak kimlik avı veya kötü amaçlı yazılımla ilişkilendirilen anahtar kelimeler içeriyor (kritik risk). Alan adının kendisi kötü niyetli niyet gösteriyor."
+  },
+  "enclosedAlphanumericsDetected": {
+    "message": "Bu alan adı çevrelenmiş alfasayısal karakterler içeriyor (yüksek risk). ①②③ veya ⓐⓑⓒ gibi karakterler kimlik avı için benzer alan adları oluşturmak için kullanılır."
+  },
+  "superscriptSubscriptDetected": {
+    "message": "Bu alan adı üst simge veya alt simge karakterler içeriyor (yüksek risk). ¹²³ veya ₀₁₂ gibi karakterler aldatıcı benzer alan adları oluşturmak için kullanılır."
+  },
+  "numberFormsDetected": {
+    "message": "Bu alan adı sayı formu karakterleri içeriyor (orta risk). ⅓, ⅔ veya Roma rakamları gibi karakterler kafa karıştırıcı alan adları oluşturmak için kullanılabilir."
+  },
+  "nonAsciiCharactersDetected": {
+    "message": "Bu alan adı ASCII olmayan karakterler içeriyor (orta risk). Standart alfabe dışındaki özel karakterler kullanıcıları aldatma girişimini gösterebilir."
+  },
+  "failSafeFreshInstallTitle": {
+    "message": "Koruma etkinleştirildi"
+  },
+  "failSafeFreshInstallMessage": {
+    "message": "LinkShield koruması aktif. Lütfen mümkün olduğunda lisansınızı doğrulayın."
+  },
+  "universalNonAsciiDetected": {
+    "message": "URL'de standart dışı karakterler algılandı",
+    "description": ""
+  },
+  "emergencyModeTitle": {
+    "message": "Acil koruma modu",
+    "description": ""
+  },
+  "emergencyModeMessage": {
+    "message": "LinkShield acil modda çalışıyor. Koruma tamamen aktif kalıyor. Lütfen internet bağlantınızı kontrol edin.",
+    "description": ""
+  },
+  "mathematicalAlphanumericsDetected": {
+    "message": "Mathematical symbol lookalikes detected",
+    "description": ""
+  },
+  "fullwidthCharactersDetected": {
+    "message": "Fullwidth characters detected in URL",
+    "description": ""
+  },
+  "greekLettersDetected": {
+    "message": "Greek letter substitution detected",
+    "description": ""
+  },
+  "cyrillicCharactersDetected": {
+    "message": "Cyrillic character substitution detected",
+    "description": ""
+  },
+  "cherokeeCharactersDetected": {
+    "message": "Cherokee character lookalikes detected",
+    "description": ""
+  },
+  "scriptSymbolsDetected": {
+    "message": "Script symbol lookalikes detected",
+    "description": ""
+  },
+  "asciiLookalikePaypal": {
+    "message": "Possible PayPal impersonation (1 vs l)",
+    "description": ""
+  },
+  "asciiLookalikeAmazon": {
+    "message": "Possible Amazon impersonation (rn vs m)",
+    "description": ""
+  },
+  "asciiLookalikeMicrosoft": {
+    "message": "Possible Microsoft impersonation (0 vs o)",
+    "description": ""
+  },
+  "asciiLookalikeGoogle": {
+    "message": "Possible Google impersonation (0 vs o)",
+    "description": ""
+  },
+  "asciiLookalikeTwitter": {
+    "message": "Possible Twitter impersonation (l vs i)",
+    "description": ""
+  },
+  "asciiLookalikeFacebook": {
+    "message": "Possible Facebook impersonation (0 vs o)",
+    "description": ""
+  },
+  "asciiLookalikeApple": {
+    "message": "Possible Apple impersonation (1 vs l)",
+    "description": ""
+  },
+  "asciiLookalikeWww": {
+    "message": "Suspicious WWW substitution (vvv vs w)",
+    "description": ""
+  },
+  "brandImpersonation": {
+    "message": "Possible brand impersonation attempt",
+    "description": ""
   }
 }

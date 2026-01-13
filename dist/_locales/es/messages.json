@@ -1457,5 +1457,95 @@
   },
   "maliciousDomainKeyword": {
     "message": "CRÍTICO: Este dominio contiene palabras clave comúnmente asociadas con phishing o malware (riesgo crítico). El nombre de dominio en sí sugiere intención maliciosa."
+  },
+  "enclosedAlphanumericsDetected": {
+    "message": "Este dominio contiene caracteres alfanuméricos encerrados (alto riesgo). Caracteres como ①②③ o ⓐⓑⓒ se usan para crear dominios similares para phishing."
+  },
+  "superscriptSubscriptDetected": {
+    "message": "Este dominio contiene caracteres en superíndice o subíndice (alto riesgo). Caracteres como ¹²³ o ₀₁₂ se usan para crear dominios engañosos similares."
+  },
+  "numberFormsDetected": {
+    "message": "Este dominio contiene caracteres de forma numérica (riesgo medio). Caracteres como ⅓, ⅔ o números romanos pueden usarse para crear nombres de dominio confusos."
+  },
+  "nonAsciiCharactersDetected": {
+    "message": "Este dominio contiene caracteres no ASCII (riesgo medio). Los caracteres especiales fuera del alfabeto estándar pueden indicar un intento de engañar a los usuarios."
+  },
+  "failSafeFreshInstallTitle": {
+    "message": "Protección habilitada"
+  },
+  "failSafeFreshInstallMessage": {
+    "message": "La protección de LinkShield está activa. Por favor verifique su licencia cuando sea posible."
+  },
+  "universalNonAsciiDetected": {
+    "message": "Caracteres no estándar detectados en la URL",
+    "description": ""
+  },
+  "emergencyModeTitle": {
+    "message": "Modo de protección de emergencia",
+    "description": ""
+  },
+  "emergencyModeMessage": {
+    "message": "LinkShield está funcionando en modo de emergencia. La protección permanece completamente activa. Verifique su conexión a internet.",
+    "description": ""
+  },
+  "mathematicalAlphanumericsDetected": {
+    "message": "Símbolos matemáticos similares detectados",
+    "description": ""
+  },
+  "fullwidthCharactersDetected": {
+    "message": "Caracteres de ancho completo detectados",
+    "description": ""
+  },
+  "greekLettersDetected": {
+    "message": "Sustitución de letras griegas detectada",
+    "description": ""
+  },
+  "cyrillicCharactersDetected": {
+    "message": "Caracteres cirílicos detectados",
+    "description": ""
+  },
+  "cherokeeCharactersDetected": {
+    "message": "Caracteres Cherokee detectados",
+    "description": ""
+  },
+  "scriptSymbolsDetected": {
+    "message": "Símbolos de script detectados",
+    "description": ""
+  },
+  "asciiLookalikePaypal": {
+    "message": "Posible suplantación de PayPal (1 vs l)",
+    "description": ""
+  },
+  "asciiLookalikeAmazon": {
+    "message": "Posible suplantación de Amazon (rn vs m)",
+    "description": ""
+  },
+  "asciiLookalikeMicrosoft": {
+    "message": "Posible suplantación de Microsoft (0 vs o)",
+    "description": ""
+  },
+  "asciiLookalikeGoogle": {
+    "message": "Posible suplantación de Google (0 vs o)",
+    "description": ""
+  },
+  "asciiLookalikeTwitter": {
+    "message": "Posible suplantación de Twitter (l vs i)",
+    "description": ""
+  },
+  "asciiLookalikeFacebook": {
+    "message": "Posible suplantación de Facebook (0 vs o)",
+    "description": ""
+  },
+  "asciiLookalikeApple": {
+    "message": "Posible suplantación de Apple (1 vs l)",
+    "description": ""
+  },
+  "asciiLookalikeWww": {
+    "message": "Sustitución WWW sospechosa (vvv vs w)",
+    "description": ""
+  },
+  "brandImpersonation": {
+    "message": "Posible intento de suplantación de marca",
+    "description": ""
   }
 }

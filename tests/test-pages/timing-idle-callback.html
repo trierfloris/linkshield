@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>requestIdleCallback Timing Attack - Security Audit 9.4</title>
+    <style>
+        body {
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+
+        .warning {
+            background: #fff3cd;
+            border: 2px solid #ff9800;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .injected {
+            color: red;
+            font-weight: bold;
+            margin: 10px 0;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Stealth Timing Attack - requestIdleCallback</h1>
+    <p>Links will only inject during browser idle time to evade detection.</p>
+
+    <div class="warning">
+        <strong>Attack Vector:</strong> Using requestIdleCallback to inject links only when browser is idle.
+        This attempts to evade real-time MutationObserver detection.
+    </div>
+
+    <div id="status">Waiting for browser idle time...</div>
+    <div id="injection-zone"></div>
+
+    <script>
+        let injectionQueue = [];
+        let injectedCount = 0;
+        const totalLinks = 20;
+
+        // Prepare malicious links
+        for (let i = 0; i < totalLinks; i++) {
+            injectionQueue.push({
+                url: `http://idle-inject-phishing-${i}.malicious.com/stealth`,
+                text: `Idle-Injected Link ${i + 1}`
+            });
+        }
+
+        function injectLinksWhenIdle(deadline) {
+            console.log(`[IDLE CALLBACK] Deadline: ${deadline.timeRemaining().toFixed(2)}ms remaining`);
+
+            // Inject links while we have idle time
+            while (deadline.timeRemaining() > 0 && injectionQueue.length > 0) {
+                const linkData = injectionQueue.shift();
+                const link = document.createElement('a');
+                link.href = linkData.url;
+                link.className = 'injected';
+                link.textContent = `⚠️ ${linkData.text}: ${linkData.url}`;
+
+                document.getElementById('injection-zone').appendChild(link);
+                injectedCount++;
+
+                console.log(`[IDLE CALLBACK] Injected link ${injectedCount}/${totalLinks}`);
+            }
+
+            // Update status
+            document.getElementById('status').textContent =
+                `Injected ${injectedCount}/${totalLinks} links during idle time`;
+
+            // Schedule next batch if more links remain
+            if (injectionQueue.length > 0) {
+                requestIdleCallback(injectLinksWhenIdle);
+            } else {
+                document.getElementById('status').innerHTML =
+                    `✓ All ${totalLinks} links injected via requestIdleCallback<br>` +
+                    `LinkShield MutationObserver should detect these despite stealth timing.`;
+            }
+        }
+
+        // Start idle injection
+        console.log('[IDLE CALLBACK] Starting stealth injection attack...');
+        console.log('[IDLE CALLBACK] Links will only inject when browser is idle');
+        requestIdleCallback(injectLinksWhenIdle);
+
+        // Add some CPU load to make idle time scarce
+        function simulateActivity() {
+            const arr = [];
+            for (let i = 0; i < 1000; i++) {
+                arr.push(Math.random());
+            }
+            setTimeout(simulateActivity, 100);
+        }
+        simulateActivity();
+    </script>
+</body>
+
+</html>

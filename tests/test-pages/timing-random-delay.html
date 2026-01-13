@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timing Random Delay Test - Security Audit 9.2</title>
+    <style>
+        body {
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+
+        .status {
+            background: #f0f0f0;
+            padding: 15px;
+            margin: 20px 0;
+            border-left: 4px solid #007bff;
+        }
+
+        .link-container {
+            margin: 20px 0;
+        }
+
+        .delayed-link {
+            display: block;
+            margin: 8px 0;
+            padding: 8px;
+            background: #fff3cd;
+            border-left: 3px solid #ff9800;
+            color: red;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .delayed-link:hover {
+            background: #ffe082;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Timing Attack - Random Delay Injection</h1>
+    <p>50 malicious links will be injected with random delays between 1-10 seconds.</p>
+
+    <div class="status" id="status">
+        Preparing injection sequence...
+    </div>
+
+    <div class="link-container" id="link-container"></div>
+
+    <script>
+        const totalLinks = 50;
+        let injectedCount = 0;
+        const startTime = performance.now();
+
+        function getRandomDelay() {
+            // Random delay between 1000ms (1s) and 10000ms (10s)
+            return Math.floor(Math.random() * 9000) + 1000;
+        }
+
+        function injectLink(index) {
+            const container = document.getElementById('link-container');
+            const link = document.createElement('a');
+
+            const delay = performance.now() - startTime;
+            const url = `http://delayed-phishing-${index}.malicious.com/steal?delay=${Math.floor(delay)}`;
+
+            link.href = url;
+            link.className = 'delayed-link';
+            link.textContent = `Link ${index + 1} [Injected at ${(delay / 1000).toFixed(2)}s]: ${url}`;
+            link.target = '_blank';
+
+            container.appendChild(link);
+            injectedCount++;
+
+            console.log(`[TIMING RANDOM] Link ${index + 1}/${totalLinks} injected after ${(delay / 1000).toFixed(2)}s`);
+
+            updateStatus();
+        }
+
+        function updateStatus() {
+            const status = document.getElementById('status');
+            const elapsed = ((performance.now() - startTime) / 1000).toFixed(1);
+            status.textContent = `Injected ${injectedCount}/${totalLinks} links | Elapsed: ${elapsed}s`;
+
+            if (injectedCount === totalLinks) {
+                status.style.borderColor = '#28a745';
+                status.innerHTML = `✓ All ${totalLinks} links injected in ${elapsed}s<br>LinkShield MutationObserver should have detected all of them.`;
+            }
+        }
+
+        // Schedule 50 links with random delays
+        console.log('[TIMING RANDOM] Scheduling 50 links with random delays (1-10 seconds)...');
+
+        for (let i = 0; i < totalLinks; i++) {
+            const delay = getRandomDelay();
+            setTimeout(() => injectLink(i), delay);
+        }
+
+        updateStatus();
+    </script>
+</body>
+
+</html>

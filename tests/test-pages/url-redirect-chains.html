@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkShield Test - Redirect Chains</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background: #f5f5f5;
+        }
+
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .redirect-link {
+            display: block;
+            margin: 10px 0;
+            padding: 15px;
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            text-decoration: none;
+            color: #1976d2;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .redirect-link:hover {
+            background: #bbdefb;
+            transform: translateX(5px);
+        }
+
+        .dangerous {
+            background: #ffebee;
+            border-left-color: #f44336;
+            color: #c62828;
+        }
+
+        .dangerous:hover {
+            background: #ffcdd2;
+        }
+
+        .chain-info {
+            background: #f5f5f5;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-family: monospace;
+        }
+
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="test-section">
+        <h1>🔗 Redirect Chain Detection Test</h1>
+        <p><strong>Test ID:</strong> 5.3</p>
+        <p><strong>Test Type:</strong> Multi-hop redirect chain analysis</p>
+
+        <div class="warning">
+            <strong>⚠️ Security Test:</strong> These links simulate complex redirect chains used by attackers to evade
+            detection.
+        </div>
+    </div>
+
+    <!-- Test 1: Simple 5-Hop Chain -->
+    <div class="test-section">
+        <h3>Test 1: 5-Hop Redirect Chain</h3>
+        <p>Classic URL shortener chain leading to phishing site</p>
+
+        <a href="https://bit.ly/abc123" class="redirect-link" data-chain-type="5-hop">
+            🔗 https://bit.ly/abc123 (Click to follow 5-hop chain)
+        </a>
+
+        <div class="chain-info">
+            Simulated chain:<br>
+            1. bit.ly/abc123 → <br>
+            2. t.co/xyz789 → <br>
+            3. tinyurl.com/attack1 → <br>
+            4. goo.gl/phish2 → <br>
+            5. http://final-phishing-site.evil.com
+        </div>
+    </div>
+
+    <!-- Test 2: 10-Hop Mixed Protocol Chain -->
+    <div class="test-section">
+        <h3>Test 2: 10-Hop Mixed HTTP/HTTPS Chain</h3>
+        <p>Long chain with protocol switching</p>
+
+        <a href="https://shortener1.com/start" class="redirect-link dangerous" data-chain-type="10-hop-mixed">
+            🚨 https://shortener1.com/start (10-hop mixed protocol)
+        </a>
+
+        <div class="chain-info">
+            Simulated chain (HTTP/HTTPS mixing):<br>
+            1. https://shortener1.com/start → <br>
+            2. http://shortener2.net/a (downgrade) → <br>
+            3. https://shortener3.org/b → <br>
+            4. http://shortener4.io/c (downgrade) → <br>
+            5. https://cdn-cache.com/d → <br>
+            6. http://proxy-server.net/e (downgrade) → <br>
+            7. https://link-redirect.com/f → <br>
+            8. http://bounce.service.com/g → <br>
+            9. https://final-redirect.com/h → <br>
+            10. http://phishing-landing.evil.com (final destination)
+        </div>
+    </div>
+
+    <!-- Test 3: Complex Multi-Method Chain -->
+    <div class="test-section">
+        <h3>Test 3: Multi-Method Redirect Chain</h3>
+        <p>Combines 302, 301, meta-refresh, and JavaScript redirects</p>
+
+        <a href="https://complex-chain.com/entry" class="redirect-link dangerous" data-chain-type="multi-method">
+            🚨 https://complex-chain.com/entry (Mixed redirect methods)
+        </a>
+
+        <div class="chain-info">
+            Simulated redirect methods:<br>
+            1. HTTP 302 (Temporary) → <br>
+            2. HTTP 301 (Permanent) → <br>
+            3. Meta refresh tag → <br>
+            4. JavaScript window.location → <br>
+            5. http://credential-harvester.evil.com
+        </div>
+    </div>
+
+    <!-- Test 4: Circular Redirect Detection -->
+    <div class="test-section">
+        <h3>Test 4: Circular Redirect Chain</h3>
+        <p>Tests infinite loop detection (A → B → C → A)</p>
+
+        <a href="https://circular-redirect-a.com/start" class="redirect-link dangerous" data-chain-type="circular">
+            ⚠️ https://circular-redirect-a.com/start (Circular chain)
+        </a>
+
+        <div class="chain-info">
+            Circular pattern:<br>
+            A: circular-redirect-a.com → <br>
+            B: circular-redirect-b.com → <br>
+            C: circular-redirect-c.com → <br>
+            A: circular-redirect-a.com (LOOP DETECTED)
+        </div>
+    </div>
+
+    <!-- Test 5: Obfuscated Chain -->
+    <div class="test-section">
+        <h3>Test 5: Obfuscated Redirect Chain</h3>
+        <p>Uses URL encoding, base64, and other obfuscation</p>
+
+        <a href="https://redirect.com/?url=aHR0cDovL2V2aWwuY29t" class="redirect-link dangerous"
+            data-chain-type="obfuscated">
+            🚨 https://redirect.com/?url=aHR0cDovL2V2aWwuY29t (Base64 encoded)
+        </a>
+
+        <div class="chain-info">
+            Obfuscation chain:<br>
+            1. URL with base64 param → <br>
+            2. Double URL encoding → <br>
+            3. Hex encoding → <br>
+            4. Final decode → http://credential-phishing.evil.com
+        </div>
+    </div>
+
+    <!-- Test 6: Legitimate-Looking Chain -->
+    <div class="test-section">
+        <h3>Test 6: Legitimate Facade Chain</h3>
+        <p>Starts with trusted domain, ends at phishing</p>
+
+        <a href="https://google.com/url?q=https://evil.com" class="redirect-link dangerous" data-chain-type="facade">
+            🚨 https://google.com/url?q=... (Legitimate facade)
+        </a>
+
+        <div class="chain-info">
+            Deceptive chain:<br>
+            1. google.com/url?q= (looks legitimate) → <br>
+            2. linkedin.com/redirect?url= (social proof) → <br>
+            3. facebook.com/l.php?u= (trusted domain) → <br>
+            4. http://banking-phish.evil.com (actual destination)
+        </div>
+    </div>
+
+    <script>
+        // Prevent actual navigation for safety
+        document.querySelectorAll('a.redirect-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const chainType = link.getAttribute('data-chain-type');
+                console.log(`[TEST] Redirect chain clicked: ${chainType}`);
+                console.log(`[TEST] Starting URL: ${link.href}`);
+                alert(`Test link clicked: ${chainType}\nIn production, LinkShield should analyze this redirect chain.`);
+            });
+        });
+
+        console.log('[TEST] Redirect chain test page loaded');
+        console.log('[TEST] Total redirect test scenarios:', document.querySelectorAll('.redirect-link').length);
+    </script>
+</body>
+
+</html>

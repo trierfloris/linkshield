@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPA Navigation Simulation - Security Audit 1.3</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .header {
+            background: #ff0000;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-button {
+            background: white;
+            color: #ff0000;
+            border: none;
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .link-list {
+            margin-top: 20px;
+        }
+
+        .malicious-link {
+            display: block;
+            margin: 8px 0;
+            color: #d32f2f;
+            font-weight: bold;
+        }
+
+        .stats {
+            background: #f0f0f0;
+            padding: 15px;
+            margin: 20px 0;
+            border-left: 4px solid #2196f3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h1>SPA Navigation Test</h1>
+        <div class="nav">
+            <button class="nav-button" onclick="navigate('home')">Home</button>
+            <button class="nav-button" onclick="navigate('profile')">Profile</button>
+            <button class="nav-button" onclick="navigate('messages')">Messages</button>
+            <button class="nav-button" onclick="navigate('settings')">Settings</button>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="stats" id="stats">
+            Navigations: 0 | Current Page: home
+        </div>
+
+        <div id="page-content">
+            <h2>Home Page</h2>
+            <p>Use the navigation buttons above to trigger soft navigations.</p>
+        </div>
+
+        <div class="link-list" id="link-container"></div>
+    </div>
+
+    <script>
+        // Expose navigationCount on window for Puppeteer test access
+        window.navigationCount = 0;
+        let currentPage = 'home';
+
+        const pageContent = {
+            home: {
+                title: 'Home Page',
+                text: 'Welcome to the SPA navigation test',
+                links: [
+                    'http://home-phishing.malicious.com/fake',
+                    'http://spa-attack-home.evil.net/steal'
+                ]
+            },
+            profile: {
+                title: 'Profile Page',
+                text: 'View your profile',
+                links: [
+                    'http://profile-fake.phish.org/account',
+                    'http://verify-profile.scam.com/update'
+                ]
+            },
+            messages: {
+                title: 'Messages Page',
+                text: 'Your messages',
+                links: [
+                    'http://message-phishing.malicious.net/inbox',
+                    'http://secure-messages.fake.org/read'
+                ]
+            },
+            settings: {
+                title: 'Settings Page',
+                text: 'Account settings',
+                links: [
+                    'http://settings-verify.evil.com/password',
+                    'http://account-settings.phish.net/confirm'
+                ]
+            }
+        };
+
+        function navigate(page) {
+            window.navigationCount++;
+            currentPage = page;
+
+            // Update URL using pushState (SPA-style navigation)
+            history.pushState({ page }, page, `#/${page}`);
+
+            // Update content
+            const content = pageContent[page];
+            const pageContentDiv = document.getElementById('page-content');
+            const linkContainer = document.getElementById('link-container');
+
+            pageContentDiv.innerHTML = `
+                <h2>${content.title}</h2>
+                <p>${content.text}</p>
+            `;
+
+            // Inject new links (this should trigger LinkShield scan)
+            linkContainer.innerHTML = '<h3>Malicious Links on This Page:</h3>';
+            content.links.forEach((url, index) => {
+                const link = document.createElement('a');
+                link.href = url;
+                link.className = 'malicious-link';
+                link.textContent = `Link ${index + 1}: ${url}`;
+                linkContainer.appendChild(link);
+            });
+
+            // Update stats
+            document.getElementById('stats').textContent =
+                `Navigations: ${window.navigationCount} | Current Page: ${page}`;
+
+            console.log(`[SPA NAV] Navigation #${window.navigationCount} to ${page}`);
+            console.log(`[SPA NAV] Injected ${content.links.length} new links`);
+        }
+
+        // Handle browser back/forward buttons
+        window.addEventListener('popstate', (event) => {
+            if (event.state && event.state.page) {
+                navigate(event.state.page);
+            }
+        });
+
+        // Initialize with home page links
+        navigate('home');
+
+        console.log('[SPA NAV] SPA navigation test initialized');
+        console.log('[SPA NAV] Each navigation should trigger LinkShield re-scan');
+    </script>
+</body>
+
+</html>

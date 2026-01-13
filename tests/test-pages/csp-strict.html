@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline';">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSP Strict Test - Security Audit 3.1</title>
+    <style>
+        body {
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+
+        .warning {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Content Security Policy - Strict Mode Test</h1>
+    <p class="warning">CSP Header: default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'</p>
+    <p>LinkShield content.js must still function despite restrictive CSP.</p>
+
+    <h2>Test Links:</h2>
+    <ul>
+        <li><a href="http://phishing-csp-test.malicious.com/login">Malicious Link 1</a></li>
+        <li><a href="http://fake-bank-csp.evil.org/secure">Malicious Link 2</a></li>
+        <li><a href="http://account-verify.scam.net/confirm">Malicious Link 3</a></li>
+    </ul>
+
+    <script>
+        console.log('[CSP STRICT] Page loaded with CSP: default-src none');
+        console.log('[CSP STRICT] LinkShield must inject despite CSP restrictions');
+
+        // Try to detect if LinkShield injected successfully
+        setTimeout(() => {
+            const links = document.querySelectorAll('a');
+            console.log(`[CSP STRICT] Found ${links.length} links on page`);
+        }, 2000);
+    </script>
+</body>
+
+</html>

@@ -1457,5 +1457,95 @@
   },
   "maliciousDomainKeyword": {
     "message": "重大: このドメインには、フィッシングやマルウェアに一般的に関連するキーワードが含まれています（重大リスク）。ドメイン名自体が悪意のある意図を示唆しています。"
+  },
+  "enclosedAlphanumericsDetected": {
+    "message": "このドメインには囲み英数字が含まれています（高リスク）。①②③やⓐⓑⓒのような文字はフィッシング用の偽ドメイン作成に使用されます。"
+  },
+  "superscriptSubscriptDetected": {
+    "message": "このドメインには上付きまたは下付き文字が含まれています（高リスク）。¹²³や₀₁₂のような文字は欺瞞的な偽ドメイン作成に使用されます。"
+  },
+  "numberFormsDetected": {
+    "message": "このドメインには数字形式の文字が含まれています（中リスク）。⅓、⅔、ローマ数字などは紛らわしいドメイン名の作成に使用される可能性があります。"
+  },
+  "nonAsciiCharactersDetected": {
+    "message": "このドメインには非ASCII文字が含まれています（中リスク）。標準アルファベット外の特殊文字はユーザーを欺く試みを示す可能性があります。"
+  },
+  "failSafeFreshInstallTitle": {
+    "message": "保護が有効"
+  },
+  "failSafeFreshInstallMessage": {
+    "message": "LinkShield保護がアクティブです。可能な場合はライセンスを確認してください。"
+  },
+  "universalNonAsciiDetected": {
+    "message": "URLに非標準文字が検出されました",
+    "description": ""
+  },
+  "emergencyModeTitle": {
+    "message": "緊急保護モード",
+    "description": ""
+  },
+  "emergencyModeMessage": {
+    "message": "LinkShieldは緊急モードで動作しています。保護は完全に有効です。インターネット接続を確認してください。",
+    "description": ""
+  },
+  "mathematicalAlphanumericsDetected": {
+    "message": "Mathematical symbol lookalikes detected",
+    "description": ""
+  },
+  "fullwidthCharactersDetected": {
+    "message": "Fullwidth characters detected in URL",
+    "description": ""
+  },
+  "greekLettersDetected": {
+    "message": "Greek letter substitution detected",
+    "description": ""
+  },
+  "cyrillicCharactersDetected": {
+    "message": "Cyrillic character substitution detected",
+    "description": ""
+  },
+  "cherokeeCharactersDetected": {
+    "message": "Cherokee character lookalikes detected",
+    "description": ""
+  },
+  "scriptSymbolsDetected": {
+    "message": "Script symbol lookalikes detected",
+    "description": ""
+  },
+  "asciiLookalikePaypal": {
+    "message": "Possible PayPal impersonation (1 vs l)",
+    "description": ""
+  },
+  "asciiLookalikeAmazon": {
+    "message": "Possible Amazon impersonation (rn vs m)",
+    "description": ""
+  },
+  "asciiLookalikeMicrosoft": {
+    "message": "Possible Microsoft impersonation (0 vs o)",
+    "description": ""
+  },
+  "asciiLookalikeGoogle": {
+    "message": "Possible Google impersonation (0 vs o)",
+    "description": ""
+  },
+  "asciiLookalikeTwitter": {
+    "message": "Possible Twitter impersonation (l vs i)",
+    "description": ""
+  },
+  "asciiLookalikeFacebook": {
+    "message": "Possible Facebook impersonation (0 vs o)",
+    "description": ""
+  },
+  "asciiLookalikeApple": {
+    "message": "Possible Apple impersonation (1 vs l)",
+    "description": ""
+  },
+  "asciiLookalikeWww": {
+    "message": "Suspicious WWW substitution (vvv vs w)",
+    "description": ""
+  },
+  "brandImpersonation": {
+    "message": "Possible brand impersonation attempt",
+    "description": ""
   }
 }

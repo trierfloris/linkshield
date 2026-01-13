@@ -15,6 +15,17 @@ const API_TIMEOUT_MS = 5000; // 5 seconden timeout voor API calls (verlaagd van 
 async function initializeProtectionImmediately() {
     const startTime = Date.now();
     try {
+        // SECURITY FIX v8.7.0: Check Emergency Mode status FIRST
+        // Als Emergency Mode actief is, bescherming ALTIJD inschakelen
+        if (EMERGENCY_MODE_ENABLED) {
+            const emergencyStatus = await getEmergencyModeStatus();
+            if (emergencyStatus.isEmergencyMode) {
+                console.warn('[INIT-FAST] Emergency Mode active - enabling protection unconditionally');
+                await manageDNRules();
+                return { initialized: true, emergencyMode: true, timeMs: Date.now() - startTime };
+            }
+        }
+
         // Read cached status - this is fast (local storage)
         const data = await chrome.storage.sync.get([
             'licenseValid',
@@ -169,6 +180,106 @@ const LICENSE_GRACE_PERIOD_MS = LICENSE_GRACE_PERIOD_DAYS * MS_PER_DAY;
 // Dit voorkomt dat een aanvaller via DDoS op de licentieserver alle gebruikers kan "ontwapenen"
 const FAIL_SAFE_MODE = true;
 
+// ==== SECURITY FIX v8.7.0: Emergency Mode - Safe-by-Default ====
+// Als de licentieserver niet reageert, gaat de extensie in Emergency Mode
+// Bescherming blijft ALTIJD actief, ongeacht serverstatus
+// Gebruikt lastKnownValid timestamp in chrome.storage.local voor offline validatie
+const EMERGENCY_MODE_ENABLED = true;
+const EMERGENCY_MODE_MAX_OFFLINE_DAYS = 30; // Max dagen offline voordat UI waarschuwing toont
+
+/**
+ * SECURITY FIX v8.7.0: Slaat lastKnownValid timestamp op
+ * Wordt gebruikt voor Emergency Mode offline validatie
+ */
+async function setLastKnownValid() {
+    try {
+        const now = Date.now();
+        await chrome.storage.local.set({
+            lastKnownValid: now,
+            emergencyModeActive: false
+        });
+        if (globalThresholds.DEBUG_MODE) {
+            console.log('[EmergencyMode] lastKnownValid updated:', new Date(now).toISOString());
+        }
+    } catch (error) {
+        console.error('[EmergencyMode] Failed to set lastKnownValid:', error);
+    }
+}
+
+/**
+ * SECURITY FIX v8.7.0: Haalt lastKnownValid timestamp op
+ * @returns {Promise<{lastKnownValid: number, daysSinceValid: number, isEmergencyMode: boolean}>}
+ */
+async function getEmergencyModeStatus() {
+    try {
+        const data = await chrome.storage.local.get(['lastKnownValid', 'emergencyModeActive']);
+        const now = Date.now();
+
+        if (!data.lastKnownValid) {
+            // Geen lastKnownValid - eerste gebruik, stel nu in
+            await setLastKnownValid();
+            return { lastKnownValid: now, daysSinceValid: 0, isEmergencyMode: false };
+        }
+
+        const daysSinceValid = Math.floor((now - data.lastKnownValid) / MS_PER_DAY);
+        const isEmergencyMode = data.emergencyModeActive === true;
+
+        return { lastKnownValid: data.lastKnownValid, daysSinceValid, isEmergencyMode };
+    } catch (error) {
+        console.error('[EmergencyMode] Failed to get status:', error);
+        // Bij error, neem aan dat we in emergency mode moeten blijven
+        return { lastKnownValid: Date.now(), daysSinceValid: 0, isEmergencyMode: true };
+    }
+}
+
+/**
+ * SECURITY FIX v8.7.0: Activeert Emergency Mode
+ * Bescherming blijft actief, maar gebruiker wordt geïnformeerd
+ */
+async function activateEmergencyMode(reason) {
+    try {
+        await chrome.storage.local.set({ emergencyModeActive: true, emergencyModeReason: reason });
+
+        // Toon notificatie aan gebruiker
+        chrome.notifications.create('emergency_mode_' + Date.now(), {
+            type: 'basic',
+            iconUrl: 'icons/icon128.png',
+            title: chrome.i18n.getMessage('emergencyModeTitle') || 'Emergency Protection Mode',
+            message: chrome.i18n.getMessage('emergencyModeMessage') ||
+                'LinkShield is running in Emergency Mode. Protection remains fully active. Please check your internet connection.',
+            priority: 1
+        });
+
+        // Zet badge om aan te geven dat we in emergency mode zijn
+        await chrome.action.setBadgeText({ text: 'E' });
+        await chrome.action.setBadgeBackgroundColor({ color: '#ff9800' }); // Orange
+
+        console.warn('[EmergencyMode] ACTIVATED - Reason:', reason);
+    } catch (error) {
+        console.error('[EmergencyMode] Failed to activate:', error);
+    }
+}
+
+/**
+ * SECURITY FIX v8.7.0: Deactiveert Emergency Mode na succesvolle validatie
+ */
+async function deactivateEmergencyMode() {
+    try {
+        const data = await chrome.storage.local.get(['emergencyModeActive']);
+        if (data.emergencyModeActive) {
+            await chrome.storage.local.set({ emergencyModeActive: false, emergencyModeReason: null });
+            await setLastKnownValid();
+
+            // Verwijder emergency badge
+            await chrome.action.setBadgeText({ text: '' });
+
+            console.log('[EmergencyMode] DEACTIVATED - Normal operation resumed');
+        }
+    } catch (error) {
+        console.error('[EmergencyMode] Failed to deactivate:', error);
+    }
+}
+
 /**
  * Controleert of de licentie grace period is verlopen
  * VROEG GEDEFINIEERD: Deze functie wordt gebruikt in performStartupLicenseCheck
@@ -268,11 +379,17 @@ async function performStartupLicenseCheck() {
                 const result = await revalidateLicense();
 
                 // SECURITY FIX: Onderscheid netwerk errors van echte invalidatie
-                if (result.networkError && FAIL_SAFE_MODE) {
-                    // Netwerk error + FAIL_SAFE: behoud bescherming, toon waarschuwing
-                    console.warn("[INIT] Revalidatie gefaald door netwerk - FAIL_SAFE mode actief, bescherming behouden");
-                    await showFailSafeNotification('network_error');
-                    // SECURITY FIX v8.0.0: ALTIJD manageDNRules() aanroepen om rulesets te activeren!
+                if (result.networkError) {
+                    // SECURITY FIX v8.7.0: Emergency Mode - bescherming blijft ALTIJD actief
+                    console.warn("[INIT] Revalidatie gefaald door netwerk - EMERGENCY MODE actief");
+
+                    if (EMERGENCY_MODE_ENABLED) {
+                        await activateEmergencyMode('license_server_unreachable');
+                    } else if (FAIL_SAFE_MODE) {
+                        await showFailSafeNotification('network_error');
+                    }
+
+                    // CRITICAL: Bescherming ALTIJD activeren bij netwerk errors
                     await manageDNRules();
                     return;
                 }
@@ -335,15 +452,20 @@ async function performStartupLicenseCheck() {
                     // Er zijn bestaande regels - behoud ze in fail-safe mode
                     console.warn("[INIT] Trial/licentie niet toegestaan maar FAIL_SAFE: behoud bestaande regels");
                     await showFailSafeNotification('protection_preserved');
-                    // SECURITY FIX v8.0.0: ALTIJD manageDNRules() aanroepen om rulesets te activeren!
-                    // Dit zorgt ervoor dat statische rulesets (manifest) ook actief worden
-                    await manageDNRules();
-                    return;
+                } else {
+                    // SECURITY FIX v8.6.0: FAIL-SAFE ook voor fresh installs zonder bestaande regels
+                    // Dit voorkomt dat een DDoS op de licentieserver nieuwe gebruikers kan "ontwapenen"
+                    console.warn("[INIT] Fresh install zonder licentie maar FAIL_SAFE: activeer bescherming");
+                    await showFailSafeNotification('fresh_install_failsafe');
                 }
+                // SECURITY FIX v8.0.0: ALTIJD manageDNRules() aanroepen om rulesets te activeren!
+                // Dit zorgt ervoor dat statische rulesets (manifest) ook actief worden
+                await manageDNRules();
+                return;
             }
 
             // Trial verlopen zonder licentie OF grace period verlopen - forceer backgroundSecurity uit
-            // Dit pad wordt alleen bereikt als FAIL_SAFE_MODE uit staat OF er geen bestaande regels zijn
+            // Dit pad wordt ALLEEN bereikt als FAIL_SAFE_MODE UIT staat
             await chrome.storage.sync.set({ backgroundSecurity: false });
             await clearDynamicRules();
             await manageDNRules();
@@ -397,6 +519,11 @@ async function showFailSafeNotification(reason) {
                 title = chrome.i18n.getMessage('failSafePreservedTitle') || 'Protection Active';
                 message = chrome.i18n.getMessage('failSafePreservedMessage') ||
                     'Your protection rules are preserved. Please verify your license when possible.';
+                break;
+            case 'fresh_install_failsafe':
+                title = chrome.i18n.getMessage('failSafeFreshInstallTitle') || 'Protection Enabled';
+                message = chrome.i18n.getMessage('failSafeFreshInstallMessage') ||
+                    'LinkShield protection is active. Please verify your license when possible.';
                 break;
             default:
                 title = chrome.i18n.getMessage('failSafeDefaultTitle') || 'Safe Mode Active';
@@ -1434,6 +1561,13 @@ async function revalidateLicense() {
                     licenseValidatedAt: now,
                     lastSuccessfulValidation: now // Grace period reset
                 });
+
+                // SECURITY FIX v8.7.0: Update lastKnownValid en deactiveer emergency mode
+                if (EMERGENCY_MODE_ENABLED) {
+                    await setLastKnownValid();
+                    await deactivateEmergencyMode();
+                }
+
                 return { revalidated: true, valid: true };
             }
 
@@ -1459,11 +1593,12 @@ async function revalidateLicense() {
 
         } catch (err) {
             console.error('[License] Error revalidating with Lemon Squeezy:', err);
-            // SECURITY FIX: Bij netwerk error, update NIET lastSuccessfulValidation
-            // De grace period blijft doorlopen - na 7 dagen zonder succesvolle check
-            // wordt de licentie automatisch ongeldig
-            // Dit voorkomt dat iemand offline blijft om validatie te ontwijken
-            return { revalidated: false, reason: 'Network error', networkError: true };
+            // SECURITY FIX v8.7.0: Bij netwerk error, activeer Emergency Mode
+            // Bescherming blijft ALTIJD actief - Safe-by-Default
+            if (EMERGENCY_MODE_ENABLED) {
+                await activateEmergencyMode('network_timeout');
+            }
+            return { revalidated: false, reason: 'Network error', networkError: true, emergencyMode: true };
         }
 
     } catch (error) {

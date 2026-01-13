@@ -1457,5 +1457,95 @@
   },
   "maliciousDomainKeyword": {
     "message": "حرج: يحتوي هذا النطاق على كلمات مفتاحية مرتبطة عادة بالتصيد أو البرامج الضارة (خطر حرج). اسم النطاق نفسه يشير إلى نية خبيثة."
+  },
+  "enclosedAlphanumericsDetected": {
+    "message": "يحتوي هذا النطاق على أحرف أبجدية رقمية محاطة (خطر عالٍ). تُستخدم أحرف مثل ①②③ أو ⓐⓑⓒ لإنشاء نطاقات مشابهة للتصيد الاحتيالي."
+  },
+  "superscriptSubscriptDetected": {
+    "message": "يحتوي هذا النطاق على أحرف مرتفعة أو منخفضة (خطر عالٍ). تُستخدم أحرف مثل ¹²³ أو ₀₁₂ لإنشاء نطاقات مخادعة مشابهة."
+  },
+  "numberFormsDetected": {
+    "message": "يحتوي هذا النطاق على أحرف شكل الأرقام (خطر متوسط). يمكن استخدام أحرف مثل ⅓ أو ⅔ أو الأرقام الرومانية لإنشاء أسماء نطاقات مربكة."
+  },
+  "nonAsciiCharactersDetected": {
+    "message": "يحتوي هذا النطاق على أحرف غير ASCII (خطر متوسط). قد تشير الأحرف الخاصة خارج الأبجدية القياسية إلى محاولة لخداع المستخدمين."
+  },
+  "failSafeFreshInstallTitle": {
+    "message": "تم تفعيل الحماية"
+  },
+  "failSafeFreshInstallMessage": {
+    "message": "حماية LinkShield نشطة. يرجى التحقق من ترخيصك عندما يكون ذلك ممكنًا."
+  },
+  "universalNonAsciiDetected": {
+    "message": "تم اكتشاف أحرف غير قياسية في الرابط",
+    "description": ""
+  },
+  "emergencyModeTitle": {
+    "message": "وضع الحماية الطارئة",
+    "description": ""
+  },
+  "emergencyModeMessage": {
+    "message": "يعمل LinkShield في وضع الطوارئ. تظل الحماية نشطة بالكامل. يرجى التحقق من اتصالك بالإنترنت.",
+    "description": ""
+  },
+  "mathematicalAlphanumericsDetected": {
+    "message": "Mathematical symbol lookalikes detected",
+    "description": ""
+  },
+  "fullwidthCharactersDetected": {
+    "message": "Fullwidth characters detected in URL",
+    "description": ""
+  },
+  "greekLettersDetected": {
+    "message": "Greek letter substitution detected",
+    "description": ""
+  },
+  "cyrillicCharactersDetected": {
+    "message": "Cyrillic character substitution detected",
+    "description": ""
+  },
+  "cherokeeCharactersDetected": {
+    "message": "Cherokee character lookalikes detected",
+    "description": ""
+  },
+  "scriptSymbolsDetected": {
+    "message": "Script symbol lookalikes detected",
+    "description": ""
+  },
+  "asciiLookalikePaypal": {
+    "message": "Possible PayPal impersonation (1 vs l)",
+    "description": ""
+  },
+  "asciiLookalikeAmazon": {
+    "message": "Possible Amazon impersonation (rn vs m)",
+    "description": ""
+  },
+  "asciiLookalikeMicrosoft": {
+    "message": "Possible Microsoft impersonation (0 vs o)",
+    "description": ""
+  },
+  "asciiLookalikeGoogle": {
+    "message": "Possible Google impersonation (0 vs o)",
+    "description": ""
+  },
+  "asciiLookalikeTwitter": {
+    "message": "Possible Twitter impersonation (l vs i)",
+    "description": ""
+  },
+  "asciiLookalikeFacebook": {
+    "message": "Possible Facebook impersonation (0 vs o)",
+    "description": ""
+  },
+  "asciiLookalikeApple": {
+    "message": "Possible Apple impersonation (1 vs l)",
+    "description": ""
+  },
+  "asciiLookalikeWww": {
+    "message": "Suspicious WWW substitution (vvv vs w)",
+    "description": ""
+  },
+  "brandImpersonation": {
+    "message": "Possible brand impersonation attempt",
+    "description": ""
   }
 }

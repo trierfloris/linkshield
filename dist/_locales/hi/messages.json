@@ -1457,5 +1457,95 @@
   },
   "maliciousDomainKeyword": {
     "message": "गंभीर: इस डोमेन में आमतौर पर फ़िशिंग या मैलवेयर से जुड़े कीवर्ड हैं (गंभीर जोखिम)। डोमेन नाम स्वयं दुर्भावनापूर्ण इरादे का सुझाव देता है।"
+  },
+  "enclosedAlphanumericsDetected": {
+    "message": "इस डोमेन में घेरे में अक्षरांकीय वर्ण हैं (उच्च जोखिम)। ①②③ या ⓐⓑⓒ जैसे वर्णों का उपयोग फ़िशिंग के लिए समान डोमेन बनाने के लिए किया जाता है।"
+  },
+  "superscriptSubscriptDetected": {
+    "message": "इस डोमेन में सुपरस्क्रिप्ट या सबस्क्रिप्ट वर्ण हैं (उच्च जोखिम)। ¹²³ या ₀₁₂ जैसे वर्णों का उपयोग भ्रामक समान डोमेन बनाने के लिए किया जाता है।"
+  },
+  "numberFormsDetected": {
+    "message": "इस डोमेन में संख्या रूप वर्ण हैं (मध्यम जोखिम)। ⅓, ⅔ या रोमन अंक जैसे वर्णों का उपयोग भ्रामक डोमेन नाम बनाने के लिए किया जा सकता है।"
+  },
+  "nonAsciiCharactersDetected": {
+    "message": "इस डोमेन में गैर-ASCII वर्ण हैं (मध्यम जोखिम)। मानक वर्णमाला के बाहर के विशेष वर्ण उपयोगकर्ताओं को धोखा देने के प्रयास का संकेत दे सकते हैं।"
+  },
+  "failSafeFreshInstallTitle": {
+    "message": "सुरक्षा सक्षम"
+  },
+  "failSafeFreshInstallMessage": {
+    "message": "LinkShield सुरक्षा सक्रिय है। कृपया संभव होने पर अपना लाइसेंस सत्यापित करें।"
+  },
+  "universalNonAsciiDetected": {
+    "message": "URL में गैर-मानक वर्ण पाए गए",
+    "description": ""
+  },
+  "emergencyModeTitle": {
+    "message": "आपातकालीन सुरक्षा मोड",
+    "description": ""
+  },
+  "emergencyModeMessage": {
+    "message": "LinkShield आपातकालीन मोड में चल रहा है। सुरक्षा पूरी तरह सक्रिय है। कृपया अपना इंटरनेट कनेक्शन जांचें।",
+    "description": ""
+  },
+  "mathematicalAlphanumericsDetected": {
+    "message": "Mathematical symbol lookalikes detected",
+    "description": ""
+  },
+  "fullwidthCharactersDetected": {
+    "message": "Fullwidth characters detected in URL",
+    "description": ""
+  },
+  "greekLettersDetected": {
+    "message": "Greek letter substitution detected",
+    "description": ""
+  },
+  "cyrillicCharactersDetected": {
+    "message": "Cyrillic character substitution detected",
+    "description": ""
+  },
+  "cherokeeCharactersDetected": {
+    "message": "Cherokee character lookalikes detected",
+    "description": ""
+  },
+  "scriptSymbolsDetected": {
+    "message": "Script symbol lookalikes detected",
+    "description": ""
+  },
+  "asciiLookalikePaypal": {
+    "message": "Possible PayPal impersonation (1 vs l)",
+    "description": ""
+  },
+  "asciiLookalikeAmazon": {
+    "message": "Possible Amazon impersonation (rn vs m)",
+    "description": ""
+  },
+  "asciiLookalikeMicrosoft": {
+    "message": "Possible Microsoft impersonation (0 vs o)",
+    "description": ""
+  },
+  "asciiLookalikeGoogle": {
+    "message": "Possible Google impersonation (0 vs o)",
+    "description": ""
+  },
+  "asciiLookalikeTwitter": {
+    "message": "Possible Twitter impersonation (l vs i)",
+    "description": ""
+  },
+  "asciiLookalikeFacebook": {
+    "message": "Possible Facebook impersonation (0 vs o)",
+    "description": ""
+  },
+  "asciiLookalikeApple": {
+    "message": "Possible Apple impersonation (1 vs l)",
+    "description": ""
+  },
+  "asciiLookalikeWww": {
+    "message": "Suspicious WWW substitution (vvv vs w)",
+    "description": ""
+  },
+  "brandImpersonation": {
+    "message": "Possible brand impersonation attempt",
+    "description": ""
   }
 }

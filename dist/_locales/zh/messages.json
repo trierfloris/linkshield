@@ -1457,5 +1457,95 @@
   },
   "maliciousDomainKeyword": {
     "message": "严重：此域名包含通常与钓鱼或恶意软件相关的关键词（严重风险）。域名本身暗示了恶意意图。"
+  },
+  "enclosedAlphanumericsDetected": {
+    "message": "此域名包含带圈字母数字（高风险）。①②③或ⓐⓑⓒ等字符被用于创建钓鱼用的相似域名。"
+  },
+  "superscriptSubscriptDetected": {
+    "message": "此域名包含上标或下标字符（高风险）。¹²³或₀₁₂等字符被用于创建欺骗性的相似域名。"
+  },
+  "numberFormsDetected": {
+    "message": "此域名包含数字形式字符（中等风险）。⅓、⅔或罗马数字等字符可用于创建令人困惑的域名。"
+  },
+  "nonAsciiCharactersDetected": {
+    "message": "此域名包含非ASCII字符（中等风险）。标准字母表之外的特殊字符可能表示试图欺骗用户。"
+  },
+  "failSafeFreshInstallTitle": {
+    "message": "保护已启用"
+  },
+  "failSafeFreshInstallMessage": {
+    "message": "LinkShield保护已激活。请在可能时验证您的许可证。"
+  },
+  "universalNonAsciiDetected": {
+    "message": "URL中检测到非标准字符",
+    "description": ""
+  },
+  "emergencyModeTitle": {
+    "message": "紧急保护模式",
+    "description": ""
+  },
+  "emergencyModeMessage": {
+    "message": "LinkShield正在紧急模式下运行。保护功能完全激活。请检查您的网络连接。",
+    "description": ""
+  },
+  "mathematicalAlphanumericsDetected": {
+    "message": "Mathematical symbol lookalikes detected",
+    "description": ""
+  },
+  "fullwidthCharactersDetected": {
+    "message": "Fullwidth characters detected in URL",
+    "description": ""
+  },
+  "greekLettersDetected": {
+    "message": "Greek letter substitution detected",
+    "description": ""
+  },
+  "cyrillicCharactersDetected": {
+    "message": "Cyrillic character substitution detected",
+    "description": ""
+  },
+  "cherokeeCharactersDetected": {
+    "message": "Cherokee character lookalikes detected",
+    "description": ""
+  },
+  "scriptSymbolsDetected": {
+    "message": "Script symbol lookalikes detected",
+    "description": ""
+  },
+  "asciiLookalikePaypal": {
+    "message": "Possible PayPal impersonation (1 vs l)",
+    "description": ""
+  },
+  "asciiLookalikeAmazon": {
+    "message": "Possible Amazon impersonation (rn vs m)",
+    "description": ""
+  },
+  "asciiLookalikeMicrosoft": {
+    "message": "Possible Microsoft impersonation (0 vs o)",
+    "description": ""
+  },
+  "asciiLookalikeGoogle": {
+    "message": "Possible Google impersonation (0 vs o)",
+    "description": ""
+  },
+  "asciiLookalikeTwitter": {
+    "message": "Possible Twitter impersonation (l vs i)",
+    "description": ""
+  },
+  "asciiLookalikeFacebook": {
+    "message": "Possible Facebook impersonation (0 vs o)",
+    "description": ""
+  },
+  "asciiLookalikeApple": {
+    "message": "Possible Apple impersonation (1 vs l)",
+    "description": ""
+  },
+  "asciiLookalikeWww": {
+    "message": "Suspicious WWW substitution (vvv vs w)",
+    "description": ""
+  },
+  "brandImpersonation": {
+    "message": "Possible brand impersonation attempt",
+    "description": ""
   }
 }

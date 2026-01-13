@@ -1435,5 +1435,95 @@
   },
   "maliciousDomainKeyword": {
     "message": "KRITIEK: Dit domein bevat sleutelwoorden die vaak geassocieerd worden met phishing of malware (kritiek risico). De domeinnaam zelf suggereert kwaadaardige bedoelingen."
+  },
+  "enclosedAlphanumericsDetected": {
+    "message": "Dit domein bevat omsloten alfanumerieke tekens (hoog risico). Tekens zoals ①②③ of ⓐⓑⓒ worden gebruikt om lookalike-domeinen voor phishing te maken."
+  },
+  "superscriptSubscriptDetected": {
+    "message": "Dit domein bevat superscript of subscript tekens (hoog risico). Tekens zoals ¹²³ of ₀₁₂ worden gebruikt om misleidende lookalike-domeinen te maken."
+  },
+  "numberFormsDetected": {
+    "message": "Dit domein bevat getalvorm-tekens (gemiddeld risico). Tekens zoals ⅓, ⅔ of Romeinse cijfers kunnen worden gebruikt om verwarrende domeinnamen te maken."
+  },
+  "nonAsciiCharactersDetected": {
+    "message": "Dit domein bevat niet-ASCII-tekens (gemiddeld risico). Speciale tekens buiten het standaardalfabet kunnen duiden op een poging om gebruikers te misleiden."
+  },
+  "failSafeFreshInstallTitle": {
+    "message": "Bescherming ingeschakeld"
+  },
+  "failSafeFreshInstallMessage": {
+    "message": "LinkShield-bescherming is actief. Verifieer uw licentie wanneer mogelijk."
+  },
+  "universalNonAsciiDetected": {
+    "message": "Niet-standaard tekens gedetecteerd in URL",
+    "description": ""
+  },
+  "emergencyModeTitle": {
+    "message": "Noodmodus Bescherming",
+    "description": ""
+  },
+  "emergencyModeMessage": {
+    "message": "LinkShield draait in noodmodus. Bescherming blijft volledig actief. Controleer uw internetverbinding.",
+    "description": ""
+  },
+  "mathematicalAlphanumericsDetected": {
+    "message": "Wiskundige symbool-lookalikes gedetecteerd",
+    "description": ""
+  },
+  "fullwidthCharactersDetected": {
+    "message": "Fullwidth-tekens gedetecteerd in URL",
+    "description": ""
+  },
+  "greekLettersDetected": {
+    "message": "Griekse lettervervanging gedetecteerd",
+    "description": ""
+  },
+  "cyrillicCharactersDetected": {
+    "message": "Cyrillische tekens gedetecteerd",
+    "description": ""
+  },
+  "cherokeeCharactersDetected": {
+    "message": "Cherokee tekens gedetecteerd",
+    "description": ""
+  },
+  "scriptSymbolsDetected": {
+    "message": "Script-symbolen gedetecteerd",
+    "description": ""
+  },
+  "asciiLookalikePaypal": {
+    "message": "Mogelijke PayPal-imitatie (1 vs l)",
+    "description": ""
+  },
+  "asciiLookalikeAmazon": {
+    "message": "Mogelijke Amazon-imitatie (rn vs m)",
+    "description": ""
+  },
+  "asciiLookalikeMicrosoft": {
+    "message": "Mogelijke Microsoft-imitatie (0 vs o)",
+    "description": ""
+  },
+  "asciiLookalikeGoogle": {
+    "message": "Mogelijke Google-imitatie (0 vs o)",
+    "description": ""
+  },
+  "asciiLookalikeTwitter": {
+    "message": "Mogelijke Twitter-imitatie (l vs i)",
+    "description": ""
+  },
+  "asciiLookalikeFacebook": {
+    "message": "Mogelijke Facebook-imitatie (0 vs o)",
+    "description": ""
+  },
+  "asciiLookalikeApple": {
+    "message": "Mogelijke Apple-imitatie (1 vs l)",
+    "description": ""
+  },
+  "asciiLookalikeWww": {
+    "message": "Verdachte WWW-vervanging (vvv vs w)",
+    "description": ""
+  },
+  "brandImpersonation": {
+    "message": "Mogelijke merkimitatie-poging",
+    "description": ""
   }
 }

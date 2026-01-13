@@ -1457,5 +1457,95 @@
   },
   "maliciousDomainKeyword": {
     "message": "KRITIS: Domain ini mengandung kata kunci yang umumnya terkait dengan phishing atau malware (risiko kritis). Nama domain itu sendiri menunjukkan niat jahat."
+  },
+  "enclosedAlphanumericsDetected": {
+    "message": "Domain ini berisi karakter alfanumerik dalam lingkaran (risiko tinggi). Karakter seperti ①②③ atau ⓐⓑⓒ digunakan untuk membuat domain serupa untuk phishing."
+  },
+  "superscriptSubscriptDetected": {
+    "message": "Domain ini berisi karakter superskrip atau subskrip (risiko tinggi). Karakter seperti ¹²³ atau ₀₁₂ digunakan untuk membuat domain serupa yang menipu."
+  },
+  "numberFormsDetected": {
+    "message": "Domain ini berisi karakter bentuk angka (risiko sedang). Karakter seperti ⅓, ⅔, atau angka Romawi dapat digunakan untuk membuat nama domain yang membingungkan."
+  },
+  "nonAsciiCharactersDetected": {
+    "message": "Domain ini berisi karakter non-ASCII (risiko sedang). Karakter khusus di luar alfabet standar mungkin menunjukkan upaya untuk menipu pengguna."
+  },
+  "failSafeFreshInstallTitle": {
+    "message": "Perlindungan diaktifkan"
+  },
+  "failSafeFreshInstallMessage": {
+    "message": "Perlindungan LinkShield aktif. Mohon verifikasi lisensi Anda bila memungkinkan."
+  },
+  "universalNonAsciiDetected": {
+    "message": "Karakter non-standar terdeteksi di URL",
+    "description": ""
+  },
+  "emergencyModeTitle": {
+    "message": "Mode perlindungan darurat",
+    "description": ""
+  },
+  "emergencyModeMessage": {
+    "message": "LinkShield berjalan dalam mode darurat. Perlindungan tetap aktif sepenuhnya. Silakan periksa koneksi internet Anda.",
+    "description": ""
+  },
+  "mathematicalAlphanumericsDetected": {
+    "message": "Mathematical symbol lookalikes detected",
+    "description": ""
+  },
+  "fullwidthCharactersDetected": {
+    "message": "Fullwidth characters detected in URL",
+    "description": ""
+  },
+  "greekLettersDetected": {
+    "message": "Greek letter substitution detected",
+    "description": ""
+  },
+  "cyrillicCharactersDetected": {
+    "message": "Cyrillic character substitution detected",
+    "description": ""
+  },
+  "cherokeeCharactersDetected": {
+    "message": "Cherokee character lookalikes detected",
+    "description": ""
+  },
+  "scriptSymbolsDetected": {
+    "message": "Script symbol lookalikes detected",
+    "description": ""
+  },
+  "asciiLookalikePaypal": {
+    "message": "Possible PayPal impersonation (1 vs l)",
+    "description": ""
+  },
+  "asciiLookalikeAmazon": {
+    "message": "Possible Amazon impersonation (rn vs m)",
+    "description": ""
+  },
+  "asciiLookalikeMicrosoft": {
+    "message": "Possible Microsoft impersonation (0 vs o)",
+    "description": ""
+  },
+  "asciiLookalikeGoogle": {
+    "message": "Possible Google impersonation (0 vs o)",
+    "description": ""
+  },
+  "asciiLookalikeTwitter": {
+    "message": "Possible Twitter impersonation (l vs i)",
+    "description": ""
+  },
+  "asciiLookalikeFacebook": {
+    "message": "Possible Facebook impersonation (0 vs o)",
+    "description": ""
+  },
+  "asciiLookalikeApple": {
+    "message": "Possible Apple impersonation (1 vs l)",
+    "description": ""
+  },
+  "asciiLookalikeWww": {
+    "message": "Suspicious WWW substitution (vvv vs w)",
+    "description": ""
+  },
+  "brandImpersonation": {
+    "message": "Possible brand impersonation attempt",
+    "description": ""
   }
 }

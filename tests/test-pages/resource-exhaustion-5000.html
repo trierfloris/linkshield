@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resource Exhaustion Test - Security Audit 1.4</title>
+    <style>
+        body {
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+
+        .link-container {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+
+        .link-item {
+            margin: 2px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Resource Exhaustion Test - 5000+ Links</h1>
+    <p id="status">Generating 5000 links...</p>
+    <p id="performance-stats"></p>
+
+    <div class="link-container" id="link-container"></div>
+
+    <script>
+        const startTime = performance.now();
+        const container = document.getElementById('link-container');
+
+        const suspiciousTLDs = ['.tk', '.ml', '.ga', '.cf', '.gq', '.cc', '.xyz', '.top', '.club'];
+        const phishingKeywords = ['login', 'verify', 'secure', 'account', 'update', 'confirm', 'banking'];
+
+        // Generate 5000+ links
+        const totalLinks = 5000;
+        let html = '';
+
+        for (let i = 0; i < totalLinks; i++) {
+            const tld = suspiciousTLDs[i % suspiciousTLDs.length];
+            const keyword = phishingKeywords[i % phishingKeywords.length];
+            const url = `http://${keyword}-site-${i}${tld}/path?id=${i}`;
+
+            html += `<div class="link-item"><a href="${url}" id="link-${i}">Link ${i + 1}: ${url}</a></div>`;
+        }
+
+        container.innerHTML = html;
+
+        const endTime = performance.now();
+        const generationTime = (endTime - startTime).toFixed(2);
+
+        document.getElementById('status').textContent = `✓ Generated ${totalLinks} links in ${generationTime}ms`;
+
+        // Monitor memory if available
+        if (performance.memory) {
+            const memoryMB = (performance.memory.usedJSHeapSize / 1024 / 1024).toFixed(2);
+            document.getElementById('performance-stats').textContent =
+                `Memory Usage: ${memoryMB} MB | Generation Time: ${generationTime}ms`;
+        }
+
+        console.log(`[RESOURCE EXHAUSTION] Generated ${totalLinks} links`);
+        console.log(`[RESOURCE EXHAUSTION] Generation time: ${generationTime}ms`);
+        if (performance.memory) {
+            console.log(`[RESOURCE EXHAUSTION] Memory: ${(performance.memory.usedJSHeapSize / 1024 / 1024).toFixed(2)} MB`);
+        }
+    </script>
+</body>
+
+</html>

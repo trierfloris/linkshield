@@ -1457,5 +1457,95 @@
   },
   "maliciousDomainKeyword": {
     "message": "КРИТИЧНО: Этот домен содержит ключевые слова, обычно связанные с фишингом или вредоносным ПО (критический риск). Само доменное имя указывает на злонамеренные намерения."
+  },
+  "enclosedAlphanumericsDetected": {
+    "message": "Этот домен содержит заключённые в круг буквенно-цифровые символы (высокий риск). Символы вроде ①②③ или ⓐⓑⓒ используются для создания похожих доменов для фишинга."
+  },
+  "superscriptSubscriptDetected": {
+    "message": "Этот домен содержит надстрочные или подстрочные символы (высокий риск). Символы вроде ¹²³ или ₀₁₂ используются для создания обманчиво похожих доменов."
+  },
+  "numberFormsDetected": {
+    "message": "Этот домен содержит символы числовых форм (средний риск). Символы вроде ⅓, ⅔ или римские цифры могут использоваться для создания запутанных доменных имён."
+  },
+  "nonAsciiCharactersDetected": {
+    "message": "Этот домен содержит не-ASCII символы (средний риск). Специальные символы за пределами стандартного алфавита могут указывать на попытку обмана пользователей."
+  },
+  "failSafeFreshInstallTitle": {
+    "message": "Защита включена"
+  },
+  "failSafeFreshInstallMessage": {
+    "message": "Защита LinkShield активна. Пожалуйста, подтвердите лицензию при возможности."
+  },
+  "universalNonAsciiDetected": {
+    "message": "Обнаружены нестандартные символы в URL",
+    "description": ""
+  },
+  "emergencyModeTitle": {
+    "message": "Аварийный режим защиты",
+    "description": ""
+  },
+  "emergencyModeMessage": {
+    "message": "LinkShield работает в аварийном режиме. Защита полностью активна. Пожалуйста, проверьте подключение к интернету.",
+    "description": ""
+  },
+  "mathematicalAlphanumericsDetected": {
+    "message": "Mathematical symbol lookalikes detected",
+    "description": ""
+  },
+  "fullwidthCharactersDetected": {
+    "message": "Fullwidth characters detected in URL",
+    "description": ""
+  },
+  "greekLettersDetected": {
+    "message": "Greek letter substitution detected",
+    "description": ""
+  },
+  "cyrillicCharactersDetected": {
+    "message": "Cyrillic character substitution detected",
+    "description": ""
+  },
+  "cherokeeCharactersDetected": {
+    "message": "Cherokee character lookalikes detected",
+    "description": ""
+  },
+  "scriptSymbolsDetected": {
+    "message": "Script symbol lookalikes detected",
+    "description": ""
+  },
+  "asciiLookalikePaypal": {
+    "message": "Possible PayPal impersonation (1 vs l)",
+    "description": ""
+  },
+  "asciiLookalikeAmazon": {
+    "message": "Possible Amazon impersonation (rn vs m)",
+    "description": ""
+  },
+  "asciiLookalikeMicrosoft": {
+    "message": "Possible Microsoft impersonation (0 vs o)",
+    "description": ""
+  },
+  "asciiLookalikeGoogle": {
+    "message": "Possible Google impersonation (0 vs o)",
+    "description": ""
+  },
+  "asciiLookalikeTwitter": {
+    "message": "Possible Twitter impersonation (l vs i)",
+    "description": ""
+  },
+  "asciiLookalikeFacebook": {
+    "message": "Possible Facebook impersonation (0 vs o)",
+    "description": ""
+  },
+  "asciiLookalikeApple": {
+    "message": "Possible Apple impersonation (1 vs l)",
+    "description": ""
+  },
+  "asciiLookalikeWww": {
+    "message": "Suspicious WWW substitution (vvv vs w)",
+    "description": ""
+  },
+  "brandImpersonation": {
+    "message": "Possible brand impersonation attempt",
+    "description": ""
   }
 }

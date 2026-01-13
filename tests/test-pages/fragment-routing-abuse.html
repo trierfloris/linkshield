@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkShield Test - Fragment-Based Routing Abuse</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background: #f5f5f5;
+        }
+
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .spa-link {
+            display: block;
+            margin: 10px 0;
+            padding: 15px;
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            text-decoration: none;
+            color: #e65100;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .spa-link:hover {
+            background: #ffe0b2;
+        }
+
+        .dangerous {
+            background: #ffebee;
+            border-left-color: #f44336;
+            color: #c62828;
+        }
+
+        .route-info {
+            background: #f5f5f5;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-family: monospace;
+        }
+
+        #app-content {
+            background: #e8eaf6;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 4px;
+            min-height: 100px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="test-section">
+        <h1>🎭 Fragment-Based Routing Abuse Test</h1>
+        <p><strong>Test ID:</strong> 5.4</p>
+        <p><strong>Test Type:</strong> SPA-style phishing via fragment routing</p>
+        <p><strong>Description:</strong> Tests detection of malicious redirects hidden in URL fragments (hash)</p>
+    </div>
+
+    <div class="test-section">
+        <h3>SPA Router Simulation</h3>
+        <p>This page simulates a Single Page Application with client-side routing.</p>
+
+        <div id="app-content">
+            <strong>Current Route:</strong> <span id="current-route">/</span><br>
+            <strong>Status:</strong> <span id="route-status">Ready</span>
+        </div>
+    </div>
+
+    <!-- Test 1: Login page hijack -->
+    <div class="test-section">
+        <h3>Test 1: Fake Login Route</h3>
+
+        <a href="#/login" class="spa-link dangerous" data-route="/login">
+            🚨 https://legitimate-site.com/#/login
+        </a>
+
+        <div class="route-info">
+            • Appears legitimate: "#/login"<br>
+            • JavaScript intercepts and redirects to: http://fake-login.evil.com<br>
+            • Attack: SPA routing intercepted to show phishing form
+        </div>
+    </div>
+
+    <!-- Test 2: @ symbol abuse -->
+    <div class="test-section">
+        <h3>Test 2: @ Symbol in Fragment</h3>
+
+        <a href="https://legitimate-site.com/#@evil.com/path" class="spa-link dangerous" data-route="@evil.com">
+            🚨 https://legitimate-site.com/#@evil.com/path
+        </a>
+
+        <div class="route-info">
+            • Fragment: #@evil.com/path<br>
+            • Browser sees: legitimate-site.com<br>
+            • JavaScript redirects to: evil.com/path<br>
+            • Attack: @ symbol tricks router into external redirect
+        </div>
+    </div>
+
+    <!-- Test 3: Double slash bypass -->
+    <div class="test-section">
+        <h3>Test 3: Protocol-Relative Fragment</h3>
+
+        <a href="https://legitimate-site.com/#//evil.com" class="spa-link dangerous" data-route="//evil.com">
+            🚨 https://legitimate-site.com/#//evil.com
+        </a>
+
+        <div class="route-info">
+            • Fragment: #//evil.com<br>
+            • Router interprets as: external URL<br>
+            • Redirects to: //evil.com (protocol-relative)<br>
+            • Attack: Bypass route validation with protocol-relative URL
+        </div>
+    </div>
+
+    <!-- Test 4: Data URI in fragment -->
+    <div class="test-section">
+        <h3>Test 4: Data URI Fragment Route</h3>
+
+        <a href="https://legitimate-site.com/#data:text/html,PHISH" class="spa-link dangerous"
+            data-route="data:text/html">
+            🚨 https://legitimate-site.com/#data:text/html,&lt;html&gt;...
+        </a>
+
+        <div class="route-info">
+            • Fragment: #data:text/html,&lt;phishing content&gt;<br>
+            • Router processes data URI<br>
+            • Attack: Inline HTML execution via fragment
+        </div>
+    </div>
+
+    <!-- Test 5: JavaScript URI fragment -->
+    <div class="test-section">
+        <h3>Test 5: JavaScript URI in Fragment</h3>
+
+        <a href="https://legitimate-site.com/#javascript:location='http://evil.com'" class="spa-link dangerous"
+            data-route="javascript:">
+            🚨 https://legitimate-site.com/#javascript:location='http://evil.com'
+        </a>
+
+        <div class="route-info">
+            • Fragment: #javascript:location='http://evil.com'<br>
+            • Router executes JavaScript<br>
+            • Attack: Code execution via fragment
+        </div>
+    </div>
+
+    <!-- Test 6: Encoded fragment -->
+    <div class="test-section">
+        <h3>Test 6: URL-Encoded Fragment</h3>
+
+        <a href="https://legitimate-site.com/#%2F%2Fevil.com" class="spa-link dangerous" data-route="encoded">
+            🚨 https://legitimate-site.com/#%2F%2Fevil.com
+        </a>
+
+        <div class="route-info">
+            • Encoded fragment: #%2F%2Fevil.com<br>
+            • Decodes to: #//evil.com<br>
+            • Attack: Encoding bypasses client-side validation
+        </div>
+    </div>
+
+    <script>
+        // Simulate SPA router
+        function handleRoute(fragment) {
+            const routeDisplay = document.getElementById('current-route');
+            const statusDisplay = document.getElementById('route-status');
+
+            routeDisplay.textContent = fragment || '/';
+
+            // Simulate malicious router behavior
+            const dangerousPatterns = [
+                { pattern: /^@/, action: 'redirect to external domain' },
+                { pattern: /^\/\//, action: 'protocol-relative redirect' },
+                { pattern: /^data:/, action: 'data URI execution' },
+                { pattern: /^javascript:/, action: 'JavaScript execution' },
+                { pattern: /%2F%2F/, action: 'encoded external redirect' }
+            ];
+
+            let detected = false;
+            for (const { pattern, action } of dangerousPatterns) {
+                if (pattern.test(fragment)) {
+                    statusDisplay.textContent = `⚠️ ATTACK DETECTED: ${action}`;
+                    statusDisplay.style.color = '#c62828';
+                    console.log(`[ATTACK] Fragment routing attack: ${action}`);
+                    console.log(`[ATTACK] Fragment value: ${fragment}`);
+                    detected = true;
+                    break;
+                }
+            }
+
+            if (!detected) {
+                if (fragment === '/login') {
+                    statusDisplay.textContent = '⚠️ Intercepted /login route - could redirect to phishing';
+                    statusDisplay.style.color = '#c62828';
+                    console.log('[ATTACK] Fake login page route');
+                } else {
+                    statusDisplay.textContent = `Navigated to ${fragment}`;
+                    statusDisplay.style.color = '#2e7d32';
+                }
+            }
+        }
+
+        // Handle hash changes
+        window.addEventListener('hashchange', () => {
+            const fragment = window.location.hash.substring(1); // Remove #
+            handleRoute(fragment);
+        });
+
+        // Handle link clicks
+        document.querySelectorAll('a.spa-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const href = link.getAttribute('href');
+                console.log(`[TEST] SPA link clicked: ${href}`);
+
+                // Extract fragment
+                const hashIndex = href.indexOf('#');
+                if (hashIndex !== -1) {
+                    const fragment = href.substring(hashIndex + 1);
+                    handleRoute(fragment);
+
+                    // Update URL without reload
+                    window.location.hash = fragment;
+                }
+            });
+        });
+
+        // Initial route
+        handleRoute(window.location.hash.substring(1));
+
+        console.log('[TEST] Fragment-based routing abuse test page loaded');
+        console.log('[TEST] Total test scenarios:', document.querySelectorAll('.spa-link').length);
+    </script>
+</body>
+
+</html>

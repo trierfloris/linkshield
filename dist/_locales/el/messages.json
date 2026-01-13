@@ -1457,5 +1457,95 @@
   },
   "maliciousDomainKeyword": {
     "message": "ΚΡΙΣΙΜΟ: Αυτός ο τομέας περιέχει λέξεις-κλειδιά που συνδέονται συχνά με phishing ή κακόβουλο λογισμικό (κρίσιμος κίνδυνος). Το ίδιο το όνομα τομέα υποδηλώνει κακόβουλη πρόθεση."
+  },
+  "enclosedAlphanumericsDetected": {
+    "message": "Αυτός ο τομέας περιέχει αλφαριθμητικούς χαρακτήρες σε κύκλο (υψηλός κίνδυνος). Χαρακτήρες όπως ①②③ ή ⓐⓑⓒ χρησιμοποιούνται για τη δημιουργία παρόμοιων τομέων για phishing."
+  },
+  "superscriptSubscriptDetected": {
+    "message": "Αυτός ο τομέας περιέχει εκθέτες ή δείκτες (υψηλός κίνδυνος). Χαρακτήρες όπως ¹²³ ή ₀₁₂ χρησιμοποιούνται για τη δημιουργία παραπλανητικά παρόμοιων τομέων."
+  },
+  "numberFormsDetected": {
+    "message": "Αυτός ο τομέας περιέχει χαρακτήρες μορφής αριθμών (μέτριος κίνδυνος). Χαρακτήρες όπως ⅓, ⅔ ή ρωμαϊκοί αριθμοί μπορούν να χρησιμοποιηθούν για τη δημιουργία συγκεχυμένων ονομάτων τομέα."
+  },
+  "nonAsciiCharactersDetected": {
+    "message": "Αυτός ο τομέας περιέχει χαρακτήρες μη-ASCII (μέτριος κίνδυνος). Ειδικοί χαρακτήρες εκτός του τυπικού αλφαβήτου μπορεί να υποδεικνύουν προσπάθεια εξαπάτησης χρηστών."
+  },
+  "failSafeFreshInstallTitle": {
+    "message": "Η προστασία ενεργοποιήθηκε"
+  },
+  "failSafeFreshInstallMessage": {
+    "message": "Η προστασία LinkShield είναι ενεργή. Παρακαλώ επιβεβαιώστε την άδειά σας όταν είναι δυνατόν."
+  },
+  "universalNonAsciiDetected": {
+    "message": "Εντοπίστηκαν μη τυπικοί χαρακτήρες στο URL",
+    "description": ""
+  },
+  "emergencyModeTitle": {
+    "message": "Λειτουργία έκτακτης προστασίας",
+    "description": ""
+  },
+  "emergencyModeMessage": {
+    "message": "Το LinkShield λειτουργεί σε λειτουργία έκτακτης ανάγκης. Η προστασία παραμένει πλήρως ενεργή. Ελέγξτε τη σύνδεσή σας στο διαδίκτυο.",
+    "description": ""
+  },
+  "mathematicalAlphanumericsDetected": {
+    "message": "Mathematical symbol lookalikes detected",
+    "description": ""
+  },
+  "fullwidthCharactersDetected": {
+    "message": "Fullwidth characters detected in URL",
+    "description": ""
+  },
+  "greekLettersDetected": {
+    "message": "Greek letter substitution detected",
+    "description": ""
+  },
+  "cyrillicCharactersDetected": {
+    "message": "Cyrillic character substitution detected",
+    "description": ""
+  },
+  "cherokeeCharactersDetected": {
+    "message": "Cherokee character lookalikes detected",
+    "description": ""
+  },
+  "scriptSymbolsDetected": {
+    "message": "Script symbol lookalikes detected",
+    "description": ""
+  },
+  "asciiLookalikePaypal": {
+    "message": "Possible PayPal impersonation (1 vs l)",
+    "description": ""
+  },
+  "asciiLookalikeAmazon": {
+    "message": "Possible Amazon impersonation (rn vs m)",
+    "description": ""
+  },
+  "asciiLookalikeMicrosoft": {
+    "message": "Possible Microsoft impersonation (0 vs o)",
+    "description": ""
+  },
+  "asciiLookalikeGoogle": {
+    "message": "Possible Google impersonation (0 vs o)",
+    "description": ""
+  },
+  "asciiLookalikeTwitter": {
+    "message": "Possible Twitter impersonation (l vs i)",
+    "description": ""
+  },
+  "asciiLookalikeFacebook": {
+    "message": "Possible Facebook impersonation (0 vs o)",
+    "description": ""
+  },
+  "asciiLookalikeApple": {
+    "message": "Possible Apple impersonation (1 vs l)",
+    "description": ""
+  },
+  "asciiLookalikeWww": {
+    "message": "Suspicious WWW substitution (vvv vs w)",
+    "description": ""
+  },
+  "brandImpersonation": {
+    "message": "Possible brand impersonation attempt",
+    "description": ""
   }
 }

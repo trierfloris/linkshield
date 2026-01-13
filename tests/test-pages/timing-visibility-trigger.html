@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkShield Test - Visibility-Based Trigger</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background: #f5f5f5;
+        }
+
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .stats {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+
+        .injected-link {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+        }
+
+        .below-fold {
+            margin-top: 1000px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="test-section">
+        <h1>🔍 Timing-Based Evasion Test: Visibility Triggers</h1>
+        <p><strong>Test ID:</strong> 9.3</p>
+        <p><strong>Test Type:</strong> Visibility-based link injection</p>
+
+        <h2>Test Scenarios</h2>
+        <ol>
+            <li><strong>Tab Focus:</strong> Links inject when tab receives focus</li>
+            <li><strong>Visibility Change:</strong> Links appear when document.visibilityState changes</li>
+            <li><strong>Intersection Observer:</strong> Links inject when element scrolls into viewport</li>
+        </ol>
+
+        <div class="stats" id="stats">
+            <strong>Status:</strong> <span id="status">Waiting for triggers...</span><br>
+            <strong>Links Injected:</strong> <span id="count">0</span><br>
+            <strong>Tab Visible:</strong> <span id="visibility">Unknown</span>
+        </div>
+    </div>
+
+    <div class="test-section" id="focus-trigger">
+        <h3>1. Tab Focus Trigger</h3>
+        <p>Links will inject when this tab gains focus.</p>
+        <div id="focus-links"></div>
+    </div>
+
+    <div class="test-section" id="visibility-trigger">
+        <h3>2. Visibility State Trigger</h3>
+        <p>Links will inject when visibility state changes from 'hidden' to 'visible'.</p>
+        <div id="visibility-links"></div>
+    </div>
+
+    <div class="test-section below-fold" id="viewport-trigger">
+        <h3>3. Intersection Observer Trigger</h3>
+        <p>This section is below the fold. Links will inject when scrolled into viewport.</p>
+        <div id="viewport-links"></div>
+    </div>
+
+    <script>
+        let totalLinksInjected = 0;
+        let hasInjectedFocus = false;
+        let hasInjectedVisibility = false;
+        let hasInjectedViewport = false;
+
+        function updateStats() {
+            document.getElementById('count').textContent = totalLinksInjected;
+            document.getElementById('visibility').textContent = document.visibilityState;
+
+            if (totalLinksInjected > 0) {
+                document.getElementById('status').textContent = 'Links injected! Testing detection...';
+            }
+        }
+
+        function injectMaliciousLinks(containerId, count, prefix) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            for (let i = 0; i < count; i++) {
+                const link = document.createElement('a');
+                link.href = `http://phishing-${prefix}-${i}.evil.com/steal-credentials`;
+                link.className = 'injected-link';
+                link.textContent = `🚨 Malicious Link ${prefix}-${i}: http://phishing-${prefix}-${i}.evil.com`;
+                link.setAttribute('data-injection-type', prefix);
+                container.appendChild(link);
+                totalLinksInjected++;
+            }
+
+            updateStats();
+            console.log(`[TIMING ATTACK] Injected ${count} links via ${prefix} trigger`);
+        }
+
+        // Trigger 1: Tab Focus
+        window.addEventListener('focus', () => {
+            if (!hasInjectedFocus) {
+                console.log('[ATTACK] Tab gained focus - injecting links');
+                injectMaliciousLinks('focus-links', 10, 'focus');
+                hasInjectedFocus = true;
+            }
+        });
+
+        // Trigger 2: Visibility Change
+        document.addEventListener('visibilitychange', () => {
+            updateStats();
+            if (document.visibilityState === 'visible' && !hasInjectedVisibility) {
+                console.log('[ATTACK] Tab became visible - injecting links');
+                injectMaliciousLinks('visibility-links', 10, 'visibility');
+                hasInjectedVisibility = true;
+            }
+        });
+
+        // Trigger 3: Intersection Observer (viewport entry)
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && !hasInjectedViewport) {
+                        console.log('[ATTACK] Element scrolled into viewport - injecting links');
+                        injectMaliciousLinks('viewport-links', 10, 'viewport');
+                        hasInjectedViewport = true;
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            const viewportTrigger = document.getElementById('viewport-trigger');
+            if (viewportTrigger) {
+                observer.observe(viewportTrigger);
+            }
+        }
+
+        // Initial stats update
+        updateStats();
+
+        // Auto-trigger focus after 1 second for automated tests
+        setTimeout(() => {
+            window.dispatchEvent(new Event('focus'));
+        }, 1000);
+    </script>
+</body>
+
+</html>

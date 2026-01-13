@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Z-Index War Test - Security Audit 1.1</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Extreme z-index element - simulates fullscreen modal */
+        .extreme-zindex-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2147483647;
+            /* Maximum 32-bit integer */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+
+        /* Nested z-index layers */
+        .layer-1 {
+            position: fixed;
+            top: 50px;
+            left: 50px;
+            width: 300px;
+            height: 200px;
+            background: blue;
+            z-index: 9999999;
+            padding: 20px;
+        }
+
+        .layer-2 {
+            position: fixed;
+            top: 100px;
+            left: 100px;
+            width: 300px;
+            height: 200px;
+            background: green;
+            z-index: 99999999;
+            padding: 20px;
+        }
+
+        .malicious-link {
+            color: red;
+            font-weight: bold;
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Z-Index War Test</h1>
+    <p>This page tests LinkShield overlay visibility against extreme z-index elements.</p>
+
+    <!-- Extreme z-index modal -->
+    <div class="extreme-zindex-modal">
+        <div>
+            <p>Fullscreen Modal with z-index: 2147483647</p>
+            <p>LinkShield overlay MUST remain visible above this.</p>
+        </div>
+    </div>
+
+    <!-- Stacked z-index layers -->
+    <div class="layer-1">
+        Layer 1: z-index 9999999
+    </div>
+
+    <div class="layer-2">
+        Layer 2: z-index 99999999
+        <br><br>
+        <a href="http://phishing-zindex-test.malicious.com/steal-credentials" class="malicious-link">
+            CLICK HERE - Malicious Link
+        </a>
+    </div>
+
+    <!-- Additional malicious links at various z-index levels -->
+    <div style="position: fixed; bottom: 20px; right: 20px; z-index: 2147483646; background: white; padding: 10px;">
+        <a href="http://fake-bank.evil.com/login" class="malicious-link">Fake Bank Login</a>
+    </div>
+
+    <script>
+        console.log('[Z-INDEX WAR] Page loaded with extreme z-index elements');
+        console.log('[Z-INDEX WAR] Maximum z-index present: 2147483647');
+    </script>
+</body>
+
+</html>

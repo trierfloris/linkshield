@@ -258,7 +258,7 @@
     "message": "LinkShield is active and marks risky links with ⚠️. Hover over the icon to see why."
   },
   "digitHomoglyph": {
-    "message": "This address uses numbers that look like letters to imitate a known brand (medium risk)."
+    "message": "This domain uses digits that look like letters to imitate a known brand (high risk). For example: g00gle uses zeros instead of 'o'."
   },
   "trustedTLD": {
     "message": "This domain has a standard domain extension (low risk)."
@@ -1359,10 +1359,10 @@
     "message": "Pointer-events click hijacking detected"
   },
   "pointerEventsNoneHighZIndex": {
-    "message": "Invisible overlay with maximum z-index detected (critical risk). This page is attempting to intercept your clicks."
+    "message": "CRITICAL: A transparent clickjacking overlay was detected (critical risk). An invisible element with maximum z-index is trying to intercept your interactions."
   },
   "intMaxZIndexOverlay": {
-    "message": "Suspicious overlay using maximum z-index detected (critical risk). This is a common click hijacking technique."
+    "message": "CRITICAL: A suspicious overlay with maximum z-index was detected (critical risk). This may be an attempt to hijack your clicks."
   },
   "fullscreenPointerEventsNone": {
     "message": "Full-screen invisible overlay detected (critical risk). This page may be attempting to capture your interactions."
@@ -1396,9 +1396,6 @@
   },
   "dangerousBlobUri": {
     "message": "CRITICAL: This link contains a Blob URL (critical risk). Blob URLs can be used to execute malicious code or deliver malware."
-  },
-  "digitHomoglyph": {
-    "message": "This domain uses digits that look like letters to imitate a known brand (high risk). For example: g00gle uses zeros instead of 'o'."
   },
   "dataUriBlocked": {
     "message": "CRITICAL: This link contains a data: URI (critical risk). Data URIs can embed and execute malicious content directly in your browser. This is a common attack vector for phishing and malware delivery."
@@ -1436,13 +1433,97 @@
   "nonAsciiInBrandDomain": {
     "message": "This domain contains non-ASCII characters in a brand-like context (high risk). Special characters are being used to impersonate a legitimate website."
   },
-  "pointerEventsNoneHighZIndex": {
-    "message": "CRITICAL: A transparent clickjacking overlay was detected (critical risk). An invisible element with maximum z-index is trying to intercept your interactions."
-  },
-  "intMaxZIndexOverlay": {
-    "message": "CRITICAL: A suspicious overlay with maximum z-index was detected (critical risk). This may be an attempt to hijack your clicks."
-  },
   "maliciousDomainKeyword": {
     "message": "CRITICAL: This domain contains keywords commonly associated with phishing or malware (critical risk). The domain name itself suggests malicious intent."
+  },
+  "enclosedAlphanumericsDetected": {
+    "message": "This domain contains enclosed alphanumeric characters (high risk). Characters like ①②③ or ⓐⓑⓒ are used to create lookalike domains for phishing."
+  },
+  "superscriptSubscriptDetected": {
+    "message": "This domain contains superscript or subscript characters (high risk). Characters like ¹²³ or ₀₁₂ are used to create deceptive lookalike domains."
+  },
+  "numberFormsDetected": {
+    "message": "This domain contains number form characters (medium risk). Characters like ⅓, ⅔, or Roman numerals can be used to create confusing domain names."
+  },
+  "nonAsciiCharactersDetected": {
+    "message": "This domain contains non-ASCII characters (medium risk). Special characters outside the standard alphabet may indicate an attempt to deceive users."
+  },
+  "failSafeFreshInstallTitle": {
+    "message": "Protection Enabled"
+  },
+  "failSafeFreshInstallMessage": {
+    "message": "LinkShield protection is active. Please verify your license when possible."
+  },
+  "universalNonAsciiDetected": {
+    "message": "Non-standard characters detected in URL",
+    "description": "Warning for URLs containing non-ASCII characters"
+  },
+  "emergencyModeTitle": {
+    "message": "Emergency Protection Mode",
+    "description": "Title for emergency mode notification"
+  },
+  "emergencyModeMessage": {
+    "message": "LinkShield is running in Emergency Mode. Protection remains fully active. Please check your internet connection.",
+    "description": "Message for emergency mode notification"
+  },
+  "mathematicalAlphanumericsDetected": {
+    "message": "Mathematical symbol lookalikes detected",
+    "description": ""
+  },
+  "fullwidthCharactersDetected": {
+    "message": "Fullwidth characters detected in URL",
+    "description": ""
+  },
+  "greekLettersDetected": {
+    "message": "Greek letter substitution detected",
+    "description": ""
+  },
+  "cyrillicCharactersDetected": {
+    "message": "Cyrillic character substitution detected",
+    "description": ""
+  },
+  "cherokeeCharactersDetected": {
+    "message": "Cherokee character lookalikes detected",
+    "description": ""
+  },
+  "scriptSymbolsDetected": {
+    "message": "Script symbol lookalikes detected",
+    "description": ""
+  },
+  "asciiLookalikePaypal": {
+    "message": "Possible PayPal impersonation (1 vs l)",
+    "description": ""
+  },
+  "asciiLookalikeAmazon": {
+    "message": "Possible Amazon impersonation (rn vs m)",
+    "description": ""
+  },
+  "asciiLookalikeMicrosoft": {
+    "message": "Possible Microsoft impersonation (0 vs o)",
+    "description": ""
+  },
+  "asciiLookalikeGoogle": {
+    "message": "Possible Google impersonation (0 vs o)",
+    "description": ""
+  },
+  "asciiLookalikeTwitter": {
+    "message": "Possible Twitter impersonation (l vs i)",
+    "description": ""
+  },
+  "asciiLookalikeFacebook": {
+    "message": "Possible Facebook impersonation (0 vs o)",
+    "description": ""
+  },
+  "asciiLookalikeApple": {
+    "message": "Possible Apple impersonation (1 vs l)",
+    "description": ""
+  },
+  "asciiLookalikeWww": {
+    "message": "Suspicious WWW substitution (vvv vs w)",
+    "description": ""
+  },
+  "brandImpersonation": {
+    "message": "Possible brand impersonation attempt",
+    "description": ""
   }
 }

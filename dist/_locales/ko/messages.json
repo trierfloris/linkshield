@@ -1457,5 +1457,95 @@
   },
   "maliciousDomainKeyword": {
     "message": "심각: 이 도메인에는 피싱 또는 맬웨어와 일반적으로 관련된 키워드가 포함되어 있습니다(심각한 위험). 도메인 이름 자체가 악의적인 의도를 나타냅니다."
+  },
+  "enclosedAlphanumericsDetected": {
+    "message": "이 도메인에는 동그라미 영숫자가 포함되어 있습니다(높은 위험). ①②③ 또는 ⓐⓑⓒ와 같은 문자는 피싱용 유사 도메인을 만드는 데 사용됩니다."
+  },
+  "superscriptSubscriptDetected": {
+    "message": "이 도메인에는 위 첨자 또는 아래 첨자 문자가 포함되어 있습니다(높은 위험). ¹²³ 또는 ₀₁₂와 같은 문자는 기만적인 유사 도메인을 만드는 데 사용됩니다."
+  },
+  "numberFormsDetected": {
+    "message": "이 도메인에는 숫자 형식 문자가 포함되어 있습니다(중간 위험). ⅓, ⅔ 또는 로마 숫자와 같은 문자는 혼란스러운 도메인 이름을 만드는 데 사용될 수 있습니다."
+  },
+  "nonAsciiCharactersDetected": {
+    "message": "이 도메인에는 비ASCII 문자가 포함되어 있습니다(중간 위험). 표준 알파벳 이외의 특수 문자는 사용자를 속이려는 시도를 나타낼 수 있습니다."
+  },
+  "failSafeFreshInstallTitle": {
+    "message": "보호 활성화됨"
+  },
+  "failSafeFreshInstallMessage": {
+    "message": "LinkShield 보호가 활성화되었습니다. 가능할 때 라이선스를 확인해 주세요."
+  },
+  "universalNonAsciiDetected": {
+    "message": "URL에서 비표준 문자가 감지되었습니다",
+    "description": ""
+  },
+  "emergencyModeTitle": {
+    "message": "긴급 보호 모드",
+    "description": ""
+  },
+  "emergencyModeMessage": {
+    "message": "LinkShield가 긴급 모드로 실행 중입니다. 보호 기능은 완전히 활성화되어 있습니다. 인터넷 연결을 확인하세요.",
+    "description": ""
+  },
+  "mathematicalAlphanumericsDetected": {
+    "message": "Mathematical symbol lookalikes detected",
+    "description": ""
+  },
+  "fullwidthCharactersDetected": {
+    "message": "Fullwidth characters detected in URL",
+    "description": ""
+  },
+  "greekLettersDetected": {
+    "message": "Greek letter substitution detected",
+    "description": ""
+  },
+  "cyrillicCharactersDetected": {
+    "message": "Cyrillic character substitution detected",
+    "description": ""
+  },
+  "cherokeeCharactersDetected": {
+    "message": "Cherokee character lookalikes detected",
+    "description": ""
+  },
+  "scriptSymbolsDetected": {
+    "message": "Script symbol lookalikes detected",
+    "description": ""
+  },
+  "asciiLookalikePaypal": {
+    "message": "Possible PayPal impersonation (1 vs l)",
+    "description": ""
+  },
+  "asciiLookalikeAmazon": {
+    "message": "Possible Amazon impersonation (rn vs m)",
+    "description": ""
+  },
+  "asciiLookalikeMicrosoft": {
+    "message": "Possible Microsoft impersonation (0 vs o)",
+    "description": ""
+  },
+  "asciiLookalikeGoogle": {
+    "message": "Possible Google impersonation (0 vs o)",
+    "description": ""
+  },
+  "asciiLookalikeTwitter": {
+    "message": "Possible Twitter impersonation (l vs i)",
+    "description": ""
+  },
+  "asciiLookalikeFacebook": {
+    "message": "Possible Facebook impersonation (0 vs o)",
+    "description": ""
+  },
+  "asciiLookalikeApple": {
+    "message": "Possible Apple impersonation (1 vs l)",
+    "description": ""
+  },
+  "asciiLookalikeWww": {
+    "message": "Suspicious WWW substitution (vvv vs w)",
+    "description": ""
+  },
+  "brandImpersonation": {
+    "message": "Possible brand impersonation attempt",
+    "description": ""
   }
 }

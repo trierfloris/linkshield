@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shadow DOM 50 Links Test - Security Audit 1.2</title>
+    <style>
+        body {
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+
+        .shadow-host {
+            margin: 10px 0;
+            padding: 10px;
+            border: 2px solid #333;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Shadow DOM Basic Detection Test</h1>
+    <p>This page contains 50 malicious links hidden in Shadow DOM elements.</p>
+    <p id="status">Generating Shadow DOM elements...</p>
+
+    <div id="shadow-container"></div>
+
+    <script>
+        // Generate 50 links in Shadow DOM
+        const container = document.getElementById('shadow-container');
+        const maliciousDomains = [
+            'phishing-bank.evil.com',
+            'fake-paypal.malicious.net',
+            'account-verify.scam.com',
+            'secure-login.fake.org',
+            'password-reset.phish.net'
+        ];
+
+        for (let i = 0; i < 50; i++) {
+            const hostElement = document.createElement('div');
+            hostElement.className = 'shadow-host';
+            hostElement.id = `shadow-host-${i}`;
+
+            // Attach Shadow DOM
+            const shadowRoot = hostElement.attachShadow({ mode: 'open' });
+
+            // Create link inside Shadow DOM
+            const link = document.createElement('a');
+            const domain = maliciousDomains[i % maliciousDomains.length];
+            link.href = `http://${domain}/path${i}`;
+            link.textContent = `Shadow Link ${i + 1}: ${domain}`;
+            link.style.color = 'red';
+            link.style.fontWeight = 'bold';
+
+            shadowRoot.appendChild(link);
+            container.appendChild(hostElement);
+        }
+
+        console.log('[SHADOW DOM TEST] Created 50 Shadow DOM elements with malicious links');
+        document.getElementById('status').textContent = '✓ Created 50 Shadow DOM elements with malicious links';
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkShield Test - URL Parameter Injection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background: #f5f5f5;
+        }
+
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .test-link {
+            display: block;
+            margin: 10px 0;
+            padding: 15px;
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+            text-decoration: none;
+            color: #c62828;
+            border-radius: 4px;
+            word-break: break-all;
+        }
+
+        .test-link:hover {
+            background: #ffcdd2;
+        }
+
+        .param-info {
+            background: #f5f5f5;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-family: monospace;
+        }
+
+        .attack-type {
+            display: inline-block;
+            background: #ff5722;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="test-section">
+        <h1>🎯 URL Parameter Injection Test</h1>
+        <p><strong>Test ID:</strong> 5.5</p>
+        <p><strong>Test Type:</strong> Open redirect via URL parameters</p>
+        <p><strong>Description:</strong> Tests detection of malicious redirects hidden in URL parameters</p>
+    </div>
+
+    <!-- Test 1: Classic redirect parameter -->
+    <div class="test-section">
+        <h3>Test 1: Redirect Parameter <span class="attack-type">OPEN REDIRECT</span></h3>
+
+        <a href="https://trusted-site.com/login?redirect=http://evil.com" class="test-link">
+            https://trusted-site.com/login?redirect=http://evil.com
+        </a>
+
+        <div class="param-info">
+            • Trusted domain: trusted-site.com<br>
+            • Redirect param: http://evil.com<br>
+            • Attack: User trusts the domain but gets redirected to attacker site
+        </div>
+    </div>
+
+    <!-- Test 2: URL-encoded redirect -->
+    <div class="test-section">
+        <h3>Test 2: URL-Encoded Redirect <span class="attack-type">OBFUSCATED</span></h3>
+
+        <a href="https://trusted-site.com/auth?url=http%3A%2F%2Fevil.com%2Fphishing" class="test-link">
+            https://trusted-site.com/auth?url=http%3A%2F%2Fevil.com%2Fphishing
+        </a>
+
+        <div class="param-info">
+            • Encoded URL: http%3A%2F%2Fevil.com%2Fphishing<br>
+            • Decoded: http://evil.com/phishing<br>
+            • Attack: Encoding hides the malicious destination
+        </div>
+    </div>
+
+    <!-- Test 3: Protocol-relative URL -->
+    <div class="test-section">
+        <h3>Test 3: Protocol-Relative URL <span class="attack-type">BYPASS ATTEMPT</span></h3>
+
+        <a href="https://trusted-site.com/redirect?url=//evil.com" class="test-link">
+            https://trusted-site.com/redirect?url=//evil.com
+        </a>
+
+        <div class="param-info">
+            • Parameter: //evil.com<br>
+            • Resolves to: http://evil.com or https://evil.com<br>
+            • Attack: Protocol-relative URLs can bypass basic filters
+        </div>
+    </div>
+
+    <!-- Test 4: JavaScript URI in parameter -->
+    <div class="test-section">
+        <h3>Test 4: JavaScript URI Parameter <span class="attack-type">XSS VECTOR</span></h3>
+
+        <a href="https://trusted-site.com/go?next=javascript:alert(document.cookie)" class="test-link">
+            https://trusted-site.com/go?next=javascript:alert(document.cookie)
+        </a>
+
+        <div class="param-info">
+            • Parameter: javascript:alert(document.cookie)<br>
+            • Attack: JavaScript execution via parameter injection<br>
+            • Impact: Cookie theft, session hijacking
+        </div>
+    </div>
+
+    <!-- Test 5: Data URI in parameter -->
+    <div class="test-section">
+        <h3>Test 5: Data URI Parameter <span class="attack-type">PAYLOAD INJECTION</span></h3>
+
+        <a href="https://trusted-site.com/load?content=data:text/html,<script>location='http://evil.com'</script>"
+            class="test-link">
+            https://trusted-site.com/load?content=data:text/html,&lt;script&gt;location='http://evil.com'&lt;/script&gt;
+        </a>
+
+        <div class="param-info">
+            • Parameter: data:text/html,&lt;script&gt;...<br>
+            • Attack: Inline HTML execution with redirect<br>
+            • Impact: Arbitrary code execution
+        </div>
+    </div>
+
+    <!-- Test 6: Multiple redirect parameters -->
+    <div class="test-section">
+        <h3>Test 6: Multiple Redirect Parameters <span class="attack-type">CONFUSION</span></h3>
+
+        <a href="https://trusted-site.com/auth?return=/dashboard&redirect=http://evil.com&next=/home" class="test-link">
+            https://trusted-site.com/auth?return=/dashboard&redirect=http://evil.com&next=/home
+        </a>
+
+        <div class="param-info">
+            • Multiple params: return, redirect, next<br>
+            • Malicious: redirect=http://evil.com<br>
+            • Attack: Confusion about which parameter is used
+        </div>
+    </div>
+
+    <!-- Test 7: Double encoding -->
+    <div class="test-section">
+        <h3>Test 7: Double URL Encoding <span class="attack-type">ADVANCED EVASION</span></h3>
+
+        <a href="https://trusted-site.com/go?url=%2568%2574%2574%2570%253A%252F%252Fevil.com" class="test-link">
+            https://trusted-site.com/go?url=%2568%2574%2574%2570%253A%252F%252Fevil.com
+        </a>
+
+        <div class="param-info">
+            • Double encoded: %2568%2574%2574%2570%253A%252F%252Fevil.com<br>
+            • First decode: http%3A%2F%2Fevil.com<br>
+            • Second decode: http://evil.com<br>
+            • Attack: Multiple encoding layers to evade detection
+        </div>
+    </div>
+
+    <!-- Test 8: Case variation -->
+    <div class="test-section">
+        <h3>Test 8: Case Variation Bypass <span class="attack-type">FILTER BYPASS</span></h3>
+
+        <a href="https://trusted-site.com/login?REDIRECT=HTTP://EVIL.COM" class="test-link">
+            https://trusted-site.com/login?REDIRECT=HTTP://EVIL.COM
+        </a>
+
+        <div class="param-info">
+            • Uppercase params: REDIRECT=HTTP://EVIL.COM<br>
+            • Attack: Case variations to bypass case-sensitive filters<br>
+            • Impact: Filter evasion
+        </div>
+    </div>
+
+    <!-- Test 9: Null byte injection -->
+    <div class="test-section">
+        <h3>Test 9: Special Character Injection <span class="attack-type">EXPLOIT</span></h3>
+
+        <a href="https://trusted-site.com/go?url=http://trusted.com%00@evil.com" class="test-link">
+            https://trusted-site.com/go?url=http://trusted.com%00@evil.com
+        </a>
+
+        <div class="param-info">
+            • Parameter: http://trusted.com%00@evil.com<br>
+            • Null byte: %00<br>
+            • Attack: Null byte or @ symbol to confuse URL parsers<br>
+            • Actual destination: evil.com
+        </div>
+    </div>
+
+    <!-- Test 10: Fragment identifier abuse -->
+    <div class="test-section">
+        <h3>Test 10: Fragment Identifier Abuse <span class="attack-type">STEALTH</span></h3>
+
+        <a href="https://trusted-site.com/redirect?url=http://trusted.com#@evil.com" class="test-link">
+            https://trusted-site.com/redirect?url=http://trusted.com#@evil.com
+        </a>
+
+        <div class="param-info">
+            • Parameter: http://trusted.com#@evil.com<br>
+            • Attack: Fragment identifier can be intercepted by JavaScript<br>
+            • Impact: Client-side redirect to evil.com
+        </div>
+    </div>
+
+    <script>
+        // Prevent actual navigation
+        document.querySelectorAll('a.test-link').forEach((link, index) => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                console.log(`[TEST ${index + 1}] URL Parameter Injection attempt:`, link.href);
+
+                // Parse and display URL params
+                try {
+                    const url = new URL(link.href);
+                    console.log('  - Domain:', url.hostname);
+                    console.log('  - Parameters:');
+                    url.searchParams.forEach((value, key) => {
+                        console.log(`    • ${key} = ${value}`);
+                    });
+                } catch (e) {
+                    console.log('  - Failed to parse URL:', e.message);
+                }
+
+                alert(`Test ${index + 1} clicked\nLinkShield should detect parameter injection in:\n${link.href}`);
+            });
+        });
+
+        console.log('[TEST] URL Parameter Injection test page loaded');
+        console.log('[TEST] Total test scenarios:', document.querySelectorAll('.test-link').length);
+    </script>
+</body>
+
+</html>

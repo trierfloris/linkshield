@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unicode Lookalike Test - Security Audit 4.3</title>
+    <style>
+        body {
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+
+        .test-item {
+            margin: 15px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background: #f9f9f9;
+        }
+
+        .unicode-link {
+            color: red;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .explanation {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Unicode Normalization Attack Test</h1>
+    <p>Tests detection of visually similar Unicode characters that aren't homoglyphs.</p>
+
+    <div class="test-item">
+        <h3>Test 1: Script G (ℊoogle.com)</h3>
+        <a href="http://ℊoogle.com/signin" class="unicode-link">ℊoogle.com/signin</a>
+        <div class="explanation">⚠️ Uses script small g (U+210A) instead of normal g</div>
+    </div>
+
+    <div class="test-item">
+        <h3>Test 2: Digit 1 vs Letter l (paypa1.com)</h3>
+        <a href="http://paypa1.com/login" class="unicode-link">paypa1.com/login</a>
+        <div class="explanation">⚠️ Uses digit '1' instead of letter 'l' - visually similar in many fonts</div>
+    </div>
+
+    <div class="test-item">
+        <h3>Test 3: RN vs M (arnazon.com)</h3>
+        <a href="http://arnazon.com/account" class="unicode-link">arnazon.com/account</a>
+        <div class="explanation">⚠️ Uses 'rn' which looks like 'm' in many fonts (amazon → arnazon)</div>
+    </div>
+
+    <div class="test-item">
+        <h3>Test 4: VVVV vs W (vvvvw.bank.com)</h3>
+        <a href="http://vvvvw.bank.com/login" class="unicode-link">vvvvw.bank.com/login</a>
+        <div class="explanation">⚠️ Multiple 'v' characters that could be mistaken for 'w' (www)</div>
+    </div>
+
+    <div class="test-item">
+        <h3>Test 5: Zero vs O (micr0soft.com)</h3>
+        <a href="http://micr0soft.com/account" class="unicode-link">micr0soft.com/account</a>
+        <div class="explanation">⚠️ Uses digit '0' instead of letter 'o'</div>
+    </div>
+
+    <div class="test-item">
+        <h3>Test 6: Capital I vs Lowercase l (twltter.com)</h3>
+        <a href="http://twltter.com/login" class="unicode-link">twltter.com/login</a>
+        <div class="explanation">⚠️ Uses lowercase 'l' instead of 'i' (twitter → twltter)</div>
+    </div>
+
+    <div class="test-item">
+        <h3>Test 7: Mathematical Bold (𝐠𝐨𝐨𝐠𝐥𝐞.com)</h3>
+        <a href="http://𝐠𝐨𝐨𝐠𝐥𝐞.com/search" class="unicode-link">𝐠𝐨𝐨𝐠𝐥𝐞.com/search</a>
+        <div class="explanation">⚠️ Uses mathematical bold characters (U+1D420 range)</div>
+    </div>
+
+    <div class="test-item">
+        <h3>Test 8: Fullwidth Latin (ａｐｐｌｅ.com)</h3>
+        <a href="http://ａｐｐｌｅ.com/store" class="unicode-link">ａｐｐｌｅ.com/store</a>
+        <div class="explanation">⚠️ Uses fullwidth Latin characters (U+FF21 range)</div>
+    </div>
+
+    <div class="test-item">
+        <h3>Test 9: Combined Attack (ａmaꮓоn.com)</h3>
+        <a href="http://ａmaꮓоn.com/buy" class="unicode-link">ａmaꮓоn.com/buy</a>
+        <div class="explanation">⚠️ Combines fullwidth 'a', Cherokee 'ꮓ' (U+13D3), and Cyrillic 'о'</div>
+    </div>
+
+    <div class="test-item">
+        <h3>Test 10: Greek Letter (ραypal.com)</h3>
+        <a href="http://ραypal.com/signin" class="unicode-link">ράypal.com/signin</a>
+        <div class="explanation">⚠️ Uses Greek rho 'ρ' (U+03C1) instead of 'p', alpha 'α' (U+03B1) instead of 'a'</div>
+    </div>
+
+    <script>
+        console.log('[UNICODE LOOKALIKE] Loaded 10 Unicode normalization attack vectors');
+
+        // Log some character codes for debugging
+        console.log('[UNICODE] ℊ (script g):', 'ℊ'.charCodeAt(0).toString(16));
+        console.log('[UNICODE] 𝐠 (bold g):', '𝐠'.codePointAt(0).toString(16));
+        console.log('[UNICODE] ａ (fullwidth):', 'ａ'.charCodeAt(0).toString(16));
+        console.log('[UNICODE] ρ (Greek rho):', 'ρ'.charCodeAt(0).toString(16));
+    </script>
+</body>
+
+</html>

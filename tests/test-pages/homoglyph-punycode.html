@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homoglyph Punycode Test - Security Audit 4.2</title>
+    <style>
+        body {
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+
+        .test-item {
+            margin: 15px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background: #f9f9f9;
+        }
+
+        .punycode-link {
+            color: red;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .decoded {
+            color: orange;
+            font-size: 14px;
+        }
+
+        .real {
+            color: green;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Punycode IDN Attack Test</h1>
+    <p>LinkShield must detect Punycode-encoded internationalized domain names (IDN) that mimic legitimate sites.</p>
+
+    <div class="test-item">
+        <h3>Test 1: xn--pple-43d.com (аpple)</h3>
+        <a href="http://xn--pple-43d.com/login" class="punycode-link">xn--pple-43d.com/login</a>
+        <div>Decodes to: <span class="decoded">аpple.com</span> (Cyrillic а)</div>
+        <div>Real domain: <span class="real">apple.com</span></div>
+    </div>
+
+    <div class="test-item">
+        <h3>Test 2: xn--ggle-0nd.com (gооgle)</h3>
+        <a href="http://xn--ggle-0nd.com/signin" class="punycode-link">xn--ggle-0nd.com/signin</a>
+        <div>Decodes to: <span class="decoded">gооgle.com</span> (Cyrillic о)</div>
+        <div>Real domain: <span class="real">google.com</span></div>
+    </div>
+
+    <div class="test-item">
+        <h3>Test 3: xn--mcrosoft-c6a.com (mіcrosoft)</h3>
+        <a href="http://xn--mcrosoft-c6a.com/account" class="punycode-link">xn--mcrosoft-c6a.com/account</a>
+        <div>Decodes to: <span class="decoded">mіcrosoft.com</span> (Cyrillic і)</div>
+        <div>Real domain: <span class="real">microsoft.com</span></div>
+    </div>
+
+    <div class="test-item">
+        <h3>Test 4: xn--mzon-9va51a.com (аmаzоn)</h3>
+        <a href="http://xn--mzon-9va51a.com/signin" class="punycode-link">xn--mzon-9va51a.com/signin</a>
+        <div>Decodes to: <span class="decoded">аmаzоn.com</span> (Mixed Cyrillic)</div>
+        <div>Real domain: <span class="real">amazon.com</span></div>
+    </div>
+
+    <div class="test-item">
+        <h3>Test 5: xn--pypl-uqb.com (pаypal)</h3>
+        <a href="http://xn--pypl-uqb.com/login" class="punycode-link">xn--pypl-uqb.com/login</a>
+        <div>Decodes to: <span class="decoded">pаypal.com</span> (Cyrillic а)</div>
+        <div>Real domain: <span class="real">paypal.com</span></div>
+    </div>
+
+    <div class="test-item">
+        <h3>Test 6: Double Encoding Attempt</h3>
+        <a href="http://xn--xn--pple-43d-9ic.com/phish" class="punycode-link">xn--xn--pple-43d-9ic.com/phish</a>
+        <div>⚠️ Attempts to use nested Punycode encoding to evade detection</div>
+    </div>
+
+    <div class="test-item">
+        <h3>Test 7: Mixed Case Punycode</h3>
+        <a href="http://XN--PPLE-43D.com/LOGIN" class="punycode-link">XN--PPLE-43D.com/LOGIN</a>
+        <div>⚠️ Uses uppercase XN-- prefix (should still be detected)</div>
+    </div>
+
+    <div class="test-item">
+        <h3>Test 8: Subdomain Punycode</h3>
+        <a href="http://login.xn--pple-43d.com/secure" class="punycode-link">login.xn--pple-43d.com/secure</a>
+        <div>⚠️ Punycode in subdomain position</div>
+    </div>
+
+    <script>
+        console.log('[PUNYCODE TEST] Loaded 8 Punycode IDN attack vectors');
+        console.log('[PUNYCODE TEST] All xn-- prefixed domains should be flagged as suspicious');
+    </script>
+</body>
+
+</html>

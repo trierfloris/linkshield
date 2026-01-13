@@ -1,10 +1,12 @@
 /**
- * Logt debug-informatie - PRODUCTIE: functie doet niets.
+ * Logt debug-informatie - alleen actief als DEBUG_MODE: true in config.js
  * @param {string} message - Het bericht om te loggen.
  * @param {...any} optionalParams - Optionele parameters.
  */
 function logDebug(message, ...optionalParams) {
-  // PRODUCTIE: Logging uitgeschakeld
+  if (typeof globalConfig !== 'undefined' && globalConfig.DEBUG_MODE) {
+    console.log(message, ...optionalParams);
+  }
 }
 function isHiddenInput(el) {
   return el.tagName === 'INPUT' && el.type === 'hidden';
@@ -198,7 +200,7 @@ function immediateUriSecurityCheck(link) {
       if (lowerHref.startsWith('data:text/plain,') && !lowerHref.includes('base64')) {
         continue; // Safe plain text data URI, check next href source
       }
-      console.log(`[SecurityFix v8.4.0] 🛑 IMMEDIATE BLOCK: data: URI detected`);
+      logDebug(`[SecurityFix v8.4.0] 🛑 IMMEDIATE BLOCK: data: URI detected`);
       warnLinkByLevel(link, {
         level: 'alert',
         risk: 25,
@@ -233,7 +235,7 @@ function immediateUriSecurityCheck(link) {
       if (harmless.includes(code)) {
         continue; // Check next href source, don't exit early
       }
-      console.log(`[SecurityFix v8.4.0] 🛑 IMMEDIATE BLOCK: javascript: URI detected`);
+      logDebug(`[SecurityFix v8.4.0] 🛑 IMMEDIATE BLOCK: javascript: URI detected`);
       warnLinkByLevel(link, {
         level: 'alert',
         risk: 25,
@@ -245,7 +247,7 @@ function immediateUriSecurityCheck(link) {
 
     // IMMEDIATE CHECK 3: VBScript URI
     if (normalized.startsWith('vbscript:')) {
-      console.log(`[SecurityFix v8.4.0] 🛑 IMMEDIATE BLOCK: vbscript: URI detected`);
+      logDebug(`[SecurityFix v8.4.0] 🛑 IMMEDIATE BLOCK: vbscript: URI detected`);
       warnLinkByLevel(link, {
         level: 'alert',
         risk: 25,
@@ -257,7 +259,7 @@ function immediateUriSecurityCheck(link) {
 
     // IMMEDIATE CHECK 4: Blob URI (can execute arbitrary code)
     if (href.trim().toLowerCase().startsWith('blob:')) {
-      console.log(`[SecurityFix v8.4.0] 🛑 IMMEDIATE BLOCK: blob: URI detected`);
+      logDebug(`[SecurityFix v8.4.0] 🛑 IMMEDIATE BLOCK: blob: URI detected`);
       warnLinkByLevel(link, {
         level: 'alert',
         risk: 25,
@@ -453,21 +455,21 @@ function scheduleFullPageScan() {
       });
 
       const viewportTime = performance.now() - startTime;
-      console.log(`[ProgressiveScan] 👁️ Phase 1: ${viewportScanned}/${viewportLinks.length} viewport links in ${viewportTime.toFixed(1)}ms`);
+      logDebug(`[ProgressiveScan] 👁️ Phase 1: ${viewportScanned}/${viewportLinks.length} viewport links in ${viewportTime.toFixed(1)}ms`);
 
       // Phase 2: Background scan for off-screen links (non-blocking)
       if (offscreenLinks.length > 0) {
         processBatch(offscreenLinks, 0, (offscreenScanned) => {
           const totalTime = performance.now() - startTime;
-          console.log(`[ProgressiveScan] 📄 Phase 2: ${offscreenScanned}/${offscreenLinks.length} off-screen links`);
-          console.log(`[ProgressiveScan] ✅ Total: ${viewportScanned + offscreenScanned}/${totalLinks} links in ${totalTime.toFixed(1)}ms`);
+          logDebug(`[ProgressiveScan] 📄 Phase 2: ${offscreenScanned}/${offscreenLinks.length} off-screen links`);
+          logDebug(`[ProgressiveScan] ✅ Total: ${viewportScanned + offscreenScanned}/${totalLinks} links in ${totalTime.toFixed(1)}ms`);
 
           // Phase 3: Shadow DOM scan (after main links done)
           scanAllShadowDOMs(document.body, 0);
         });
       } else {
         const totalTime = performance.now() - startTime;
-        console.log(`[ProgressiveScan] ✅ Complete: ${viewportScanned}/${totalLinks} links in ${totalTime.toFixed(1)}ms`);
+        logDebug(`[ProgressiveScan] ✅ Complete: ${viewportScanned}/${totalLinks} links in ${totalTime.toFixed(1)}ms`);
         scanAllShadowDOMs(document.body, 0);
       }
     } catch (e) {
@@ -492,7 +494,7 @@ function scheduleFullPageScan() {
 function scanAllShadowDOMs(root, depth = 0) {
   if (!root || depth > MAX_SHADOW_DEPTH) {
     if (depth > MAX_SHADOW_DEPTH) {
-      console.log(`[ShadowScan] 🛑 MAX_DEPTH reached (${MAX_SHADOW_DEPTH}) - stopping recursion`);
+      logDebug(`[ShadowScan] 🛑 MAX_DEPTH reached (${MAX_SHADOW_DEPTH}) - stopping recursion`);
     }
     return;
   }
@@ -504,7 +506,7 @@ function scanAllShadowDOMs(root, depth = 0) {
 
     // DEBUG: Log scan start
     if (depth === 0) {
-      console.log(`[ShadowScan] 🔍 Starting Shadow DOM scan from root:`, root.nodeName || 'document');
+      logDebug(`[ShadowScan] 🔍 Starting Shadow DOM scan from root:`, root.nodeName || 'document');
     }
 
     allElements.forEach(el => {
@@ -513,11 +515,11 @@ function scanAllShadowDOMs(root, depth = 0) {
         const hostTag = el.tagName?.toLowerCase() || 'unknown';
 
         // DEBUG: Log each Shadow Root found
-        console.log(`[ShadowScan] 🌑 Shadow Root FOUND at depth ${depth}: <${hostTag}> (mode: ${el.shadowRoot.mode || 'unknown'})`);
+        logDebug(`[ShadowScan] 🌑 Shadow Root FOUND at depth ${depth}: <${hostTag}> (mode: ${el.shadowRoot.mode || 'unknown'})`);
 
         // Scan links in deze shadow root
         const shadowLinks = el.shadowRoot.querySelectorAll('a[href]');
-        console.log(`[ShadowScan]   └─ Links in shadow: ${shadowLinks.length}`);
+        logDebug(`[ShadowScan]   └─ Links in shadow: ${shadowLinks.length}`);
 
         shadowLinks.forEach(link => {
           if (!link.dataset.linkshieldScanned) {
@@ -527,11 +529,11 @@ function scanAllShadowDOMs(root, depth = 0) {
                   classifyAndCheckLink(link);
                   link.dataset.linkshieldScanned = 'true';
                   linksScanned++;
-                  console.log(`[ShadowScan]   └─ ✅ Scanned: ${link.href.substring(0, 60)}...`);
+                  logDebug(`[ShadowScan]   └─ ✅ Scanned: ${link.href.substring(0, 60)}...`);
                 }
               }
             } catch (e) {
-              console.log(`[ShadowScan]   └─ ❌ Error scanning link:`, e.message);
+              logDebug(`[ShadowScan]   └─ ❌ Error scanning link:`, e.message);
             }
           }
         });
@@ -543,7 +545,7 @@ function scanAllShadowDOMs(root, depth = 0) {
 
     // DEBUG: Log scan summary for this depth level
     if (shadowRootsFound > 0 || depth === 0) {
-      console.log(`[ShadowScan] 📊 Depth ${depth} complete: ${shadowRootsFound} shadow roots, ${linksScanned} links scanned`);
+      logDebug(`[ShadowScan] 📊 Depth ${depth} complete: ${shadowRootsFound} shadow roots, ${linksScanned} links scanned`);
     }
   } catch (e) {
     console.error(`[ShadowScan] ❌ Error at depth ${depth}:`, e);
@@ -3841,9 +3843,9 @@ function detectDangerousScheme(href) {
           return { isDangerous: false, scheme: '', reason: '', risk: 0 };
         }
       }
-      console.log(`[SecurityFix v8.3.0] 🚨 CRITICAL: Dangerous URI scheme detected: ${scheme}`);
-      console.log(`[SecurityFix v8.3.0] Original: ${href.substring(0, 80)}...`);
-      console.log(`[SecurityFix v8.3.0] Normalized: ${normalized.substring(0, 80)}...`);
+      logDebug(`[SecurityFix v8.3.0] 🚨 CRITICAL: Dangerous URI scheme detected: ${scheme}`);
+      logDebug(`[SecurityFix v8.3.0] Original: ${href.substring(0, 80)}...`);
+      logDebug(`[SecurityFix v8.3.0] Normalized: ${normalized.substring(0, 80)}...`);
       return { isDangerous: true, scheme, reason, risk: 25 }; // CRITICAL risk
     }
   }
@@ -3896,7 +3898,7 @@ function detectHomoglyphAndPunycode(href) {
       result.isSuspicious = true;
       result.reasons.push('punycodeDetected');
       result.risk += 12; // Increased from 8
-      console.log(`[SecurityFix v8.3.0] 🚨 Punycode domain detected: ${hostname}`);
+      logDebug(`[SecurityFix v8.3.0] 🚨 Punycode domain detected: ${hostname}`);
 
       // Decode punycode voor verdere analyse
       let decodedHostname = hostname;
@@ -3909,7 +3911,7 @@ function detectHomoglyphAndPunycode(href) {
             }
             return label;
           }).join('.');
-          console.log(`[SecurityFix v8.3.0] Decoded Punycode: ${hostname} → ${decodedHostname}`);
+          logDebug(`[SecurityFix v8.3.0] Decoded Punycode: ${hostname} → ${decodedHostname}`);
         } catch (e) {
           result.reasons.push('punycodeDecodingError');
           result.risk += 3;
@@ -3922,7 +3924,7 @@ function detectHomoglyphAndPunycode(href) {
         // Gemengde Latin + andere scripts is zeer verdacht
         result.reasons.push('mixedScriptAttack');
         result.risk += 15; // Increased from 10
-        console.log(`[SecurityFix v8.3.0] 🚨 Mixed-script attack detected: ${[...scripts].join(', ')}`);
+        logDebug(`[SecurityFix v8.3.0] 🚨 Mixed-script attack detected: ${[...scripts].join(', ')}`);
       }
     }
 
@@ -3943,7 +3945,7 @@ function detectHomoglyphAndPunycode(href) {
         result.reasons.push('nonAsciiDomain');
         result.risk += 8; // Increased from 6
       }
-      console.log(`[SecurityFix v8.3.0] 🚨 Non-ASCII characters (charCode > 127) in domain: ${hostname}`);
+      logDebug(`[SecurityFix v8.3.0] 🚨 Non-ASCII characters (charCode > 127) in domain: ${hostname}`);
 
       // Check voor gemengde scripts in origineel domein
       const domainToCheck = hasNonAscii ? hostname : originalDomain;
@@ -3972,7 +3974,7 @@ function detectHomoglyphAndPunycode(href) {
 
   } catch (e) {
     // Silently ignore parsing errors
-    console.log(`[SecurityFix v8.3.0] Error in homoglyph detection: ${e.message}`);
+    logDebug(`[SecurityFix v8.3.0] Error in homoglyph detection: ${e.message}`);
   }
 
   return result;
@@ -4012,7 +4014,7 @@ function detectDigitLookalikes(hostname) {
       result.detected = true;
       result.reasons.push('digitHomoglyph');
       result.risk = 10;
-      console.log(`[SecurityFix v8.3.0] 🚨 Digit lookalike detected: ${hostname} → ${normalized} (matches ${brand})`);
+      logDebug(`[SecurityFix v8.3.0] 🚨 Digit lookalike detected: ${hostname} → ${normalized} (matches ${brand})`);
       break;
     }
   }
@@ -4176,8 +4178,8 @@ function detectConfusableCharacters(hostname) {
   if (confusableCount > 0) {
     result.reasons.push('homoglyphCharactersDetected');
     result.risk = Math.min(confusableCount * 5, 20); // Increased: Max 20 punten
-    console.log(`[SecurityFix v8.3.0] 🚨 Homoglyph characters detected: ${confusableCount} in ${hostname}`);
-    console.log(`[SecurityFix v8.3.0] Confusables found: ${detectedChars.join(', ')}`);
+    logDebug(`[SecurityFix v8.3.0] 🚨 Homoglyph characters detected: ${confusableCount} in ${hostname}`);
+    logDebug(`[SecurityFix v8.3.0] Confusables found: ${detectedChars.join(', ')}`);
   }
 
   // =============================================================================
@@ -4191,7 +4193,7 @@ function detectConfusableCharacters(hostname) {
     if (!result.reasons.includes('mathematicalCharsDetected')) {
       result.reasons.push('mathematicalCharsDetected');
       result.risk += 12;
-      console.log(`[SecurityFix v8.4.0] 🚨 Mathematical Alphanumerics detected in: ${hostname}`);
+      logDebug(`[SecurityFix v8.4.0] 🚨 Mathematical Alphanumerics detected in: ${hostname}`);
     }
   }
 
@@ -4202,7 +4204,7 @@ function detectConfusableCharacters(hostname) {
     if (!result.reasons.includes('greekCharsDetected')) {
       result.reasons.push('greekCharsDetected');
       result.risk += 10;
-      console.log(`[SecurityFix v8.4.0] 🚨 Greek characters detected in: ${hostname}`);
+      logDebug(`[SecurityFix v8.4.0] 🚨 Greek characters detected in: ${hostname}`);
     }
   }
 
@@ -4213,7 +4215,7 @@ function detectConfusableCharacters(hostname) {
     if (!result.reasons.includes('scriptCharsDetected')) {
       result.reasons.push('scriptCharsDetected');
       result.risk += 10;
-      console.log(`[SecurityFix v8.4.0] 🚨 Script/Letterlike symbols detected in: ${hostname}`);
+      logDebug(`[SecurityFix v8.4.0] 🚨 Script/Letterlike symbols detected in: ${hostname}`);
     }
   }
 
@@ -4225,7 +4227,7 @@ function detectConfusableCharacters(hostname) {
     if (!result.reasons.includes('fullwidthCharsDetected')) {
       result.reasons.push('fullwidthCharsDetected');
       result.risk += 12;
-      console.log(`[SecurityFix v8.5.0] 🚨 Fullwidth Latin characters detected in: ${hostname}`);
+      logDebug(`[SecurityFix v8.5.0] 🚨 Fullwidth Latin characters detected in: ${hostname}`);
     }
   }
 
@@ -4237,7 +4239,7 @@ function detectConfusableCharacters(hostname) {
     if (!result.reasons.includes('cherokeeCharsDetected')) {
       result.reasons.push('cherokeeCharsDetected');
       result.risk += 12;
-      console.log(`[SecurityFix v8.5.0] 🚨 Cherokee characters detected in: ${hostname}`);
+      logDebug(`[SecurityFix v8.5.0] 🚨 Cherokee characters detected in: ${hostname}`);
     }
   }
 
@@ -4248,7 +4250,7 @@ function detectConfusableCharacters(hostname) {
     if (!result.reasons.includes('enclosedAlphanumericsDetected')) {
       result.reasons.push('enclosedAlphanumericsDetected');
       result.risk += 10;
-      console.log(`[SecurityFix v8.6.0] 🚨 Enclosed Alphanumerics detected in: ${hostname}`);
+      logDebug(`[SecurityFix v8.6.0] 🚨 Enclosed Alphanumerics detected in: ${hostname}`);
     }
   }
 
@@ -4258,7 +4260,7 @@ function detectConfusableCharacters(hostname) {
     if (!result.reasons.includes('superscriptSubscriptDetected')) {
       result.reasons.push('superscriptSubscriptDetected');
       result.risk += 10;
-      console.log(`[SecurityFix v8.6.0] 🚨 Superscript/Subscript characters detected in: ${hostname}`);
+      logDebug(`[SecurityFix v8.6.0] 🚨 Superscript/Subscript characters detected in: ${hostname}`);
     }
   }
 
@@ -4268,7 +4270,7 @@ function detectConfusableCharacters(hostname) {
     if (!result.reasons.includes('numberFormsDetected')) {
       result.reasons.push('numberFormsDetected');
       result.risk += 8;
-      console.log(`[SecurityFix v8.6.0] 🚨 Number Forms detected in: ${hostname}`);
+      logDebug(`[SecurityFix v8.6.0] 🚨 Number Forms detected in: ${hostname}`);
     }
   }
 
@@ -4282,7 +4284,7 @@ function detectConfusableCharacters(hostname) {
       result.hasConfusables = true;
       result.reasons.push('nonAsciiCharactersDetected');
       result.risk += 6; // Medium risk for any non-ASCII
-      console.log(`[SecurityFix v8.6.0] 🚨 Non-ASCII characters detected: ${hostname}`);
+      logDebug(`[SecurityFix v8.6.0] 🚨 Non-ASCII characters detected: ${hostname}`);
     }
 
     // Escalate to HIGH if brand-like context
@@ -4296,7 +4298,7 @@ function detectConfusableCharacters(hostname) {
         if (!result.reasons.includes('nonAsciiInBrandDomain')) {
           result.reasons.push('nonAsciiInBrandDomain');
           result.risk += 8; // Additional 8 points for brand context
-          console.log(`[SecurityFix v8.6.0] 🚨 Non-ASCII in brand-like domain: ${hostname}`);
+          logDebug(`[SecurityFix v8.6.0] 🚨 Non-ASCII in brand-like domain: ${hostname}`);
         }
         break;
       }
@@ -4328,7 +4330,7 @@ function detectConfusableCharacters(hostname) {
         if (!result.reasons.includes('digitInDomainDetected')) {
           result.reasons.push('digitInDomainDetected');
           result.risk += 12;
-          console.log(`[SecurityFix v8.4.0] 🚨 Digit-substitution brand impersonation detected: ${hostname}`);
+          logDebug(`[SecurityFix v8.4.0] 🚨 Digit-substitution brand impersonation detected: ${hostname}`);
         }
         break;
       }
@@ -4355,7 +4357,7 @@ function classifyAndCheckLink(link) {
   // Dit vangt javascript:, data:, vbscript: URLs die anders worden overgeslagen
   const schemeCheck = detectDangerousScheme(href);
   if (schemeCheck.isDangerous) {
-    console.log(`[SecurityFix v8.2.0] 🛑 BLOCKING dangerous ${schemeCheck.scheme} URI`);
+    logDebug(`[SecurityFix v8.2.0] 🛑 BLOCKING dangerous ${schemeCheck.scheme} URI`);
     warnLinkByLevel(link, {
       level: 'alert',
       risk: 25, // Maximum risk score voor gevaarlijke schemes
@@ -4468,7 +4470,7 @@ function classifyAndCheckLink(link) {
 
     // Apply warning if any Unicode issues detected
     if (unicodeReasons.length > 0) {
-      console.log(`[SecurityFix v8.8.2] ⚠️ UNICODE DETECTED (pre-parse): ${href.substring(0, 50)} → ${unicodeReasons.join(', ')}`);
+      logDebug(`[SecurityFix v8.8.2] ⚠️ UNICODE DETECTED (pre-parse): ${href.substring(0, 50)} → ${unicodeReasons.join(', ')}`);
 
       // Set warned attribute IMMEDIATELY
       link.dataset.linkshieldWarned = 'true';
@@ -4511,7 +4513,7 @@ function classifyAndCheckLink(link) {
 
     for (const lookalike of asciiLookalikes) {
       if (lookalike.pattern.test(hostname)) {
-        console.log(`[SecurityFix v8.8.1] ⚠️ ASCII LOOKALIKE: ${hostname} → impersonates ${lookalike.brand}`);
+        logDebug(`[SecurityFix v8.8.1] ⚠️ ASCII LOOKALIKE: ${hostname} → impersonates ${lookalike.brand}`);
         // Use caution level and set warned attribute immediately
         link.dataset.linkshieldWarned = 'true';
         link.dataset.linkshieldLevel = 'caution';
@@ -4543,7 +4545,7 @@ function classifyAndCheckLink(link) {
     ];
     for (const keyword of maliciousDomainKeywords) {
       if (hostname.includes(keyword)) {
-        console.log(`[SecurityFix v8.5.0] 🛑 HIGH RISK: Malicious keyword "${keyword}" in domain: ${hostname}`);
+        logDebug(`[SecurityFix v8.5.0] 🛑 HIGH RISK: Malicious keyword "${keyword}" in domain: ${hostname}`);
         // SECURITY FIX v8.8.2: Set warned attribute SYNCHRONOUSLY before async warnLinkByLevel
         link.dataset.linkshieldWarned = 'true';
         link.dataset.linkshieldLevel = 'alert';
@@ -4564,7 +4566,7 @@ function classifyAndCheckLink(link) {
   // Dit zorgt voor CRITICAL flagging van IDN spoofing attacks
   const homoglyphCheck = detectHomoglyphAndPunycode(href);
   if (homoglyphCheck.isSuspicious && homoglyphCheck.risk >= 10) {
-    console.log(`[SecurityFix v8.2.0] 🛑 HIGH RISK homoglyph/punycode detected: ${homoglyphCheck.reasons.join(', ')}`);
+    logDebug(`[SecurityFix v8.2.0] 🛑 HIGH RISK homoglyph/punycode detected: ${homoglyphCheck.reasons.join(', ')}`);
     warnLinkByLevel(link, {
       level: 'alert',
       risk: homoglyphCheck.risk,
@@ -5913,7 +5915,7 @@ async function analyzeDomainAndUrl(link) {
     if (globalConfig.TEST_MODE === true) {
       // Skip same-origin links in test mode
       if (hostname !== window.location.hostname) {
-        console.log(`[TEST_MODE] 🧪 Forcing HIGH RISK for external link: ${href.substring(0, 60)}...`);
+        logDebug(`[TEST_MODE] 🧪 Forcing HIGH RISK for external link: ${href.substring(0, 60)}...`);
         const testResult = {
           level: 'alert',
           risk: globalConfig.TEST_MODE_RISK_SCORE || 25,
@@ -7838,7 +7840,7 @@ async function performSuspiciousChecks(url) {
   // Catches: javascript:, data:, vbscript:, blob: with obfuscation bypass
   const dangerousSchemeResult = detectDangerousScheme(url);
   if (dangerousSchemeResult.isDangerous) {
-    console.log(`[SecurityFix v8.3.0] 🛑 performSuspiciousChecks: BLOCKING ${dangerousSchemeResult.scheme}`);
+    logDebug(`[SecurityFix v8.3.0] 🛑 performSuspiciousChecks: BLOCKING ${dangerousSchemeResult.scheme}`);
     const criticalResult = {
       level: 'alert',
       risk: dangerousSchemeResult.risk, // 25 = CRITICAL
@@ -7855,7 +7857,7 @@ async function performSuspiciousChecks(url) {
   // AUDIT FIX: Check for IDN/homoglyph attacks BEFORE normal processing
   const homoglyphResult = detectHomoglyphAndPunycode(url);
   if (homoglyphResult.isSuspicious && homoglyphResult.risk >= 15) {
-    console.log(`[SecurityFix v8.3.0] 🛑 performSuspiciousChecks: HIGH RISK homoglyph/punycode`);
+    logDebug(`[SecurityFix v8.3.0] 🛑 performSuspiciousChecks: HIGH RISK homoglyph/punycode`);
     const homoglyphAlertResult = {
       level: 'alert',
       risk: homoglyphResult.risk,
@@ -10403,7 +10405,7 @@ const observer = new MutationObserver(debounceMutations(async (mutations) => {
         // Re-scan de link omdat href is gewijzigd
         delete target.dataset.linkshieldScanned; // Reset scanned flag
         classifyAndCheckLink(target);
-        console.log(`[SecurityFix v8.2.0] 🔄 href attribute changed, re-scanning: ${target.href.substring(0, 50)}...`);
+        logDebug(`[SecurityFix v8.2.0] 🔄 href attribute changed, re-scanning: ${target.href.substring(0, 50)}...`);
       }
     }
   });
@@ -10519,7 +10521,7 @@ function scanViewportAfterScroll() {
   });
 
   if (scannedCount > 0) {
-    console.log(`[SecurityFix v8.6.0] 📜 Scroll scan: ${scannedCount} new links in/near viewport`);
+    logDebug(`[SecurityFix v8.6.0] 📜 Scroll scan: ${scannedCount} new links in/near viewport`);
   }
 }
 
@@ -10545,7 +10547,7 @@ function initScrollScanObserver() {
           }
           classifyAndCheckLink(link);
           link.dataset.linkshieldScanned = 'true';
-          console.log('[SecurityFix v8.6.0] 👁️ IntersectionObserver caught link:', link.href.substring(0, 50));
+          logDebug('[SecurityFix v8.6.0] 👁️ IntersectionObserver caught link:', link.href.substring(0, 50));
         }
       }
     });
@@ -10593,7 +10595,7 @@ async function handleSPANavigation(newUrl) {
   if (newUrl === lastNavigationUrl) return;
   lastNavigationUrl = newUrl;
 
-  console.log(`[SecurityFix v8.3.0] 🔄 SPA navigation detected: ${newUrl}`);
+  logDebug(`[SecurityFix v8.3.0] 🔄 SPA navigation detected: ${newUrl}`);
 
   // Clear caches for new page
   if (window.linkRiskCache) {
@@ -10653,7 +10655,7 @@ window.addEventListener('hashchange', () => {
   handleSPANavigation(window.location.href);
 });
 
-console.log('[SecurityFix v8.3.0] ✅ Scroll listener and SPA navigation handlers installed');
+logDebug('[SecurityFix v8.3.0] ✅ Scroll listener and SPA navigation handlers installed');
 
 const processedLinks = new Set();
 /**

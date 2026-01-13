@@ -12074,10 +12074,14 @@ class ImagelessQRScanner {
     if (element.dataset.qrWarned === 'true') return;
     element.dataset.qrWarned = 'true';
 
+    // Create wrapper with Visual Hijacking protection
     const wrapper = document.createElement('div');
     wrapper.className = 'linkshield-warning linkshield-imageless-qr';
-    wrapper.style.position = 'relative';
-    wrapper.style.display = 'inline-block';
+    wrapper.style.cssText = `
+      position: relative !important;
+      display: inline-block !important;
+      pointer-events: auto !important;
+    `;
     element.parentNode?.insertBefore(wrapper, element);
     wrapper.appendChild(element);
 
@@ -12104,37 +12108,68 @@ class ImagelessQRScanner {
 
     const displayUrl = url && url.length > 50 ? url.substring(0, 50) + '...' : url;
 
-    const overlay = document.createElement('div');
-    overlay.className = 'linkshield-overlay imageless-qr-warning';
-    overlay.innerHTML = `
-      <div style="font-weight:bold;font-size:14px;margin-bottom:4px;">${escapeHtml(emoji + ' ' + title)}</div>
-      <div style="font-size:11px;margin-bottom:4px;">URL: ${escapeHtml(displayUrl || chrome.i18n.getMessage('hiddenUrl') || 'Hidden')}</div>
-      <div style="font-size:10px;opacity:0.9;">${escapeHtml(translatedReasons)}</div>
+    // Create overlay host with closed Shadow DOM for CSS isolation
+    const overlayHost = document.createElement('div');
+    overlayHost.style.cssText = `
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      z-index: 10000 !important;
+      pointer-events: auto !important;
     `;
 
-    overlay.style.cssText = `
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: ${bgColor};
-      color: white;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 10px;
-      z-index: 10000;
-      border: 3px solid ${borderColor};
-      border-radius: 4px;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    // Closed Shadow DOM - page cannot access or manipulate warning content
+    const shadow = overlayHost.attachShadow({ mode: 'closed' });
+    shadow.innerHTML = `
+      <style>
+        :host {
+          all: initial !important;
+        }
+        .overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: ${bgColor};
+          color: white;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          padding: 10px;
+          border: 3px solid ${borderColor};
+          border-radius: 4px;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+          box-sizing: border-box;
+        }
+        .title {
+          font-weight: bold;
+          font-size: 14px;
+          margin-bottom: 4px;
+        }
+        .url {
+          font-size: 11px;
+          margin-bottom: 4px;
+        }
+        .reasons {
+          font-size: 10px;
+          opacity: 0.9;
+        }
+      </style>
+      <div class="overlay">
+        <div class="title">${escapeHtml(emoji + ' ' + title)}</div>
+        <div class="url">URL: ${escapeHtml(displayUrl || chrome.i18n.getMessage('hiddenUrl') || 'Hidden')}</div>
+        <div class="reasons">${escapeHtml(translatedReasons)}</div>
+      </div>
     `;
 
-    wrapper.appendChild(overlay);
-    logDebug(`[ImagelessQR] Warning displayed for ${type}: ${url}`);
+    wrapper.appendChild(overlayHost);
+    logDebug(`[ImagelessQR] Warning displayed for ${type}: ${url} (Shadow DOM protected)`);
   }
 
   /**

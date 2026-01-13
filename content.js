@@ -663,6 +663,324 @@ let lastIframeCheck = 0;
 let lastScriptCheck = 0;
 
 // ============================================================================
+// UNIFIED SECURITY WARNING SYSTEM
+// Consistent UI voor alle security detecties (BitB, ClickFix, Clipboard, etc.)
+// Gebruikt Shadow DOM voor CSS isolatie en design tokens uit shared.css
+// ============================================================================
+
+/**
+ * Toont een uniforme security waarschuwing met consistent design
+ * @param {Object} config - Configuratie object
+ * @param {string} config.id - Unieke ID voor de waarschuwing (bijv. 'bitb', 'clickfix')
+ * @param {string} config.severity - 'critical' of 'warning'
+ * @param {string} config.title - Titel van de waarschuwing
+ * @param {string} config.message - Hoofdbericht
+ * @param {string} [config.tip] - Optionele tip tekst
+ * @param {string} [config.icon] - Emoji icon (default: ⚠️ of 🚨)
+ * @param {boolean} [config.showTrust=true] - Toon "Trust this site" knop
+ * @param {boolean} [config.autoClose=false] - Auto-close na 30 seconden (alleen voor warnings)
+ * @param {Function} [config.onTrust] - Callback wanneer Trust wordt geklikt
+ * @param {Function} [config.onLeave] - Callback wanneer Leave wordt geklikt
+ * @param {Function} [config.onDismiss] - Callback wanneer Dismiss wordt geklikt
+ */
+function showSecurityWarning(config) {
+  const {
+    id,
+    severity = 'warning',
+    title,
+    message,
+    tip,
+    icon,
+    showTrust = true,
+    autoClose = false,
+    onTrust,
+    onLeave,
+    onDismiss
+  } = config;
+
+  // Verwijder bestaande waarschuwing
+  const existingHost = document.getElementById(`linkshield-warning-${id}`);
+  if (existingHost) existingHost.remove();
+
+  // Bepaal kleuren op basis van severity (design tokens uit shared.css)
+  const isCritical = severity === 'critical';
+  const colors = {
+    header: isCritical ? '#dc2626' : '#d97706',
+    headerGradient: isCritical
+      ? 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)'
+      : 'linear-gradient(135deg, #d97706 0%, #b45309 100%)',
+    iconBg: isCritical ? '#fef2f2' : '#fffbeb',
+    iconBorder: isCritical ? '#fecaca' : '#fde68a',
+    titleColor: isCritical ? '#dc2626' : '#d97706',
+    boxBg: isCritical ? '#fef2f2' : '#fffbeb',
+    boxBorder: isCritical ? '#fecaca' : '#fde68a',
+    boxText: isCritical ? '#991b1b' : '#92400e'
+  };
+
+  const displayIcon = icon || (isCritical ? '🚨' : '⚠️');
+
+  // i18n teksten
+  const trustText = chrome.i18n.getMessage('trustDomainButton') || 'Trust this site';
+  const leaveText = chrome.i18n.getMessage('exitPage') || 'Leave this page';
+  const dismissText = chrome.i18n.getMessage('understandRisk') || 'I understand the risk';
+
+  // Create host element with Shadow DOM
+  const host = document.createElement('div');
+  host.id = `linkshield-warning-${id}`;
+  host.style.cssText = `
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 2147483647 !important;
+    pointer-events: auto !important;
+  `;
+
+  // Closed Shadow DOM voor CSS isolatie
+  const shadow = host.attachShadow({ mode: 'closed' });
+
+  shadow.innerHTML = `
+    <style>
+      :host {
+        all: initial !important;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        animation: fadeIn 0.2s ease;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      .dialog {
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        max-width: 440px;
+        width: 90vw;
+        overflow: hidden;
+        animation: slideIn 0.3s ease;
+      }
+      @keyframes slideIn {
+        from { transform: translateY(-20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+      }
+      .header {
+        background: ${colors.headerGradient};
+        color: white;
+        padding: 14px 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .header-icon {
+        font-size: 18px;
+      }
+      .header-text {
+        font-weight: 600;
+        font-size: 14px;
+        letter-spacing: 0.3px;
+      }
+      .content {
+        padding: 24px;
+      }
+      .title-row {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 18px;
+      }
+      .title-icon {
+        width: 52px;
+        height: 52px;
+        background: ${colors.iconBg};
+        border: 2px solid ${colors.iconBorder};
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 26px;
+        flex-shrink: 0;
+      }
+      .title-text {
+        font-size: 18px;
+        font-weight: 700;
+        color: ${colors.titleColor};
+        line-height: 1.3;
+      }
+      .message-box {
+        background: ${colors.boxBg};
+        border: 1px solid ${colors.boxBorder};
+        border-radius: 8px;
+        padding: 14px 16px;
+        margin-bottom: 16px;
+        line-height: 1.6;
+        color: ${colors.boxText};
+        font-size: 13px;
+      }
+      .tip {
+        font-size: 12px;
+        color: #6b7280;
+        margin-bottom: 20px;
+        line-height: 1.5;
+        display: flex;
+        align-items: flex-start;
+        gap: 6px;
+      }
+      .tip-icon {
+        flex-shrink: 0;
+      }
+      .actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .btn {
+        flex: 1;
+        min-width: 100px;
+        padding: 12px 16px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: none;
+        text-align: center;
+      }
+      .btn:hover {
+        transform: translateY(-1px);
+      }
+      .btn:active {
+        transform: translateY(0);
+      }
+      .btn-trust {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+      }
+      .btn-trust:hover {
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+      }
+      .btn-leave {
+        background: ${colors.headerGradient};
+        color: white;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      }
+      .btn-leave:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      }
+      .btn-dismiss {
+        background: #f3f4f6;
+        color: #374151;
+        border: 1px solid #e5e7eb;
+      }
+      .btn-dismiss:hover {
+        background: #e5e7eb;
+      }
+    </style>
+    <div class="overlay">
+      <div class="dialog">
+        <div class="header">
+          <span class="header-icon">🛡️</span>
+          <span class="header-text">LinkShield Security</span>
+        </div>
+        <div class="content">
+          <div class="title-row">
+            <div class="title-icon">${displayIcon}</div>
+            <div class="title-text">${title}</div>
+          </div>
+          <div class="message-box">${message}</div>
+          ${tip ? `<div class="tip"><span class="tip-icon">💡</span><span>${tip}</span></div>` : ''}
+          <div class="actions">
+            ${showTrust ? `<button class="btn btn-trust" data-action="trust">${trustText}</button>` : ''}
+            <button class="btn btn-leave" data-action="leave">${leaveText}</button>
+            <button class="btn btn-dismiss" data-action="dismiss">${dismissText}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(host);
+
+  // Event handlers
+  const handleAction = (action) => {
+    switch (action) {
+      case 'trust':
+        // Voeg domein toe aan trusted list
+        const domain = window.location.hostname;
+        chrome.storage.sync.get('trustedDomains', (result) => {
+          const trustedDomains = result.trustedDomains || [];
+          if (!trustedDomains.includes(domain)) {
+            trustedDomains.push(domain);
+            chrome.storage.sync.set({ trustedDomains }, () => {
+              logDebug(`[SecurityWarning] Domain trusted: ${domain}`);
+              if (onTrust) onTrust();
+              host.remove();
+              // Reload pagina om nieuwe trust status toe te passen
+              window.location.reload();
+            });
+          } else {
+            host.remove();
+          }
+        });
+        break;
+      case 'leave':
+        if (onLeave) onLeave();
+        window.history.back();
+        setTimeout(() => { window.location.href = 'about:blank'; }, 100);
+        break;
+      case 'dismiss':
+        if (onDismiss) onDismiss();
+        host.remove();
+        break;
+    }
+  };
+
+  // Bind click events
+  shadow.querySelectorAll('.btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      handleAction(btn.dataset.action);
+    });
+  });
+
+  // Click op overlay sluit ook (maar niet op dialog)
+  shadow.querySelector('.overlay').addEventListener('click', (e) => {
+    if (e.target.classList.contains('overlay')) {
+      handleAction('dismiss');
+    }
+  });
+
+  // Auto-close voor warnings (niet voor critical)
+  if (autoClose && !isCritical) {
+    setTimeout(() => {
+      if (document.getElementById(`linkshield-warning-${id}`)) {
+        host.remove();
+      }
+    }, 30000);
+  }
+
+  return host;
+}
+
+// ============================================================================
 // CLIPBOARD GUARD - Detecteert clipboard hijacking pogingen
 // ============================================================================
 let clipboardGuardInitialized = false;
@@ -819,30 +1137,7 @@ function reportClipboardHijacking(type, content) {
  * Toont een waarschuwing bij clipboard hijacking
  */
 function showClipboardWarning(type, score) {
-    // Remove existing warning
-    document.getElementById('linkshield-clipboard-warning')?.remove();
-
     const isCrypto = type.includes('Crypto');
-
-    const warning = document.createElement('div');
-    warning.id = 'linkshield-clipboard-warning';
-    warning.style.cssText = `
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: #ffffff;
-        color: #1f2937;
-        padding: 0;
-        border-radius: 12px;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-        z-index: 2147483647;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        font-size: 14px;
-        max-width: 420px;
-        width: 90vw;
-        overflow: hidden;
-    `;
 
     const title = isCrypto
         ? chrome.i18n.getMessage('clipboardHijackingCryptoTitle') || 'Crypto Address Hijacking Detected!'
@@ -855,93 +1150,14 @@ function showClipboardWarning(type, score) {
         ? chrome.i18n.getMessage('clipboardHijackingCryptoTip') || 'Always verify wallet addresses before sending cryptocurrency. Attackers replace addresses in your clipboard.'
         : chrome.i18n.getMessage('clipboardHijackingTip') || 'This site may be trying to replace content you copy. Always verify pasted content.';
 
-    warning.innerHTML = `
-        <div style="
-            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-            color: white;
-            padding: 16px 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        ">
-            <span style="font-size: 20px;">🛡️</span>
-            <span style="font-weight: 600; font-size: 15px;">LinkShield Security</span>
-        </div>
-        <div style="padding: 24px;">
-            <div style="
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                margin-bottom: 16px;
-            ">
-                <div style="
-                    width: 48px;
-                    height: 48px;
-                    background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
-                    border-radius: 50%;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 24px;
-                    flex-shrink: 0;
-                ">${isCrypto ? '💰' : '📋'}</div>
-                <div style="font-size: 18px; font-weight: 600; color: #dc2626;">${title}</div>
-            </div>
-            <div style="
-                background: #fef2f2;
-                border: 1px solid #fecaca;
-                border-radius: 8px;
-                padding: 14px;
-                margin-bottom: 16px;
-                line-height: 1.5;
-                color: #7f1d1d;
-                font-size: 13px;
-            ">${message}</div>
-            <div style="
-                font-size: 12px;
-                color: #6b7280;
-                margin-bottom: 20px;
-                line-height: 1.4;
-            ">💡 ${tip}</div>
-            <div style="display: flex; gap: 12px;">
-                <button id="linkshield-clipboard-leave" style="
-                    flex: 1;
-                    padding: 12px 16px;
-                    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-                    color: white;
-                    border: none;
-                    border-radius: 8px;
-                    font-size: 14px;
-                    font-weight: 600;
-                    cursor: pointer;
-                    transition: opacity 0.2s;
-                ">${chrome.i18n.getMessage('exitPage') || 'Leave this page'}</button>
-                <button id="linkshield-clipboard-close" style="
-                    flex: 1;
-                    padding: 12px 16px;
-                    background: #f3f4f6;
-                    color: #374151;
-                    border: 1px solid #d1d5db;
-                    border-radius: 8px;
-                    font-size: 14px;
-                    font-weight: 500;
-                    cursor: pointer;
-                    transition: background 0.2s;
-                ">${chrome.i18n.getMessage('understandRisk') || 'I understand the risk'}</button>
-            </div>
-        </div>
-    `;
-
-    document.body.appendChild(warning);
-
-    // Leave page button
-    document.getElementById('linkshield-clipboard-leave')?.addEventListener('click', () => {
-        window.location.href = 'about:blank';
-    });
-
-    // Close button
-    document.getElementById('linkshield-clipboard-close')?.addEventListener('click', () => {
-        warning.remove();
+    showSecurityWarning({
+        id: 'clipboard',
+        severity: 'critical',
+        title: title,
+        message: message,
+        tip: tip,
+        icon: isCrypto ? '💰' : '📋',
+        showTrust: true
     });
 }
 
@@ -1102,30 +1318,7 @@ function reportClickFixAttack(patterns, score) {
  * Toont een waarschuwing voor ClickFix aanval
  */
 function showClickFixWarning(patterns, score) {
-    // Verwijder bestaande waarschuwing
-    document.getElementById('linkshield-clickfix-warning')?.remove();
-
     const hasPowerShell = patterns.some(p => p.type === 'powershell');
-
-    const warning = document.createElement('div');
-    warning.id = 'linkshield-clickfix-warning';
-    warning.style.cssText = `
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: #ffffff;
-        color: #1f2937;
-        padding: 0;
-        border-radius: 12px;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-        z-index: 2147483647;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        font-size: 14px;
-        max-width: 420px;
-        width: 90vw;
-        overflow: hidden;
-    `;
 
     const title = hasPowerShell
         ? (chrome.i18n.getMessage('clickFixPowerShellTitle') || 'PowerShell Command Detected!')
@@ -1134,104 +1327,17 @@ function showClickFixWarning(patterns, score) {
     const message = chrome.i18n.getMessage('clickFixMessage') ||
         'This page contains a suspicious command that could harm your computer. Do not copy or execute this command.';
 
-    const subMessage = chrome.i18n.getMessage('clickFixSubMessage') ||
+    const tip = chrome.i18n.getMessage('clickFixSubMessage') ||
         'Attackers often disguise malicious commands as \'fixes\' or \'verification steps\'. Never run commands from untrusted sources.';
 
-    warning.innerHTML = `
-        <div style="
-            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-            color: white;
-            padding: 16px 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        ">
-            <span style="font-size: 20px;">🛡️</span>
-            <span style="font-weight: 600; font-size: 15px;">LinkShield Security</span>
-        </div>
-        <div style="padding: 24px;">
-            <div style="
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                margin-bottom: 16px;
-            ">
-                <div style="
-                    width: 48px;
-                    height: 48px;
-                    background: linear-gradient(135deg, #fef2f2 0%, #fecaca 100%);
-                    border-radius: 50%;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 24px;
-                    flex-shrink: 0;
-                ">⚠️</div>
-                <div style="font-size: 18px; font-weight: 600; color: #dc2626;">${title}</div>
-            </div>
-            <div style="
-                background: #fef2f2;
-                border: 1px solid #fecaca;
-                border-radius: 8px;
-                padding: 14px;
-                margin-bottom: 16px;
-                line-height: 1.5;
-                color: #7f1d1d;
-                font-size: 13px;
-            ">${message}</div>
-            <div style="
-                font-size: 12px;
-                color: #6b7280;
-                margin-bottom: 20px;
-                line-height: 1.5;
-            ">${subMessage}</div>
-            <div style="display: flex; gap: 12px;">
-                <button id="linkshield-clickfix-leave" style="
-                    flex: 1;
-                    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-                    color: white;
-                    border: none;
-                    padding: 12px 20px;
-                    border-radius: 8px;
-                    cursor: pointer;
-                    font-weight: 600;
-                    font-size: 14px;
-                    transition: opacity 0.2s;
-                ">${chrome.i18n.getMessage('exitPage') || 'Leave this page'}</button>
-                <button id="linkshield-clickfix-close" style="
-                    flex: 1;
-                    background: #f3f4f6;
-                    color: #374151;
-                    border: 1px solid #d1d5db;
-                    padding: 12px 20px;
-                    border-radius: 8px;
-                    cursor: pointer;
-                    font-size: 14px;
-                    transition: background 0.2s;
-                ">${chrome.i18n.getMessage('understandRisk') || 'I understand the risk'}</button>
-            </div>
-        </div>
-    `;
-
-    // Voeg animatie toe
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes pulse {
-            0%, 100% { box-shadow: 0 8px 32px rgba(220, 38, 38, 0.4); }
-            50% { box-shadow: 0 8px 48px rgba(220, 38, 38, 0.6); }
-        }
-    `;
-    document.head.appendChild(style);
-    document.body.appendChild(warning);
-
-    // Event listeners
-    document.getElementById('linkshield-clickfix-leave')?.addEventListener('click', () => {
-        window.history.back();
-        setTimeout(() => { window.location.href = 'about:blank'; }, 100);
-    });
-
-    document.getElementById('linkshield-clickfix-close')?.addEventListener('click', () => {
-        warning.remove();
+    showSecurityWarning({
+        id: 'clickfix',
+        severity: 'critical',
+        title: title,
+        message: message,
+        tip: tip,
+        icon: hasPowerShell ? '💻' : '⚠️',
+        showTrust: true
     });
 }
 
@@ -1787,30 +1893,7 @@ function reportBitBAttack(severity, indicators, score) {
  * Design consistent met alert.html/caution.html
  */
 function showBitBWarning(severity, indicators, score) {
-    // Verwijder bestaande waarschuwing
-    document.getElementById('linkshield-bitb-warning')?.remove();
-
     const isCritical = severity === 'critical';
-
-    const warning = document.createElement('div');
-    warning.id = 'linkshield-bitb-warning';
-    warning.style.cssText = `
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: #ffffff;
-        color: #1f2937;
-        padding: 0;
-        border-radius: 12px;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-        z-index: 2147483647;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        font-size: 14px;
-        max-width: 420px;
-        width: 90vw;
-        overflow: hidden;
-    `;
 
     const title = isCritical
         ? (chrome.i18n.getMessage('bitbAttackCriticalTitle') || 'Fake Login Window Detected!')
@@ -1822,105 +1905,16 @@ function showBitBWarning(severity, indicators, score) {
     const tip = chrome.i18n.getMessage('bitbAttackTip') ||
         'Always check the browser address bar for the real URL, not text displayed within the page.';
 
-    const headerColor = isCritical ? 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)' : 'linear-gradient(135deg, #d97706 0%, #b45309 100%)';
-    const iconBg = isCritical ? 'linear-gradient(135deg, #fef2f2 0%, #fecaca 100%)' : 'linear-gradient(135deg, #fffbeb 0%, #fde68a 100%)';
-    const titleColor = isCritical ? '#dc2626' : '#d97706';
-    const boxBg = isCritical ? '#fef2f2' : '#fffbeb';
-    const boxBorder = isCritical ? '#fecaca' : '#fde68a';
-    const boxText = isCritical ? '#7f1d1d' : '#92400e';
-
-    warning.innerHTML = `
-        <div style="
-            background: ${headerColor};
-            color: white;
-            padding: 16px 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        ">
-            <span style="font-size: 20px;">🛡️</span>
-            <span style="font-weight: 600; font-size: 15px;">LinkShield Security</span>
-        </div>
-        <div style="padding: 24px;">
-            <div style="
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                margin-bottom: 16px;
-            ">
-                <div style="
-                    width: 48px;
-                    height: 48px;
-                    background: ${iconBg};
-                    border-radius: 50%;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 24px;
-                    flex-shrink: 0;
-                ">${isCritical ? '🚨' : '⚠️'}</div>
-                <div style="font-size: 18px; font-weight: 600; color: ${titleColor};">${title}</div>
-            </div>
-            <div style="
-                background: ${boxBg};
-                border: 1px solid ${boxBorder};
-                border-radius: 8px;
-                padding: 14px;
-                margin-bottom: 16px;
-                line-height: 1.5;
-                color: ${boxText};
-                font-size: 13px;
-            ">${message}</div>
-            <div style="
-                font-size: 12px;
-                color: #6b7280;
-                margin-bottom: 20px;
-                line-height: 1.5;
-            "><strong>💡 Tip:</strong> ${tip}</div>
-            <div style="display: flex; gap: 12px;">
-                <button id="linkshield-bitb-close-page" style="
-                    flex: 1;
-                    background: ${headerColor};
-                    color: white;
-                    border: none;
-                    padding: 12px 20px;
-                    border-radius: 8px;
-                    cursor: pointer;
-                    font-weight: 600;
-                    font-size: 14px;
-                    transition: opacity 0.2s;
-                ">${chrome.i18n.getMessage('exitPage') || 'Leave this page'}</button>
-                <button id="linkshield-bitb-dismiss" style="
-                    flex: 1;
-                    background: #f3f4f6;
-                    color: #374151;
-                    border: 1px solid #d1d5db;
-                    padding: 12px 20px;
-                    border-radius: 8px;
-                    cursor: pointer;
-                    font-size: 14px;
-                    transition: background 0.2s;
-                ">${chrome.i18n.getMessage('understandRisk') || 'I understand the risk'}</button>
-            </div>
-        </div>
-    `;
-
-    document.body.appendChild(warning);
-
-    // Event listeners
-    document.getElementById('linkshield-bitb-close-page')?.addEventListener('click', () => {
-        window.history.back();
-        setTimeout(() => { window.location.href = 'about:blank'; }, 100);
+    showSecurityWarning({
+        id: 'bitb',
+        severity: isCritical ? 'critical' : 'warning',
+        title: title,
+        message: message,
+        tip: tip,
+        icon: '🪟',
+        showTrust: true,
+        autoClose: !isCritical
     });
-
-    document.getElementById('linkshield-bitb-dismiss')?.addEventListener('click', () => {
-        warning.remove();
-    });
-
-    // Auto-remove na 30 seconden voor warnings (niet voor critical)
-    if (!isCritical) {
-        setTimeout(() => warning.remove(), 30000);
-    }
 }
 
 /**
@@ -4672,6 +4666,197 @@ function clearWarning(link) {
 // ==============================================================================
 
 /**
+ * SECURITY FIX v8.8.3: CMP (Consent Management Platform) Whitelist
+ * Voorkomt false positives voor legitieme consent/cookie modals.
+ * Deze platforms gebruiken legaal fullscreen overlays voor privacy consent.
+ */
+
+// Cache voor pagina-niveau CMP detectie
+let _isCMPPageCache = null;
+let _cmpPageCacheTime = 0;
+const CMP_CACHE_TTL = 5000; // 5 seconden cache
+
+/**
+ * Controleert of de huidige pagina een Consent Management pagina is.
+ * Gebruikt caching om performance te behouden.
+ *
+ * @returns {boolean} - True als de pagina een CMP pagina is
+ */
+function isConsentManagementPage() {
+  // Check cache
+  const now = Date.now();
+  if (_isCMPPageCache !== null && (now - _cmpPageCacheTime) < CMP_CACHE_TTL) {
+    return _isCMPPageCache;
+  }
+
+  let isCMPPage = false;
+
+  try {
+    // 1) Check page title
+    const pageTitle = document.title.toLowerCase();
+    if (pageTitle.includes('privacy gate') ||
+        pageTitle.includes('cookie consent') ||
+        pageTitle.includes('consent manager') ||
+        pageTitle.includes('cookie policy') ||
+        pageTitle.includes('privacy policy') ||
+        pageTitle.includes('gdpr')) {
+      isCMPPage = true;
+    }
+
+    // 2) Check URL path voor consent-gerelateerde paden
+    const urlPath = window.location.pathname.toLowerCase();
+    if (urlPath.includes('/privacy') ||
+        urlPath.includes('/consent') ||
+        urlPath.includes('/cookie') ||
+        urlPath.includes('/gdpr')) {
+      isCMPPage = true;
+    }
+
+    // 3) Check voor CMP scripts op de pagina
+    if (!isCMPPage) {
+      const scripts = document.querySelectorAll('script[src]');
+      for (const script of scripts) {
+        const src = script.src.toLowerCase();
+        if (CMP_WHITELIST_DOMAINS.some(domain => src.includes(domain))) {
+          isCMPPage = true;
+          break;
+        }
+      }
+    }
+
+    // 4) Check voor CMP preconnect/prefetch hints
+    if (!isCMPPage) {
+      const links = document.querySelectorAll('link[rel="preconnect"], link[rel="prefetch"], link[rel="dns-prefetch"]');
+      for (const link of links) {
+        const href = (link.href || '').toLowerCase();
+        if (CMP_WHITELIST_DOMAINS.some(domain => href.includes(domain))) {
+          isCMPPage = true;
+          break;
+        }
+      }
+    }
+
+  } catch (e) {
+    logDebug('[CMP-Page-Check] Error:', e);
+  }
+
+  // Cache het resultaat
+  _isCMPPageCache = isCMPPage;
+  _cmpPageCacheTime = now;
+
+  if (isCMPPage) {
+    logDebug('[CMP-Page-Check] Detected CMP/consent page - visual hijacking detection will be relaxed');
+  }
+
+  return isCMPPage;
+}
+
+const CMP_WHITELIST_DOMAINS = [
+  'dpgmedia.net',        // DPG Media (nu.nl, ad.nl, volkskrant.nl, etc.)
+  'myprivacy-static.dpgmedia.net',
+  'onetrust.com',        // OneTrust CMP
+  'cookiebot.com',       // Cookiebot CMP
+  'trustarc.com',        // TrustArc CMP
+  'usercentrics.eu',     // Usercentrics CMP
+  'quantcast.com',       // Quantcast Choice CMP
+  'consentmanager.net',  // Consentmanager CMP
+  'didomi.io',           // Didomi CMP
+  'privacymanager.io',   // Privacy Manager CMP
+  'sourcepoint.com',     // Sourcepoint CMP
+  'cookielaw.org',       // OneTrust domain
+  'cookieinformation.com', // Cookie Information CMP
+  'iubenda.com',         // Iubenda CMP
+  'termly.io',           // Termly CMP
+  'osano.com',           // Osano CMP
+];
+
+/**
+ * CMP Element Selectors - Patronen die consent modals identificeren
+ */
+const CMP_ELEMENT_PATTERNS = [
+  // DPG Media specific
+  '[id*="dpg-"]',
+  '[class*="dpg-"]',
+  '[data-testid*="dpg-"]',
+  '.modal[style*="z-index: 999"]', // DPG privacy gate modal
+  // Generic CMP patterns
+  '[id*="consent"]',
+  '[id*="cookie-banner"]',
+  '[id*="cookie-consent"]',
+  '[id*="privacy-gate"]',
+  '[class*="consent-modal"]',
+  '[class*="cookie-banner"]',
+  '[class*="cmp-"]',
+  '[id*="onetrust"]',
+  '[id*="cookiebot"]',
+  '[id*="usercentrics"]',
+  '[id*="didomi"]',
+  '[id*="quantcast"]',
+  // GDPR/Privacy specific
+  '[aria-label*="cookie"]',
+  '[aria-label*="consent"]',
+  '[aria-label*="privacy"]',
+];
+
+/**
+ * Controleert of een element onderdeel is van een legitieme Consent Management Platform.
+ *
+ * @param {HTMLElement} element - Het te controleren element
+ * @returns {boolean} - True als het een CMP-element is
+ */
+function isCMPElement(element) {
+  if (!element) return false;
+
+  try {
+    // 1) Check of element of ancestor matcht met CMP selectors
+    for (const selector of CMP_ELEMENT_PATTERNS) {
+      try {
+        if (element.matches && element.matches(selector)) return true;
+        if (element.closest && element.closest(selector)) return true;
+      } catch (e) { /* ignore invalid selector */ }
+    }
+
+    // 2) Check script sources op pagina voor CMP providers
+    const scripts = document.querySelectorAll('script[src]');
+    for (const script of scripts) {
+      const src = script.src.toLowerCase();
+      if (CMP_WHITELIST_DOMAINS.some(domain => src.includes(domain))) {
+        // CMP script gevonden - check of element in een modal/overlay zit
+        const isInModal = element.closest('[class*="modal"]') ||
+                          element.closest('[role="dialog"]') ||
+                          element.closest('[aria-modal="true"]');
+        if (isInModal) return true;
+      }
+    }
+
+    // 3) Check preconnect/prefetch hints voor CMP domains
+    const links = document.querySelectorAll('link[href]');
+    for (const link of links) {
+      const href = link.href.toLowerCase();
+      if (CMP_WHITELIST_DOMAINS.some(domain => href.includes(domain))) {
+        const isInModal = element.closest('[class*="modal"]') ||
+                          element.closest('[role="dialog"]') ||
+                          element.closest('[aria-modal="true"]');
+        if (isInModal) return true;
+      }
+    }
+
+    // 4) Check page title voor privacy gate indicaties
+    const pageTitle = document.title.toLowerCase();
+    if (pageTitle.includes('privacy gate') ||
+        pageTitle.includes('cookie consent') ||
+        pageTitle.includes('consent manager')) {
+      return true;
+    }
+
+  } catch (e) {
+    logDebug('[CMP-Check] Error checking CMP element:', e);
+  }
+
+  return false;
+}
+
+/**
  * SECURITY FIX v8.0.2 (Vector 3 - Z-Index War 2.0)
  * Detecteert pointer-events: none overlays met hoge z-index.
  * elementsFromPoint() mist deze omdat ze geen pointer events ontvangen.
@@ -4726,6 +4911,12 @@ function detectPointerEventsNoneOverlay(x, y) {
       );
 
       if (!coversPoint) continue;
+
+      // SECURITY FIX v8.8.3: Skip CMP (Consent Management Platform) elementen
+      if (isCMPElement(el)) {
+        logDebug('[Visual-Hijack] Skipping CMP element:', el.tagName, el.className);
+        continue;
+      }
 
       const zIndex = parseInt(style.zIndex, 10) || 0;
       const pointerEvents = style.pointerEvents;
@@ -4798,6 +4989,12 @@ function detectVisualHijacking(x, y, expectedTarget) {
 
   // Als het bovenste element het verwachte element is, geen hijacking
   if (topElement === expectedTarget || expectedTarget.contains(topElement) || topElement.contains(expectedTarget)) {
+    return { isHijacked: false, hijacker: null, reason: '' };
+  }
+
+  // SECURITY FIX v8.8.3: Skip CMP (Consent Management Platform) elementen
+  if (isCMPElement(topElement)) {
+    logDebug('[Visual-Hijack] Skipping CMP top element:', topElement.tagName, topElement.className);
     return { isHijacked: false, hijacker: null, reason: '' };
   }
 
@@ -4914,185 +5111,21 @@ function attachClickInterceptor(link, reasons) {
  * @param {string} targetUrl - De oorspronkelijke target URL
  */
 function showVisualHijackingWarning(reason, targetUrl) {
-  // Verwijder bestaande waarschuwing indien aanwezig
-  // SECURITY FIX v8.4.0: Updated ID to match new naming convention
-  const existing = document.getElementById('linkshield-overlay-hijack-warning');
-  if (existing) existing.remove();
-
-  // Creëer dialog element (Top Layer API)
-  // SECURITY FIX v8.4.0: ID prefix changed to 'linkshield-overlay' for audit compatibility
-  const dialog = document.createElement('dialog');
-  dialog.id = 'linkshield-overlay-hijack-warning';
-
-  // Stijl de dialog (backdrop wordt via ::backdrop gestyled)
-  // SECURITY FIX v8.4.0: Added pointer-events: auto to prevent visual hijacking bypass
-  dialog.style.cssText = `
-    border: none !important;
-    background: transparent !important;
-    padding: 0 !important;
-    max-width: 100vw !important;
-    max-height: 100vh !important;
-    overflow: visible !important;
-    pointer-events: auto !important;
-    z-index: 2147483647 !important;
-  `;
-
-  // Creëer closed Shadow DOM voor isolatie
-  // Dit voorkomt dat de pagina de inhoud kan manipuleren
-  const shadowHost = document.createElement('div');
-  const shadow = shadowHost.attachShadow({ mode: 'closed' });
-
   const reasonText = chrome.i18n.getMessage(reason) || reason;
   const title = chrome.i18n.getMessage('visualHijackingDetected') || 'Visual Hijacking Detected';
-  const message = chrome.i18n.getMessage('visualHijackingMessage') || 'A hidden overlay was detected trying to intercept your click. This is a common phishing technique.';
-  const closeText = chrome.i18n.getMessage('closeWarning') || 'Close';
+  const message = chrome.i18n.getMessage('visualHijackingMessage') ||
+    'A hidden overlay was detected trying to intercept your click. This is a common phishing technique.';
+  const tip = (chrome.i18n.getMessage('detectionReason') || 'Detection reason') + ': ' + reasonText;
 
-  // Inject styles en content in de Shadow DOM
-  shadow.innerHTML = `
-    <style>
-      :host {
-        all: initial !important;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
-      }
-      .warning-container {
-        background: #1a1a2e;
-        border: 2px solid #e94560;
-        border-radius: 12px;
-        padding: 30px;
-        max-width: 500px;
-        text-align: center;
-        color: white;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-      }
-      .icon { font-size: 48px; margin-bottom: 15px; }
-      h2 { color: #e94560; margin: 0 0 15px 0; font-size: 24px; }
-      .message { color: #ccc; margin: 0 0 20px 0; line-height: 1.6; }
-      .reason { color: #888; font-size: 12px; margin: 0 0 20px 0; }
-      code { background: #333; padding: 2px 6px; border-radius: 3px; color: #fff; }
-      .close-btn {
-        background: #e94560;
-        color: white;
-        border: none;
-        padding: 12px 30px;
-        border-radius: 6px;
-        font-size: 16px;
-        cursor: pointer;
-        transition: background 0.2s;
-      }
-      .close-btn:hover { background: #d63050; }
-      .close-btn:focus { outline: 2px solid #fff; outline-offset: 2px; }
-    </style>
-    <div class="warning-container">
-      <div class="icon">🛡️⚠️</div>
-      <h2>${title}</h2>
-      <p class="message">${message}</p>
-      <p class="reason">
-        ${chrome.i18n.getMessage('detectionReason') || 'Detection reason'}: <code>${reasonText}</code>
-      </p>
-      <button class="close-btn">${closeText}</button>
-    </div>
-  `;
-
-  dialog.appendChild(shadowHost);
-  document.body.appendChild(dialog);
-
-  // Voeg ::backdrop styling toe via een style element
-  const backdropStyle = document.createElement('style');
-  backdropStyle.id = 'linkshield-hijack-backdrop-style';
-  backdropStyle.textContent = `
-    #linkshield-overlay-hijack-warning::backdrop {
-      background: rgba(0, 0, 0, 0.9) !important;
-    }
-  `;
-  document.head.appendChild(backdropStyle);
-
-  // Gebruik showModal() om de dialog in de Top Layer te plaatsen
-  // Top Layer rendert boven ALLE z-index elementen (inclusief 2147483647)
-  try {
-    dialog.showModal();
-  } catch (e) {
-    // Fallback voor browsers zonder Top Layer support (zeer zeldzaam)
-    dialog.setAttribute('open', '');
-    dialog.style.cssText += `
-      position: fixed !important;
-      top: 50% !important;
-      left: 50% !important;
-      transform: translate(-50%, -50%) !important;
-      z-index: 2147483647 !important;
-    `;
-  }
-
-  // Cleanup functie
-  const closeDialog = () => {
-    try {
-      dialog.close();
-    } catch (e) { /* ignore */ }
-    dialog.remove();
-    backdropStyle.remove();
-  };
-
-  // Event listener voor close button (in Shadow DOM)
-  const closeBtn = shadow.querySelector('.close-btn');
-  closeBtn?.addEventListener('click', closeDialog);
-
-  // Sluit bij Escape toets (standaard dialog gedrag, maar we customizen het)
-  dialog.addEventListener('cancel', (e) => {
-    e.preventDefault();
-    closeDialog();
+  showSecurityWarning({
+    id: 'visual-hijack',
+    severity: 'critical',
+    title: title,
+    message: message,
+    tip: tip,
+    icon: '👁️',
+    showTrust: true
   });
-
-  // Sluit bij klik buiten de dialog (op backdrop)
-  dialog.addEventListener('click', (e) => {
-    if (e.target === dialog) {
-      closeDialog();
-    }
-  });
-
-  // Auto-close na 15 seconden (verhoogd voor kritieke waarschuwing)
-  setTimeout(() => {
-    if (document.body.contains(dialog)) {
-      closeDialog();
-    }
-  }, 15000);
-
-  // SECURITY FIX v8.5.0: Style Defender - Prevent attackers from modifying dialog styles
-  // Attackers use MutationObserver + RAF to set pointer-events: none on our overlay
-  const styleDefender = new MutationObserver((mutations) => {
-    for (const mutation of mutations) {
-      if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
-        // Restore protected styles immediately
-        const currentStyle = window.getComputedStyle(dialog);
-        if (currentStyle.pointerEvents === 'none' || parseInt(currentStyle.zIndex) < 2147483647) {
-          dialog.style.setProperty('pointer-events', 'auto', 'important');
-          dialog.style.setProperty('z-index', '2147483647', 'important');
-          logDebug('[Vector3-Defender] 🛡️ Dialog style attack BLOCKED - restored pointer-events and z-index');
-        }
-      }
-    }
-  });
-
-  styleDefender.observe(dialog, {
-    attributes: true,
-    attributeFilter: ['style']
-  });
-
-  // Also use requestAnimationFrame to continuously enforce styles (defense against RAF attacks)
-  let defenderActive = true;
-  const enforceStyles = () => {
-    if (!defenderActive || !document.body.contains(dialog)) return;
-    dialog.style.setProperty('pointer-events', 'auto', 'important');
-    dialog.style.setProperty('z-index', '2147483647', 'important');
-    requestAnimationFrame(enforceStyles);
-  };
-  requestAnimationFrame(enforceStyles);
-
-  // Cleanup style defender when dialog closes
-  const originalCloseDialog = closeDialog;
-  closeDialog = () => {
-    defenderActive = false;
-    styleDefender.disconnect();
-    originalCloseDialog();
-  };
 }
 
 /**
@@ -5113,6 +5146,11 @@ function initGlobalVisualHijackProtection() {
   const INT_MAX = 2147483647;
 
   document.addEventListener('click', (event) => {
+    // SECURITY FIX v8.8.3: Skip visual hijacking checks op CMP/consent pagina's
+    if (isConsentManagementPage()) {
+      return; // Laat clicks door op consent pagina's
+    }
+
     // Vind de dichtstbijzijnde link (in geval van nested elements)
     const link = event.target.closest('a[href]');
     if (!link || !link.href) return;
@@ -5229,6 +5267,12 @@ if (document.readyState === 'loading') {
  * with pointer-events: none to intercept user interactions.
  */
 function proactiveVisualHijackingScan() {
+  // SECURITY FIX v8.8.3: Skip scan op CMP/consent pagina's
+  if (isConsentManagementPage()) {
+    logDebug('[Vector3-Proactive] Skipping scan - CMP/consent page detected');
+    return false;
+  }
+
   const INT_MAX = 2147483647;
   const HIGH_Z_THRESHOLD = 999999;
 
@@ -5382,7 +5426,7 @@ function sanitizeInput(input) {
  * User can dismiss permanently via the close button.
  */
 async function showSiteSafeBadge() {
-  // Check if user permanently disabled the badge (use chrome.storage for extension-wide setting)
+  // Check if user permanently disabled the badge
   try {
     const result = await chrome.storage.local.get('safeBadgeDisabled');
     if (result.safeBadgeDisabled === true) {
@@ -5393,13 +5437,8 @@ async function showSiteSafeBadge() {
     // storage error, continue
   }
 
-  // Don't show badge for globally trusted domains (TrustedDomains.json)
-  // These are well-known sites like google.com - users don't need confirmation
   const currentHostname = window.location.hostname.toLowerCase();
-  if (await isTrustedDomain(currentHostname)) {
-    logDebug(`[SafeBadge] Skipping for globally trusted domain: ${currentHostname}`);
-    return;
-  }
+  logDebug(`[SafeBadge] Showing badge for: ${currentHostname}`);
 
   // Don't show if badge element already exists on page
   if (document.getElementById('linkshield-safe-badge-host')) {
@@ -5440,6 +5479,9 @@ async function showSiteSafeBadge() {
     position: fixed !important;
     bottom: 20px !important;
     right: 20px !important;
+    left: auto !important;
+    width: auto !important;
+    max-width: fit-content !important;
     z-index: 2147483647 !important;
     pointer-events: auto !important;
   `;
@@ -5603,6 +5645,9 @@ async function showSiteSafeBadge() {
             position: fixed !important;
             bottom: 20px !important;
             right: 20px !important;
+            left: auto !important;
+            width: auto !important;
+            max-width: fit-content !important;
             z-index: 2147483647 !important;
             pointer-events: auto !important;
             display: block !important;
@@ -9526,7 +9571,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // WHITELIST CHECK: Skip alle checks als domein vertrouwd is door gebruiker
     const currentDomain = getDomainFromUrl(window.location.href);
-    if (currentDomain && await isDomainTrusted(currentDomain)) {
+    const isTrustedByUser = currentDomain && await isDomainTrusted(currentDomain);
+    if (isTrustedByUser) {
       logDebug(`[Content] Domein ${currentDomain} is vertrouwd door gebruiker, skip alle security checks`);
       // Stuur 'safe' status naar background
       chrome.runtime.sendMessage({
@@ -9695,7 +9741,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     logDebug(`✅ Check compleet: level=${finalLevel}, risk=${totalRisk.toFixed(1)}, reasons=${Array.from(allReasons).join(', ')}`);
 
     // --- 6. Show safe badge if page passed all checks ---
-    if (finalLevel === 'safe' && totalRisk < 3) {
+    // Use LOW_THRESHOLD to match the 'safe' classification logic
+    if (finalLevel === 'safe' && totalRisk < globalConfig.LOW_THRESHOLD) {
       showSiteSafeBadge();
     }
 
@@ -9858,8 +9905,8 @@ async function checkCurrentUrl() {
     });
 
     // 4) Show safe badge if site passed all checks
-    // Badge shown when level is 'safe' and risk is below threshold (< 3 allows minor benign scores)
-    if (level === 'safe' && pageResult.risk < 3) {
+    // Badge shown when level is 'safe' and risk is below LOW_THRESHOLD (matches 'safe' classification)
+    if (level === 'safe' && pageResult.risk < globalConfig.LOW_THRESHOLD) {
       showSiteSafeBadge();
     }
 

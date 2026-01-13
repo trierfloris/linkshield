@@ -4,7 +4,7 @@
  * @param {...any} optionalParams - Optionele parameters.
  */
 function logDebug(message, ...optionalParams) {
-  if (typeof globalConfig !== 'undefined' && globalConfig.DEBUG_MODE) {
+  if (globalConfig && globalConfig.DEBUG_MODE) {
     console.log(message, ...optionalParams);
   }
 }
@@ -67,7 +67,7 @@ function getTranslatedMessage(messageKey) {
  * @param {...any} optionalParams - Optionele parameters.
  */
 function logError(message, ...optionalParams) {
-  if (typeof globalConfig !== 'undefined' && globalConfig.DEBUG_MODE) {
+  if (globalConfig && globalConfig.DEBUG_MODE) {
     console.error(message, ...optionalParams);
   }
 }
@@ -97,8 +97,8 @@ function handleError(error, context) {
   }
 })();
 
-// Global configuration
-let globalConfig = null;
+// Global configuration - initialize as empty object to prevent null access errors
+let globalConfig = {};
 let globalHomoglyphReverseMap = {};
 // Shared constants for throttling and caching
 const CHECK_INTERVAL_MS = 5000; // 5 seconds between checks
@@ -7350,7 +7350,7 @@ const DEFAULT_HOMOGLYPHS = {
   'y': ['у', 'ÿ', 'γ'],
 };
 // Initialiseer homoglyph-set en regex éénmalig
-const homoglyphConfig = globalConfig.HOMOGLYPHS || DEFAULT_HOMOGLYPHS;
+const homoglyphConfig = globalConfig?.HOMOGLYPHS || DEFAULT_HOMOGLYPHS;
 const homoglyphSet = new Set(Object.values(homoglyphConfig).flat());
 const homoglyphRegex = new RegExp(
   Object.values(homoglyphConfig)

@@ -7,7 +7,8 @@ window.CONFIG = {
     // Verdachte Top-Level Domeinen (TLD's)
     // Uitgebreid met nieuwe TLD's die in 2025-2026 veel voor phishing worden gebruikt
     // NOTE: .dev, .app, .io VERWIJDERD - dit zijn legitieme Google TLDs gebruikt door developers
-    SUSPICIOUS_TLDS: new RegExp('\\.(' + Array.from(new Set([
+    // SECURITY FIX v8.1.1: Vervangen door Set voor O(1) lookup en ReDoS preventie
+    SUSPICIOUS_TLDS_SET: new Set([
         // Originele verdachte TLD's
         'beauty', 'bond', 'buzz', 'cc', 'cf', 'club', 'cn', 'es', 'ga', 'gq',
         'hair', 'li', 'live', 'ml', 'mov', 'pro', 'rest', 'ru', 'sbs', 'shop', 'tk',
@@ -16,12 +17,27 @@ window.CONFIG = {
         'autos', 'boats', 'cam', 'casa', 'cfd', 'click', 'cloud', 'cyou', 'desi',
         'digital', 'fit', 'fun', 'gdn', 'gives', 'icu', 'lat', 'lol', 'mom', 'monster',
         'nexus', 'observer', 'online', 'ooo', 'pics', 'quest', 'racing', 'realty',
-        'rodeo', 'sbs', 'site', 'skin', 'space', 'store', 'stream', 'surf', 'tech',
+        'rodeo', 'site', 'skin', 'space', 'store', 'stream', 'surf', 'tech',
         'today', 'vip', 'wang', 'webcam', 'website', 'work', 'world', 'wtf', 'yachts',
         // AI/Tech gerelateerde TLD's (hoog risico in 2026)
         'ai', 'bot', 'chat', 'crypto', 'dao', 'data', 'dex', 'eth', 'gpt', 'link', 'llm',
         'metaverse', 'nft', 'sol', 'token', 'wallet', 'web3'
-    ])).sort().join('|') + ')$', 'i'),
+    ]),
+
+    /**
+     * SECURITY FIX v8.1.1: Set-based TLD check (O(1) lookup, ReDoS-safe)
+     * Gebruik: CONFIG.isSuspiciousTLD('xyz') of CONFIG.SUSPICIOUS_TLDS.test('.xyz')
+     * @param {string} tld - De TLD om te checken (zonder punt)
+     * @returns {boolean} - true als de TLD verdacht is
+     */
+    isSuspiciousTLD: function(tld) {
+        if (!tld || typeof tld !== 'string') return false;
+        return this.SUSPICIOUS_TLDS_SET.has(tld.toLowerCase().replace(/^\./, ''));
+    },
+
+    // Legacy regex voor backwards compatibility (statisch, geen dynamische constructie)
+    // Kan verwijderd worden na volledige migratie naar isSuspiciousTLD()
+    SUSPICIOUS_TLDS: /\.(beauty|bond|buzz|cc|cf|club|cn|es|ga|gq|hair|li|live|ml|mov|pro|rest|ru|sbs|shop|tk|top|uno|win|xin|xyz|zip|autos|boats|cam|casa|cfd|click|cloud|cyou|desi|digital|fit|fun|gdn|gives|icu|lat|lol|mom|monster|nexus|observer|online|ooo|pics|quest|racing|realty|rodeo|site|skin|space|store|stream|surf|tech|today|vip|wang|webcam|website|work|world|wtf|yachts|ai|bot|chat|crypto|dao|data|dex|eth|gpt|link|llm|metaverse|nft|sol|token|wallet|web3)$/i,
 
     // ==== Risicodrempels voor gefaseerde analyse en UI-feedback ====
     LOW_THRESHOLD: 4,      //  risico < 4 → safe

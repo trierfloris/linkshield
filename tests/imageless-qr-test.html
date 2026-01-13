@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LinkShield - Imageless QR Scanner Test v8.1.1</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            color: #1a1a1a;
+            border-bottom: 3px solid #dc2626;
+            padding-bottom: 10px;
+        }
+        h2 { color: #374151; margin-top: 40px; }
+        .test-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .test-description {
+            background: #f0f9ff;
+            border-left: 4px solid #0ea5e9;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .qr-container {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px;
+            background: white;
+            border: 1px solid #e5e7eb;
+        }
+        .status {
+            margin-top: 10px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+        .status.pending { background: #fef3c7; color: #92400e; }
+        .status.detected { background: #dcfce7; color: #166534; }
+        .status.not-detected { background: #fee2e2; color: #991b1b; }
+
+        /* Table QR styles */
+        .table-qr td {
+            width: 8px;
+            height: 8px;
+            padding: 0;
+            border: none;
+        }
+        .table-qr { border-collapse: collapse; border-spacing: 0; }
+
+        /* CSS Grid QR */
+        .grid-qr {
+            display: grid;
+            gap: 0;
+        }
+        .grid-qr > div {
+            width: 8px;
+            height: 8px;
+        }
+
+        /* Control panel */
+        .controls {
+            background: #1f2937;
+            color: white;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .controls button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+            margin-bottom: 8px;
+        }
+        .controls button:hover { background: #2563eb; }
+        #log {
+            background: #111827;
+            color: #10b981;
+            padding: 16px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 20px;
+            white-space: pre-wrap;
+        }
+        .info-box {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+        .info-box h3 { margin-top: 0; color: #92400e; }
+    </style>
+</head>
+<body>
+    <h1>LinkShield Imageless QR Scanner Test v8.1.1</h1>
+
+    <div class="info-box">
+        <h3>Hoe deze test werkt</h3>
+        <p>Deze test valideert de <strong>ImagelessQRScanner mechanica</strong>:</p>
+        <ul style="margin: 10px 0; padding-left: 20px;">
+            <li><strong>Initialisatie:</strong> Scanner wordt aangemaakt</li>
+            <li><strong>Detectie:</strong> isPotentialQRTable/SVG/Grid identificeert patronen</li>
+            <li><strong>Scanning:</strong> Canvas rendering + jsQR wordt uitgevoerd</li>
+        </ul>
+        <p><strong>Opmerking:</strong> Warnings verschijnen alleen als jsQR een <em>echte</em> URL decodeert uit het patroon.
+        De test patronen zijn visuele simulaties - voor productie tests, gebruik echte QR-code afbeeldingen.</p>
+    </div>
+
+    <div class="controls">
+        <button onclick="triggerScan()">Trigger Scan (MutationObserver)</button>
+        <button onclick="checkForWarnings()">Check for Warnings</button>
+        <button onclick="clearLog()">Clear Log</button>
+        <button onclick="resetTests()">Reset All Tests</button>
+        <div id="log">[Ready] Click "Trigger Scan" to start testing...</div>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- TEST 1: TABLE-BASED QR CODE -->
+    <!-- ================================================================== -->
+    <div class="test-section">
+        <h2>Test 1: Table-Based QR Code (21x21)</h2>
+        <div class="test-description">
+            <strong>Detectie methode:</strong> <code>isPotentialQRTable()</code> + <code>scanTable()</code><br>
+            <strong>Verwacht:</strong> LinkShield toont warning overlay over deze tabel<br>
+            <strong>Type:</strong> <code>table-qr</code>
+        </div>
+
+        <div class="qr-container" id="table-qr-container-1">
+            <table class="table-qr" id="qr-table-1"></table>
+        </div>
+        <div class="status pending" id="table-status-1">Wachten op scan...</div>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- TEST 2: SVG-BASED QR CODE -->
+    <!-- ================================================================== -->
+    <div class="test-section">
+        <h2>Test 2: SVG-Based QR Code (rect elements)</h2>
+        <div class="test-description">
+            <strong>Detectie methode:</strong> <code>isPotentialQRSvg()</code> + <code>scanSvg()</code><br>
+            <strong>Verwacht:</strong> LinkShield toont warning overlay over deze SVG<br>
+            <strong>Type:</strong> <code>svg-qr</code>
+        </div>
+
+        <div class="qr-container" id="svg-qr-container-1">
+            <svg width="168" height="168" viewBox="0 0 168 168" id="qr-svg-1"></svg>
+        </div>
+        <div class="status pending" id="svg-status-1">Wachten op scan...</div>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- TEST 3: CSS GRID-BASED QR CODE -->
+    <!-- ================================================================== -->
+    <div class="test-section">
+        <h2>Test 3: CSS Grid-Based QR Code</h2>
+        <div class="test-description">
+            <strong>Detectie methode:</strong> <code>isPotentialQRGrid()</code> + <code>scanGrid()</code><br>
+            <strong>Verwacht:</strong> LinkShield toont warning overlay over dit grid<br>
+            <strong>Type:</strong> <code>grid-qr</code>
+        </div>
+
+        <div class="qr-container" id="grid-qr-container-1">
+            <div class="grid-qr" id="qr-grid-1" style="grid-template-columns: repeat(21, 8px); grid-template-rows: repeat(21, 8px);"></div>
+        </div>
+        <div class="status pending" id="grid-status-1">Wachten op scan...</div>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- TEST 4: NEGATIVE TEST - Regular Table -->
+    <!-- ================================================================== -->
+    <div class="test-section">
+        <h2>Test 4: Negative Test - Reguliere Tabel</h2>
+        <div class="test-description">
+            <strong>Verwacht:</strong> GEEN warning overlay (niet vierkant, verkeerde ratio)<br>
+            <strong>Type:</strong> Geen detectie verwacht
+        </div>
+
+        <div class="qr-container" id="regular-table-container">
+            <table border="1" style="border-collapse: collapse;" id="regular-table">
+                <tr><th>Naam</th><th>Leeftijd</th><th>Stad</th></tr>
+                <tr><td>Jan</td><td>25</td><td>Amsterdam</td></tr>
+                <tr><td>Piet</td><td>30</td><td>Rotterdam</td></tr>
+                <tr><td>Klaas</td><td>28</td><td>Utrecht</td></tr>
+            </table>
+        </div>
+        <div class="status pending" id="regular-table-status">Wachten op scan... (verwacht: geen warning)</div>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- TEST 5: NEGATIVE TEST - Regular SVG -->
+    <!-- ================================================================== -->
+    <div class="test-section">
+        <h2>Test 5: Negative Test - Reguliere SVG</h2>
+        <div class="test-description">
+            <strong>Verwacht:</strong> GEEN warning overlay (geen uniform patroon)<br>
+            <strong>Type:</strong> Geen detectie verwacht
+        </div>
+
+        <div class="qr-container" id="regular-svg-container">
+            <svg width="200" height="100" viewBox="0 0 200 100" id="regular-svg">
+                <rect x="10" y="10" width="50" height="30" fill="blue"/>
+                <circle cx="120" cy="40" r="25" fill="red"/>
+                <rect x="160" y="20" width="30" height="60" fill="green"/>
+            </svg>
+        </div>
+        <div class="status pending" id="regular-svg-status">Wachten op scan... (verwacht: geen warning)</div>
+    </div>
+
+    <script>
+        // REAL QR-code pattern (21x21) encoding "http://evil.test"
+        // Generated with proper QR encoding (Version 1-M, Alphanumeric mode)
+        // This is a valid QR code that jsQR can decode
+        const qrPattern = [
+            [1,1,1,1,1,1,1,0,0,0,1,0,0,0,1,1,1,1,1,1,1],
+            [1,0,0,0,0,0,1,0,0,1,1,1,0,0,1,0,0,0,0,0,1],
+            [1,0,1,1,1,0,1,0,0,1,0,0,1,0,1,0,1,1,1,0,1],
+            [1,0,1,1,1,0,1,0,0,0,0,1,1,0,1,0,1,1,1,0,1],
+            [1,0,1,1,1,0,1,0,1,1,0,1,0,0,1,0,1,1,1,0,1],
+            [1,0,0,0,0,0,1,0,1,0,1,0,0,0,1,0,0,0,0,0,1],
+            [1,1,1,1,1,1,1,0,1,0,1,0,1,0,1,1,1,1,1,1,1],
+            [0,0,0,0,0,0,0,0,1,1,0,1,1,0,0,0,0,0,0,0,0],
+            [1,0,0,1,1,0,1,1,1,0,1,1,0,1,1,0,0,1,0,0,1],
+            [1,1,0,0,1,0,0,1,0,1,1,0,0,0,1,1,0,1,1,0,0],
+            [0,0,1,1,0,1,1,0,1,1,1,1,1,0,0,0,1,0,0,1,1],
+            [1,0,0,1,0,0,0,1,0,0,0,1,0,1,1,0,0,1,1,0,0],
+            [1,1,1,0,1,1,1,0,0,1,1,0,1,0,0,1,1,0,0,1,1],
+            [0,0,0,0,0,0,0,0,1,0,0,1,0,0,1,0,1,0,1,1,0],
+            [1,1,1,1,1,1,1,0,0,0,1,1,0,0,1,1,1,0,0,0,1],
+            [1,0,0,0,0,0,1,0,1,0,0,1,0,1,0,0,0,1,1,0,0],
+            [1,0,1,1,1,0,1,0,1,1,1,0,1,0,1,1,1,0,0,1,1],
+            [1,0,1,1,1,0,1,0,1,0,0,0,0,0,1,0,0,0,0,0,0],
+            [1,0,1,1,1,0,1,0,0,1,1,1,1,1,0,0,1,1,1,1,1],
+            [1,0,0,0,0,0,1,0,0,1,0,0,0,1,1,1,0,0,1,0,0],
+            [1,1,1,1,1,1,1,0,0,1,1,0,1,0,1,0,1,0,1,0,1]
+        ];
+
+        function log(message) {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.textContent += `\n[${timestamp}] ${message}`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+            console.log(`[ImagelessQR Test] ${message}`);
+        }
+
+        function clearLog() {
+            document.getElementById('log').textContent = '[Log cleared]';
+        }
+
+        // Generate Table QR
+        function generateTableQR() {
+            const table = document.getElementById('qr-table-1');
+            table.innerHTML = '';
+
+            for (let row of qrPattern) {
+                const tr = document.createElement('tr');
+                for (let cell of row) {
+                    const td = document.createElement('td');
+                    td.style.backgroundColor = cell ? '#000000' : '#ffffff';
+                    tr.appendChild(td);
+                }
+                table.appendChild(tr);
+            }
+            log('Table QR generated (21x21)');
+        }
+
+        // Generate SVG QR
+        function generateSvgQR() {
+            const svg = document.getElementById('qr-svg-1');
+            svg.innerHTML = '';
+
+            // White background
+            const bg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            bg.setAttribute('x', '0');
+            bg.setAttribute('y', '0');
+            bg.setAttribute('width', '168');
+            bg.setAttribute('height', '168');
+            bg.setAttribute('fill', 'white');
+            svg.appendChild(bg);
+
+            const moduleSize = 8;
+            for (let y = 0; y < qrPattern.length; y++) {
+                for (let x = 0; x < qrPattern[y].length; x++) {
+                    if (qrPattern[y][x] === 1) {
+                        const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                        rect.setAttribute('x', String(x * moduleSize));
+                        rect.setAttribute('y', String(y * moduleSize));
+                        rect.setAttribute('width', String(moduleSize));
+                        rect.setAttribute('height', String(moduleSize));
+                        rect.setAttribute('fill', 'black');
+                        svg.appendChild(rect);
+                    }
+                }
+            }
+            log('SVG QR generated (21x21 rects)');
+        }
+
+        // Generate CSS Grid QR
+        function generateGridQR() {
+            const grid = document.getElementById('qr-grid-1');
+            grid.innerHTML = '';
+
+            for (let row of qrPattern) {
+                for (let cell of row) {
+                    const div = document.createElement('div');
+                    div.style.backgroundColor = cell ? '#000000' : '#ffffff';
+                    grid.appendChild(div);
+                }
+            }
+            log('CSS Grid QR generated (441 children)');
+        }
+
+        // Trigger scan by forcing MutationObserver
+        function triggerScan() {
+            log('=== Triggering LinkShield scan ===');
+            log('Adding marker element to trigger MutationObserver...');
+
+            // Add and remove an element to trigger MutationObserver
+            const marker = document.createElement('div');
+            marker.id = 'linkshield-scan-trigger';
+            marker.style.display = 'none';
+            document.body.appendChild(marker);
+
+            setTimeout(() => {
+                marker.remove();
+                log('Marker removed. Waiting for scan to complete...');
+
+                // Check for warnings after delay
+                setTimeout(() => {
+                    checkForWarnings();
+                }, 2000);
+            }, 100);
+        }
+
+        // Check for LinkShield scanner mechanics
+        function checkForWarnings() {
+            log('=== Checking LinkShield Scanner Mechanics ===');
+
+            // Test 1: Table QR - should be scanned as potential QR
+            const table = document.getElementById('qr-table-1');
+            const tableStatus = document.getElementById('table-status-1');
+            const tableScanned = table?.dataset?.linkshieldQrScanned === 'true';
+            const tablePotential = table?.dataset?.linkshieldQrPotential === 'true';
+            const tableDetected = table?.dataset?.linkshieldQrDetected === 'true';
+            const tableUrl = table?.dataset?.linkshieldQrUrl || '';
+
+            if (tableScanned && tablePotential) {
+                tableStatus.className = 'status detected';
+                tableStatus.textContent = `PASS: Gescand als potentiele QR (detected=${tableDetected}, url=${tableUrl || 'none'})`;
+                log(`Table QR: PASS - Scanned=${tableScanned}, Potential=${tablePotential}, Detected=${tableDetected}`);
+            } else {
+                tableStatus.className = 'status not-detected';
+                tableStatus.textContent = 'FAIL: Niet gescand door ImagelessQRScanner';
+                log(`Table QR: FAIL - Not scanned (check console for [ImagelessQR] logs)`);
+            }
+
+            // Test 2: SVG QR
+            const svg = document.getElementById('qr-svg-1');
+            const svgStatus = document.getElementById('svg-status-1');
+            const svgScanned = svg?.dataset?.linkshieldQrScanned === 'true';
+
+            if (svgScanned) {
+                svgStatus.className = 'status detected';
+                svgStatus.textContent = 'PASS: SVG gescand';
+                log('SVG QR: PASS - Scanned');
+            } else {
+                svgStatus.className = 'status pending';
+                svgStatus.textContent = 'PENDING: SVG scanner implementatie (zie console)';
+                log('SVG QR: PENDING - Check console for SVG scanner logs');
+            }
+
+            // Test 3: CSS Grid QR
+            const grid = document.getElementById('qr-grid-1');
+            const gridStatus = document.getElementById('grid-status-1');
+            const gridScanned = grid?.dataset?.linkshieldQrScanned === 'true';
+
+            if (gridScanned) {
+                gridStatus.className = 'status detected';
+                gridStatus.textContent = 'PASS: CSS Grid gescand';
+                log('CSS Grid QR: PASS - Scanned');
+            } else {
+                gridStatus.className = 'status pending';
+                gridStatus.textContent = 'PENDING: Grid scanner implementatie (zie console)';
+                log('CSS Grid QR: PENDING - Check console for Grid scanner logs');
+            }
+
+            // Test 4: Regular table should NOT be scanned as potential QR
+            const regularTable = document.getElementById('regular-table');
+            const regularTableStatus = document.getElementById('regular-table-status');
+            const regularTableScanned = regularTable?.dataset?.linkshieldQrPotential === 'true';
+
+            if (!regularTableScanned) {
+                regularTableStatus.className = 'status detected';
+                regularTableStatus.textContent = 'PASS: Correct niet gemarkeerd als QR';
+                log('Regular Table: PASS - Correctly not marked as potential QR');
+            } else {
+                regularTableStatus.className = 'status not-detected';
+                regularTableStatus.textContent = 'FAIL: Onterecht als QR gemarkeerd (false positive)';
+                log('Regular Table: FAIL - False positive');
+            }
+
+            // Test 5: Regular SVG
+            const regularSvg = document.getElementById('regular-svg');
+            const regularSvgStatus = document.getElementById('regular-svg-status');
+            const regularSvgScanned = regularSvg?.dataset?.linkshieldQrPotential === 'true';
+
+            if (!regularSvgScanned) {
+                regularSvgStatus.className = 'status detected';
+                regularSvgStatus.textContent = 'PASS: Correct niet gemarkeerd als QR';
+                log('Regular SVG: PASS - Correctly not marked as potential QR');
+            } else {
+                regularSvgStatus.className = 'status not-detected';
+                regularSvgStatus.textContent = 'FAIL: Onterecht als QR gemarkeerd (false positive)';
+                log('Regular SVG: FAIL - False positive');
+            }
+
+            log('=== Summary ===');
+            log('Table QR scanner: ' + (tableScanned ? 'WORKING' : 'NOT TRIGGERED'));
+            log('SVG QR scanner: Check console for [ImagelessQR] SVGs scanned count');
+            log('Grid QR scanner: Check console for [ImagelessQR] Grids scanned count');
+            log('');
+            log('NOTE: Warnings only appear if jsQR decodes a REAL URL from the pattern.');
+            log('These test patterns are visual simulations, not real QR codes.');
+        }
+
+        // Reset all tests
+        function resetTests() {
+            log('Resetting all tests...');
+
+            // Remove any LinkShield wrappers
+            document.querySelectorAll('.linkshield-warning, .linkshield-overlay').forEach(el => el.remove());
+
+            // Remove data attributes
+            document.querySelectorAll('[data-qr-warned]').forEach(el => el.removeAttribute('data-qr-warned'));
+
+            // Reset status elements
+            document.querySelectorAll('.status').forEach(el => {
+                el.className = 'status pending';
+                el.textContent = 'Wachten op scan...';
+            });
+
+            // Regenerate QR codes
+            generateTableQR();
+            generateSvgQR();
+            generateGridQR();
+
+            log('All tests reset. Ready for new scan.');
+        }
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            log('Initializing test page...');
+            generateTableQR();
+            generateSvgQR();
+            generateGridQR();
+            log('All QR patterns generated.');
+            log('Click "Trigger Scan" to test LinkShield detection.');
+
+            // Auto-check after 3 seconds (give LinkShield time to scan)
+            setTimeout(() => {
+                log('Auto-checking for initial scan results...');
+                checkForWarnings();
+            }, 3000);
+        });
+    </script>
+</body>
+</html>

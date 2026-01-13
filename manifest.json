@@ -1,11 +1,11 @@
 {
   "manifest_version": 3,
   "name": "__MSG_extName__",
-  "version": "8.0",
+  "version": "8.1.2",
   "description": "__MSG_extDescription__",
   "default_locale": "en",
   "content_security_policy": {
-    "extension_pages": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' https: data:; font-src 'self'; connect-src 'self' https://api.lemonsqueezy.com https://api.ssllabs.com https://linkshield.nl https://rdap.org; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';"
+    "extension_pages": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' https: data:; font-src 'self'; connect-src 'self' https: data:; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';"
   },
   "permissions": [
     "tabs",

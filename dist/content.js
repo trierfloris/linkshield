@@ -669,6 +669,22 @@ let lastScriptCheck = 0;
 // ============================================================================
 
 /**
+ * SECURITY FIX v8.1.1: HTML escape helper om XSS te voorkomen
+ * Escapet speciale HTML karakters in user-controlled strings
+ * @param {string} str - De string om te escapen
+ * @returns {string} - Escaped string veilig voor innerHTML
+ */
+function escapeHtml(str) {
+  if (typeof str !== 'string') return '';
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+/**
  * Toont een uniforme security waarschuwing met consistent design
  * @param {Object} config - Configuratie object
  * @param {string} config.id - Unieke ID voor de waarschuwing (bijv. 'bitb', 'clickfix')
@@ -901,15 +917,15 @@ function showSecurityWarning(config) {
         </div>
         <div class="content">
           <div class="title-row">
-            <div class="title-icon">${displayIcon}</div>
-            <div class="title-text">${title}</div>
+            <div class="title-icon">${escapeHtml(displayIcon)}</div>
+            <div class="title-text">${escapeHtml(title)}</div>
           </div>
-          <div class="message-box">${message}</div>
-          ${tip ? `<div class="tip"><span class="tip-icon">💡</span><span>${tip}</span></div>` : ''}
+          <div class="message-box">${escapeHtml(message)}</div>
+          ${tip ? `<div class="tip"><span class="tip-icon">💡</span><span>${escapeHtml(tip)}</span></div>` : ''}
           <div class="actions">
-            ${showTrust ? `<button class="btn btn-trust" data-action="trust">${trustText}</button>` : ''}
-            <button class="btn btn-leave" data-action="leave">${leaveText}</button>
-            <button class="btn btn-dismiss" data-action="dismiss">${dismissText}</button>
+            ${showTrust ? `<button class="btn btn-trust" data-action="trust">${escapeHtml(trustText)}</button>` : ''}
+            <button class="btn btn-leave" data-action="leave">${escapeHtml(leaveText)}</button>
+            <button class="btn btn-dismiss" data-action="dismiss">${escapeHtml(dismissText)}</button>
           </div>
         </div>
       </div>
@@ -2156,7 +2172,10 @@ function validateRegexOrSetPatternFields(cfg) {
       'adf.ly','bc.vc','cutt.ly','lnk.to','rebrand.ly','shorte.st','s.id','tiny.cc',
       'v.gd','zpr.io','clk.sh','soo.gd','u.to','x.co','1url.com','bl.ink',
       'clicky.me','dub.sh','kutt.it','lc.cx','linktr.ee','rb.gy','short.io',
-      't.ly','tr.im','urlz.fr','vzturl.com','yourls.org','zi.ma','qr.ae'
+      't.ly','tr.im','urlz.fr','vzturl.com','yourls.org','zi.ma','qr.ae',
+      // v8.8.12: Added missing shorteners from QA audit
+      'buff.ly','bit.do','j.mp','shr.tn','lc.chat','moourl.com','clck.ru',
+      'shortlink.de','qps.ru','tinu.be','su.pr','snip.ly','snipurl.com'
     ]);
   }
   cfg.SHORTENED_URL_DOMAINS = new Set(
@@ -2646,7 +2665,8 @@ function cleanRdapCache() {
 // Start periodieke schoonmaak
 setInterval(cleanRdapCache, RDAP_CACHE_TTL_MS);
 /**
- * Haalt de registratiedatum op via de RDAP.org aggregator (met CORS-headers).
+ * Haalt de registratiedatum op via de RDAP.org aggregator.
+ * v8.8.14: Fetch via background script om CORS-beperkingen te vermijden.
  * Gebruikt een interne cache om dubbele aanroepen te voorkomen.
  * @param {string} domain — b.v. "example.com"
  * @returns {Promise<Date|null>}
@@ -2659,33 +2679,46 @@ async function fetchDomainCreationDate(domain) {
     return cachedEntry.data;
   }
   try {
-    const resp = await fetch(`https://rdap.org/domain/${domain}`, {
-      redirect: 'follow',
-      mode: 'cors',
-      headers: { 'Accept': 'application/json' }
+    // v8.8.14: Fetch via background script to avoid CORS issues
+    const result = await new Promise((resolve, reject) => {
+      const timeoutId = setTimeout(() => reject(new Error('Timeout')), 10000);
+      chrome.runtime.sendMessage({
+        action: 'fetchRdapData',
+        domain: domain
+      }, (response) => {
+        clearTimeout(timeoutId);
+        if (chrome.runtime.lastError) {
+          reject(new Error(chrome.runtime.lastError.message));
+        } else {
+          resolve(response);
+        }
+      });
     });
-    if (resp.status === 404) {
-      logError(`RDAP.org kent geen data voor ${domain} (404)`);
-      rdapCache.set(domain, { data: null, timestamp: Date.now() }); // Cache null-resultaat ook
+
+    if (!result.success) {
+      logError(`RDAP.org fout voor ${domain}: ${result.error}`);
+      rdapCache.set(domain, { data: null, timestamp: Date.now() });
       return null;
     }
-    if (!resp.ok) {
-      logError(`RDAP.org HTTP ${resp.status} voor ${domain}`);
-      rdapCache.set(domain, { data: null, timestamp: Date.now() }); // Cache null-resultaat ook
+
+    if (result.notFound || !result.data) {
+      logDebug(`RDAP.org kent geen data voor ${domain}`);
+      rdapCache.set(domain, { data: null, timestamp: Date.now() });
       return null;
     }
-    const data = await resp.json();
+
+    const data = result.data;
     const regEvent = Array.isArray(data.events)
       ? data.events.find(e => e.eventAction === 'registration')
       : null;
     const creationDate = regEvent && regEvent.eventDate
       ? new Date(regEvent.eventDate)
       : null;
-    rdapCache.set(domain, { data: creationDate, timestamp: Date.now() }); // Cache het resultaat
+    rdapCache.set(domain, { data: creationDate, timestamp: Date.now() });
     return creationDate;
   } catch (e) {
     logError(`RDAP.org fetch fout voor ${domain}:`, e);
-    rdapCache.set(domain, { data: null, timestamp: Date.now() }); // Cache null bij fout
+    rdapCache.set(domain, { data: null, timestamp: Date.now() });
     return null;
   }
 }
@@ -4338,18 +4371,46 @@ function classifyAndCheckLink(link) {
   }
 
   // =============================================================================
+  // SECURITY FIX v8.8.10: TRUSTED DOMAIN EARLY EXIT
+  // =============================================================================
+  // Check if this link points to a trusted domain BEFORE running expensive
+  // security checks. This prevents false positives on trusted sites like Discord.
+  // Uses the global safeDomains array (initialized at script load)
+  {
+    try {
+      const urlObj = new URL(href);
+      const linkHostname = urlObj.hostname.toLowerCase();
+      // Use synchronous check via global safeDomains array
+      if (safeDomainsInitialized && safeDomains.length > 0) {
+        for (const pattern of safeDomains) {
+          try {
+            if (new RegExp(pattern, 'i').test(linkHostname)) {
+              logDebug(`[classifyAndCheckLink] Trusted domain, skipping security checks: ${linkHostname}`);
+              return; // Skip all security checks for trusted domains
+            }
+          } catch (e) { /* invalid regex, skip */ }
+        }
+      }
+    } catch (e) {
+      // URL parsing failed, continue with checks
+    }
+  }
+
+  // =============================================================================
   // SECURITY FIX v8.8.2: PRE-PARSE UNICODE DETECTION
+  // SECURITY FIX v8.8.10: Only check href, NOT linkText (was causing false positives)
   // =============================================================================
   // CRITICAL: Check href BEFORE URL parsing, because new URL() converts IDN to punycode
   // This ensures we catch Unicode characters that would be lost in the conversion
+  // NOTE: We only check the URL itself, not the display text. Link text with emoji
+  // or non-ASCII characters is normal and not a security risk.
   {
     let unicodeReasons = [];
     let unicodeRisk = 0;
 
-    // Extract domain-like part from href before URL parsing
-    const hrefLower = href.toLowerCase();
-    const linkText = (link.textContent || '').toLowerCase();
-    const checkTarget = hrefLower + ' ' + linkText; // Check both href and display text
+    // Only check the href (URL), not the link text
+    // Link text with emoji/non-ASCII is normal (e.g., Discord channel names)
+    const checkTarget = href.toLowerCase();
 
     // 1. Universal Non-ASCII check (charCode > 127)
     if (/[^\x00-\x7F]/.test(checkTarget)) {
@@ -4629,9 +4690,12 @@ async function warnLinkByLevel(link, { level, reasons }) {
       if (!link.querySelector('.phishing-warning-icon')) {
         addIcon(link, '⚠️', 'moderate-warning', translatedReasons);
         // Zodra het icoon er is, zorg dat hover over icoon ook 'show' blijft triggeren
+        // v8.8.14: Check if icon exists before adding listeners (addIcon may early-return)
         const icon = link.querySelector('.phishing-warning-icon');
-        icon.addEventListener('mouseenter', show);
-        icon.addEventListener('mouseleave', hide);
+        if (icon) {
+          icon.addEventListener('mouseenter', show);
+          icon.addEventListener('mouseleave', hide);
+        }
       }
     };
     const hide = () => {
@@ -4786,16 +4850,40 @@ const CMP_ELEMENT_PATTERNS = [
   '[id*="privacy-gate"]',
   '[class*="consent-modal"]',
   '[class*="cookie-banner"]',
+  '[class*="cookie-notice"]',
+  '[class*="cookie-popup"]',
+  '[class*="cookie-overlay"]',
   '[class*="cmp-"]',
   '[id*="onetrust"]',
+  // Cookiebot specific patterns
   '[id*="cookiebot"]',
+  '[id*="Cookiebot"]',
+  '[id*="CybotCookiebot"]',
+  '[class*="cookiebot"]',
+  '[class*="Cookiebot"]',
+  '[class*="CybotCookiebot"]',
+  '#CybotCookiebotDialog',
+  '#CybotCookiebotDialogBody',
+  // Other CMP providers
   '[id*="usercentrics"]',
   '[id*="didomi"]',
   '[id*="quantcast"]',
+  '[id*="trustarc"]',
+  '[id*="osano"]',
+  // Cookie consent library patterns (cookieconsent.js, etc.)
+  '[class*="cc-window"]',
+  '[class*="cc-banner"]',
+  '[class*="cc-overlay"]',
+  '.cookieconsent',
+  '.gdpr-banner',
+  '.gdpr-overlay',
+  '.privacy-banner',
+  '.privacy-overlay',
   // GDPR/Privacy specific
   '[aria-label*="cookie"]',
   '[aria-label*="consent"]',
   '[aria-label*="privacy"]',
+  '[role="dialog"][aria-modal="true"]', // Modal dialogs (often used for consent)
 ];
 
 /**
@@ -5061,19 +5149,52 @@ function attachClickInterceptor(link, reasons) {
   link.dataset.linkshieldClickIntercepted = 'true';
 
   const interceptHandler = (event) => {
-    // Detecteer visual hijacking
-    const hijackCheck = detectVisualHijacking(event.clientX, event.clientY, link);
+    // SECURITY FIX v8.8.11: Check if on trusted domain (skip visual hijacking but not link blocking)
+    const HARDCODED_TRUSTED = [
+      'google.com', 'youtube.com', 'facebook.com', 'twitter.com', 'x.com',
+      'instagram.com', 'linkedin.com', 'reddit.com', 'amazon.com', 'microsoft.com',
+      'apple.com', 'netflix.com', 'spotify.com', 'github.com', 'stackoverflow.com',
+      'bbc.com', 'bbc.co.uk', 'cnn.com', 'nytimes.com', 'theguardian.com',
+      'yahoo.com', 'bing.com', 'duckduckgo.com', 'wikipedia.org'
+    ];
+    const currentHostname = window.location.hostname.toLowerCase();
+    let isOnTrustedDomain = false;
 
-    if (hijackCheck.isHijacked) {
-      event.preventDefault();
-      event.stopPropagation();
-      event.stopImmediatePropagation();
+    // Check hardcoded list first
+    for (const domain of HARDCODED_TRUSTED) {
+      if (currentHostname === domain || currentHostname.endsWith('.' + domain)) {
+        isOnTrustedDomain = true;
+        break;
+      }
+    }
 
-      logDebug(`[Vector3] Visual Hijacking gedetecteerd: ${hijackCheck.reason}`);
+    // Then check loaded safeDomains
+    if (!isOnTrustedDomain && safeDomainsInitialized && safeDomains.length > 0) {
+      for (const pattern of safeDomains) {
+        try {
+          if (new RegExp(pattern, 'i').test(currentHostname)) {
+            isOnTrustedDomain = true;
+            break;
+          }
+        } catch (e) { /* invalid regex, skip */ }
+      }
+    }
 
-      // Toon waarschuwing aan gebruiker
-      showVisualHijackingWarning(hijackCheck.reason, link.href);
-      return false;
+    // Detecteer visual hijacking (skip on trusted domains)
+    if (!isOnTrustedDomain) {
+      const hijackCheck = detectVisualHijacking(event.clientX, event.clientY, link);
+
+      if (hijackCheck.isHijacked) {
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+
+        logDebug(`[Vector3] Visual Hijacking gedetecteerd: ${hijackCheck.reason}`);
+
+        // Toon waarschuwing aan gebruiker
+        showVisualHijackingWarning(hijackCheck.reason, link.href);
+        return false;
+      }
     }
 
     // Als de link al als gevaarlijk is gemarkeerd, blokkeer de click
@@ -5149,6 +5270,35 @@ function initGlobalVisualHijackProtection() {
     // SECURITY FIX v8.8.3: Skip visual hijacking checks op CMP/consent pagina's
     if (isConsentManagementPage()) {
       return; // Laat clicks door op consent pagina's
+    }
+
+    // SECURITY FIX v8.8.11: Skip visual hijacking checks op trusted domains
+    // Advertisements on trusted sites (like BBC) use legitimate overlays for click tracking
+    const HARDCODED_TRUSTED = [
+      'google.com', 'youtube.com', 'facebook.com', 'twitter.com', 'x.com',
+      'instagram.com', 'linkedin.com', 'reddit.com', 'amazon.com', 'microsoft.com',
+      'apple.com', 'netflix.com', 'spotify.com', 'github.com', 'stackoverflow.com',
+      'bbc.com', 'bbc.co.uk', 'cnn.com', 'nytimes.com', 'theguardian.com',
+      'yahoo.com', 'bing.com', 'duckduckgo.com', 'wikipedia.org'
+    ];
+    const currentHostname = window.location.hostname.toLowerCase();
+
+    // Check hardcoded list first (always works, no async needed)
+    for (const domain of HARDCODED_TRUSTED) {
+      if (currentHostname === domain || currentHostname.endsWith('.' + domain)) {
+        return; // Skip visual hijacking checks on trusted domains
+      }
+    }
+
+    // Then check loaded safeDomains
+    if (safeDomainsInitialized && safeDomains.length > 0) {
+      for (const pattern of safeDomains) {
+        try {
+          if (new RegExp(pattern, 'i').test(currentHostname)) {
+            return; // Skip visual hijacking checks on trusted domains
+          }
+        } catch (e) { /* invalid regex, skip */ }
+      }
     }
 
     // Vind de dichtstbijzijnde link (in geval van nested elements)
@@ -5253,12 +5403,14 @@ function initGlobalVisualHijackProtection() {
   logDebug('[Vector3-Global] Visual Hijack protection initialized for ALL external links');
 }
 
-// Initialiseer de globale visual hijack bescherming zodra DOM beschikbaar is
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initGlobalVisualHijackProtection);
-} else {
-  initGlobalVisualHijackProtection();
-}
+// SECURITY FIX v8.8.12: Global visual hijack protection disabled - causes too many false positives
+// Visual hijacking is now only checked on links already flagged as suspicious by URL analysis
+// (via attachClickInterceptor which only runs on alert-level links)
+// if (document.readyState === 'loading') {
+//   document.addEventListener('DOMContentLoaded', initGlobalVisualHijackProtection);
+// } else {
+//   initGlobalVisualHijackProtection();
+// }
 
 /**
  * SECURITY FIX v8.5.0: Proactive Visual Hijacking Scanner
@@ -5266,11 +5418,44 @@ if (document.readyState === 'loading') {
  * This catches Z-Index War attacks where attackers place transparent overlays
  * with pointer-events: none to intercept user interactions.
  */
-function proactiveVisualHijackingScan() {
+async function proactiveVisualHijackingScan() {
   // SECURITY FIX v8.8.3: Skip scan op CMP/consent pagina's
   if (isConsentManagementPage()) {
     logDebug('[Vector3-Proactive] Skipping scan - CMP/consent page detected');
     return false;
+  }
+
+  // SECURITY FIX v8.8.11: Skip scan on trusted domains
+  // Hardcoded fallback for major trusted domains (in case TrustedDomains.json fails to load)
+  const HARDCODED_TRUSTED = [
+    'google.com', 'youtube.com', 'facebook.com', 'twitter.com', 'x.com',
+    'instagram.com', 'linkedin.com', 'reddit.com', 'amazon.com', 'microsoft.com',
+    'apple.com', 'netflix.com', 'spotify.com', 'github.com', 'stackoverflow.com',
+    'bbc.com', 'bbc.co.uk', 'cnn.com', 'nytimes.com', 'theguardian.com',
+    'yahoo.com', 'bing.com', 'duckduckgo.com', 'wikipedia.org'
+  ];
+
+  const currentHostname = window.location.hostname.toLowerCase();
+
+  // Check hardcoded list first (always works)
+  for (const domain of HARDCODED_TRUSTED) {
+    if (currentHostname === domain || currentHostname.endsWith('.' + domain)) {
+      logDebug('[Vector3-Proactive] Skipping scan - hardcoded trusted domain:', currentHostname);
+      return false;
+    }
+  }
+
+  // Then check loaded safeDomains
+  await waitForSafeDomains();
+  if (safeDomains.length > 0) {
+    for (const pattern of safeDomains) {
+      try {
+        if (new RegExp(pattern, 'i').test(currentHostname)) {
+          logDebug('[Vector3-Proactive] Skipping scan - trusted domain:', currentHostname);
+          return false;
+        }
+      } catch (e) { /* invalid regex, skip */ }
+    }
   }
 
   const INT_MAX = 2147483647;
@@ -5284,6 +5469,11 @@ function proactiveVisualHijackingScan() {
       // Skip LinkShield's own elements
       if (el.id && el.id.includes('linkshield')) continue;
       if (el.tagName === 'DIALOG') continue;
+
+      // SECURITY FIX v8.8.5: Skip CMP/cookie banner elements in proactive scan
+      if (isCMPElement(el)) {
+        continue;
+      }
 
       const style = window.getComputedStyle(el);
       const position = style.position;
@@ -5300,6 +5490,11 @@ function proactiveVisualHijackingScan() {
 
       // CRITICAL: Detect pointer-events: none with high z-index (Z-Index War attack)
       if (pointerEvents === 'none' && zIndex >= HIGH_Z_THRESHOLD && isLargeOverlay) {
+        // Double-check: skip if any ancestor is a CMP element
+        if (el.closest('[id*="cookiebot"], [id*="consent"], [id*="cookie"], [class*="cookie"], [class*="consent"], [id*="onetrust"], [id*="didomi"]')) {
+          logDebug('[Vector3-Proactive] Skipping CMP overlay element');
+          continue;
+        }
         logDebug(`[Vector3-Proactive] 🛡️ Visual Hijacking DETECTED: z-index=${zIndex}, pointer-events=none`);
         showVisualHijackingWarning('pointerEventsNoneHighZIndex', window.location.href);
         return true; // Stop after first detection
@@ -5308,6 +5503,11 @@ function proactiveVisualHijackingScan() {
       // Detect INT_MAX z-index with suspicious properties
       if (zIndex >= INT_MAX - 1000 && isLargeOverlay) {
         if (opacity < 0.3 || pointerEvents === 'none') {
+          // Double-check: skip if any ancestor is a CMP element
+          if (el.closest('[id*="cookiebot"], [id*="consent"], [id*="cookie"], [class*="cookie"], [class*="consent"], [id*="onetrust"], [id*="didomi"]')) {
+            logDebug('[Vector3-Proactive] Skipping CMP INT_MAX element');
+            continue;
+          }
           logDebug(`[Vector3-Proactive] 🛡️ INT_MAX Z-Index attack DETECTED`);
           showVisualHijackingWarning('intMaxZIndexOverlay', window.location.href);
           return true;
@@ -5344,12 +5544,13 @@ function initProactiveVisualHijackingScan() {
   logDebug('[Vector3-Proactive] Proactive Visual Hijacking scanner initialized');
 }
 
-// Initialize proactive scanner
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initProactiveVisualHijackingScan);
-} else {
-  initProactiveVisualHijackingScan();
-}
+// SECURITY FIX v8.8.12: Proactive scanner disabled - causes too many false positives on legitimate ads
+// Visual hijacking is now only checked on links already flagged as suspicious by URL analysis
+// if (document.readyState === 'loading') {
+//   document.addEventListener('DOMContentLoaded', initProactiveVisualHijackingScan);
+// } else {
+//   initProactiveVisualHijackingScan();
+// }
 
 function injectWarningIconStyles() {
     if (!document.head.querySelector('#phishing-warning-styles')) {
@@ -5416,16 +5617,30 @@ function sanitizeInput(input) {
 }
 
 /**
- * SECURITY FIX v8.0.2 (Vector 3 V2 - Pointer-Events Neutralization Defense)
+ * SECURITY FIX v8.8.4 (Vector 3 V3 - Viewport-Fixed Badge)
  * Shows a subtle "Site Safe" badge when a page passes all security checks.
  *
- * Uses closed Shadow DOM to prevent CSS manipulation by the host page.
- * External scripts cannot apply pointer-events: none or other CSS attacks.
+ * Key improvements:
+ * - Injects into document.documentElement (not body) to avoid CSS interference
+ * - Aggressive CSS reset neutralizes transform, filter, perspective from parent
+ * - Guaranteed viewport-fixed positioning regardless of page CSS
+ * - Closed Shadow DOM prevents external CSS/JS manipulation
  *
- * The badge appears briefly in the corner and fades out automatically.
+ * The badge appears briefly in the bottom-right corner and fades out automatically.
  * User can dismiss permanently via the close button.
  */
 async function showSiteSafeBadge() {
+  // ============================================================================
+  // SAFE BADGE v8.8.9 - Pure CSS positioning (no enforcer loop)
+  // ============================================================================
+  // Based on the old working version:
+  // - Pure CSS fixed positioning (browser handles it)
+  // - Inject into documentElement to bypass body transform issues
+  // - Unique tag <ls-safe-badge> to avoid CSS conflicts
+  // - Closed Shadow DOM for visual styling only
+  // - NO all:initial on host (breaks too much)
+  // ============================================================================
+
   // Check if user permanently disabled the badge
   try {
     const result = await chrome.storage.local.get('safeBadgeDisabled');
@@ -5438,57 +5653,58 @@ async function showSiteSafeBadge() {
   }
 
   const currentHostname = window.location.hostname.toLowerCase();
-  logDebug(`[SafeBadge] Showing badge for: ${currentHostname}`);
 
-  // Don't show if badge element already exists on page
-  if (document.getElementById('linkshield-safe-badge-host')) {
-    logDebug('[SafeBadge] Badge element exists, skipping');
+  // Skip badge for globally trusted domains (TrustedDomains.json)
+  try {
+    if (await isTrustedDomain(currentHostname)) {
+      logDebug(`[SafeBadge] Skipping for globally trusted domain: ${currentHostname}`);
+      return;
+    }
+  } catch (e) {
+    logDebug('[SafeBadge] Could not check trusted domain status:', e);
+  }
+
+  // Don't show if badge already exists
+  if (document.querySelector('ls-safe-badge')) {
+    logDebug('[SafeBadge] Badge already exists, skipping');
     return;
   }
 
   // Check sessionStorage - only show once per domain per session
   try {
-    const domain = window.location.hostname;
-    const storageKey = `linkshield_safe_shown_${domain}`;
+    const storageKey = `linkshield_safe_shown_${currentHostname}`;
     if (sessionStorage.getItem(storageKey)) {
-      logDebug('[SafeBadge] Already shown for this domain this session, skipping');
+      logDebug('[SafeBadge] Already shown this session, skipping');
       return;
     }
     sessionStorage.setItem(storageKey, 'true');
   } catch (e) {
-    // sessionStorage might be blocked, fall back to window flag
-    if (window.linkshieldSafeBadgeShown) {
-      return;
-    }
+    if (window.linkshieldSafeBadgeShown) return;
     window.linkshieldSafeBadgeShown = true;
   }
 
-  // Wait for document.body to be available
-  if (!document.body) {
-    logDebug('[SafeBadge] document.body not ready, retrying in 100ms');
-    setTimeout(showSiteSafeBadge, 100);
-    return;
-  }
-  logDebug('[SafeBadge] Creating badge element with Shadow DOM protection');
+  logDebug('[SafeBadge] Creating badge v8.8.9 (pure CSS positioning)');
 
-  // Create host element with closed Shadow DOM for CSS isolation
-  const host = document.createElement('div');
-  host.id = 'linkshield-safe-badge-host';
-  // Minimal inline style - just positioning (rest is in Shadow DOM)
+  // Create unique custom element - immune to generic CSS selectors
+  const host = document.createElement('ls-safe-badge');
+
+  // Pure CSS positioning - let the browser handle it
+  // Key: left: auto and top: auto prevent jumping to wrong positions
   host.style.cssText = `
     position: fixed !important;
     bottom: 20px !important;
     right: 20px !important;
     left: auto !important;
+    top: auto !important;
     width: auto !important;
-    max-width: fit-content !important;
     z-index: 2147483647 !important;
-    pointer-events: auto !important;
+    display: block !important;
   `;
 
-  // Create closed Shadow DOM - prevents external CSS and JS access
+  // Create closed Shadow DOM - website cannot access or style the content
   const shadow = host.attachShadow({ mode: 'closed' });
 
+  // Get localized strings
   const badgeText = chrome.i18n.getMessage('siteSafeSuccessBadge') || 'Verified Safe';
   const dismissText = chrome.i18n.getMessage('dismissTooltip') || 'Dismiss';
   const dontShowText = chrome.i18n.getMessage('dontShowAgain') || "Don't show again?";
@@ -5497,32 +5713,29 @@ async function showSiteSafeBadge() {
   const detailText = chrome.i18n.getMessage('siteSafeSuccessDetail') ||
     'LinkShield scanned this page for phishing, typosquatting, and malicious scripts. Everything looks good.';
 
-  // Inject all styles and content into Shadow DOM (immune to external CSS)
+  // Shadow DOM content - visual styling only, positioning is on host
   shadow.innerHTML = `
     <style>
-      :host {
-        all: initial !important;
-        display: block !important;
-      }
-      * {
-        box-sizing: border-box;
-      }
       .badge {
         background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        color: white;
-        padding: 10px 16px;
-        border-radius: 8px;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        font-size: 13px;
+        color: #ffffff;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        font-size: 12px;
         font-weight: 500;
-        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
-        display: flex;
+        line-height: 1.4;
+        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.35);
+        display: inline-flex;
         align-items: center;
+        white-space: nowrap;
+        max-width: 320px;
+        width: auto;
         cursor: default;
         opacity: 0;
-        transform: translateY(10px);
+        transform: translateY(8px);
         transition: opacity 0.3s ease, transform 0.3s ease;
-        pointer-events: auto;
+        -webkit-font-smoothing: antialiased;
       }
       .badge.visible {
         opacity: 1;
@@ -5532,132 +5745,126 @@ async function showSiteSafeBadge() {
         opacity: 0;
         transform: translateY(10px);
       }
-      .icon { margin-right: 6px; }
-      .text { margin-right: 10px; }
-      .close-btn {
-        background: none;
-        border: none;
-        color: white;
-        font-size: 18px;
-        cursor: pointer;
-        padding: 0 0 0 4px;
-        margin: 0;
-        opacity: 0.7;
+      .icon {
+        margin-right: 6px;
+        font-size: 14px;
         line-height: 1;
       }
-      .close-btn:hover { opacity: 1; }
-      .confirm-text { margin-right: 12px; }
-      .yes-btn {
-        background: white;
-        color: #059669;
-        border: none;
-        padding: 4px 12px;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 12px;
-        font-weight: 600;
+      .text {
         margin-right: 8px;
-      }
-      .yes-btn:hover { background: #f0f0f0; }
-      .no-btn {
-        background: transparent;
-        color: white;
-        border: 1px solid white;
-        padding: 4px 12px;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 12px;
         font-weight: 500;
       }
-      .no-btn:hover { background: rgba(255,255,255,0.1); }
+      .close-btn {
+        all: unset;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 18px;
+        height: 18px;
+        color: #ffffff;
+        font-size: 16px;
+        cursor: pointer;
+        opacity: 0.7;
+        border-radius: 50%;
+        transition: opacity 0.15s ease, background 0.15s ease;
+      }
+      .close-btn:hover {
+        opacity: 1;
+        background: rgba(255, 255, 255, 0.15);
+      }
+      .confirm-text {
+        margin-right: 10px;
+        font-weight: 500;
+      }
+      .yes-btn {
+        all: unset;
+        background: #ffffff;
+        color: #059669;
+        padding: 4px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 11px;
+        font-weight: 600;
+        margin-right: 6px;
+      }
+      .yes-btn:hover {
+        background: #f0fdf4;
+      }
+      .no-btn {
+        all: unset;
+        background: transparent;
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        padding: 4px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 11px;
+        font-weight: 500;
+      }
+      .no-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: #ffffff;
+      }
     </style>
     <div class="badge" title="${detailText}">
       <span class="icon">🛡️</span>
       <span class="text">LinkShield: ${badgeText}</span>
-      <button class="close-btn" title="${dismissText}">×</button>
+      <button class="close-btn" title="${dismissText}" aria-label="${dismissText}">×</button>
     </div>
   `;
 
   const badge = shadow.querySelector('.badge');
   const closeBtn = shadow.querySelector('.close-btn');
-
-  // Track the auto-fade timeout so we can cancel it
   let autoFadeTimeout = null;
 
   const removeBadge = () => {
     badge.classList.add('hiding');
-    setTimeout(() => host.remove(), 300);
+    setTimeout(() => {
+      if (host.parentNode) host.remove();
+    }, 300);
   };
 
   closeBtn.addEventListener('click', (e) => {
     e.preventDefault();
     e.stopPropagation();
-
-    // Cancel auto-fade when user interacts
     if (autoFadeTimeout) {
       clearTimeout(autoFadeTimeout);
       autoFadeTimeout = null;
     }
 
-    // Replace badge content with confirmation UI
+    // Show confirmation UI
     badge.innerHTML = `
       <span class="confirm-text">${dontShowText}</span>
       <button class="yes-btn">${yesText}</button>
       <button class="no-btn">${noText}</button>
     `;
-    badge.style.padding = '12px 16px';
+    badge.style.padding = '10px 14px';
 
     shadow.querySelector('.yes-btn').addEventListener('click', async () => {
-      try {
-        await chrome.storage.local.set({ safeBadgeDisabled: true });
-      } catch (err) {}
+      try { await chrome.storage.local.set({ safeBadgeDisabled: true }); } catch (err) {}
       removeBadge();
     });
-
     shadow.querySelector('.no-btn').addEventListener('click', removeBadge);
   });
 
-  document.body.appendChild(host);
+  // CRITICAL: Inject into documentElement (the <html> tag)
+  // This places the element OUTSIDE the body, avoiding transform/filter
+  // on body that would break position: fixed
+  document.documentElement.appendChild(host);
 
-  // Animate in - use setTimeout to ensure browser has rendered the element
+  // Animate in after a short delay
   setTimeout(() => {
     badge.classList.add('visible');
-    logDebug('[SafeBadge] Animation started (Shadow DOM protected)');
+    logDebug('[SafeBadge] Badge visible (pure CSS mode, attached to documentElement)');
   }, 50);
 
-  // Fade out after 4 seconds (can be cancelled by user interaction)
+  // Auto-fade after 4 seconds
   autoFadeTimeout = setTimeout(() => {
-    if (document.getElementById('linkshield-safe-badge-host')) {
+    if (document.querySelector('ls-safe-badge')) {
       removeBadge();
-      logDebug('[SafeBadge] Badge removed');
+      logDebug('[SafeBadge] Badge auto-removed after timeout');
     }
   }, 4000);
-
-  // SECURITY: Monitor host element for style tampering
-  const styleObserver = new MutationObserver((mutations) => {
-    for (const mutation of mutations) {
-      if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
-        // Reset critical styles if tampered
-        const computed = window.getComputedStyle(host);
-        if (computed.pointerEvents === 'none' || computed.display === 'none' || computed.visibility === 'hidden') {
-          logDebug('[SafeBadge] Style tampering detected, resetting');
-          host.style.cssText = `
-            position: fixed !important;
-            bottom: 20px !important;
-            right: 20px !important;
-            left: auto !important;
-            width: auto !important;
-            max-width: fit-content !important;
-            z-index: 2147483647 !important;
-            pointer-events: auto !important;
-            display: block !important;
-            visibility: visible !important;
-          `;
-        }
-      }
-    }
-  });
-  styleObserver.observe(host, { attributes: true, attributeFilter: ['style', 'class'] });
 }
 
 /**
@@ -6751,6 +6958,19 @@ function detectHiddenIframes() {
     count: 0,
     reasons: []
   };
+
+  // SECURITY FIX v8.8.11: Skip hidden iframe detection on trusted domains
+  // Ad networks on trusted sites commonly use hidden tracking iframes
+  if (safeDomainsInitialized && safeDomains.length > 0) {
+    const currentHostname = window.location.hostname.toLowerCase();
+    for (const pattern of safeDomains) {
+      try {
+        if (new RegExp(pattern, 'i').test(currentHostname)) {
+          return results; // Return empty results for trusted domains
+        }
+      } catch (e) { /* invalid regex, skip */ }
+    }
+  }
 
   try {
     const iframes = document.querySelectorAll('iframe');
@@ -7864,6 +8084,21 @@ async function performSuspiciousChecks(url) {
  */
 async function hasSuspiciousIframes() {
   await ensureConfigReady(); // Zorg dat globalConfig geladen is
+
+  // SECURITY FIX v8.8.11: Skip suspicious iframe detection on trusted domains
+  // Ad networks on trusted sites commonly use tracking iframes
+  await waitForSafeDomains();
+  if (safeDomains.length > 0) {
+    const currentHostname = window.location.hostname.toLowerCase();
+    for (const pattern of safeDomains) {
+      try {
+        if (new RegExp(pattern, 'i').test(currentHostname)) {
+          return []; // Return empty array for trusted domains
+        }
+      } catch (e) { /* invalid regex, skip */ }
+    }
+  }
+
   const patterns = globalConfig.SUSPICIOUS_IFRAME_PATTERNS || [];
   const trustedDomains = globalConfig.TRUSTED_IFRAME_DOMAINS || ['youtube.com', 'vimeo.com', 'google.com']; // Fallback als niet in config
   const hostExceptionsConfig = globalConfig.HOST_IFRAME_EXCEPTIONS || {}; // Fallback empty object
@@ -11115,31 +11350,37 @@ function showWebTransportWarning(url, analysis) {
 }
 
 // =============================================================================
-// TABLE-BASED QR CODE SCANNER (Imageless QR Detection)
-// Detecteert QR-codes die via HTML <table> elementen worden gerenderd
-// AI-phishing kits gebruiken deze techniek om image-scanning te omzeilen
+// IMAGELESS QR CODE SCANNER v8.1.1
+// Detecteert QR-codes gerenderd via HTML elementen (geen images)
+// Ondersteunt: <table>, SVG <rect>, CSS Grid
+// AI-phishing kits gebruiken deze technieken om image-scanning te omzeilen
 // =============================================================================
 
-const TABLE_QR_CACHE = new Map();
-const TABLE_QR_CACHE_TTL_MS = 1800000; // 30 minuten cache
-const TABLE_QR_MIN_SIZE = 21; // Minimale QR-code grootte (21x21 modules)
-const TABLE_QR_MAX_SIZE = 177; // Maximale QR-code grootte (version 40)
+const IMAGELESS_QR_CACHE = new Map();
+const IMAGELESS_QR_CACHE_TTL_MS = 1800000; // 30 minuten cache
+const IMAGELESS_QR_MIN_SIZE = 21; // Minimale QR-code grootte (21x21 modules)
+const IMAGELESS_QR_MAX_SIZE = 177; // Maximale QR-code grootte (version 40)
 
 /**
- * TableQRScanner - Scant <table> elementen voor QR-code patronen
- * AI-phishing kits gebruiken tables met bgcolor om QR-codes te renderen zonder images
+ * ImagelessQRScanner - Scant HTML elementen voor QR-code patronen
+ * Ondersteunt: <table> met bgcolor, SVG met <rect>, CSS Grid containers
+ * @version 8.1.1
  */
-class TableQRScanner {
+class ImagelessQRScanner {
   constructor(options = {}) {
-    this.minSize = options.minSize || TABLE_QR_MIN_SIZE;
-    this.maxSize = options.maxSize || TABLE_QR_MAX_SIZE;
-    this.cacheTTL = options.cacheTTL || TABLE_QR_CACHE_TTL_MS;
-    this.pendingTables = new Set();
+    this.minSize = options.minSize || IMAGELESS_QR_MIN_SIZE;
+    this.maxSize = options.maxSize || IMAGELESS_QR_MAX_SIZE;
+    this.cacheTTL = options.cacheTTL || IMAGELESS_QR_CACHE_TTL_MS;
+    this.pendingElements = new Set();
     this.isProcessing = false;
-    this.scannedTables = new WeakSet();
+    this.scannedElements = new WeakSet();
 
-    logDebug('[TableQR] TableQRScanner initialized');
+    logDebug('[ImagelessQR] Scanner initialized (Table + SVG + CSS Grid)');
   }
+
+  // ===========================================================================
+  // TABLE DETECTION (bestaande functionaliteit)
+  // ===========================================================================
 
   /**
    * Controleert of een tabel een QR-code patroon zou kunnen zijn
@@ -11147,7 +11388,7 @@ class TableQRScanner {
    * @returns {boolean} True als de tabel een potentiële QR-code is
    */
   isPotentialQRTable(table) {
-    if (!table || this.scannedTables.has(table)) return false;
+    if (!table || this.scannedElements.has(table)) return false;
 
     const rows = table.querySelectorAll('tr');
     if (rows.length < this.minSize || rows.length > this.maxSize) return false;
@@ -11159,26 +11400,20 @@ class TableQRScanner {
     // Controleer of de tabel vierkant is (±3 cellen tolerantie)
     if (Math.abs(rows.length - firstRowCells) > 3) return false;
 
-    // Check of minstens 30% van de cellen een achtergrondkleur heeft
-    let coloredCells = 0;
+    // Check of 30-70% van de cellen DONKER is (QR-code patroon)
+    let darkCells = 0;
     let totalCells = 0;
 
     for (const row of rows) {
       const cells = row.querySelectorAll('td, th');
       for (const cell of cells) {
         totalCells++;
-        const bgColor = cell.getAttribute('bgcolor') ||
-                        cell.style.backgroundColor ||
-                        window.getComputedStyle(cell).backgroundColor;
-
-        if (bgColor && bgColor !== 'transparent' && bgColor !== 'rgba(0, 0, 0, 0)') {
-          coloredCells++;
-        }
+        if (this.isCellDark(cell)) darkCells++;
       }
     }
 
-    const colorRatio = coloredCells / totalCells;
-    return colorRatio >= 0.3 && colorRatio <= 0.7; // QR-codes hebben typisch 30-70% zwarte modules
+    const darkRatio = darkCells / totalCells;
+    return darkRatio >= 0.3 && darkRatio <= 0.7;
   }
 
   /**
@@ -11188,17 +11423,17 @@ class TableQRScanner {
    */
   async scanTable(table) {
     if (typeof jsQR === 'undefined') {
-      logDebug('[TableQR] jsQR not available, skipping table scan');
+      logDebug('[ImagelessQR] jsQR not available, skipping table scan');
       return null;
     }
 
-    const cacheKey = this.getTableHash(table);
-    const cached = TABLE_QR_CACHE.get(cacheKey);
+    const cacheKey = 'table:' + this.getTableHash(table);
+    const cached = IMAGELESS_QR_CACHE.get(cacheKey);
     if (cached && Date.now() - cached.timestamp < this.cacheTTL) {
       return cached.result;
     }
 
-    this.scannedTables.add(table);
+    this.scannedElements.add(table);
 
     try {
       const rows = table.querySelectorAll('tr');
@@ -11233,11 +11468,11 @@ class TableQRScanner {
 
       if (qrResult && qrResult.data) {
         const decodedUrl = qrResult.data;
-        logDebug(`[TableQR] Decoded URL from table: ${decodedUrl}`);
+        logDebug(`[ImagelessQR] Decoded URL from table: ${decodedUrl}`);
 
         if (isValidURL(decodedUrl)) {
           // Voer security checks uit op de gedecodeerde URL
-          const securityResult = await this.analyzeDecodedUrl(decodedUrl, table);
+          const securityResult = await this.analyzeDecodedUrl(decodedUrl, 'table-qr');
 
           const result = {
             detected: true,
@@ -11246,17 +11481,17 @@ class TableQRScanner {
             ...securityResult
           };
 
-          TABLE_QR_CACHE.set(cacheKey, { result, timestamp: Date.now() });
+          IMAGELESS_QR_CACHE.set(cacheKey, { result, timestamp: Date.now() });
           return result;
         }
       }
 
       const noQrResult = { detected: false, url: null, level: 'safe', reasons: [] };
-      TABLE_QR_CACHE.set(cacheKey, { result: noQrResult, timestamp: Date.now() });
+      IMAGELESS_QR_CACHE.set(cacheKey, { result: noQrResult, timestamp: Date.now() });
       return noQrResult;
 
     } catch (error) {
-      handleError(error, '[TableQR] Error scanning table');
+      handleError(error, '[ImagelessQR] Error scanning table');
       return null;
     }
   }
@@ -11321,8 +11556,10 @@ class TableQRScanner {
 
   /**
    * Analyseert de gedecodeerde URL voor security threats
+   * @param {string} url - De gedecodeerde URL
+   * @param {string} sourceType - Type bron ('table-qr', 'svg-qr', 'grid-qr')
    */
-  async analyzeDecodedUrl(url, tableElement) {
+  async analyzeDecodedUrl(url, sourceType = 'table-qr') {
     const reasons = [];
     let totalRisk = 0;
 
@@ -11331,8 +11568,9 @@ class TableQRScanner {
     reasons.push(...result.reasons);
     totalRisk += result.risk || 0;
 
-    // Extra risico: Table-gebaseerde QR is inherent verdacht (anti-detection techniek)
-    reasons.push('tableBasedQR');
+    // Extra risico: Imageless QR is inherent verdacht (anti-detection techniek)
+    reasons.push('imagelessQR');
+    reasons.push(sourceType);
     totalRisk += 3;
 
     // Check redirect chain via background script
@@ -11369,49 +11607,496 @@ class TableQRScanner {
   }
 
   /**
-   * Scant alle tabellen op de pagina (debounced)
+   * Scant alle tabellen op de pagina
    */
-  async scanAllTables() {
+  async scanTables() {
     const tables = document.querySelectorAll('table');
     let scannedCount = 0;
 
     for (const table of tables) {
       if (this.isPotentialQRTable(table)) {
+        table.dataset.linkshieldQrScanned = 'true';
+        table.dataset.linkshieldQrPotential = 'true';
+
         const result = await this.scanTable(table);
         scannedCount++;
 
+        table.dataset.linkshieldQrDetected = result?.detected ? 'true' : 'false';
+        table.dataset.linkshieldQrUrl = result?.url || '';
+
         if (result && result.detected && result.level !== 'safe') {
-          this.warnTableQR(table, result);
+          this.warnImagelessQR(table, result);
         }
       }
     }
 
-    if (scannedCount > 0) {
-      logDebug(`[TableQR] Scanned ${scannedCount} potential QR tables`);
+    return scannedCount;
+  }
+
+  // ===========================================================================
+  // SVG DETECTION (nieuw in v8.1.1)
+  // Detecteert QR-codes gemaakt met SVG <rect> elementen
+  // ===========================================================================
+
+  /**
+   * Controleert of een SVG element een QR-code patroon zou kunnen zijn
+   * @param {SVGElement} svg - Het SVG element om te controleren
+   * @returns {boolean} True als de SVG een potentiële QR-code is
+   */
+  isPotentialQRSvg(svg) {
+    if (!svg || this.scannedElements.has(svg)) return false;
+
+    const rects = Array.from(svg.querySelectorAll('rect'));
+    const minRects = this.minSize * this.minSize * 0.3;
+    const maxRects = this.maxSize * this.maxSize;
+
+    if (rects.length < minRects || rects.length > maxRects) return false;
+
+    // Check of de SVG vierkant is (±10% tolerantie)
+    const bbox = svg.getBBox ? svg.getBBox() : { width: svg.clientWidth, height: svg.clientHeight };
+    const aspectRatio = bbox.width / bbox.height;
+    if (aspectRatio < 0.9 || aspectRatio > 1.1) return false;
+
+    // Categoriseer rects op grootte om background rect te identificeren
+    const rectsBySize = new Map();
+    for (const rect of rects) {
+      const w = Math.round(parseFloat(rect.getAttribute('width') || 0));
+      const h = Math.round(parseFloat(rect.getAttribute('height') || 0));
+      const sizeKey = `${w}x${h}`;
+      if (!rectsBySize.has(sizeKey)) {
+        rectsBySize.set(sizeKey, { rects: [], area: w * h });
+      }
+      rectsBySize.get(sizeKey).rects.push(rect);
+    }
+
+    // Sorteer op aantal rects (meeste eerst = waarschijnlijk modules)
+    const sizeEntries = Array.from(rectsBySize.entries())
+      .sort((a, b) => b[1].rects.length - a[1].rects.length);
+
+    // QR-codes hebben uniforme modules (max 3 verschillende groottes voor quiet zone)
+    if (sizeEntries.length > 3) return false;
+
+    // Neem de meest voorkomende grootte als module-grootte (exclusief background)
+    const moduleRects = sizeEntries.length > 1 && sizeEntries[0][1].rects.length > 10
+      ? sizeEntries[0][1].rects
+      : rects;
+
+    // Tel donkere modules
+    // NB: Veel SVG QR generators tekenen ALLEEN donkere modules (geen witte)
+    let darkModules = 0;
+    const sampleSize = Math.min(moduleRects.length, 100);
+    for (let i = 0; i < sampleSize; i++) {
+      const fill = moduleRects[i].getAttribute('fill') || window.getComputedStyle(moduleRects[i]).fill;
+      if (this.isColorDark(fill)) darkModules++;
+    }
+
+    const darkRatio = darkModules / sampleSize;
+    // Accept: 30-70% donker (mixed) OR >90% donker (dark-only pattern)
+    const hasValidDarkRatio = (darkRatio >= 0.3 && darkRatio <= 0.7);
+    const isDarkOnlyPattern = (darkRatio >= 0.9 && moduleRects.length >= minRects);
+
+    return hasValidDarkRatio || isDarkOnlyPattern;
+  }
+
+  /**
+   * Scant een SVG element voor QR-code
+   * @param {SVGElement} svg - Het SVG element
+   * @returns {Promise<{detected: boolean, url: string|null, level: string, reasons: string[]}>}
+   */
+  async scanSvg(svg) {
+    if (typeof jsQR === 'undefined') {
+      logDebug('[ImagelessQR] jsQR not available, skipping SVG scan');
+      return null;
+    }
+
+    const cacheKey = 'svg:' + this.getSvgHash(svg);
+    const cached = IMAGELESS_QR_CACHE.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < this.cacheTTL) {
+      return cached.result;
+    }
+
+    this.scannedElements.add(svg);
+
+    try {
+      const rects = svg.querySelectorAll('rect');
+      if (rects.length === 0) return null;
+
+      // Bepaal grid dimensies uit rect posities
+      const positions = [];
+      let minX = Infinity, minY = Infinity, maxX = 0, maxY = 0;
+      let moduleSize = 0;
+
+      for (const rect of rects) {
+        const x = parseFloat(rect.getAttribute('x') || 0);
+        const y = parseFloat(rect.getAttribute('y') || 0);
+        const w = parseFloat(rect.getAttribute('width') || 0);
+        const h = parseFloat(rect.getAttribute('height') || 0);
+
+        if (w > 0 && moduleSize === 0) moduleSize = w;
+
+        minX = Math.min(minX, x);
+        minY = Math.min(minY, y);
+        maxX = Math.max(maxX, x + w);
+        maxY = Math.max(maxY, y + h);
+
+        const fill = rect.getAttribute('fill') || window.getComputedStyle(rect).fill;
+        positions.push({ x, y, w, h, dark: this.isColorDark(fill) });
+      }
+
+      if (moduleSize === 0) return null;
+
+      // Bereken grid grootte
+      const gridWidth = Math.ceil((maxX - minX) / moduleSize);
+      const gridHeight = Math.ceil((maxY - minY) / moduleSize);
+
+      if (gridWidth < this.minSize || gridHeight < this.minSize) return null;
+
+      // Render naar canvas
+      const cellSize = 4;
+      const canvas = document.createElement('canvas');
+      canvas.width = gridWidth * cellSize;
+      canvas.height = gridHeight * cellSize;
+      const ctx = canvas.getContext('2d');
+
+      ctx.fillStyle = 'white';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = 'black';
+      for (const pos of positions) {
+        if (pos.dark) {
+          const gridX = Math.floor((pos.x - minX) / moduleSize);
+          const gridY = Math.floor((pos.y - minY) / moduleSize);
+          ctx.fillRect(gridX * cellSize, gridY * cellSize, cellSize, cellSize);
+        }
+      }
+
+      // Scan met jsQR
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const qrResult = jsQR(imageData.data, imageData.width, imageData.height);
+
+      if (qrResult && qrResult.data) {
+        const decodedUrl = qrResult.data;
+        logDebug(`[ImagelessQR] Decoded URL from SVG: ${decodedUrl}`);
+
+        if (isValidURL(decodedUrl)) {
+          const securityResult = await this.analyzeDecodedUrl(decodedUrl, 'svg-qr');
+          const result = { detected: true, type: 'svg-qr', url: decodedUrl, ...securityResult };
+          IMAGELESS_QR_CACHE.set(cacheKey, { result, timestamp: Date.now() });
+          return result;
+        }
+      }
+
+      const noQrResult = { detected: false, url: null, level: 'safe', reasons: [] };
+      IMAGELESS_QR_CACHE.set(cacheKey, { result: noQrResult, timestamp: Date.now() });
+      return noQrResult;
+
+    } catch (error) {
+      handleError(error, '[ImagelessQR] Error scanning SVG');
+      return null;
     }
   }
 
   /**
-   * Toont waarschuwing bij verdachte table QR-code
+   * Genereert hash voor SVG caching
    */
-  warnTableQR(table, { level, reasons = [], url }) {
-    if (table.dataset.qrWarned === 'true') return;
-    table.dataset.qrWarned = 'true';
+  getSvgHash(svg) {
+    const rects = svg.querySelectorAll('rect');
+    let hash = `svg:${rects.length}:`;
+    // Sample eerste 10 rects voor hash
+    for (let i = 0; i < Math.min(10, rects.length); i++) {
+      const r = rects[i];
+      const fill = r.getAttribute('fill') || '';
+      hash += this.isColorDark(fill) ? '1' : '0';
+    }
+    return hash;
+  }
+
+  /**
+   * Scant alle SVG elementen op de pagina
+   */
+  async scanSvgElements() {
+    const svgs = document.querySelectorAll('svg');
+    let scannedCount = 0;
+
+    for (const svg of svgs) {
+      if (this.isPotentialQRSvg(svg)) {
+        svg.dataset.linkshieldQrScanned = 'true';
+        svg.dataset.linkshieldQrPotential = 'true';
+
+        const result = await this.scanSvg(svg);
+        scannedCount++;
+
+        svg.dataset.linkshieldQrDetected = result?.detected ? 'true' : 'false';
+
+        if (result && result.detected && result.level !== 'safe') {
+          this.warnImagelessQR(svg, result);
+        }
+      }
+    }
+
+    return scannedCount;
+  }
+
+  // ===========================================================================
+  // CSS GRID DETECTION (nieuw in v8.1.1)
+  // Detecteert QR-codes gemaakt met CSS Grid containers
+  // ===========================================================================
+
+  /**
+   * Controleert of een element een CSS Grid QR-code zou kunnen zijn
+   * @param {HTMLElement} element - Het element om te controleren
+   * @returns {boolean} True als het element een potentiële QR-code is
+   */
+  isPotentialQRGrid(element) {
+    if (!element || this.scannedElements.has(element)) return false;
+
+    const style = window.getComputedStyle(element);
+    if (style.display !== 'grid' && style.display !== 'inline-grid') return false;
+
+    // Check grid template
+    const columns = style.gridTemplateColumns.split(' ').filter(c => c && c !== 'none').length;
+    const rows = style.gridTemplateRows.split(' ').filter(r => r && r !== 'none').length;
+
+    if (columns < this.minSize || columns > this.maxSize) return false;
+    if (rows < this.minSize || rows > this.maxSize) return false;
+
+    // Check of het vierkant is (±3 tolerantie)
+    if (Math.abs(columns - rows) > 3) return false;
+
+    // Check kinderen (grid items)
+    const children = element.children;
+    if (children.length < this.minSize * this.minSize * 0.3) return false;
+
+    // Check dark/light ratio
+    let darkCount = 0;
+    const sampleSize = Math.min(children.length, 100);
+    for (let i = 0; i < sampleSize; i++) {
+      const child = children[i];
+      const bgColor = window.getComputedStyle(child).backgroundColor;
+      if (this.isColorDark(bgColor)) darkCount++;
+    }
+
+    const darkRatio = darkCount / sampleSize;
+    return darkRatio >= 0.3 && darkRatio <= 0.7;
+  }
+
+  /**
+   * Scant een CSS Grid element voor QR-code
+   * @param {HTMLElement} element - Het grid element
+   * @returns {Promise<{detected: boolean, url: string|null, level: string, reasons: string[]}>}
+   */
+  async scanGrid(element) {
+    if (typeof jsQR === 'undefined') {
+      logDebug('[ImagelessQR] jsQR not available, skipping Grid scan');
+      return null;
+    }
+
+    const cacheKey = 'grid:' + this.getGridHash(element);
+    const cached = IMAGELESS_QR_CACHE.get(cacheKey);
+    if (cached && Date.now() - cached.timestamp < this.cacheTTL) {
+      return cached.result;
+    }
+
+    this.scannedElements.add(element);
+
+    try {
+      const style = window.getComputedStyle(element);
+      const columns = style.gridTemplateColumns.split(' ').filter(c => c && c !== 'none').length;
+      const rows = style.gridTemplateRows.split(' ').filter(r => r && r !== 'none').length;
+
+      // Render naar canvas
+      const cellSize = 4;
+      const canvas = document.createElement('canvas');
+      canvas.width = columns * cellSize;
+      canvas.height = rows * cellSize;
+      const ctx = canvas.getContext('2d');
+
+      ctx.fillStyle = 'white';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = 'black';
+      const children = element.children;
+      for (let i = 0; i < children.length; i++) {
+        const child = children[i];
+        const bgColor = window.getComputedStyle(child).backgroundColor;
+
+        if (this.isColorDark(bgColor)) {
+          // Bepaal grid positie (row-major order)
+          const col = i % columns;
+          const row = Math.floor(i / columns);
+          ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
+        }
+      }
+
+      // Scan met jsQR
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const qrResult = jsQR(imageData.data, imageData.width, imageData.height);
+
+      if (qrResult && qrResult.data) {
+        const decodedUrl = qrResult.data;
+        logDebug(`[ImagelessQR] Decoded URL from CSS Grid: ${decodedUrl}`);
+
+        if (isValidURL(decodedUrl)) {
+          const securityResult = await this.analyzeDecodedUrl(decodedUrl, 'grid-qr');
+          const result = { detected: true, type: 'grid-qr', url: decodedUrl, ...securityResult };
+          IMAGELESS_QR_CACHE.set(cacheKey, { result, timestamp: Date.now() });
+          return result;
+        }
+      }
+
+      const noQrResult = { detected: false, url: null, level: 'safe', reasons: [] };
+      IMAGELESS_QR_CACHE.set(cacheKey, { result: noQrResult, timestamp: Date.now() });
+      return noQrResult;
+
+    } catch (error) {
+      handleError(error, '[ImagelessQR] Error scanning Grid');
+      return null;
+    }
+  }
+
+  /**
+   * Genereert hash voor Grid caching
+   */
+  getGridHash(element) {
+    const children = element.children;
+    let hash = `grid:${children.length}:`;
+    for (let i = 0; i < Math.min(20, children.length); i++) {
+      const bgColor = window.getComputedStyle(children[i]).backgroundColor;
+      hash += this.isColorDark(bgColor) ? '1' : '0';
+    }
+    return hash;
+  }
+
+  /**
+   * Scant alle CSS Grid elementen op de pagina
+   */
+  async scanGridElements() {
+    const allElements = document.querySelectorAll('div, section, article');
+    let scannedCount = 0;
+
+    for (const element of allElements) {
+      if (this.isPotentialQRGrid(element)) {
+        element.dataset.linkshieldQrScanned = 'true';
+        element.dataset.linkshieldQrPotential = 'true';
+
+        const result = await this.scanGrid(element);
+        scannedCount++;
+
+        element.dataset.linkshieldQrDetected = result?.detected ? 'true' : 'false';
+
+        if (result && result.detected && result.level !== 'safe') {
+          this.warnImagelessQR(element, result);
+        }
+      }
+    }
+
+    return scannedCount;
+  }
+
+  // ===========================================================================
+  // SHARED UTILITIES
+  // ===========================================================================
+
+  /**
+   * Bepaalt of een kleur "donker" is
+   * @param {string} color - CSS kleurwaarde
+   * @returns {boolean}
+   */
+  isColorDark(color) {
+    if (!color || color === 'transparent' || color === 'rgba(0, 0, 0, 0)' || color === 'none') {
+      return false;
+    }
+
+    let r = 255, g = 255, b = 255;
+
+    if (color.startsWith('#')) {
+      const hex = color.slice(1);
+      if (hex.length === 3) {
+        r = parseInt(hex[0] + hex[0], 16);
+        g = parseInt(hex[1] + hex[1], 16);
+        b = parseInt(hex[2] + hex[2], 16);
+      } else {
+        r = parseInt(hex.slice(0, 2), 16) || 255;
+        g = parseInt(hex.slice(2, 4), 16) || 255;
+        b = parseInt(hex.slice(4, 6), 16) || 255;
+      }
+    } else if (color.startsWith('rgb')) {
+      const match = color.match(/\d+/g);
+      if (match && match.length >= 3) {
+        [r, g, b] = match.slice(0, 3).map(Number);
+      }
+    } else {
+      const darkColors = ['black', 'darkblue', 'darkgreen', 'darkred', 'navy', 'maroon', 'purple'];
+      return darkColors.includes(color.toLowerCase());
+    }
+
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b);
+    return luminance < 128;
+  }
+
+  // ===========================================================================
+  // UNIFIED ENTRY POINTS
+  // ===========================================================================
+
+  /**
+   * Scant alle imageless QR-code types (Table, SVG, CSS Grid)
+   * Dit is de primaire entry point voor de scanner
+   */
+  async scanAllElements() {
+    let totalScanned = 0;
+
+    // Scan in volgorde van waarschijnlijkheid
+    totalScanned += await this.scanTables();
+    totalScanned += await this.scanSvgElements();
+    totalScanned += await this.scanGridElements();
+
+    if (totalScanned > 0) {
+      logDebug(`[ImagelessQR] Scanned ${totalScanned} potential QR elements (Table + SVG + Grid)`);
+    }
+
+    return totalScanned;
+  }
+
+  /**
+   * Legacy alias voor backwards compatibility
+   * @deprecated Gebruik scanAllElements() of scanTables()
+   */
+  async scanAllTables() {
+    return this.scanAllElements();
+  }
+
+  /**
+   * Toont waarschuwing bij verdachte imageless QR-code
+   * @param {HTMLElement} element - Het element met de QR-code
+   * @param {Object} result - Scan resultaat met level, reasons, url, type
+   */
+  warnImagelessQR(element, { level, reasons = [], url, type = 'unknown' }) {
+    if (element.dataset.qrWarned === 'true') return;
+    element.dataset.qrWarned = 'true';
 
     const wrapper = document.createElement('div');
-    wrapper.className = 'linkshield-warning';
+    wrapper.className = 'linkshield-warning linkshield-imageless-qr';
     wrapper.style.position = 'relative';
     wrapper.style.display = 'inline-block';
-    table.parentNode?.insertBefore(wrapper, table);
-    wrapper.appendChild(table);
+    element.parentNode?.insertBefore(wrapper, element);
+    wrapper.appendChild(element);
 
     const isAlert = level === 'alert';
     const bgColor = isAlert ? 'rgba(220, 38, 38, 0.9)' : 'rgba(234, 179, 8, 0.9)';
     const borderColor = isAlert ? '#dc2626' : '#eab308';
     const emoji = isAlert ? '⚠️' : '⚡';
+
+    // Type-specifieke titels
+    const typeLabels = {
+      'table-qr': 'Table',
+      'svg-qr': 'SVG',
+      'grid-qr': 'CSS Grid'
+    };
+    const typeLabel = typeLabels[type] || 'Hidden';
+
     const title = isAlert
-      ? (chrome.i18n.getMessage('tableQrDangerTitle') || 'DANGER: Hidden QR Code!')
-      : (chrome.i18n.getMessage('tableQrCautionTitle') || 'Caution: Hidden QR Code');
+      ? (chrome.i18n.getMessage('imagelessQrDangerTitle') || `DANGER: ${typeLabel} QR Code!`)
+      : (chrome.i18n.getMessage('imagelessQrCautionTitle') || `Caution: ${typeLabel} QR Code`);
 
     const translatedReasons = Array.isArray(reasons) && reasons.length > 0
       ? reasons.slice(0, 3).map(r => translateReason(r)).join(', ')
@@ -11420,11 +12105,11 @@ class TableQRScanner {
     const displayUrl = url && url.length > 50 ? url.substring(0, 50) + '...' : url;
 
     const overlay = document.createElement('div');
-    overlay.className = 'linkshield-overlay table-qr-warning';
+    overlay.className = 'linkshield-overlay imageless-qr-warning';
     overlay.innerHTML = `
-      <div style="font-weight:bold;font-size:14px;margin-bottom:4px;">${emoji} ${title}</div>
-      <div style="font-size:11px;margin-bottom:4px;">URL: ${displayUrl || (chrome.i18n.getMessage('hiddenUrl') || 'Hidden')}</div>
-      <div style="font-size:10px;opacity:0.9;">${translatedReasons}</div>
+      <div style="font-weight:bold;font-size:14px;margin-bottom:4px;">${escapeHtml(emoji + ' ' + title)}</div>
+      <div style="font-size:11px;margin-bottom:4px;">URL: ${escapeHtml(displayUrl || chrome.i18n.getMessage('hiddenUrl') || 'Hidden')}</div>
+      <div style="font-size:10px;opacity:0.9;">${escapeHtml(translatedReasons)}</div>
     `;
 
     overlay.style.cssText = `
@@ -11449,29 +12134,51 @@ class TableQRScanner {
     `;
 
     wrapper.appendChild(overlay);
-    logDebug(`[TableQR] Warning displayed for table QR: ${url}`);
+    logDebug(`[ImagelessQR] Warning displayed for ${type}: ${url}`);
+  }
+
+  /**
+   * Legacy alias voor backwards compatibility
+   * @deprecated Gebruik warnImagelessQR()
+   */
+  warnTableQR(table, result) {
+    this.warnImagelessQR(table, { ...result, type: 'table-qr' });
   }
 }
 
-// Global table QR scanner instance
+// Global imageless QR scanner instance
+let imagelessQRScanner = null;
+// Legacy alias voor backwards compatibility
 let tableQRScanner = null;
 
 /**
- * Initialiseert de Table QR Scanner
+ * Initialiseert de Imageless QR Scanner (Table + SVG + CSS Grid)
  */
-function initTableQRScanner() {
-  if (!tableQRScanner) {
-    tableQRScanner = new TableQRScanner();
+function initImagelessQRScanner() {
+  if (!imagelessQRScanner) {
+    imagelessQRScanner = new ImagelessQRScanner();
+    tableQRScanner = imagelessQRScanner; // Legacy alias
   }
-  return tableQRScanner;
+  return imagelessQRScanner;
 }
 
-// Debounced table scan voor MutationObserver
-const debouncedTableScan = debounce(async () => {
-  if (tableQRScanner) {
-    await tableQRScanner.scanAllTables();
+/**
+ * Legacy alias voor backwards compatibility
+ * @deprecated Gebruik initImagelessQRScanner()
+ */
+function initTableQRScanner() {
+  return initImagelessQRScanner();
+}
+
+// Debounced scan voor MutationObserver (scant alle types)
+const debouncedImagelessQRScan = debounce(async () => {
+  if (imagelessQRScanner) {
+    await imagelessQRScanner.scanAllElements();
   }
 }, 500);
+
+// Legacy alias
+const debouncedTableScan = debouncedImagelessQRScan;
 
 // =============================================================================
 // END TABLE-BASED QR CODE SCANNER
@@ -11479,6 +12186,7 @@ const debouncedTableScan = debounce(async () => {
 
 /**
  * Scan image for QR codes using jsQR library (IIFE, MV3 compatible)
+ * v8.8.13: Added CORS fallback via background script for cross-origin images
  */
 async function scanImageForQR(imgEl) {
   // Check if jsQR is available
@@ -11487,12 +12195,14 @@ async function scanImageForQR(imgEl) {
     return null;
   }
 
-  try {
-    // Load image and draw to canvas for jsQR
-    const qrData = await new Promise((resolve, reject) => {
+  /**
+   * Helper function to scan a data URL for QR codes
+   * @param {string} dataUrl - Base64 data URL of the image
+   * @returns {Promise<object|null>} - QR data or null
+   */
+  const scanDataUrl = (dataUrl) => {
+    return new Promise((resolve, reject) => {
       const img = new Image();
-      img.crossOrigin = 'anonymous';
-
       img.onload = () => {
         try {
           const canvas = document.createElement('canvas');
@@ -11507,11 +12217,77 @@ async function scanImageForQR(imgEl) {
           reject(e);
         }
       };
-
       img.onerror = () => reject(new Error('Image load failed'));
       setTimeout(() => reject(new Error('Image load timeout')), 5000);
-      img.src = imgEl.src;
+      img.src = dataUrl;
     });
+  };
+
+  /**
+   * Check if URL is cross-origin
+   */
+  const isCrossOrigin = (url) => {
+    try {
+      const imgUrl = new URL(url);
+      return imgUrl.origin !== window.location.origin;
+    } catch {
+      return true; // Assume cross-origin if URL parsing fails
+    }
+  };
+
+  /**
+   * Fetch image via background script and return as data URL
+   */
+  const fetchViaBackground = async (url) => {
+    return new Promise((resolve, reject) => {
+      const timeoutId = setTimeout(() => reject(new Error('Background fetch timeout')), 10000);
+      chrome.runtime.sendMessage({
+        action: 'fetchImageAsDataUrl',
+        url: url
+      }, (result) => {
+        clearTimeout(timeoutId);
+        if (chrome.runtime.lastError) {
+          reject(new Error(chrome.runtime.lastError.message));
+        } else if (result && result.success && result.dataUrl) {
+          resolve(result.dataUrl);
+        } else {
+          reject(new Error(result?.error || 'Failed to fetch image'));
+        }
+      });
+    });
+  };
+
+  try {
+    let qrData = null;
+    const imgSrc = imgEl.src;
+
+    // Skip data URLs (already local) and invalid URLs
+    if (!imgSrc || imgSrc.startsWith('data:')) {
+      return null;
+    }
+
+    // v8.8.13: For cross-origin images, always use background script to avoid CORS issues
+    if (isCrossOrigin(imgSrc)) {
+      logDebug(`[LinkShield OCR] Cross-origin image detected, using background script: ${imgSrc}`);
+      try {
+        const dataUrl = await fetchViaBackground(imgSrc);
+        logDebug('[LinkShield OCR] Got image via background script, scanning for QR...');
+        qrData = await scanDataUrl(dataUrl);
+      } catch (bgError) {
+        logDebug(`[LinkShield OCR] Background fetch failed: ${bgError.message}`);
+        return null;
+      }
+    } else {
+      // Same-origin image - can scan directly
+      logDebug(`[LinkShield OCR] Same-origin image, scanning directly: ${imgSrc}`);
+      try {
+        const dataUrl = await fetchViaBackground(imgSrc); // Use background for consistency
+        qrData = await scanDataUrl(dataUrl);
+      } catch (e) {
+        logDebug(`[LinkShield OCR] Direct scan failed: ${e.message}`);
+        return null;
+      }
+    }
 
     if (qrData && qrData.data) {
       const decodedUrl = qrData.data;

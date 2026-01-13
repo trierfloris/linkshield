@@ -67,7 +67,9 @@ function getTranslatedMessage(messageKey) {
  * @param {...any} optionalParams - Optionele parameters.
  */
 function logError(message, ...optionalParams) {
-  console.error(message, ...optionalParams);
+  if (typeof globalConfig !== 'undefined' && globalConfig.DEBUG_MODE) {
+    console.error(message, ...optionalParams);
+  }
 }
 /**
  * Centrale foutafhandelingsfunctie die een fout logt met context.
@@ -473,7 +475,7 @@ function scheduleFullPageScan() {
         scanAllShadowDOMs(document.body, 0);
       }
     } catch (e) {
-      console.error('[ProgressiveScan] Error:', e);
+      logError('[ProgressiveScan] Error:', e);
     }
   };
 
@@ -548,7 +550,7 @@ function scanAllShadowDOMs(root, depth = 0) {
       logDebug(`[ShadowScan] 📊 Depth ${depth} complete: ${shadowRootsFound} shadow roots, ${linksScanned} links scanned`);
     }
   } catch (e) {
-    console.error(`[ShadowScan] ❌ Error at depth ${depth}:`, e);
+    logError(`[ShadowScan] ❌ Error at depth ${depth}:`, e);
   }
 }
 
@@ -10621,7 +10623,7 @@ async function handleSPANavigation(newUrl) {
       reasons: result.reasons
     });
   } catch (e) {
-    console.error('[SecurityFix v8.3.0] SPA navigation scan error:', e);
+    logError('[SecurityFix v8.3.0] SPA navigation scan error:', e);
   }
 }
 

@@ -55,11 +55,19 @@ async function ensureConfigReady() {
 }
 /**
  * Haalt een vertaling op voor een gegeven message key.
+ * Veilige wrapper met null checks voor contexts waar chrome.i18n niet beschikbaar is.
  * @param {string} messageKey
  * @returns {string}
  */
 function getTranslatedMessage(messageKey) {
-  return chrome.i18n.getMessage(messageKey);
+  try {
+    if (typeof chrome !== 'undefined' && chrome.i18n && typeof chrome.i18n.getMessage === 'function') {
+      return chrome.i18n.getMessage(messageKey) || '';
+    }
+  } catch (e) {
+    // Ignore - extension context might be invalidated
+  }
+  return '';
 }
 /**
  * Logt een foutmelding.
@@ -740,9 +748,9 @@ function showSecurityWarning(config) {
   const displayIcon = icon || (isCritical ? '🚨' : '⚠️');
 
   // i18n teksten
-  const trustText = chrome.i18n.getMessage('trustDomainButton') || 'Trust this site';
-  const leaveText = chrome.i18n.getMessage('exitPage') || 'Leave this page';
-  const dismissText = chrome.i18n.getMessage('understandRisk') || 'I understand the risk';
+  const trustText = getTranslatedMessage('trustDomainButton') || 'Trust this site';
+  const leaveText = getTranslatedMessage('exitPage') || 'Leave this page';
+  const dismissText = getTranslatedMessage('understandRisk') || 'I understand the risk';
 
   // Create host element with Shadow DOM
   const host = document.createElement('div');
@@ -1160,15 +1168,15 @@ function showClipboardWarning(type, score) {
     const isCrypto = type.includes('Crypto');
 
     const title = isCrypto
-        ? chrome.i18n.getMessage('clipboardHijackingCryptoTitle') || 'Crypto Address Hijacking Detected!'
-        : chrome.i18n.getMessage('clipboardHijackingTitle') || 'Clipboard Manipulation Detected!';
+        ? getTranslatedMessage('clipboardHijackingCryptoTitle') || 'Crypto Address Hijacking Detected!'
+        : getTranslatedMessage('clipboardHijackingTitle') || 'Clipboard Manipulation Detected!';
 
-    const message = chrome.i18n.getMessage('clipboardHijackingMessage') ||
+    const message = getTranslatedMessage('clipboardHijackingMessage') ||
         'This page is attempting to modify your clipboard. Be careful when pasting wallet addresses.';
 
     const tip = isCrypto
-        ? chrome.i18n.getMessage('clipboardHijackingCryptoTip') || 'Always verify wallet addresses before sending cryptocurrency. Attackers replace addresses in your clipboard.'
-        : chrome.i18n.getMessage('clipboardHijackingTip') || 'This site may be trying to replace content you copy. Always verify pasted content.';
+        ? getTranslatedMessage('clipboardHijackingCryptoTip') || 'Always verify wallet addresses before sending cryptocurrency. Attackers replace addresses in your clipboard.'
+        : getTranslatedMessage('clipboardHijackingTip') || 'This site may be trying to replace content you copy. Always verify pasted content.';
 
     showSecurityWarning({
         id: 'clipboard',
@@ -1341,13 +1349,13 @@ function showClickFixWarning(patterns, score) {
     const hasPowerShell = patterns.some(p => p.type === 'powershell');
 
     const title = hasPowerShell
-        ? (chrome.i18n.getMessage('clickFixPowerShellTitle') || 'PowerShell Command Detected!')
-        : (chrome.i18n.getMessage('clickFixCommandTitle') || 'Suspicious Command Detected!');
+        ? (getTranslatedMessage('clickFixPowerShellTitle') || 'PowerShell Command Detected!')
+        : (getTranslatedMessage('clickFixCommandTitle') || 'Suspicious Command Detected!');
 
-    const message = chrome.i18n.getMessage('clickFixMessage') ||
+    const message = getTranslatedMessage('clickFixMessage') ||
         'This page contains a suspicious command that could harm your computer. Do not copy or execute this command.';
 
-    const tip = chrome.i18n.getMessage('clickFixSubMessage') ||
+    const tip = getTranslatedMessage('clickFixSubMessage') ||
         'Attackers often disguise malicious commands as \'fixes\' or \'verification steps\'. Never run commands from untrusted sources.';
 
     showSecurityWarning({
@@ -1916,13 +1924,13 @@ function showBitBWarning(severity, indicators, score) {
     const isCritical = severity === 'critical';
 
     const title = isCritical
-        ? (chrome.i18n.getMessage('bitbAttackCriticalTitle') || 'Fake Login Window Detected!')
-        : (chrome.i18n.getMessage('bitbAttackWarningTitle') || 'Suspicious Login Popup');
+        ? (getTranslatedMessage('bitbAttackCriticalTitle') || 'Fake Login Window Detected!')
+        : (getTranslatedMessage('bitbAttackWarningTitle') || 'Suspicious Login Popup');
 
-    const message = chrome.i18n.getMessage('bitbAttackMessage') ||
+    const message = getTranslatedMessage('bitbAttackMessage') ||
         'This page is showing a fake browser window designed to steal your credentials. Real login popups open in separate browser windows.';
 
-    const tip = chrome.i18n.getMessage('bitbAttackTip') ||
+    const tip = getTranslatedMessage('bitbAttackTip') ||
         'Always check the browser address bar for the real URL, not text displayed within the page.';
 
     showSecurityWarning({
@@ -4647,7 +4655,7 @@ async function warnLinkByLevel(link, { level, reasons }) {
   // Vertaal de reden-keys (houd camelCase, vervang alleen ongeldige tekens)
   const translatedReasons = reasons.map(r => {
     const key = r.replace(/[^a-zA-Z0-9_]/g, '_');
-    return chrome.i18n.getMessage(key) || r;
+    return getTranslatedMessage(key) || r;
   });
   // Alert: direct rood icoon + SECURITY FIX v8.0.0 (Vector 3): Blokkeer navigatie op netwerkniveau
   if (level === 'alert') {
@@ -5236,11 +5244,11 @@ function attachClickInterceptor(link, reasons) {
  * @param {string} targetUrl - De oorspronkelijke target URL
  */
 function showVisualHijackingWarning(reason, targetUrl) {
-  const reasonText = chrome.i18n.getMessage(reason) || reason;
-  const title = chrome.i18n.getMessage('visualHijackingDetected') || 'Visual Hijacking Detected';
-  const message = chrome.i18n.getMessage('visualHijackingMessage') ||
+  const reasonText = getTranslatedMessage(reason) || reason;
+  const title = getTranslatedMessage('visualHijackingDetected') || 'Visual Hijacking Detected';
+  const message = getTranslatedMessage('visualHijackingMessage') ||
     'A hidden overlay was detected trying to intercept your click. This is a common phishing technique.';
-  const tip = (chrome.i18n.getMessage('detectionReason') || 'Detection reason') + ': ' + reasonText;
+  const tip = (getTranslatedMessage('detectionReason') || 'Detection reason') + ': ' + reasonText;
 
   showSecurityWarning({
     id: 'visual-hijack',
@@ -5492,6 +5500,14 @@ async function proactiveVisualHijackingScan() {
       const isLargeOverlay = rect.width >= window.innerWidth * 0.5 &&
                              rect.height >= window.innerHeight * 0.5;
 
+      // Check for transparent/invisible properties
+      const bgColor = style.backgroundColor;
+      const isTransparentBg = bgColor === 'transparent' ||
+                              bgColor === 'rgba(0, 0, 0, 0)' ||
+                              bgColor.startsWith('rgba') && parseFloat(bgColor.split(',')[3]) < 0.1;
+      const hasNoVisibleContent = !el.textContent.trim() && !style.backgroundImage;
+      const isInvisible = opacity < 0.3 || (isTransparentBg && hasNoVisibleContent);
+
       // CRITICAL: Detect pointer-events: none with high z-index (Z-Index War attack)
       if (pointerEvents === 'none' && zIndex >= HIGH_Z_THRESHOLD && isLargeOverlay) {
         // Double-check: skip if any ancestor is a CMP element
@@ -5504,16 +5520,28 @@ async function proactiveVisualHijackingScan() {
         return true; // Stop after first detection
       }
 
-      // Detect INT_MAX z-index with suspicious properties
+      // Detect INT_MAX z-index with suspicious properties (transparent overlay attack)
       if (zIndex >= INT_MAX - 1000 && isLargeOverlay) {
-        if (opacity < 0.3 || pointerEvents === 'none') {
+        if (isInvisible || pointerEvents === 'none') {
           // Double-check: skip if any ancestor is a CMP element
           if (el.closest('[id*="cookiebot"], [id*="consent"], [id*="cookie"], [class*="cookie"], [class*="consent"], [id*="onetrust"], [id*="didomi"]')) {
             logDebug('[Vector3-Proactive] Skipping CMP INT_MAX element');
             continue;
           }
-          logDebug(`[Vector3-Proactive] 🛡️ INT_MAX Z-Index attack DETECTED`);
+          logDebug(`[Vector3-Proactive] 🛡️ INT_MAX Z-Index attack DETECTED: transparent overlay`);
           showVisualHijackingWarning('intMaxZIndexOverlay', window.location.href);
+          return true;
+        }
+      }
+
+      // SECURITY FIX v8.1.8: Detect clickable links with extreme z-index that are nearly invisible
+      if (el.tagName === 'A' && el.href && zIndex >= INT_MAX - 1000) {
+        if (isInvisible) {
+          if (el.closest('[id*="cookiebot"], [id*="consent"], [id*="cookie"], [class*="cookie"], [class*="consent"], [id*="onetrust"], [id*="didomi"]')) {
+            continue;
+          }
+          logDebug(`[Vector3-Proactive] 🛡️ Invisible link with INT_MAX z-index DETECTED: ${el.href}`);
+          showVisualHijackingWarning('hiddenLinkOverlay', el.href);
           return true;
         }
       }
@@ -5548,13 +5576,13 @@ function initProactiveVisualHijackingScan() {
   logDebug('[Vector3-Proactive] Proactive Visual Hijacking scanner initialized');
 }
 
-// SECURITY FIX v8.8.12: Proactive scanner disabled - causes too many false positives on legitimate ads
-// Visual hijacking is now only checked on links already flagged as suspicious by URL analysis
-// if (document.readyState === 'loading') {
-//   document.addEventListener('DOMContentLoaded', initProactiveVisualHijackingScan);
-// } else {
-//   initProactiveVisualHijackingScan();
-// }
+// SECURITY FIX v8.1.8: Re-enabled proactive scanner with improved CMP/ad filtering
+// The scanner now properly skips cookie consent banners, ad overlays, and trusted domains
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initProactiveVisualHijackingScan);
+} else {
+  initProactiveVisualHijackingScan();
+}
 
 function injectWarningIconStyles() {
     if (!document.head.querySelector('#phishing-warning-styles')) {
@@ -5709,12 +5737,12 @@ async function showSiteSafeBadge() {
   const shadow = host.attachShadow({ mode: 'closed' });
 
   // Get localized strings
-  const badgeText = chrome.i18n.getMessage('siteSafeSuccessBadge') || 'Verified Safe';
-  const dismissText = chrome.i18n.getMessage('dismissTooltip') || 'Dismiss';
-  const dontShowText = chrome.i18n.getMessage('dontShowAgain') || "Don't show again?";
-  const yesText = chrome.i18n.getMessage('confirmYes') || 'Yes';
-  const noText = chrome.i18n.getMessage('confirmNo') || 'No';
-  const detailText = chrome.i18n.getMessage('siteSafeSuccessDetail') ||
+  const badgeText = getTranslatedMessage('siteSafeSuccessBadge') || 'Verified Safe';
+  const dismissText = getTranslatedMessage('dismissTooltip') || 'Dismiss';
+  const dontShowText = getTranslatedMessage('dontShowAgain') || "Don't show again?";
+  const yesText = getTranslatedMessage('confirmYes') || 'Yes';
+  const noText = getTranslatedMessage('confirmNo') || 'No';
+  const detailText = getTranslatedMessage('siteSafeSuccessDetail') ||
     'LinkShield scanned this page for phishing, typosquatting, and malicious scripts. Everything looks good.';
 
   // Shadow DOM content - visual styling only, positioning is on host
@@ -11266,91 +11294,33 @@ function reportWebTransportActivity(url, analysis) {
  * @param {object} analysis - Analyse resultaat
  */
 function showWebTransportWarning(url, analysis) {
-    // Voorkom dubbele waarschuwingen
-    if (document.getElementById('linkshield-webtransport-warning')) return;
-
-    const warning = document.createElement('div');
-    warning.id = 'linkshield-webtransport-warning';
-    warning.style.cssText = `
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-        color: white;
-        padding: 16px 20px;
-        border-radius: 12px;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        z-index: 2147483647;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        font-size: 14px;
-        max-width: 380px;
-        animation: slideInRight 0.3s ease-out;
-    `;
-
-    // Voeg animatie toe
-    if (!document.getElementById('linkshield-webtransport-styles')) {
-        const style = document.createElement('style');
-        style.id = 'linkshield-webtransport-styles';
-        style.textContent = `
-            @keyframes slideInRight {
-                from { transform: translateX(100%); opacity: 0; }
-                to { transform: translateX(0); opacity: 1; }
-            }
-        `;
-        document.head.appendChild(style);
-    }
-
-    const title = chrome.i18n.getMessage('webTransportWarningTitle') || 'Suspicious Network Activity';
-    const message = chrome.i18n.getMessage('webTransportWarningMessage') ||
+    const title = getTranslatedMessage('webTransportWarningTitle') || 'Suspicious Network Activity';
+    const message = getTranslatedMessage('webTransportWarningMessage') ||
         'This page is using advanced network protocols in a potentially suspicious way.';
 
-    // Toon specifieke reden indien beschikbaar
+    // Bepaal specifieke reden voor tip
     let reasonText = '';
     if (analysis.reasons.includes('webTransportDirectIP')) {
-        reasonText = chrome.i18n.getMessage('webTransportDirectIP') || 'Connection to direct IP address detected.';
+        reasonText = getTranslatedMessage('webTransportDirectIP') || 'Connection to direct IP address detected.';
     } else if (analysis.reasons.includes('webTransportRandomSubdomain')) {
-        reasonText = chrome.i18n.getMessage('webTransportRandomSubdomain') || 'Connection to suspicious random subdomain.';
+        reasonText = getTranslatedMessage('webTransportRandomSubdomain') || 'Connection to suspicious random subdomain.';
+    } else if (analysis.reasons.includes('webTransportHighPort')) {
+        reasonText = getTranslatedMessage('webTransportHighPort') || 'Connection to unusual high port number.';
     } else if (analysis.reasons.includes('webTransportHighConnectionRate')) {
-        reasonText = chrome.i18n.getMessage('webTransportHighConnectionRate') || 'Unusually high connection rate detected.';
+        reasonText = getTranslatedMessage('webTransportHighConnectionRate') || 'Unusually high connection rate detected.';
+    } else if (analysis.reasons.includes('webTransportFreeTLD')) {
+        reasonText = getTranslatedMessage('webTransportFreeTLD') || 'Connection to free TLD domain.';
     }
 
-    warning.innerHTML = `
-        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
-            <span style="font-size: 22px;">🌐</span>
-            <span style="font-weight: 600; font-size: 15px;">${title}</span>
-            <button id="linkshield-webtransport-close" style="
-                margin-left: auto;
-                background: rgba(255,255,255,0.2);
-                border: none;
-                color: white;
-                width: 24px;
-                height: 24px;
-                border-radius: 50%;
-                cursor: pointer;
-                font-size: 14px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            ">✕</button>
-        </div>
-        <div style="font-size: 13px; opacity: 0.95; margin-bottom: 8px;">${message}</div>
-        ${reasonText ? `<div style="font-size: 12px; opacity: 0.8; background: rgba(0,0,0,0.1); padding: 8px; border-radius: 6px;">${reasonText}</div>` : ''}
-    `;
-
-    document.body.appendChild(warning);
-
-    // Close button handler
-    document.getElementById('linkshield-webtransport-close')?.addEventListener('click', () => {
-        warning.remove();
+    showSecurityWarning({
+        id: 'webtransport',
+        severity: 'warning',
+        title: title,
+        message: message,
+        tip: reasonText || undefined,
+        icon: '🌐',
+        showTrust: true
     });
-
-    // Auto-remove na 15 seconden
-    setTimeout(() => {
-        if (warning.parentNode) {
-            warning.style.animation = 'slideInRight 0.3s ease-out reverse';
-            setTimeout(() => warning.remove(), 300);
-        }
-    }, 15000);
 }
 
 // =============================================================================
@@ -12103,12 +12073,12 @@ class ImagelessQRScanner {
     const typeLabel = typeLabels[type] || 'Hidden';
 
     const title = isAlert
-      ? (chrome.i18n.getMessage('imagelessQrDangerTitle') || `DANGER: ${typeLabel} QR Code!`)
-      : (chrome.i18n.getMessage('imagelessQrCautionTitle') || `Caution: ${typeLabel} QR Code`);
+      ? (getTranslatedMessage('imagelessQrDangerTitle') || `DANGER: ${typeLabel} QR Code!`)
+      : (getTranslatedMessage('imagelessQrCautionTitle') || `Caution: ${typeLabel} QR Code`);
 
     const translatedReasons = Array.isArray(reasons) && reasons.length > 0
       ? reasons.slice(0, 3).map(r => translateReason(r)).join(', ')
-      : (chrome.i18n.getMessage('hiddenQrDetected') || 'Hidden QR code detected');
+      : (getTranslatedMessage('hiddenQrDetected') || 'Hidden QR code detected');
 
     const displayUrl = url && url.length > 50 ? url.substring(0, 50) + '...' : url;
 
@@ -12167,7 +12137,7 @@ class ImagelessQRScanner {
       </style>
       <div class="overlay">
         <div class="title">${escapeHtml(emoji + ' ' + title)}</div>
-        <div class="url">URL: ${escapeHtml(displayUrl || chrome.i18n.getMessage('hiddenUrl') || 'Hidden')}</div>
+        <div class="url">URL: ${escapeHtml(displayUrl || getTranslatedMessage('hiddenUrl') || 'Hidden')}</div>
         <div class="reasons">${escapeHtml(translatedReasons)}</div>
       </div>
     `;
@@ -12443,13 +12413,13 @@ function warnOCRImage(img, { level, reasons = [], url, extractedText }) {
   const borderColor = isAlert ? '#dc2626' : '#d97706';
   const textColor = isAlert ? '#7f1d1d' : '#92400e';
   const title = isAlert
-    ? (chrome.i18n.getMessage('ocrDangerTitle') || 'Phishing in image!')
-    : (chrome.i18n.getMessage('ocrCautionTitle') || 'Suspicious text in image');
+    ? (getTranslatedMessage('ocrDangerTitle') || 'Phishing in image!')
+    : (getTranslatedMessage('ocrCautionTitle') || 'Suspicious text in image');
 
   // Translate reasons
   const translatedReasons = Array.isArray(reasons) && reasons.length > 0
     ? reasons.slice(0, 3).map(r => translateReason(r)).join(', ')
-    : (chrome.i18n.getMessage('suspiciousDomainDetected') || 'Suspicious domain detected');
+    : (getTranslatedMessage('suspiciousDomainDetected') || 'Suspicious domain detected');
 
   const displayUrl = url && url.length > 40 ? url.substring(0, 40) + '...' : (url || 'N/A');
 
@@ -12484,7 +12454,7 @@ function warnOCRImage(img, { level, reasons = [], url, extractedText }) {
   const translatedReasonsForTooltip = Array.isArray(reasons)
     ? reasons.map(r => translateReason(r)).join('\n')
     : '';
-  overlay.title = `${chrome.i18n.getMessage('extractedText') || 'Extracted text'}: ${extractedText}\n\n${chrome.i18n.getMessage('reasons') || 'Reasons'}:\n${translatedReasonsForTooltip}`;
+  overlay.title = `${getTranslatedMessage('extractedText') || 'Extracted text'}: ${extractedText}\n\n${getTranslatedMessage('reasons') || 'Reasons'}:\n${translatedReasonsForTooltip}`;
 
   overlay.style.cssText = `
     position: absolute;
@@ -12531,7 +12501,7 @@ function translateReason(reasonKey) {
 
   // Try to get translation from chrome.i18n
   const translationKey = `reason_${baseKey}`;
-  let translated = chrome.i18n.getMessage(translationKey);
+  let translated = getTranslatedMessage(translationKey);
 
   // If no translation found, use fallback mapping (English)
   if (!translated) {
@@ -12714,15 +12684,15 @@ function warnTextQR(el, { level, reasons = [], url }) {
   const borderColor = isAlert ? '#dc2626' : '#d97706';
   const textColor = isAlert ? '#7f1d1d' : '#92400e';
   const title = isAlert
-    ? (chrome.i18n.getMessage('asciiQrDangerTitle') || 'Phishing ASCII QR!')
-    : (chrome.i18n.getMessage('asciiQrCautionTitle') || 'Suspicious ASCII QR');
+    ? (getTranslatedMessage('asciiQrDangerTitle') || 'Phishing ASCII QR!')
+    : (getTranslatedMessage('asciiQrCautionTitle') || 'Suspicious ASCII QR');
 
   // Translate reasons
   const translatedReasons = Array.isArray(reasons) && reasons.length > 0
     ? reasons.slice(0, 3).map(r => translateReason(r)).join(', ')
-    : (chrome.i18n.getMessage('suspiciousDomainDetected') || 'Suspicious domain detected');
+    : (getTranslatedMessage('suspiciousDomainDetected') || 'Suspicious domain detected');
 
-  const displayUrl = url && url.length > 40 ? url.substring(0, 40) + '...' : (url || (chrome.i18n.getMessage('hiddenUrl') || 'Hidden'));
+  const displayUrl = url && url.length > 40 ? url.substring(0, 40) + '...' : (url || (getTranslatedMessage('hiddenUrl') || 'Hidden'));
 
   const overlay = document.createElement('div');
   overlay.className = 'qr-warning-overlay ascii-qr-warning';
@@ -12755,7 +12725,7 @@ function warnTextQR(el, { level, reasons = [], url }) {
   const translatedReasonsForTooltip = Array.isArray(reasons)
     ? reasons.map(r => translateReason(r)).join('\n')
     : '';
-  overlay.title = `${chrome.i18n.getMessage('reasons') || 'Reasons'}:\n${translatedReasonsForTooltip}`;
+  overlay.title = `${getTranslatedMessage('reasons') || 'Reasons'}:\n${translatedReasonsForTooltip}`;
 
   overlay.style.cssText = `
     position: absolute;
@@ -12801,13 +12771,13 @@ function warnQRImage(img, { level, reasons = [], url }) {
   const borderColor = isAlert ? '#dc2626' : '#d97706';
   const textColor = isAlert ? '#7f1d1d' : '#92400e';
   const title = isAlert
-    ? (chrome.i18n.getMessage('qrDangerTitle') || 'Phishing QR Code!')
-    : (chrome.i18n.getMessage('qrCautionTitle') || 'Suspicious QR Code');
+    ? (getTranslatedMessage('qrDangerTitle') || 'Phishing QR Code!')
+    : (getTranslatedMessage('qrCautionTitle') || 'Suspicious QR Code');
 
   // Translate reasons for display
   const translatedReasons = Array.isArray(reasons) && reasons.length > 0
     ? reasons.slice(0, 3).map(r => translateReason(r)).join(', ')
-    : (chrome.i18n.getMessage('suspiciousDomainDetected') || 'Suspicious domain detected');
+    : (getTranslatedMessage('suspiciousDomainDetected') || 'Suspicious domain detected');
 
   // Truncate URL for display
   const displayUrl = url && url.length > 40 ? url.substring(0, 40) + '...' : url;
@@ -12832,7 +12802,7 @@ function warnQRImage(img, { level, reasons = [], url }) {
       text-align: center;
     ">
       <div style="font-weight:bold;font-size:12px;margin-bottom:4px;color:${textColor};">${isAlert ? '🚨' : '⚠️'} ${title}</div>
-      <div style="font-size:10px;margin-bottom:3px;color:${textColor};opacity:0.9;">URL: ${displayUrl || (chrome.i18n.getMessage('hiddenUrl') || 'Hidden URL')}</div>
+      <div style="font-size:10px;margin-bottom:3px;color:${textColor};opacity:0.9;">URL: ${displayUrl || (getTranslatedMessage('hiddenUrl') || 'Hidden URL')}</div>
       <div style="font-size:9px;color:${textColor};opacity:0.8;">${translatedReasons}</div>
     </div>
   `;
@@ -12857,8 +12827,8 @@ function warnQRImage(img, { level, reasons = [], url }) {
   // Translate reasons for tooltip
   const translatedReasonsForTooltip = Array.isArray(reasons)
     ? reasons.map(r => translateReason(r)).join('\n')
-    : (chrome.i18n.getMessage('suspiciousDomainDetected') || 'Suspicious domain');
-  overlay.title = `${chrome.i18n.getMessage('fullUrl') || 'Full URL'}: ${url}\n\n${chrome.i18n.getMessage('reasons') || 'Reasons'}:\n${translatedReasonsForTooltip}`;
+    : (getTranslatedMessage('suspiciousDomainDetected') || 'Suspicious domain');
+  overlay.title = `${getTranslatedMessage('fullUrl') || 'Full URL'}: ${url}\n\n${getTranslatedMessage('reasons') || 'Reasons'}:\n${translatedReasonsForTooltip}`;
   wrapper.appendChild(overlay);
 }
 
@@ -12866,5 +12836,5 @@ function warnQRImage(img, { level, reasons = [], url }) {
 function reportPhishing(url) {
   // Placeholder: Send to background.js or external API
   chrome.runtime.sendMessage({ action: 'reportPhishing', url });
-  alert(chrome.i18n.getMessage('reportPhishingSuccess') || 'Reported! Thank you for helping improve security.');
+  alert(getTranslatedMessage('reportPhishingSuccess') || 'Reported! Thank you for helping improve security.');
 }

@@ -151,6 +151,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    // Close Button
-    elements.closeBtn?.addEventListener('click', () => window.close());
+    // Close Button - sluit de huidige tab (niet alleen het venster)
+    elements.closeBtn?.addEventListener('click', async () => {
+        try {
+            // Gebruik chrome.tabs API om de huidige tab te sluiten
+            const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+            if (tabs[0]?.id) {
+                await chrome.tabs.remove(tabs[0].id);
+            }
+        } catch (error) {
+            // Fallback naar window.close() als tabs API niet beschikbaar is
+            console.error('[Alert] Fout bij sluiten tab:', error);
+            window.close();
+        }
+    });
 });

@@ -1,0 +1,35 @@
+{
+  "name": "linkshield-tests",
+  "version": "1.0.0",
+  "description": "E2E and unit tests for LinkShield browser extension",
+  "scripts": {
+    "test": "jest",
+    "test:unit": "jest --testPathPattern=unit/",
+    "test:e2e": "jest --testPathPattern=e2e/",
+    "test:i18n": "node ../scripts/validate-i18n.js",
+    "test:manual": "node e2e/manual-test-server.js",
+    "test:puppeteer": "jest --testPathPattern=e2e/popup",
+    "coverage": "jest --coverage"
+  },
+  "dependencies": {
+    "playwright": "^1.40.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "puppeteer": "^21.6.0",
+    "@types/jest": "^29.5.11"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/unit/**/*.test.js",
+      "**/e2e/**/*.test.js"
+    ],
+    "collectCoverageFrom": [
+      "../*.js",
+      "!../node_modules/**"
+    ],
+    "coverageDirectory": "./coverage",
+    "verbose": true
+  }
+}

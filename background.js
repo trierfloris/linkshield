@@ -8,6 +8,23 @@ const CACHE_TTL = 24 * 60 * 60 * 1000;
 const API_TIMEOUT_MS = 5000; // 5 seconden timeout voor API calls (verlaagd van 10s)
 
 /**
+ * Veilige wrapper voor chrome.i18n.getMessage met null checks
+ * SECURITY FIX v8.1.7: Voorkomt "Cannot read properties of undefined (reading 'getMessage')" errors
+ * @param {string} messageKey
+ * @returns {string}
+ */
+function safeGetMessage(messageKey) {
+    try {
+        if (typeof chrome !== 'undefined' && chrome.i18n && typeof chrome.i18n.getMessage === 'function') {
+            return chrome.i18n.getMessage(messageKey) || '';
+        }
+    } catch (e) {
+        // Ignore - extension context might be invalidated
+    }
+    return '';
+}
+
+/**
  * PERFORMANCE FIX v8.1.0: Non-blocking protection initialization
  * Called IMMEDIATELY at startup to enable protection using cached status.
  * Does NOT wait for network - protection is active within milliseconds.
@@ -244,8 +261,8 @@ async function activateEmergencyMode(reason) {
         chrome.notifications.create('emergency_mode_' + Date.now(), {
             type: 'basic',
             iconUrl: 'icons/icon128.png',
-            title: chrome.i18n.getMessage('emergencyModeTitle') || 'Emergency Protection Mode',
-            message: chrome.i18n.getMessage('emergencyModeMessage') ||
+            title: safeGetMessage('emergencyModeTitle') || 'Emergency Protection Mode',
+            message: safeGetMessage('emergencyModeMessage') ||
                 'LinkShield is running in Emergency Mode. Protection remains fully active. Please check your internet connection.',
             priority: 1
         });
@@ -506,28 +523,28 @@ async function showFailSafeNotification(reason) {
         let title, message;
         switch (reason) {
             case 'network_error':
-                title = chrome.i18n.getMessage('failSafeNetworkTitle') || 'License Check Failed';
-                message = chrome.i18n.getMessage('failSafeNetworkMessage') ||
+                title = safeGetMessage('failSafeNetworkTitle') || 'License Check Failed';
+                message = safeGetMessage('failSafeNetworkMessage') ||
                     'Could not verify license due to network issues. Protection remains active in safe mode.';
                 break;
             case 'grace_expired_failsafe':
-                title = chrome.i18n.getMessage('failSafeGraceTitle') || 'License Verification Needed';
-                message = chrome.i18n.getMessage('failSafeGraceMessage') ||
+                title = safeGetMessage('failSafeGraceTitle') || 'License Verification Needed';
+                message = safeGetMessage('failSafeGraceMessage') ||
                     'Please connect to the internet to verify your license. Protection remains active.';
                 break;
             case 'protection_preserved':
-                title = chrome.i18n.getMessage('failSafePreservedTitle') || 'Protection Active';
-                message = chrome.i18n.getMessage('failSafePreservedMessage') ||
+                title = safeGetMessage('failSafePreservedTitle') || 'Protection Active';
+                message = safeGetMessage('failSafePreservedMessage') ||
                     'Your protection rules are preserved. Please verify your license when possible.';
                 break;
             case 'fresh_install_failsafe':
-                title = chrome.i18n.getMessage('failSafeFreshInstallTitle') || 'Protection Enabled';
-                message = chrome.i18n.getMessage('failSafeFreshInstallMessage') ||
+                title = safeGetMessage('failSafeFreshInstallTitle') || 'Protection Enabled';
+                message = safeGetMessage('failSafeFreshInstallMessage') ||
                     'LinkShield protection is active. Please verify your license when possible.';
                 break;
             default:
-                title = chrome.i18n.getMessage('failSafeDefaultTitle') || 'Safe Mode Active';
-                message = chrome.i18n.getMessage('failSafeDefaultMessage') ||
+                title = safeGetMessage('failSafeDefaultTitle') || 'Safe Mode Active';
+                message = safeGetMessage('failSafeDefaultMessage') ||
                     'LinkShield is running in safe mode. Protection remains active.';
         }
 
@@ -610,7 +627,10 @@ function startSmoothIconAnimation(duration = 30000, interval = 500) {
 
     // Use chrome.alarms for delayed badge removal (MV3 safe)
     // Note: minimum alarm delay is 1 minute in MV3
-    chrome.alarms.create('clearAlertBadge', { delayInMinutes: 1 });
+    // v8.8.14: Clear existing alarm first to prevent alarm buildup (max 500 limit)
+    chrome.alarms.clear('clearAlertBadge', () => {
+        chrome.alarms.create('clearAlertBadge', { delayInMinutes: 1 });
+    });
 }
 
 /** Resets the icon to a neutral state (green) */
@@ -624,7 +644,7 @@ function resetIconToNeutral() {
             }
         });
         clearBadge();
-        chrome.action.setTitle({ title: chrome.i18n.getMessage("neutralIconTitle") || "Performing safety check..." });
+        chrome.action.setTitle({ title: safeGetMessage("neutralIconTitle") || "Performing safety check..." });
     } catch (error) {
         console.error("[ERROR] resetIconToNeutral error:", error);
     }
@@ -701,10 +721,10 @@ async function updateIconBasedOnSafety(level, reasons, risk, url) {
             'siteCautionTitle' :
             'siteSafeTitle';
 
-    let tooltip = chrome.i18n.getMessage(titleKey) || '';
+    let tooltip = safeGetMessage(titleKey) || '';
     if (Array.isArray(reasons) && reasons.length) {
         const reasonTexts = reasons
-            .map(key => chrome.i18n.getMessage(key))
+            .map(key => safeGetMessage(key))
             .filter(text => text && text.trim().length > 0)
             .join('\n');
         if (reasonTexts) {
@@ -1928,8 +1948,30 @@ loadSslCacheFromStorage();
 // setInterval werkt niet betrouwbaar in Service Workers - alarm wordt aangemaakt in onInstalled
 // Handler: zie chrome.alarms.onAlarm listener voor "cleanSSLCache"
 
+// v8.8.14: In-memory Set to prevent race conditions in blockMaliciousNavigation
+const pendingBlockUrls = new Set();
 
 // ==== Installation and Alarms ====
+
+// v8.8.14: Startup cleanup for alarms (runs on every service worker start)
+(async () => {
+    try {
+        const allAlarms = await chrome.alarms.getAll();
+        // Keep only the important recurring alarms, clean up everything else
+        const keepAlarms = ['fetchRulesHourly', 'license_revalidation_check', 'cleanSSLCache', 'clearAlertBadge'];
+        const alarmsToClean = allAlarms.filter(a => !keepAlarms.includes(a.name));
+
+        if (alarmsToClean.length > 0) {
+            console.log(`[Alarms] Cleaning up ${alarmsToClean.length} old alarms...`);
+            for (const alarm of alarmsToClean) {
+                await chrome.alarms.clear(alarm.name);
+            }
+            console.log('[Alarms] Cleanup complete');
+        }
+    } catch (e) {
+        console.warn('[Alarms] Startup cleanup error:', e);
+    }
+})();
 
 chrome.runtime.onInstalled.addListener(async (details) => {
     try {
@@ -1959,8 +2001,8 @@ chrome.runtime.onInstalled.addListener(async (details) => {
             chrome.notifications.create("pinReminder", {
                 type: "basic",
                 iconUrl: "icons/icon128.png",
-                title: chrome.i18n.getMessage("installNotificationTitle") || "Extension Installed!",
-                message: chrome.i18n.getMessage("installNotificationMessage") || "Pin the extension to your toolbar for quick access. Click the extension icon and select 'Pin'. This icon will warn you when a site is unsafe.",
+                title: safeGetMessage("installNotificationTitle") || "Extension Installed!",
+                message: safeGetMessage("installNotificationMessage") || "Pin the extension to your toolbar for quick access. Click the extension icon and select 'Pin'. This icon will warn you when a site is unsafe.",
                 priority: 2
             });
         }
@@ -1969,6 +2011,15 @@ chrome.runtime.onInstalled.addListener(async (details) => {
         await loadThresholdsFromStorage();
         await fetchAndLoadRules();
         await manageDNRules(); // Activeer/deactiveer regels op basis van initiële instellingen
+
+        // v8.8.14: Clean up all existing alarms to prevent buildup (max 500 limit)
+        // Then recreate only the necessary recurring alarms
+        try {
+            await chrome.alarms.clearAll();
+            console.log("[Alarms] Cleared all existing alarms on install/update");
+        } catch (e) {
+            console.warn("[Alarms] Could not clear alarms:", e);
+        }
 
         chrome.alarms.create("fetchRulesHourly", {
             periodInMinutes: 60
@@ -2441,7 +2492,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 chrome.action.setBadgeText({ text: '!', tabId: sender.tab.id });
                 chrome.action.setBadgeBackgroundColor({ color: '#dc2626', tabId: sender.tab.id });
                 chrome.action.setTitle({
-                    title: chrome.i18n.getMessage('bitbWarningTitle') || 'Fake Login Window Detected!',
+                    title: safeGetMessage('bitbWarningTitle') || 'Fake Login Window Detected!',
                     tabId: sender.tab.id
                 });
 
@@ -2467,7 +2518,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                     chrome.action.setBadgeText({ text: '!', tabId: sender.tab.id });
                     chrome.action.setBadgeBackgroundColor({ color: '#f59e0b', tabId: sender.tab.id }); // Amber/warning
                     chrome.action.setTitle({
-                        title: chrome.i18n.getMessage('webTransportWarningTitle') || 'Suspicious Network Activity Detected',
+                        title: safeGetMessage('webTransportWarningTitle') || 'Suspicious Network Activity Detected',
                         tabId: sender.tab.id
                     });
 
@@ -2499,9 +2550,44 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
             (async () => {
                 try {
-                    // Genereer unieke regel ID (base + timestamp modulo om binnen limiet te blijven)
-                    // DNR regel IDs moeten positieve integers zijn
-                    const ruleId = 900000 + (Date.now() % 99999);
+                    // v8.8.14: In-memory lock to prevent race conditions
+                    if (pendingBlockUrls.has(targetUrl)) {
+                        sendResponse({ blocked: true, alreadyPending: true });
+                        return;
+                    }
+                    pendingBlockUrls.add(targetUrl);
+
+                    // v8.8.14: Check if this URL is already blocked to prevent duplicates
+                    const { visualHijackingRules = [] } = await chrome.storage.session.get('visualHijackingRules');
+                    const existingRule = visualHijackingRules.find(r => r.url === targetUrl);
+                    if (existingRule) {
+                        // URL already blocked, return existing rule
+                        pendingBlockUrls.delete(targetUrl);
+                        sendResponse({ blocked: true, ruleId: existingRule.ruleId, alreadyBlocked: true });
+                        return;
+                    }
+
+                    // Haal bestaande regel IDs op om duplicaten te voorkomen
+                    const existingRules = await chrome.declarativeNetRequest.getDynamicRules();
+                    const existingIds = new Set(existingRules.map(r => r.id));
+
+                    // v8.8.14: Use crypto for better randomness to avoid race condition duplicates
+                    // DNR regel IDs moeten positieve integers zijn, range 900000-999999
+                    let ruleId;
+                    let attempts = 0;
+                    const maxAttempts = 1000;
+
+                    do {
+                        // Use crypto.getRandomValues for better randomness
+                        const randomArray = new Uint32Array(1);
+                        crypto.getRandomValues(randomArray);
+                        ruleId = 900000 + (randomArray[0] % 100000);
+                        attempts++;
+                    } while (existingIds.has(ruleId) && attempts < maxAttempts);
+
+                    if (attempts >= maxAttempts) {
+                        throw new Error('Could not generate unique rule ID - too many active rules');
+                    }
 
                     // Extraheer hostname voor URL filter
                     let urlFilter;
@@ -2537,8 +2623,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                         console.log(`[Visual Hijacking Protection] Blocked URL: ${targetUrl}, Rule ID: ${ruleId}`);
                     }
 
-                    // Sla regel ID op voor cleanup tracking
-                    const { visualHijackingRules = [] } = await chrome.storage.session.get('visualHijackingRules');
+                    // Sla regel ID op voor cleanup tracking (reuse variable from earlier check)
                     visualHijackingRules.push({
                         ruleId,
                         url: targetUrl,
@@ -2548,13 +2633,19 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                     await chrome.storage.session.set({ visualHijackingRules });
 
                     // Schedule auto-cleanup na 5 minuten
-                    chrome.alarms.create(`cleanup_visual_hijack_${ruleId}`, {
-                        delayInMinutes: 5
+                    // v8.8.14: Clear existing alarm first to prevent duplicates
+                    const alarmName = `cleanup_visual_hijack_${ruleId}`;
+                    chrome.alarms.clear(alarmName, () => {
+                        chrome.alarms.create(alarmName, { delayInMinutes: 5 });
                     });
 
+                    // v8.8.14: Remove from pending set after successful block
+                    pendingBlockUrls.delete(targetUrl);
                     sendResponse({ blocked: true, ruleId });
 
                 } catch (error) {
+                    // v8.8.14: Always clean up pending set on error
+                    pendingBlockUrls.delete(targetUrl);
                     console.error('[Visual Hijacking Protection] Error adding block rule:', error);
                     sendResponse({ blocked: false, error: error.message });
                 }
@@ -2581,6 +2672,95 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 } catch (error) {
                     console.error('[Visual Hijacking Protection] Error removing block rule:', error);
                     sendResponse({ unblocked: false, error: error.message });
+                }
+            })();
+            return true;
+        }
+
+        // v8.8.13: CORS fallback for QR code scanning - fetch cross-origin images as data URL
+        case 'fetchImageAsDataUrl': {
+            const imageUrl = request.url;
+
+            if (!imageUrl || typeof imageUrl !== 'string') {
+                sendResponse({ success: false, error: 'Invalid URL' });
+                return true;
+            }
+
+            // Security: Only allow http/https URLs
+            if (!imageUrl.startsWith('http://') && !imageUrl.startsWith('https://')) {
+                sendResponse({ success: false, error: 'Invalid protocol' });
+                return true;
+            }
+
+            (async () => {
+                try {
+                    const response = await fetch(imageUrl, {
+                        method: 'GET',
+                        credentials: 'omit' // Don't send cookies for privacy
+                    });
+
+                    if (!response.ok) {
+                        sendResponse({ success: false, error: `HTTP ${response.status}` });
+                        return;
+                    }
+
+                    const contentType = response.headers.get('content-type') || 'image/png';
+
+                    // Security: Only allow image content types
+                    if (!contentType.startsWith('image/')) {
+                        sendResponse({ success: false, error: 'Not an image' });
+                        return;
+                    }
+
+                    const blob = await response.blob();
+                    const reader = new FileReader();
+
+                    reader.onloadend = () => {
+                        sendResponse({ success: true, dataUrl: reader.result });
+                    };
+
+                    reader.onerror = () => {
+                        sendResponse({ success: false, error: 'Failed to read image' });
+                    };
+
+                    reader.readAsDataURL(blob);
+                } catch (error) {
+                    sendResponse({ success: false, error: error.message || 'Failed to fetch' });
+                }
+            })();
+            return true;
+        }
+
+        // v8.8.14: RDAP fetch via background to avoid CORS issues in content script
+        case 'fetchRdapData': {
+            const domain = request.domain;
+
+            if (!domain || typeof domain !== 'string') {
+                sendResponse({ success: false, error: 'Invalid domain' });
+                return true;
+            }
+
+            (async () => {
+                try {
+                    const response = await fetch(`https://rdap.org/domain/${domain}`, {
+                        method: 'GET',
+                        headers: { 'Accept': 'application/json' }
+                    });
+
+                    if (response.status === 404) {
+                        sendResponse({ success: true, data: null, notFound: true });
+                        return;
+                    }
+
+                    if (!response.ok) {
+                        sendResponse({ success: false, error: `HTTP ${response.status}` });
+                        return;
+                    }
+
+                    const data = await response.json();
+                    sendResponse({ success: true, data });
+                } catch (error) {
+                    sendResponse({ success: false, error: error.message || 'Failed to fetch RDAP' });
                 }
             })();
             return true;

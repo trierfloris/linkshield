@@ -1,6 +1,21 @@
 // alert.js
 // Bijgewerkt om risiconiveau te kiezen op basis van 'level' ipv numerieke thresholds
 
+/**
+ * Veilige wrapper voor chrome.i18n.getMessage met null checks
+ * @param {string} messageKey
+ * @returns {string}
+ */
+function safeGetMessage(messageKey) {
+    try {
+        if (typeof chrome !== 'undefined' && chrome.i18n && typeof chrome.i18n.getMessage === 'function') {
+            return chrome.i18n.getMessage(messageKey) || '';
+        }
+    } catch (e) {
+        // Ignore - extension context might be invalidated
+    }
+    return '';
+}
 
 document.addEventListener('DOMContentLoaded', async () => {
     const maxRetries = 5;
@@ -24,13 +39,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     // i18n statische labels
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
-        el.textContent = chrome.i18n.getMessage(key) || '';
+        el.textContent = safeGetMessage(key) || '';
     });
 
     // Update UI met status
     function updateSiteStatus(status) {
         if (!status || typeof status !== 'object' || !('level' in status)) {
-            elements.severityText.textContent = chrome.i18n.getMessage('siteStatusNotAvailable');
+            elements.severityText.textContent = safeGetMessage('siteStatusNotAvailable');
             return;
         }
         const { level, reasons, url } = status;
@@ -44,7 +59,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             elements.urlLink.textContent = url;
         } catch {
             currentDomain = null;
-            elements.siteName.textContent = chrome.i18n.getMessage('invalidUrl');
+            elements.siteName.textContent = safeGetMessage('invalidUrl');
             elements.urlLink.textContent = url;
             elements.urlLink.href = url;
         }
@@ -61,25 +76,25 @@ document.addEventListener('DOMContentLoaded', async () => {
             default:
                 riskKey = 'lowRisk';
         }
-        elements.severityText.textContent = chrome.i18n.getMessage(riskKey);
+        elements.severityText.textContent = safeGetMessage(riskKey);
 
         // Redenenlijst
         elements.reasonList.innerHTML = '';
         if (Array.isArray(reasons) && reasons.length) {
             reasons.forEach(reasonKey => {
-                const msg = chrome.i18n.getMessage(reasonKey);
+                const msg = safeGetMessage(reasonKey);
                 const li = document.createElement('li');
                 li.textContent = msg || reasonKey;
                 elements.reasonList.appendChild(li);
             });
         } else {
             const li = document.createElement('li');
-            li.textContent = chrome.i18n.getMessage('noSuspiciousFeatures');
+            li.textContent = safeGetMessage('noSuspiciousFeatures');
             elements.reasonList.appendChild(li);
         }
 
         // Advies tonen (altijd adviceCheckUrl)
-        elements.adviceCheckUrl.textContent = chrome.i18n.getMessage('adviceCheckUrl');
+        elements.adviceCheckUrl.textContent = safeGetMessage('adviceCheckUrl');
     }
 
     // Status ophalen met retry

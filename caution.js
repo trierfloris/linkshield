@@ -1,6 +1,22 @@
 // caution.js
 // Mirror van alert.js met gele styling en dynamische i18n voor risiconiveau
 
+/**
+ * Veilige wrapper voor chrome.i18n.getMessage met null checks
+ * @param {string} messageKey
+ * @returns {string}
+ */
+function safeGetMessage(messageKey) {
+    try {
+        if (typeof chrome !== 'undefined' && chrome.i18n && typeof chrome.i18n.getMessage === 'function') {
+            return chrome.i18n.getMessage(messageKey) || '';
+        }
+    } catch (e) {
+        // Ignore - extension context might be invalidated
+    }
+    return '';
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const maxRetries = 5;
     let retryCount = 0;
@@ -22,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Vul statische i18n teksten
     document.querySelectorAll('[data-i18n]').forEach(node => {
         const key = node.getAttribute('data-i18n');
-        node.textContent = chrome.i18n.getMessage(key) || '';
+        node.textContent = safeGetMessage(key) || '';
     });
 
     // Hulpfunctie voor delay
@@ -56,20 +72,20 @@ document.addEventListener('DOMContentLoaded', () => {
             default:
                 riskKey = 'lowRisk';
         }
-        el.severity.textContent = chrome.i18n.getMessage(riskKey) || risk;
+        el.severity.textContent = safeGetMessage(riskKey) || risk;
 
         // Redenenlijst met vertaling
         el.reasons.innerHTML = '';
         if (Array.isArray(reasons) && reasons.length) {
             reasons.forEach(key => {
-                const msg = chrome.i18n.getMessage(key);
+                const msg = safeGetMessage(key);
                 const li = document.createElement('li');
                 li.textContent = msg || key;
                 el.reasons.appendChild(li);
             });
         } else {
             const li = document.createElement('li');
-            li.textContent = chrome.i18n.getMessage('noSuspiciousFeatures') || '';
+            li.textContent = safeGetMessage('noSuspiciousFeatures') || '';
             el.reasons.appendChild(li);
         }
     }

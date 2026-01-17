@@ -5422,6 +5422,12 @@ function initGlobalVisualHijackProtection() {
  * with pointer-events: none to intercept user interactions.
  */
 async function proactiveVisualHijackingScan() {
+  // SECURITY FIX v8.2.0: Respect protection settings
+  if (!(await isProtectionEnabled())) {
+    logDebug('[Vector3-Proactive] Skipping scan - protection disabled');
+    return false;
+  }
+
   // SECURITY FIX v8.8.3: Skip scan op CMP/consent pagina's
   if (isConsentManagementPage()) {
     logDebug('[Vector3-Proactive] Skipping scan - CMP/consent page detected');
@@ -9819,11 +9825,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (tableQRScanner) {
         tableQRScanner.scanAllTables(); // Initial scan bij page load
       }
-    } else {
-      logDebug("Protection disabled, skipping special detection features initialization");
-    }
-    const currentUrl = window.location.href;
-    logDebug(`🔍 Checking the current page: ${currentUrl}`);
+
+      // SECURITY FIX v8.2.0: All page-wide checks moved inside protection block
+      const currentUrl = window.location.href;
+      logDebug(`🔍 Checking the current page: ${currentUrl}`);
     // --- 1. Pagina-brede checks ---
     const reasonsForPage = new Set();
     let pageRisk = 0;
@@ -9949,7 +9954,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // --- 7. Externe links scannen (zonder extra berichten) ---
-    await checkLinks();
+      await checkLinks();
+    } else {
+      logDebug("Protection disabled, skipping all security checks");
+    }
   } catch (error) {
     handleError(error, `DOMContentLoaded unified`);
     chrome.runtime.sendMessage({

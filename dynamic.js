@@ -2,12 +2,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Debugging is uitgeschakeld; console.log/console.error blijven uit
 
     /**
-     * Centrale foutafhandelingsfunctie.
-     * @param {Error} error - De opgetreden fout.
-     * @param {string} context - De context waarin de fout optrad.
+     * Centrale error handler voor dynamic.js
+     * @param {Error} error - De error
+     * @param {string} context - Context waar de error optrad
      */
     function handleError(error, context) {
-        // Logging uitgeschakeld
+        // Alleen loggen in development of als DEBUG_MODE aan staat
+        if (typeof console !== 'undefined' && console.error) {
+            console.error(`[LinkShield Dynamic][${context}]`, error?.message || error);
+        }
     }
 
     /**

@@ -2,19 +2,21 @@
 // Mirror van alert.js met gele styling en dynamische i18n voor risiconiveau
 
 /**
- * Veilige wrapper voor chrome.i18n.getMessage met null checks
- * @param {string} messageKey
+ * Veilige i18n wrapper met null checks
+ * @param {string} key - De i18n message key
+ * @param {string} [fallback] - Optionele fallback waarde
  * @returns {string}
  */
-function safeGetMessage(messageKey) {
-    try {
-        if (typeof chrome !== 'undefined' && chrome.i18n && typeof chrome.i18n.getMessage === 'function') {
-            return chrome.i18n.getMessage(messageKey) || '';
-        }
-    } catch (e) {
-        // Ignore - extension context might be invalidated
+function safeGetMessage(key, fallback) {
+  try {
+    if (typeof chrome !== 'undefined' && chrome.i18n && typeof chrome.i18n.getMessage === 'function') {
+      const msg = chrome.i18n.getMessage(key);
+      return msg || fallback || key;
     }
-    return '';
+  } catch (e) {
+    // Ignore - extension context might be invalidated
+  }
+  return fallback || key;
 }
 
 document.addEventListener('DOMContentLoaded', () => {

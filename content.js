@@ -62,12 +62,12 @@ async function ensureConfigReady() {
 function getTranslatedMessage(messageKey) {
   try {
     if (typeof chrome !== 'undefined' && chrome.i18n && typeof chrome.i18n.getMessage === 'function') {
-      return chrome.i18n.getMessage(messageKey) || '';
+      return chrome.i18n.getMessage(messageKey) || messageKey;
     }
   } catch (e) {
     // Ignore - extension context might be invalidated
   }
-  return '';
+  return messageKey;
 }
 /**
  * Logt een foutmelding.

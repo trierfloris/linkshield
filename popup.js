@@ -55,9 +55,22 @@ document.addEventListener('DOMContentLoaded', function () {
         warning: '<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>'
     };
 
-    // i18n
-    function msg(key, subs = []) {
-        return chrome.i18n.getMessage(key, subs) || key;
+    /**
+     * Veilige i18n wrapper met null checks
+     * @param {string} key - De i18n message key
+     * @param {string} [fallback] - Optionele fallback waarde
+     * @returns {string}
+     */
+    function msg(key, fallback) {
+        try {
+            if (typeof chrome !== 'undefined' && chrome.i18n && typeof chrome.i18n.getMessage === 'function') {
+                const message = chrome.i18n.getMessage(key);
+                return message || fallback || key;
+            }
+        } catch (e) {
+            // Ignore - extension context might be invalidated
+        }
+        return fallback || key;
     }
 
     // Toast

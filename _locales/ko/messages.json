@@ -1076,6 +1076,58 @@
   "formHijackingTip": {
     "message": "폼이 비밀리에 수정되어 데이터를 다음으로 전송하려고 했습니다: "
   },
+  "tooltipTitle": {
+    "message": "다음으로부터 보호:",
+    "description": "Title for smart link scanning tooltip"
+  },
+  "tooltipFeature1": {
+    "message": "피싱 URL 및 의심스러운 TLD",
+    "description": "Tooltip feature 1"
+  },
+  "tooltipFeature2": {
+    "message": "Unicode 유사 도메인",
+    "description": "Tooltip feature 2"
+  },
+  "tooltipFeature3": {
+    "message": "가짜 브라우저 창 (BitB)",
+    "description": "Tooltip feature 3"
+  },
+  "tooltipFeature4": {
+    "message": "PowerShell/악성코드 트리거",
+    "description": "Tooltip feature 4"
+  },
+  "tooltipFeature5": {
+    "message": "보이지 않는 오버레이 공격",
+    "description": "Tooltip feature 5"
+  },
+  "tooltipFeature6": {
+    "message": "악성 QR 코드",
+    "description": "Tooltip feature 6"
+  },
+  "tooltipFeature7": {
+    "message": "위험한 링크 유형",
+    "description": "Tooltip feature 7"
+  },
+  "tooltipFeature8": {
+    "message": "폼 하이재킹",
+    "description": "Tooltip feature 8"
+  },
+  "tooltipFeature9": {
+    "message": "클립보드 조작",
+    "description": "Tooltip feature 9"
+  },
+  "tooltipFeature10": {
+    "message": "숨겨진 코드 (Shadow DOM)",
+    "description": "Tooltip feature 10"
+  },
+  "tooltipFooter": {
+    "message": "10개 보안 레이어 활성화",
+    "description": "Footer text for tooltip"
+  },
+  "tooltipNewBadge": {
+    "message": "신규",
+    "description": "Badge text for new features"
+  },
   "shadowDomLoginForm": {
     "message": "Shadow DOM에 숨겨진 로그인 폼 감지됨 (높은 위험). 이 기술은 보안 스캐너를 회피하는 데 사용됩니다."
   },

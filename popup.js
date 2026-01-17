@@ -39,6 +39,18 @@ document.addEventListener('DOMContentLoaded', function () {
     const integratedProtection = document.getElementById('integratedProtection');
     const toggle1Help = document.getElementById('toggle1Help');
     const toggle1Tooltip = document.getElementById('toggle1Tooltip');
+    const tooltipTitle = document.getElementById('tooltipTitle');
+    const tooltipFeature1 = document.getElementById('tooltipFeature1');
+    const tooltipFeature2 = document.getElementById('tooltipFeature2');
+    const tooltipFeature3 = document.getElementById('tooltipFeature3');
+    const tooltipFeature4 = document.getElementById('tooltipFeature4');
+    const tooltipFeature5 = document.getElementById('tooltipFeature5');
+    const tooltipFeature6 = document.getElementById('tooltipFeature6');
+    const tooltipFeature7 = document.getElementById('tooltipFeature7');
+    const tooltipFeature8 = document.getElementById('tooltipFeature8');
+    const tooltipFeature9 = document.getElementById('tooltipFeature9');
+    const tooltipFeature10 = document.getElementById('tooltipFeature10');
+    const tooltipFooter = document.getElementById('tooltipFooter');
     const premiumTag = document.getElementById('premiumTag');
     const liveBadge = document.getElementById('liveBadge');
     const footer = document.getElementById('footer');
@@ -88,6 +100,29 @@ document.addEventListener('DOMContentLoaded', function () {
         toggle2Title.textContent = msg('integratedProtectionFeature');
         toggle2Desc.textContent = msg('integratedProtectionDescription');
         toggle1Tooltip.textContent = msg('backgroundSecurityHelp');
+
+        // Tooltip translations
+        if (tooltipTitle) tooltipTitle.textContent = msg('tooltipTitle');
+        if (tooltipFeature1) tooltipFeature1.childNodes[0].textContent = msg('tooltipFeature1');
+        if (tooltipFeature2) tooltipFeature2.textContent = msg('tooltipFeature2');
+        if (tooltipFeature3) tooltipFeature3.textContent = msg('tooltipFeature3');
+        if (tooltipFeature4) tooltipFeature4.textContent = msg('tooltipFeature4');
+        if (tooltipFeature5) tooltipFeature5.textContent = msg('tooltipFeature5');
+        if (tooltipFeature6) tooltipFeature6.textContent = msg('tooltipFeature6');
+        if (tooltipFeature7) tooltipFeature7.textContent = msg('tooltipFeature7');
+        if (tooltipFeature8) {
+            // Keep the NEW badge, only replace the text
+            const newBadge = tooltipFeature8.querySelector('.new-badge');
+            if (newBadge) {
+                newBadge.textContent = msg('tooltipNewBadge');
+                tooltipFeature8.firstChild.textContent = msg('tooltipFeature8') + ' ';
+            } else {
+                tooltipFeature8.textContent = msg('tooltipFeature8');
+            }
+        }
+        if (tooltipFeature9) tooltipFeature9.textContent = msg('tooltipFeature9');
+        if (tooltipFeature10) tooltipFeature10.textContent = msg('tooltipFeature10');
+        if (tooltipFooter) tooltipFooter.textContent = msg('tooltipFooter');
 
         licenseInput.placeholder = msg('licenseKeyPlaceholder');
         activateBtnText.textContent = msg('licenseActivateShort');

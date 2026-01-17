@@ -1076,6 +1076,58 @@
   "formHijackingTip": {
     "message": "フォームが密かに変更され、データの送信先が変わりました: "
   },
+  "tooltipTitle": {
+    "message": "以下から保護:",
+    "description": "Title for smart link scanning tooltip"
+  },
+  "tooltipFeature1": {
+    "message": "フィッシングURLと不審なTLD",
+    "description": "Tooltip feature 1"
+  },
+  "tooltipFeature2": {
+    "message": "Unicode類似ドメイン",
+    "description": "Tooltip feature 2"
+  },
+  "tooltipFeature3": {
+    "message": "偽のブラウザウィンドウ (BitB)",
+    "description": "Tooltip feature 3"
+  },
+  "tooltipFeature4": {
+    "message": "PowerShell/マルウェアトリガー",
+    "description": "Tooltip feature 4"
+  },
+  "tooltipFeature5": {
+    "message": "不可視オーバーレイ攻撃",
+    "description": "Tooltip feature 5"
+  },
+  "tooltipFeature6": {
+    "message": "悪意のあるQRコード",
+    "description": "Tooltip feature 6"
+  },
+  "tooltipFeature7": {
+    "message": "危険なリンクタイプ",
+    "description": "Tooltip feature 7"
+  },
+  "tooltipFeature8": {
+    "message": "フォームハイジャック",
+    "description": "Tooltip feature 8"
+  },
+  "tooltipFeature9": {
+    "message": "クリップボード操作",
+    "description": "Tooltip feature 9"
+  },
+  "tooltipFeature10": {
+    "message": "隠しコード (Shadow DOM)",
+    "description": "Tooltip feature 10"
+  },
+  "tooltipFooter": {
+    "message": "10のセキュリティ層が有効",
+    "description": "Footer text for tooltip"
+  },
+  "tooltipNewBadge": {
+    "message": "新機能",
+    "description": "Badge text for new features"
+  },
   "shadowDomLoginForm": {
     "message": "Shadow DOMに隠されたログインフォームを検出（高リスク）。この技術はセキュリティスキャナーを回避するために使用されます。"
   },

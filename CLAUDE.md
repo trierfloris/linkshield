@@ -4,7 +4,7 @@
 
 **LinkShield** is a Chrome browser extension that protects users from phishing, malicious links, and various web-based attacks. It provides real-time security warnings for suspicious URLs, visual hijacking attempts, form hijacking, and more.
 
-**Current Version:** 8.3.1
+**Current Version:** 8.3.2
 **Manifest Version:** 3
 
 ---
@@ -40,6 +40,40 @@
 ---
 
 ## Recent Implementations
+
+### v8.3.2 - Smart Link Scanning Feature Tooltip (Marketing UX)
+
+**Purpose:** Improve perceived value by showcasing all 10 security layers in Smart Link Scanning.
+
+**Solution:** Added info icon (ⓘ) with hover tooltip showing all protection features.
+
+**Files Modified:**
+- `popup.html` - Added tooltip HTML structure and CSS
+- `popup.js` - Added element references and i18n translations
+- All 24 locale files - Added 13 new i18n keys with native translations
+
+**Tooltip Features Displayed:**
+1. Phishing URLs & suspicious TLDs
+2. Unicode lookalike domains
+3. Fake browser windows (BitB)
+4. PowerShell/malware triggers
+5. Invisible overlay attacks
+6. Malicious QR codes
+7. Dangerous link types
+8. Form hijacking (with "NEW" badge)
+9. Clipboard manipulation
+10. Hidden code (Shadow DOM)
+
+**i18n Keys Added:**
+- `tooltipTitle`, `tooltipFeature1-10`, `tooltipFooter`, `tooltipNewBadge`
+- All keys translated to native language (no English fallbacks)
+
+**Marketing Rationale:**
+- Progressive disclosure: clean UI for casual users, depth for power users
+- "10 security layers active" emphasizes value
+- "NEW" badge on Form Hijacking shows active development
+
+---
 
 ### v8.3.1 - Visual Hijacking False Positive Fix
 
@@ -291,6 +325,7 @@ Located in `tests/e2e/`
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 8.3.2 | 2026-01 | Smart Link Scanning tooltip (marketing UX) |
 | 8.3.1 | 2026-01 | Visual Hijacking iframe fix |
 | 8.3.0 | 2026-01 | Form Hijacking Protection |
 | 8.2.1 | 2026-01 | i18n wrappers standardization |

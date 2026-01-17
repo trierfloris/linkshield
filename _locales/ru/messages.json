@@ -1076,6 +1076,58 @@
   "formHijackingTip": {
     "message": "Форма была тайно изменена для отправки ваших данных на: "
   },
+  "tooltipTitle": {
+    "message": "Защита от:",
+    "description": "Title for smart link scanning tooltip"
+  },
+  "tooltipFeature1": {
+    "message": "Фишинговых URL и подозрительных TLD",
+    "description": "Tooltip feature 1"
+  },
+  "tooltipFeature2": {
+    "message": "Похожих Unicode-доменов",
+    "description": "Tooltip feature 2"
+  },
+  "tooltipFeature3": {
+    "message": "Поддельных окон браузера (BitB)",
+    "description": "Tooltip feature 3"
+  },
+  "tooltipFeature4": {
+    "message": "Триггеров PowerShell/вредоносного ПО",
+    "description": "Tooltip feature 4"
+  },
+  "tooltipFeature5": {
+    "message": "Невидимых оверлей-атак",
+    "description": "Tooltip feature 5"
+  },
+  "tooltipFeature6": {
+    "message": "Вредоносных QR-кодов",
+    "description": "Tooltip feature 6"
+  },
+  "tooltipFeature7": {
+    "message": "Опасных типов ссылок",
+    "description": "Tooltip feature 7"
+  },
+  "tooltipFeature8": {
+    "message": "Перехвата форм",
+    "description": "Tooltip feature 8"
+  },
+  "tooltipFeature9": {
+    "message": "Манипуляции буфером обмена",
+    "description": "Tooltip feature 9"
+  },
+  "tooltipFeature10": {
+    "message": "Скрытого кода (Shadow DOM)",
+    "description": "Tooltip feature 10"
+  },
+  "tooltipFooter": {
+    "message": "10 уровней защиты активны",
+    "description": "Footer text for tooltip"
+  },
+  "tooltipNewBadge": {
+    "message": "Новое",
+    "description": "Badge text for new features"
+  },
   "shadowDomLoginForm": {
     "message": "Обнаружена форма входа, скрытая в Shadow DOM (высокий риск). Эта техника используется для обхода сканеров безопасности."
   },

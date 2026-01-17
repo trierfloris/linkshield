@@ -1013,6 +1013,58 @@
   "formHijackingTip": {
     "message": "Formulir diam-diam dimodifikasi untuk mengirim data Anda ke: "
   },
+  "tooltipTitle": {
+    "message": "Dilindungi dari:",
+    "description": "Title for smart link scanning tooltip"
+  },
+  "tooltipFeature1": {
+    "message": "URL phishing & TLD mencurigakan",
+    "description": "Tooltip feature 1"
+  },
+  "tooltipFeature2": {
+    "message": "Domain Unicode yang mirip",
+    "description": "Tooltip feature 2"
+  },
+  "tooltipFeature3": {
+    "message": "Jendela browser palsu (BitB)",
+    "description": "Tooltip feature 3"
+  },
+  "tooltipFeature4": {
+    "message": "Pemicu PowerShell/malware",
+    "description": "Tooltip feature 4"
+  },
+  "tooltipFeature5": {
+    "message": "Serangan overlay tak terlihat",
+    "description": "Tooltip feature 5"
+  },
+  "tooltipFeature6": {
+    "message": "Kode QR berbahaya",
+    "description": "Tooltip feature 6"
+  },
+  "tooltipFeature7": {
+    "message": "Jenis tautan berbahaya",
+    "description": "Tooltip feature 7"
+  },
+  "tooltipFeature8": {
+    "message": "Pembajakan formulir",
+    "description": "Tooltip feature 8"
+  },
+  "tooltipFeature9": {
+    "message": "Manipulasi clipboard",
+    "description": "Tooltip feature 9"
+  },
+  "tooltipFeature10": {
+    "message": "Kode tersembunyi (Shadow DOM)",
+    "description": "Tooltip feature 10"
+  },
+  "tooltipFooter": {
+    "message": "10 lapisan keamanan aktif",
+    "description": "Footer text for tooltip"
+  },
+  "tooltipNewBadge": {
+    "message": "Baru",
+    "description": "Badge text for new features"
+  },
   "shadowDomLoginForm": {
     "message": "Formulir login tersembunyi di Shadow DOM terdeteksi (risiko tinggi). Teknik ini digunakan untuk menghindari pemindai keamanan."
   },

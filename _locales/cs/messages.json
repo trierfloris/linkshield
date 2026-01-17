@@ -1013,6 +1013,58 @@
   "formHijackingTip": {
     "message": "Formulář byl tajně upraven pro odeslání vašich dat na: "
   },
+  "tooltipTitle": {
+    "message": "Ochrana proti:",
+    "description": "Title for smart link scanning tooltip"
+  },
+  "tooltipFeature1": {
+    "message": "Phishingovým URL a podezřelým TLD",
+    "description": "Tooltip feature 1"
+  },
+  "tooltipFeature2": {
+    "message": "Unicode podobným doménám",
+    "description": "Tooltip feature 2"
+  },
+  "tooltipFeature3": {
+    "message": "Falešným oknům prohlížeče (BitB)",
+    "description": "Tooltip feature 3"
+  },
+  "tooltipFeature4": {
+    "message": "Spouštěčům PowerShell/malwaru",
+    "description": "Tooltip feature 4"
+  },
+  "tooltipFeature5": {
+    "message": "Neviditelným překryvným útokům",
+    "description": "Tooltip feature 5"
+  },
+  "tooltipFeature6": {
+    "message": "Škodlivým QR kódům",
+    "description": "Tooltip feature 6"
+  },
+  "tooltipFeature7": {
+    "message": "Nebezpečným typům odkazů",
+    "description": "Tooltip feature 7"
+  },
+  "tooltipFeature8": {
+    "message": "Únosu formulářů",
+    "description": "Tooltip feature 8"
+  },
+  "tooltipFeature9": {
+    "message": "Manipulaci se schránkou",
+    "description": "Tooltip feature 9"
+  },
+  "tooltipFeature10": {
+    "message": "Skrytému kódu (Shadow DOM)",
+    "description": "Tooltip feature 10"
+  },
+  "tooltipFooter": {
+    "message": "10 bezpečnostních vrstev aktivních",
+    "description": "Footer text for tooltip"
+  },
+  "tooltipNewBadge": {
+    "message": "Nové",
+    "description": "Badge text for new features"
+  },
   "shadowDomLoginForm": {
     "message": "Detekován přihlašovací formulář skrytý v Shadow DOM (vysoké riziko)."
   },

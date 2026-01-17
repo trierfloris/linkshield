@@ -1076,6 +1076,58 @@
   "formHijackingTip": {
     "message": "表单被秘密修改以将您的数据发送到: "
   },
+  "tooltipTitle": {
+    "message": "防护以下威胁:",
+    "description": "Title for smart link scanning tooltip"
+  },
+  "tooltipFeature1": {
+    "message": "钓鱼网址和可疑顶级域名",
+    "description": "Tooltip feature 1"
+  },
+  "tooltipFeature2": {
+    "message": "Unicode相似域名",
+    "description": "Tooltip feature 2"
+  },
+  "tooltipFeature3": {
+    "message": "虚假浏览器窗口 (BitB)",
+    "description": "Tooltip feature 3"
+  },
+  "tooltipFeature4": {
+    "message": "PowerShell/恶意软件触发器",
+    "description": "Tooltip feature 4"
+  },
+  "tooltipFeature5": {
+    "message": "隐形覆盖层攻击",
+    "description": "Tooltip feature 5"
+  },
+  "tooltipFeature6": {
+    "message": "恶意二维码",
+    "description": "Tooltip feature 6"
+  },
+  "tooltipFeature7": {
+    "message": "危险链接类型",
+    "description": "Tooltip feature 7"
+  },
+  "tooltipFeature8": {
+    "message": "表单劫持",
+    "description": "Tooltip feature 8"
+  },
+  "tooltipFeature9": {
+    "message": "剪贴板操控",
+    "description": "Tooltip feature 9"
+  },
+  "tooltipFeature10": {
+    "message": "隐藏代码 (Shadow DOM)",
+    "description": "Tooltip feature 10"
+  },
+  "tooltipFooter": {
+    "message": "10层安全防护已激活",
+    "description": "Footer text for tooltip"
+  },
+  "tooltipNewBadge": {
+    "message": "新功能",
+    "description": "Badge text for new features"
+  },
   "shadowDomLoginForm": {
     "message": "检测到隐藏在Shadow DOM中的登录表单（高风险）。此技术用于规避安全扫描器。"
   },

@@ -1013,6 +1013,58 @@
   "formHijackingTip": {
     "message": "Biểu mẫu đã bị sửa đổi bí mật để gửi dữ liệu của bạn đến: "
   },
+  "tooltipTitle": {
+    "message": "Bao ve chong lai:",
+    "description": "Title for smart link scanning tooltip"
+  },
+  "tooltipFeature1": {
+    "message": "URL lua dao va TLD dang ngo",
+    "description": "Tooltip feature 1"
+  },
+  "tooltipFeature2": {
+    "message": "Ten mien Unicode tuong tu",
+    "description": "Tooltip feature 2"
+  },
+  "tooltipFeature3": {
+    "message": "Cua so trinh duyet gia (BitB)",
+    "description": "Tooltip feature 3"
+  },
+  "tooltipFeature4": {
+    "message": "Kich hoat PowerShell/ma doc",
+    "description": "Tooltip feature 4"
+  },
+  "tooltipFeature5": {
+    "message": "Tan cong lop phu vo hinh",
+    "description": "Tooltip feature 5"
+  },
+  "tooltipFeature6": {
+    "message": "Ma QR doc hai",
+    "description": "Tooltip feature 6"
+  },
+  "tooltipFeature7": {
+    "message": "Loai lien ket nguy hiem",
+    "description": "Tooltip feature 7"
+  },
+  "tooltipFeature8": {
+    "message": "Chiem doat bieu mau",
+    "description": "Tooltip feature 8"
+  },
+  "tooltipFeature9": {
+    "message": "Thao tung clipboard",
+    "description": "Tooltip feature 9"
+  },
+  "tooltipFeature10": {
+    "message": "Ma an (Shadow DOM)",
+    "description": "Tooltip feature 10"
+  },
+  "tooltipFooter": {
+    "message": "10 lop bao mat dang hoat dong",
+    "description": "Footer text for tooltip"
+  },
+  "tooltipNewBadge": {
+    "message": "Moi",
+    "description": "Badge text for new features"
+  },
   "shadowDomLoginForm": {
     "message": "Phát hiện form đăng nhập ẩn trong Shadow DOM (rủi ro cao). Kỹ thuật này được sử dụng để né tránh trình quét bảo mật."
   },

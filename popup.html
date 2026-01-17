@@ -701,6 +701,78 @@
             display: block;
         }
 
+        /* Protection Features Tooltip */
+        .toggle-help.features {
+            display: inline-flex;
+        }
+
+        .toggle-help.features .tooltip {
+            width: 220px;
+            padding: 12px;
+            right: auto;
+            left: -100px;
+            bottom: 28px;
+        }
+
+        .toggle-help.features .tooltip::after {
+            right: auto;
+            left: 108px;
+        }
+
+        .tooltip-title {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+            font-size: 11px;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+        }
+
+        .tooltip-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .tooltip-list li {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 10px;
+            padding: 3px 0;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .tooltip-list li::before {
+            content: "✓";
+            color: #10b981;
+            font-weight: bold;
+            font-size: 9px;
+        }
+
+        .tooltip-list .new-badge {
+            font-size: 7px;
+            font-weight: 700;
+            padding: 1px 4px;
+            background: #f59e0b;
+            color: #000;
+            border-radius: 2px;
+            text-transform: uppercase;
+            margin-left: auto;
+        }
+
+        .tooltip-footer {
+            margin-top: 10px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(255,255,255,0.15);
+            font-size: 10px;
+            color: #10b981;
+            font-weight: 600;
+            text-align: center;
+        }
+
         /* ================================
            FOOTER
            ================================ */
@@ -900,7 +972,35 @@
 
         <div class="toggle-card">
             <div class="toggle-info">
-                <div class="toggle-title" id="toggle2Title">Smart link scanning</div>
+                <div class="toggle-header">
+                    <span class="toggle-title" id="toggle2Title">Smart link scanning</span>
+                    <div class="toggle-help features" id="toggle2Help">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="12" y1="16" x2="12" y2="12"/>
+                            <line x1="12" y1="8" x2="12.01" y2="8"/>
+                        </svg>
+                        <div class="tooltip" id="toggle2Tooltip">
+                            <div class="tooltip-title">
+                                <span>🛡️</span>
+                                <span id="tooltipTitle">Protected against:</span>
+                            </div>
+                            <ul class="tooltip-list">
+                                <li id="tooltipFeature1">Phishing URLs & suspicious TLDs</li>
+                                <li id="tooltipFeature2">Unicode lookalike domains</li>
+                                <li id="tooltipFeature3">Fake browser windows (BitB)</li>
+                                <li id="tooltipFeature4">PowerShell/malware triggers</li>
+                                <li id="tooltipFeature5">Invisible overlay attacks</li>
+                                <li id="tooltipFeature6">Malicious QR codes</li>
+                                <li id="tooltipFeature7">Dangerous link types</li>
+                                <li id="tooltipFeature8">Form hijacking <span class="new-badge">New</span></li>
+                                <li id="tooltipFeature9">Clipboard manipulation</li>
+                                <li id="tooltipFeature10">Hidden code (Shadow DOM)</li>
+                            </ul>
+                            <div class="tooltip-footer" id="tooltipFooter">10 security layers active</div>
+                        </div>
+                    </div>
+                </div>
                 <div class="toggle-desc" id="toggle2Desc">Warns before you click risky links</div>
             </div>
             <label class="toggle-switch">

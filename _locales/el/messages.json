@@ -1013,6 +1013,58 @@
   "formHijackingTip": {
     "message": "Η φόρμα τροποποιήθηκε κρυφά για να στείλει τα δεδομένα σας σε: "
   },
+  "tooltipTitle": {
+    "message": "Προστασία από:",
+    "description": "Title for smart link scanning tooltip"
+  },
+  "tooltipFeature1": {
+    "message": "URL phishing και ύποπτα TLD",
+    "description": "Tooltip feature 1"
+  },
+  "tooltipFeature2": {
+    "message": "Παρόμοιους τομείς Unicode",
+    "description": "Tooltip feature 2"
+  },
+  "tooltipFeature3": {
+    "message": "Ψεύτικα παράθυρα προγράμματος περιήγησης (BitB)",
+    "description": "Tooltip feature 3"
+  },
+  "tooltipFeature4": {
+    "message": "Ενεργοποιητές PowerShell/κακόβουλου λογισμικού",
+    "description": "Tooltip feature 4"
+  },
+  "tooltipFeature5": {
+    "message": "Αόρατες επιθέσεις επικάλυψης",
+    "description": "Tooltip feature 5"
+  },
+  "tooltipFeature6": {
+    "message": "Κακόβουλους κωδικούς QR",
+    "description": "Tooltip feature 6"
+  },
+  "tooltipFeature7": {
+    "message": "Επικίνδυνους τύπους συνδέσμων",
+    "description": "Tooltip feature 7"
+  },
+  "tooltipFeature8": {
+    "message": "Υποκλοπή φορμών",
+    "description": "Tooltip feature 8"
+  },
+  "tooltipFeature9": {
+    "message": "Χειραγώγηση πρόχειρου",
+    "description": "Tooltip feature 9"
+  },
+  "tooltipFeature10": {
+    "message": "Κρυφό κώδικα (Shadow DOM)",
+    "description": "Tooltip feature 10"
+  },
+  "tooltipFooter": {
+    "message": "10 επίπεδα ασφαλείας ενεργά",
+    "description": "Footer text for tooltip"
+  },
+  "tooltipNewBadge": {
+    "message": "Νέο",
+    "description": "Badge text for new features"
+  },
   "shadowDomLoginForm": {
     "message": "Εντοπίστηκε φόρμα σύνδεσης κρυμμένη σε Shadow DOM (υψηλός κίνδυνος). Αυτή η τεχνική χρησιμοποιείται για αποφυγή σαρωτών ασφαλείας."
   },

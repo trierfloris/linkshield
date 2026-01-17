@@ -1076,6 +1076,58 @@
   "formHijackingTip": {
     "message": "फॉर्म को गुप्त रूप से आपका डेटा यहां भेजने के लिए संशोधित किया गया था: "
   },
+  "tooltipTitle": {
+    "message": "इससे सुरक्षित:",
+    "description": "Title for smart link scanning tooltip"
+  },
+  "tooltipFeature1": {
+    "message": "फिशिंग URL और संदिग्ध TLD",
+    "description": "Tooltip feature 1"
+  },
+  "tooltipFeature2": {
+    "message": "Unicode समान दिखने वाले डोमेन",
+    "description": "Tooltip feature 2"
+  },
+  "tooltipFeature3": {
+    "message": "नकली ब्राउज़र विंडो (BitB)",
+    "description": "Tooltip feature 3"
+  },
+  "tooltipFeature4": {
+    "message": "PowerShell/मैलवेयर ट्रिगर",
+    "description": "Tooltip feature 4"
+  },
+  "tooltipFeature5": {
+    "message": "अदृश्य ओवरले हमले",
+    "description": "Tooltip feature 5"
+  },
+  "tooltipFeature6": {
+    "message": "दुर्भावनापूर्ण QR कोड",
+    "description": "Tooltip feature 6"
+  },
+  "tooltipFeature7": {
+    "message": "खतरनाक लिंक प्रकार",
+    "description": "Tooltip feature 7"
+  },
+  "tooltipFeature8": {
+    "message": "फॉर्म हाईजैकिंग",
+    "description": "Tooltip feature 8"
+  },
+  "tooltipFeature9": {
+    "message": "क्लिपबोर्ड हेरफेर",
+    "description": "Tooltip feature 9"
+  },
+  "tooltipFeature10": {
+    "message": "छिपा कोड (Shadow DOM)",
+    "description": "Tooltip feature 10"
+  },
+  "tooltipFooter": {
+    "message": "10 सुरक्षा परतें सक्रिय",
+    "description": "Footer text for tooltip"
+  },
+  "tooltipNewBadge": {
+    "message": "नया",
+    "description": "Badge text for new features"
+  },
   "shadowDomLoginForm": {
     "message": "Shadow DOM में छिपा लॉगिन फॉर्म पाया गया (उच्च जोखिम)। यह तकनीक सुरक्षा स्कैनर से बचने के लिए उपयोग की जाती है।"
   },

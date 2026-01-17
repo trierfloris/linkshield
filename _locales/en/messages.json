@@ -1016,6 +1016,58 @@
     "message": "The form was secretly modified to send your data to: ",
     "description": "Tip showing the malicious target domain"
   },
+  "tooltipTitle": {
+    "message": "Protected against:",
+    "description": "Title for smart link scanning tooltip"
+  },
+  "tooltipFeature1": {
+    "message": "Phishing URLs & suspicious TLDs",
+    "description": "Tooltip feature 1"
+  },
+  "tooltipFeature2": {
+    "message": "Unicode lookalike domains",
+    "description": "Tooltip feature 2"
+  },
+  "tooltipFeature3": {
+    "message": "Fake browser windows (BitB)",
+    "description": "Tooltip feature 3"
+  },
+  "tooltipFeature4": {
+    "message": "PowerShell/malware triggers",
+    "description": "Tooltip feature 4"
+  },
+  "tooltipFeature5": {
+    "message": "Invisible overlay attacks",
+    "description": "Tooltip feature 5"
+  },
+  "tooltipFeature6": {
+    "message": "Malicious QR codes",
+    "description": "Tooltip feature 6"
+  },
+  "tooltipFeature7": {
+    "message": "Dangerous link types",
+    "description": "Tooltip feature 7"
+  },
+  "tooltipFeature8": {
+    "message": "Form hijacking",
+    "description": "Tooltip feature 8"
+  },
+  "tooltipFeature9": {
+    "message": "Clipboard manipulation",
+    "description": "Tooltip feature 9"
+  },
+  "tooltipFeature10": {
+    "message": "Hidden code (Shadow DOM)",
+    "description": "Tooltip feature 10"
+  },
+  "tooltipFooter": {
+    "message": "10 security layers active",
+    "description": "Footer text for tooltip"
+  },
+  "tooltipNewBadge": {
+    "message": "New",
+    "description": "Badge text for new features"
+  },
   "shadowDomLoginForm": {
     "message": "Login form hidden in Shadow DOM detected (high risk). This technique is used to evade security scanners."
   },

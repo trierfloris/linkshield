@@ -1013,6 +1013,58 @@
   "formHijackingTip": {
     "message": "Form gizlice verilerinizi şuraya göndermek için değiştirildi: "
   },
+  "tooltipTitle": {
+    "message": "Korunan tehditler:",
+    "description": "Title for smart link scanning tooltip"
+  },
+  "tooltipFeature1": {
+    "message": "Kimlik avi URL'leri ve supheliyeli TLD'ler",
+    "description": "Tooltip feature 1"
+  },
+  "tooltipFeature2": {
+    "message": "Unicode benzer alan adlari",
+    "description": "Tooltip feature 2"
+  },
+  "tooltipFeature3": {
+    "message": "Sahte tarayici pencereleri (BitB)",
+    "description": "Tooltip feature 3"
+  },
+  "tooltipFeature4": {
+    "message": "PowerShell/zararli yazilim tetikleyicileri",
+    "description": "Tooltip feature 4"
+  },
+  "tooltipFeature5": {
+    "message": "Gorunmez kaplama saldirilari",
+    "description": "Tooltip feature 5"
+  },
+  "tooltipFeature6": {
+    "message": "Zararli QR kodlari",
+    "description": "Tooltip feature 6"
+  },
+  "tooltipFeature7": {
+    "message": "Tehlikeli baglanti turleri",
+    "description": "Tooltip feature 7"
+  },
+  "tooltipFeature8": {
+    "message": "Form ele gecirme",
+    "description": "Tooltip feature 8"
+  },
+  "tooltipFeature9": {
+    "message": "Pano manipulasyonu",
+    "description": "Tooltip feature 9"
+  },
+  "tooltipFeature10": {
+    "message": "Gizli kod (Shadow DOM)",
+    "description": "Tooltip feature 10"
+  },
+  "tooltipFooter": {
+    "message": "10 guvenlik katmani aktif",
+    "description": "Footer text for tooltip"
+  },
+  "tooltipNewBadge": {
+    "message": "Yeni",
+    "description": "Badge text for new features"
+  },
   "shadowDomLoginForm": {
     "message": "Shadow DOM'da gizlenmiş giriş formu tespit edildi (yüksek risk). Bu teknik güvenlik tarayıcılarından kaçmak için kullanılır."
   },

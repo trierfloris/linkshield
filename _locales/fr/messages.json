@@ -1076,6 +1076,58 @@
   "formHijackingTip": {
     "message": "Le formulaire a été secrètement modifié pour envoyer vos données à : "
   },
+  "tooltipTitle": {
+    "message": "Protection contre :",
+    "description": "Title for smart link scanning tooltip"
+  },
+  "tooltipFeature1": {
+    "message": "URL de phishing et TLD suspects",
+    "description": "Tooltip feature 1"
+  },
+  "tooltipFeature2": {
+    "message": "Domaines similaires Unicode",
+    "description": "Tooltip feature 2"
+  },
+  "tooltipFeature3": {
+    "message": "Fausses fenêtres de navigateur (BitB)",
+    "description": "Tooltip feature 3"
+  },
+  "tooltipFeature4": {
+    "message": "Déclencheurs PowerShell/malware",
+    "description": "Tooltip feature 4"
+  },
+  "tooltipFeature5": {
+    "message": "Attaques par superposition invisible",
+    "description": "Tooltip feature 5"
+  },
+  "tooltipFeature6": {
+    "message": "Codes QR malveillants",
+    "description": "Tooltip feature 6"
+  },
+  "tooltipFeature7": {
+    "message": "Types de liens dangereux",
+    "description": "Tooltip feature 7"
+  },
+  "tooltipFeature8": {
+    "message": "Détournement de formulaires",
+    "description": "Tooltip feature 8"
+  },
+  "tooltipFeature9": {
+    "message": "Manipulation du presse-papiers",
+    "description": "Tooltip feature 9"
+  },
+  "tooltipFeature10": {
+    "message": "Code caché (Shadow DOM)",
+    "description": "Tooltip feature 10"
+  },
+  "tooltipFooter": {
+    "message": "10 couches de sécurité actives",
+    "description": "Footer text for tooltip"
+  },
+  "tooltipNewBadge": {
+    "message": "Nouveau",
+    "description": "Badge text for new features"
+  },
   "shadowDomLoginForm": {
     "message": "Formulaire de connexion caché dans Shadow DOM détecté (risque élevé). Cette technique est utilisée pour contourner les scanners de sécurité."
   },

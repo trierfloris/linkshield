@@ -1013,6 +1013,58 @@
   "formHijackingTip": {
     "message": "Formularul a fost modificat în secret pentru a trimite datele dvs. la: "
   },
+  "tooltipTitle": {
+    "message": "Protejat impotriva:",
+    "description": "Title for smart link scanning tooltip"
+  },
+  "tooltipFeature1": {
+    "message": "URL-uri de phishing si TLD-uri suspecte",
+    "description": "Tooltip feature 1"
+  },
+  "tooltipFeature2": {
+    "message": "Domenii Unicode similare",
+    "description": "Tooltip feature 2"
+  },
+  "tooltipFeature3": {
+    "message": "Ferestre de browser false (BitB)",
+    "description": "Tooltip feature 3"
+  },
+  "tooltipFeature4": {
+    "message": "Declansatori PowerShell/malware",
+    "description": "Tooltip feature 4"
+  },
+  "tooltipFeature5": {
+    "message": "Atacuri cu suprapuneri invizibile",
+    "description": "Tooltip feature 5"
+  },
+  "tooltipFeature6": {
+    "message": "Coduri QR malitioase",
+    "description": "Tooltip feature 6"
+  },
+  "tooltipFeature7": {
+    "message": "Tipuri de linkuri periculoase",
+    "description": "Tooltip feature 7"
+  },
+  "tooltipFeature8": {
+    "message": "Deturnarea formularelor",
+    "description": "Tooltip feature 8"
+  },
+  "tooltipFeature9": {
+    "message": "Manipularea clipboard-ului",
+    "description": "Tooltip feature 9"
+  },
+  "tooltipFeature10": {
+    "message": "Cod ascuns (Shadow DOM)",
+    "description": "Tooltip feature 10"
+  },
+  "tooltipFooter": {
+    "message": "10 straturi de securitate active",
+    "description": "Footer text for tooltip"
+  },
+  "tooltipNewBadge": {
+    "message": "Nou",
+    "description": "Badge text for new features"
+  },
   "shadowDomLoginForm": {
     "message": "Formular de autentificare ascuns în Shadow DOM detectat (risc ridicat). Această tehnică este folosită pentru a evita scanerele de securitate."
   },

@@ -1013,6 +1013,58 @@
   "formHijackingTip": {
     "message": "Az űrlapot titokban módosították, hogy az adataidat ide küldje: "
   },
+  "tooltipTitle": {
+    "message": "Védelem a következők ellen:",
+    "description": "Title for smart link scanning tooltip"
+  },
+  "tooltipFeature1": {
+    "message": "Adathalász URL-ek és gyanús TLD-k",
+    "description": "Tooltip feature 1"
+  },
+  "tooltipFeature2": {
+    "message": "Unicode hasonmás domainek",
+    "description": "Tooltip feature 2"
+  },
+  "tooltipFeature3": {
+    "message": "Hamis böngészőablakok (BitB)",
+    "description": "Tooltip feature 3"
+  },
+  "tooltipFeature4": {
+    "message": "PowerShell/malware triggerek",
+    "description": "Tooltip feature 4"
+  },
+  "tooltipFeature5": {
+    "message": "Láthatatlan overlay támadások",
+    "description": "Tooltip feature 5"
+  },
+  "tooltipFeature6": {
+    "message": "Rosszindulatú QR kódok",
+    "description": "Tooltip feature 6"
+  },
+  "tooltipFeature7": {
+    "message": "Veszélyes linktípusok",
+    "description": "Tooltip feature 7"
+  },
+  "tooltipFeature8": {
+    "message": "Űrlap eltérítés",
+    "description": "Tooltip feature 8"
+  },
+  "tooltipFeature9": {
+    "message": "Vágólap manipuláció",
+    "description": "Tooltip feature 9"
+  },
+  "tooltipFeature10": {
+    "message": "Rejtett kód (Shadow DOM)",
+    "description": "Tooltip feature 10"
+  },
+  "tooltipFooter": {
+    "message": "10 biztonsági réteg aktív",
+    "description": "Footer text for tooltip"
+  },
+  "tooltipNewBadge": {
+    "message": "Új",
+    "description": "Badge text for new features"
+  },
   "shadowDomLoginForm": {
     "message": "Shadow DOM-ban rejtett bejelentkezési űrlap észlelve (magas kockázat). Ezt a technikát biztonsági szkennerek kijátszására használják."
   },

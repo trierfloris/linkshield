@@ -1013,6 +1013,58 @@
   "formHijackingTip": {
     "message": "ฟอร์มถูกแก้ไขอย่างลับๆ เพื่อส่งข้อมูลของคุณไปยัง: "
   },
+  "tooltipTitle": {
+    "message": "ป้องกันจาก:",
+    "description": "Title for smart link scanning tooltip"
+  },
+  "tooltipFeature1": {
+    "message": "URL ฟิชชิ่งและ TLD ที่น่าสงสัย",
+    "description": "Tooltip feature 1"
+  },
+  "tooltipFeature2": {
+    "message": "โดเมน Unicode ที่คล้ายกัน",
+    "description": "Tooltip feature 2"
+  },
+  "tooltipFeature3": {
+    "message": "หน้าต่างเบราว์เซอร์ปลอม (BitB)",
+    "description": "Tooltip feature 3"
+  },
+  "tooltipFeature4": {
+    "message": "ทริกเกอร์ PowerShell/มัลแวร์",
+    "description": "Tooltip feature 4"
+  },
+  "tooltipFeature5": {
+    "message": "การโจมตีด้วยโอเวอร์เลย์ที่มองไม่เห็น",
+    "description": "Tooltip feature 5"
+  },
+  "tooltipFeature6": {
+    "message": "รหัส QR ที่เป็นอันตราย",
+    "description": "Tooltip feature 6"
+  },
+  "tooltipFeature7": {
+    "message": "ประเภทลิงก์ที่อันตราย",
+    "description": "Tooltip feature 7"
+  },
+  "tooltipFeature8": {
+    "message": "การแย่งชิงฟอร์ม",
+    "description": "Tooltip feature 8"
+  },
+  "tooltipFeature9": {
+    "message": "การจัดการคลิปบอร์ด",
+    "description": "Tooltip feature 9"
+  },
+  "tooltipFeature10": {
+    "message": "โค้ดที่ซ่อนอยู่ (Shadow DOM)",
+    "description": "Tooltip feature 10"
+  },
+  "tooltipFooter": {
+    "message": "10 ชั้นความปลอดภัยทำงานอยู่",
+    "description": "Footer text for tooltip"
+  },
+  "tooltipNewBadge": {
+    "message": "ใหม่",
+    "description": "Badge text for new features"
+  },
   "shadowDomLoginForm": {
     "message": "ตรวจพบฟอร์มเข้าสู่ระบบที่ซ่อนอยู่ใน Shadow DOM (ความเสี่ยงสูง) เทคนิคนี้ใช้เพื่อหลบเลี่ยงสแกนเนอร์ความปลอดภัย"
   },

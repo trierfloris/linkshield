@@ -1076,6 +1076,58 @@
   "formHijackingTip": {
     "message": "تم تعديل النموذج سراً لإرسال بياناتك إلى: "
   },
+  "tooltipTitle": {
+    "message": "محمي ضد:",
+    "description": "Title for smart link scanning tooltip"
+  },
+  "tooltipFeature1": {
+    "message": "روابط التصيد وامتدادات النطاق المشبوهة",
+    "description": "Tooltip feature 1"
+  },
+  "tooltipFeature2": {
+    "message": "نطاقات Unicode المشابهة",
+    "description": "Tooltip feature 2"
+  },
+  "tooltipFeature3": {
+    "message": "نوافذ المتصفح المزيفة (BitB)",
+    "description": "Tooltip feature 3"
+  },
+  "tooltipFeature4": {
+    "message": "مشغلات PowerShell/البرامج الضارة",
+    "description": "Tooltip feature 4"
+  },
+  "tooltipFeature5": {
+    "message": "هجمات الطبقات غير المرئية",
+    "description": "Tooltip feature 5"
+  },
+  "tooltipFeature6": {
+    "message": "رموز QR الضارة",
+    "description": "Tooltip feature 6"
+  },
+  "tooltipFeature7": {
+    "message": "أنواع الروابط الخطيرة",
+    "description": "Tooltip feature 7"
+  },
+  "tooltipFeature8": {
+    "message": "اختطاف النماذج",
+    "description": "Tooltip feature 8"
+  },
+  "tooltipFeature9": {
+    "message": "التلاعب بالحافظة",
+    "description": "Tooltip feature 9"
+  },
+  "tooltipFeature10": {
+    "message": "الكود المخفي (Shadow DOM)",
+    "description": "Tooltip feature 10"
+  },
+  "tooltipFooter": {
+    "message": "10 طبقات أمان نشطة",
+    "description": "Footer text for tooltip"
+  },
+  "tooltipNewBadge": {
+    "message": "جديد",
+    "description": "Badge text for new features"
+  },
   "shadowDomLoginForm": {
     "message": "تم اكتشاف نموذج تسجيل دخول مخفي في Shadow DOM (خطر عالٍ). تُستخدم هذه التقنية للتهرب من فاحصات الأمان."
   },

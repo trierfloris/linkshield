@@ -1079,6 +1079,58 @@
     "message": "Het formulier werd stiekem aangepast om uw gegevens te sturen naar: ",
     "description": "Tip met het kwaadaardige doeldomein"
   },
+  "tooltipTitle": {
+    "message": "Beschermd tegen:",
+    "description": "Titel voor smart link scanning tooltip"
+  },
+  "tooltipFeature1": {
+    "message": "Phishing URLs & verdachte TLDs",
+    "description": "Tooltip feature 1"
+  },
+  "tooltipFeature2": {
+    "message": "Unicode lookalike domeinen",
+    "description": "Tooltip feature 2"
+  },
+  "tooltipFeature3": {
+    "message": "Nep browservensters (BitB)",
+    "description": "Tooltip feature 3"
+  },
+  "tooltipFeature4": {
+    "message": "PowerShell/malware triggers",
+    "description": "Tooltip feature 4"
+  },
+  "tooltipFeature5": {
+    "message": "Onzichtbare overlay-aanvallen",
+    "description": "Tooltip feature 5"
+  },
+  "tooltipFeature6": {
+    "message": "Kwaadaardige QR codes",
+    "description": "Tooltip feature 6"
+  },
+  "tooltipFeature7": {
+    "message": "Gevaarlijke linktypes",
+    "description": "Tooltip feature 7"
+  },
+  "tooltipFeature8": {
+    "message": "Formulier hijacking",
+    "description": "Tooltip feature 8"
+  },
+  "tooltipFeature9": {
+    "message": "Klembord manipulatie",
+    "description": "Tooltip feature 9"
+  },
+  "tooltipFeature10": {
+    "message": "Verborgen code (Shadow DOM)",
+    "description": "Tooltip feature 10"
+  },
+  "tooltipFooter": {
+    "message": "10 beveiligingslagen actief",
+    "description": "Footer tekst voor tooltip"
+  },
+  "tooltipNewBadge": {
+    "message": "Nieuw",
+    "description": "Badge tekst voor nieuwe features"
+  },
   "shadowDomLoginForm": {
     "message": "Loginformulier verborgen in Shadow DOM gedetecteerd (hoog risico). Deze techniek wordt gebruikt om beveiligingsscanners te omzeilen."
   },

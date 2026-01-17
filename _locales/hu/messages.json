@@ -1547,5 +1547,26 @@
   "brandImpersonation": {
     "message": "Possible brand impersonation attempt",
     "description": ""
+  },
+  "dangerousUriBlocked": {
+    "message": "Egy veszélyes hivatkozástípus (mint a javascript:) blokkolva lett az Ön biztonsága érdekében."
+  },
+  "TEST_MODE_ENABLED": {
+    "message": "A tesztmód aktív - ez csak fejlesztési célokra szolgál."
+  },
+  "webTransportSuspiciousPattern": {
+    "message": "Gyanús hálózati kapcsolati minta észlelve (lehetséges adatszivárgás)."
+  },
+  "webTransportHighStreamCount": {
+    "message": "Szokatlan számú hálózati adatfolyam észlelve (lehetséges C2 tevékenység)."
+  },
+  "imagelessQR": {
+    "message": "Rejtett QR-kód észlelve (HTML elemekből építve kép helyett - elkerülési technika)."
+  },
+  "imagelessQrDangerTitle": {
+    "message": "VESZÉLY: Rejtett QR-kód észlelve!"
+  },
+  "imagelessQrCautionTitle": {
+    "message": "Figyelem: Rejtett QR-kód észlelve"
   }
 }

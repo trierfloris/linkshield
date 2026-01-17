@@ -1547,5 +1547,26 @@
   "brandImpersonation": {
     "message": "Possible brand impersonation attempt",
     "description": ""
+  },
+  "dangerousUriBlocked": {
+    "message": "تم حظر نوع رابط خطير (مثل javascript:) لحماية أمانك."
+  },
+  "TEST_MODE_ENABLED": {
+    "message": "وضع الاختبار نشط - هذا لأغراض التطوير فقط."
+  },
+  "webTransportSuspiciousPattern": {
+    "message": "تم اكتشاف نمط اتصال شبكة مشبوه (احتمال تسريب بيانات)."
+  },
+  "webTransportHighStreamCount": {
+    "message": "تم اكتشاف عدد غير عادي من تدفقات الشبكة (احتمال نشاط قيادة وتحكم)."
+  },
+  "imagelessQR": {
+    "message": "تم اكتشاف رمز QR مخفي (مبني من عناصر HTML بدلاً من صورة - تقنية تهرب)."
+  },
+  "imagelessQrDangerTitle": {
+    "message": "خطر: تم اكتشاف رمز QR مخفي!"
+  },
+  "imagelessQrCautionTitle": {
+    "message": "تنبيه: تم اكتشاف رمز QR مخفي"
   }
 }

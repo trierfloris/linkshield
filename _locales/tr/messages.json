@@ -1547,5 +1547,26 @@
   "brandImpersonation": {
     "message": "Possible brand impersonation attempt",
     "description": ""
+  },
+  "dangerousUriBlocked": {
+    "message": "Güvenliğiniz için tehlikeli bir bağlantı türü (javascript: gibi) engellendi."
+  },
+  "TEST_MODE_ENABLED": {
+    "message": "Test modu aktif - bu yalnızca geliştirme amaçlıdır."
+  },
+  "webTransportSuspiciousPattern": {
+    "message": "Şüpheli ağ bağlantı kalıbı tespit edildi (olası veri sızıntısı)."
+  },
+  "webTransportHighStreamCount": {
+    "message": "Olağandışı sayıda ağ akışı tespit edildi (olası komuta ve kontrol aktivitesi)."
+  },
+  "imagelessQR": {
+    "message": "Gizli QR kodu tespit edildi (resim yerine HTML öğelerinden oluşturulmuş - kaçınma tekniği)."
+  },
+  "imagelessQrDangerTitle": {
+    "message": "TEHLİKE: Gizli QR Kodu Tespit Edildi!"
+  },
+  "imagelessQrCautionTitle": {
+    "message": "Dikkat: Gizli QR Kodu Tespit Edildi"
   }
 }

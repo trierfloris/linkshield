@@ -1547,5 +1547,26 @@
   "brandImpersonation": {
     "message": "Possible brand impersonation attempt",
     "description": ""
+  },
+  "dangerousUriBlocked": {
+    "message": "Небезпечний тип посилання (наприклад, javascript:) було заблоковано для вашої безпеки."
+  },
+  "TEST_MODE_ENABLED": {
+    "message": "Тестовий режим активний - це лише для цілей розробки."
+  },
+  "webTransportSuspiciousPattern": {
+    "message": "Виявлено підозрілий шаблон мережевого з'єднання (можливий витік даних)."
+  },
+  "webTransportHighStreamCount": {
+    "message": "Виявлено незвичну кількість мережевих потоків (можлива активність C2)."
+  },
+  "imagelessQR": {
+    "message": "Виявлено прихований QR-код (побудований з HTML-елементів замість зображення - техніка обходу)."
+  },
+  "imagelessQrDangerTitle": {
+    "message": "НЕБЕЗПЕКА: Виявлено прихований QR-код!"
+  },
+  "imagelessQrCautionTitle": {
+    "message": "Увага: Виявлено прихований QR-код"
   }
 }

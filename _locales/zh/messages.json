@@ -1547,5 +1547,26 @@
   "brandImpersonation": {
     "message": "Possible brand impersonation attempt",
     "description": ""
+  },
+  "dangerousUriBlocked": {
+    "message": "危险的链接类型（如 javascript:）已被阻止以保护您的安全。"
+  },
+  "TEST_MODE_ENABLED": {
+    "message": "测试模式已激活 - 仅用于开发目的。"
+  },
+  "webTransportSuspiciousPattern": {
+    "message": "检测到可疑的网络连接模式（可能存在数据外泄）。"
+  },
+  "webTransportHighStreamCount": {
+    "message": "检测到异常数量的网络流（可能存在命令与控制活动）。"
+  },
+  "imagelessQR": {
+    "message": "检测到隐藏的二维码（由HTML元素构建而非图像 - 规避技术）。"
+  },
+  "imagelessQrDangerTitle": {
+    "message": "危险：检测到隐藏的二维码！"
+  },
+  "imagelessQrCautionTitle": {
+    "message": "注意：检测到隐藏的二维码"
   }
 }

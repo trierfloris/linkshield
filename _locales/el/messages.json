@@ -1547,5 +1547,26 @@
   "brandImpersonation": {
     "message": "Possible brand impersonation attempt",
     "description": ""
+  },
+  "dangerousUriBlocked": {
+    "message": "Ένας επικίνδυνος τύπος συνδέσμου (όπως javascript:) αποκλείστηκε για την ασφάλειά σας."
+  },
+  "TEST_MODE_ENABLED": {
+    "message": "Η λειτουργία δοκιμής είναι ενεργή - αυτό είναι μόνο για σκοπούς ανάπτυξης."
+  },
+  "webTransportSuspiciousPattern": {
+    "message": "Εντοπίστηκε ύποπτο μοτίβο σύνδεσης δικτύου (πιθανή διαρροή δεδομένων)."
+  },
+  "webTransportHighStreamCount": {
+    "message": "Εντοπίστηκε ασυνήθιστος αριθμός ροών δικτύου (πιθανή δραστηριότητα C2)."
+  },
+  "imagelessQR": {
+    "message": "Εντοπίστηκε κρυφός κώδικας QR (κατασκευασμένος από στοιχεία HTML αντί εικόνας - τεχνική αποφυγής)."
+  },
+  "imagelessQrDangerTitle": {
+    "message": "ΚΙΝΔΥΝΟΣ: Εντοπίστηκε κρυφός κώδικας QR!"
+  },
+  "imagelessQrCautionTitle": {
+    "message": "Προσοχή: Εντοπίστηκε κρυφός κώδικας QR"
   }
 }

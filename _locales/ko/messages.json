@@ -1547,5 +1547,26 @@
   "brandImpersonation": {
     "message": "Possible brand impersonation attempt",
     "description": ""
+  },
+  "dangerousUriBlocked": {
+    "message": "위험한 링크 유형(예: javascript:)이 보안을 위해 차단되었습니다."
+  },
+  "TEST_MODE_ENABLED": {
+    "message": "테스트 모드가 활성화되어 있습니다 - 개발 목적으로만 사용됩니다."
+  },
+  "webTransportSuspiciousPattern": {
+    "message": "의심스러운 네트워크 연결 패턴이 감지되었습니다 (데이터 유출 가능성)."
+  },
+  "webTransportHighStreamCount": {
+    "message": "비정상적인 수의 네트워크 스트림이 감지되었습니다 (C2 활동 가능성)."
+  },
+  "imagelessQR": {
+    "message": "숨겨진 QR 코드가 감지되었습니다 (이미지 대신 HTML 요소로 구성 - 회피 기술)."
+  },
+  "imagelessQrDangerTitle": {
+    "message": "위험: 숨겨진 QR 코드 감지!"
+  },
+  "imagelessQrCautionTitle": {
+    "message": "주의: 숨겨진 QR 코드 감지"
   }
 }

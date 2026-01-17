@@ -1547,5 +1547,26 @@
   "brandImpersonation": {
     "message": "Possible brand impersonation attempt",
     "description": ""
+  },
+  "dangerousUriBlocked": {
+    "message": "आपकी सुरक्षा के लिए एक खतरनाक लिंक प्रकार (जैसे javascript:) को ब्लॉक किया गया।"
+  },
+  "TEST_MODE_ENABLED": {
+    "message": "टेस्ट मोड सक्रिय है - यह केवल विकास उद्देश्यों के लिए है।"
+  },
+  "webTransportSuspiciousPattern": {
+    "message": "संदिग्ध नेटवर्क कनेक्शन पैटर्न का पता चला (संभावित डेटा चोरी)।"
+  },
+  "webTransportHighStreamCount": {
+    "message": "असामान्य संख्या में नेटवर्क स्ट्रीम का पता चला (संभावित C2 गतिविधि)।"
+  },
+  "imagelessQR": {
+    "message": "छिपा हुआ QR कोड पता चला (छवि के बजाय HTML तत्वों से बनाया गया - चोरी तकनीक)।"
+  },
+  "imagelessQrDangerTitle": {
+    "message": "खतरा: छिपा हुआ QR कोड पता चला!"
+  },
+  "imagelessQrCautionTitle": {
+    "message": "सावधान: छिपा हुआ QR कोड पता चला"
   }
 }

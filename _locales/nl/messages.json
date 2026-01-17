@@ -1525,5 +1525,26 @@
   "brandImpersonation": {
     "message": "Mogelijke merkimitatie-poging",
     "description": ""
+  },
+  "dangerousUriBlocked": {
+    "message": "Een gevaarlijk linktype (zoals javascript:) is geblokkeerd voor uw veiligheid."
+  },
+  "TEST_MODE_ENABLED": {
+    "message": "Testmodus is actief - dit is alleen voor ontwikkelingsdoeleinden."
+  },
+  "webTransportSuspiciousPattern": {
+    "message": "Verdacht netwerkverbindingspatroon gedetecteerd (mogelijke data-exfiltratie)."
+  },
+  "webTransportHighStreamCount": {
+    "message": "Ongebruikelijk aantal netwerkstromen gedetecteerd (mogelijke command & control activiteit)."
+  },
+  "imagelessQR": {
+    "message": "Verborgen QR-code gedetecteerd (opgebouwd uit HTML-elementen in plaats van een afbeelding - ontwijkingstechniek)."
+  },
+  "imagelessQrDangerTitle": {
+    "message": "GEVAAR: Verborgen QR-code gedetecteerd!"
+  },
+  "imagelessQrCautionTitle": {
+    "message": "Let op: Verborgen QR-code gedetecteerd"
   }
 }

@@ -1547,5 +1547,26 @@
   "brandImpersonation": {
     "message": "Possible brand impersonation attempt",
     "description": ""
+  },
+  "dangerousUriBlocked": {
+    "message": "Nebezpečný typ odkazu (jako javascript:) byl zablokován pro vaši bezpečnost."
+  },
+  "TEST_MODE_ENABLED": {
+    "message": "Testovací režim je aktivní - toto je pouze pro vývojové účely."
+  },
+  "webTransportSuspiciousPattern": {
+    "message": "Zjištěn podezřelý vzor síťového připojení (možná exfiltrace dat)."
+  },
+  "webTransportHighStreamCount": {
+    "message": "Zjištěn neobvyklý počet síťových proudů (možná aktivita C2)."
+  },
+  "imagelessQR": {
+    "message": "Zjištěn skrytý QR kód (vytvořen z HTML prvků místo obrázku - úniková technika)."
+  },
+  "imagelessQrDangerTitle": {
+    "message": "NEBEZPEČÍ: Zjištěn skrytý QR kód!"
+  },
+  "imagelessQrCautionTitle": {
+    "message": "Pozor: Zjištěn skrytý QR kód"
   }
 }

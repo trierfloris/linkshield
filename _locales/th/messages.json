@@ -1547,5 +1547,26 @@
   "brandImpersonation": {
     "message": "Possible brand impersonation attempt",
     "description": ""
+  },
+  "dangerousUriBlocked": {
+    "message": "ลิงก์ประเภทอันตราย (เช่น javascript:) ถูกบล็อกเพื่อความปลอดภัยของคุณ"
+  },
+  "TEST_MODE_ENABLED": {
+    "message": "โหมดทดสอบเปิดใช้งานอยู่ - นี่สำหรับวัตถุประสงค์ในการพัฒนาเท่านั้น"
+  },
+  "webTransportSuspiciousPattern": {
+    "message": "ตรวจพบรูปแบบการเชื่อมต่อเครือข่ายที่น่าสงสัย (อาจมีการรั่วไหลของข้อมูล)"
+  },
+  "webTransportHighStreamCount": {
+    "message": "ตรวจพบจำนวนสตรีมเครือข่ายที่ผิดปกติ (อาจมีกิจกรรม C2)"
+  },
+  "imagelessQR": {
+    "message": "ตรวจพบ QR โค้ดที่ซ่อนอยู่ (สร้างจากองค์ประกอบ HTML แทนรูปภาพ - เทคนิคหลบเลี่ยง)"
+  },
+  "imagelessQrDangerTitle": {
+    "message": "อันตราย: ตรวจพบ QR โค้ดที่ซ่อนอยู่!"
+  },
+  "imagelessQrCautionTitle": {
+    "message": "ระวัง: ตรวจพบ QR โค้ดที่ซ่อนอยู่"
   }
 }

@@ -1547,5 +1547,26 @@
   "brandImpersonation": {
     "message": "Possible brand impersonation attempt",
     "description": ""
+  },
+  "dangerousUriBlocked": {
+    "message": "危険なリンクタイプ（javascript:など）がセキュリティのためにブロックされました。"
+  },
+  "TEST_MODE_ENABLED": {
+    "message": "テストモードがアクティブです - これは開発目的のみです。"
+  },
+  "webTransportSuspiciousPattern": {
+    "message": "疑わしいネットワーク接続パターンが検出されました（データ流出の可能性）。"
+  },
+  "webTransportHighStreamCount": {
+    "message": "異常な数のネットワークストリームが検出されました（C2活動の可能性）。"
+  },
+  "imagelessQR": {
+    "message": "隠しQRコードが検出されました（画像ではなくHTML要素から構築 - 回避技術）。"
+  },
+  "imagelessQrDangerTitle": {
+    "message": "危険: 隠しQRコードが検出されました！"
+  },
+  "imagelessQrCautionTitle": {
+    "message": "注意: 隠しQRコードが検出されました"
   }
 }

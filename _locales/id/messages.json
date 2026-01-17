@@ -1547,5 +1547,26 @@
   "brandImpersonation": {
     "message": "Possible brand impersonation attempt",
     "description": ""
+  },
+  "dangerousUriBlocked": {
+    "message": "Jenis tautan berbahaya (seperti javascript:) telah diblokir demi keamanan Anda."
+  },
+  "TEST_MODE_ENABLED": {
+    "message": "Mode uji aktif - ini hanya untuk tujuan pengembangan."
+  },
+  "webTransportSuspiciousPattern": {
+    "message": "Pola koneksi jaringan mencurigakan terdeteksi (kemungkinan eksfiltrasi data)."
+  },
+  "webTransportHighStreamCount": {
+    "message": "Jumlah aliran jaringan yang tidak biasa terdeteksi (kemungkinan aktivitas C2)."
+  },
+  "imagelessQR": {
+    "message": "Kode QR tersembunyi terdeteksi (dibangun dari elemen HTML bukan gambar - teknik penghindaran)."
+  },
+  "imagelessQrDangerTitle": {
+    "message": "BAHAYA: Kode QR Tersembunyi Terdeteksi!"
+  },
+  "imagelessQrCautionTitle": {
+    "message": "Peringatan: Kode QR Tersembunyi Terdeteksi"
   }
 }

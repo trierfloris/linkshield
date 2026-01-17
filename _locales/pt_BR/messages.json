@@ -1547,5 +1547,26 @@
   "brandImpersonation": {
     "message": "Possible brand impersonation attempt",
     "description": ""
+  },
+  "dangerousUriBlocked": {
+    "message": "Um tipo de link perigoso (como javascript:) foi bloqueado para sua segurança."
+  },
+  "TEST_MODE_ENABLED": {
+    "message": "O modo de teste está ativo - isto é apenas para fins de desenvolvimento."
+  },
+  "webTransportSuspiciousPattern": {
+    "message": "Padrão de conexão de rede suspeito detectado (possível exfiltração de dados)."
+  },
+  "webTransportHighStreamCount": {
+    "message": "Número incomum de fluxos de rede detectado (possível atividade de comando e controle)."
+  },
+  "imagelessQR": {
+    "message": "Código QR oculto detectado (construído a partir de elementos HTML em vez de uma imagem - técnica de evasão)."
+  },
+  "imagelessQrDangerTitle": {
+    "message": "PERIGO: Código QR oculto detectado!"
+  },
+  "imagelessQrCautionTitle": {
+    "message": "Cuidado: Código QR oculto detectado"
   }
 }

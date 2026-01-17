@@ -1547,5 +1547,26 @@
   "brandImpersonation": {
     "message": "Possible brand impersonation attempt",
     "description": ""
+  },
+  "dangerousUriBlocked": {
+    "message": "Un tip de link periculos (precum javascript:) a fost blocat pentru siguranța dumneavoastră."
+  },
+  "TEST_MODE_ENABLED": {
+    "message": "Modul de testare este activ - aceasta este doar pentru scopuri de dezvoltare."
+  },
+  "webTransportSuspiciousPattern": {
+    "message": "Model de conexiune de rețea suspect detectat (posibilă exfiltrare de date)."
+  },
+  "webTransportHighStreamCount": {
+    "message": "Număr neobișnuit de fluxuri de rețea detectat (posibilă activitate C2)."
+  },
+  "imagelessQR": {
+    "message": "Cod QR ascuns detectat (construit din elemente HTML în loc de imagine - tehnică de evitare)."
+  },
+  "imagelessQrDangerTitle": {
+    "message": "PERICOL: Cod QR ascuns detectat!"
+  },
+  "imagelessQrCautionTitle": {
+    "message": "Atenție: Cod QR ascuns detectat"
   }
 }

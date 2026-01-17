@@ -1547,5 +1547,26 @@
   "brandImpersonation": {
     "message": "Möglicher Markenimitationsversuch",
     "description": ""
+  },
+  "dangerousUriBlocked": {
+    "message": "Ein gefährlicher Linktyp (wie javascript:) wurde zu Ihrer Sicherheit blockiert."
+  },
+  "TEST_MODE_ENABLED": {
+    "message": "Testmodus ist aktiv - dies ist nur für Entwicklungszwecke."
+  },
+  "webTransportSuspiciousPattern": {
+    "message": "Verdächtiges Netzwerkverbindungsmuster erkannt (mögliche Datenexfiltration)."
+  },
+  "webTransportHighStreamCount": {
+    "message": "Ungewöhnliche Anzahl von Netzwerkströmen erkannt (mögliche Command & Control Aktivität)."
+  },
+  "imagelessQR": {
+    "message": "Versteckter QR-Code erkannt (aus HTML-Elementen statt einem Bild erstellt - Umgehungstechnik)."
+  },
+  "imagelessQrDangerTitle": {
+    "message": "GEFAHR: Versteckter QR-Code erkannt!"
+  },
+  "imagelessQrCautionTitle": {
+    "message": "Vorsicht: Versteckter QR-Code erkannt"
   }
 }

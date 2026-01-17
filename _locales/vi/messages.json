@@ -1547,5 +1547,26 @@
   "brandImpersonation": {
     "message": "Possible brand impersonation attempt",
     "description": ""
+  },
+  "dangerousUriBlocked": {
+    "message": "Một loại liên kết nguy hiểm (như javascript:) đã bị chặn vì sự an toàn của bạn."
+  },
+  "TEST_MODE_ENABLED": {
+    "message": "Chế độ thử nghiệm đang hoạt động - đây chỉ dành cho mục đích phát triển."
+  },
+  "webTransportSuspiciousPattern": {
+    "message": "Phát hiện mẫu kết nối mạng đáng ngờ (có thể rò rỉ dữ liệu)."
+  },
+  "webTransportHighStreamCount": {
+    "message": "Phát hiện số lượng luồng mạng bất thường (có thể có hoạt động C2)."
+  },
+  "imagelessQR": {
+    "message": "Phát hiện mã QR ẩn (được xây dựng từ các phần tử HTML thay vì hình ảnh - kỹ thuật né tránh)."
+  },
+  "imagelessQrDangerTitle": {
+    "message": "NGUY HIỂM: Phát hiện mã QR ẩn!"
+  },
+  "imagelessQrCautionTitle": {
+    "message": "Cảnh báo: Phát hiện mã QR ẩn"
   }
 }

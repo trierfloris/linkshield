@@ -1067,6 +1067,15 @@
   "bitbAttackTip": {
     "message": "항상 브라우저 주소 표시줄에서 실제 URL을 확인하세요. 페이지 내에 표시된 텍스트가 아닙니다."
   },
+  "formHijackingTitle": {
+    "message": "폼 하이재킹 감지됨!"
+  },
+  "formHijackingMessage": {
+    "message": "이 페이지가 귀하의 자격 증명을 외부 서버로 리디렉션하려고 시도했습니다. 데이터가 전송되지 않았습니다."
+  },
+  "formHijackingTip": {
+    "message": "폼이 비밀리에 수정되어 데이터를 다음으로 전송하려고 했습니다: "
+  },
   "shadowDomLoginForm": {
     "message": "Shadow DOM에 숨겨진 로그인 폼 감지됨 (높은 위험). 이 기술은 보안 스캐너를 회피하는 데 사용됩니다."
   },

@@ -1067,6 +1067,15 @@
   "bitbAttackTip": {
     "message": "Controlla sempre la barra degli indirizzi del browser per l'URL reale, non il testo visualizzato nella pagina."
   },
+  "formHijackingTitle": {
+    "message": "Dirottamento modulo rilevato!"
+  },
+  "formHijackingMessage": {
+    "message": "Questa pagina ha tentato di reindirizzare le tue credenziali a un server esterno. I tuoi dati NON sono stati inviati."
+  },
+  "formHijackingTip": {
+    "message": "Il modulo è stato modificato segretamente per inviare i tuoi dati a: "
+  },
   "shadowDomLoginForm": {
     "message": "Modulo di login nascosto in Shadow DOM rilevato (alto rischio). Questa tecnica viene usata per eludere gli scanner di sicurezza."
   },

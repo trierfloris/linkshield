@@ -1004,6 +1004,15 @@
   "bitbAttackTip": {
     "message": "Her zaman gerçek URL için tarayıcı adres çubuğunu kontrol edin, sayfa içinde görüntülenen metni değil."
   },
+  "formHijackingTitle": {
+    "message": "Form ele geçirme tespit edildi!"
+  },
+  "formHijackingMessage": {
+    "message": "Bu sayfa kimlik bilgilerinizi harici bir sunucuya yönlendirmeye çalıştı. Verileriniz GÖNDERİLMEDİ."
+  },
+  "formHijackingTip": {
+    "message": "Form gizlice verilerinizi şuraya göndermek için değiştirildi: "
+  },
   "shadowDomLoginForm": {
     "message": "Shadow DOM'da gizlenmiş giriş formu tespit edildi (yüksek risk). Bu teknik güvenlik tarayıcılarından kaçmak için kullanılır."
   },

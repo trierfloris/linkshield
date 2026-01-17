@@ -1067,6 +1067,15 @@
   "bitbAttackTip": {
     "message": "请始终检查浏览器地址栏中的实际URL，而不是页面内显示的文本。"
   },
+  "formHijackingTitle": {
+    "message": "检测到表单劫持！"
+  },
+  "formHijackingMessage": {
+    "message": "此页面试图将您的凭证重定向到外部服务器。您的数据未被发送。"
+  },
+  "formHijackingTip": {
+    "message": "表单被秘密修改以将您的数据发送到: "
+  },
   "shadowDomLoginForm": {
     "message": "检测到隐藏在Shadow DOM中的登录表单（高风险）。此技术用于规避安全扫描器。"
   },

@@ -1004,6 +1004,15 @@
   "bitbAttackTip": {
     "message": "Verificați întotdeauna bara de adrese a browserului pentru URL-ul real, nu textul afișat în pagină."
   },
+  "formHijackingTitle": {
+    "message": "Deturnare formular detectată!"
+  },
+  "formHijackingMessage": {
+    "message": "Această pagină a încercat să redirecționeze credențialele dvs. către un server extern. Datele dvs. NU au fost trimise."
+  },
+  "formHijackingTip": {
+    "message": "Formularul a fost modificat în secret pentru a trimite datele dvs. la: "
+  },
   "shadowDomLoginForm": {
     "message": "Formular de autentificare ascuns în Shadow DOM detectat (risc ridicat). Această tehnică este folosită pentru a evita scanerele de securitate."
   },

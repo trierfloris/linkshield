@@ -1004,6 +1004,15 @@
   "bitbAttackTip": {
     "message": "Mindig ellenőrizd a böngésző címsorát a valódi URL-ért, ne az oldalon megjelenített szöveget."
   },
+  "formHijackingTitle": {
+    "message": "Űrlap eltérítés észlelve!"
+  },
+  "formHijackingMessage": {
+    "message": "Ez az oldal megpróbálta átirányítani a bejelentkezési adataidat egy külső szerverre. Az adataid NEM lettek elküldve."
+  },
+  "formHijackingTip": {
+    "message": "Az űrlapot titokban módosították, hogy az adataidat ide küldje: "
+  },
   "shadowDomLoginForm": {
     "message": "Shadow DOM-ban rejtett bejelentkezési űrlap észlelve (magas kockázat). Ezt a technikát biztonsági szkennerek kijátszására használják."
   },

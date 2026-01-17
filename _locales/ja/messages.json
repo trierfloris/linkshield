@@ -1067,6 +1067,15 @@
   "bitbAttackTip": {
     "message": "常にブラウザのアドレスバーで実際のURLを確認してください。ページ内に表示されているテキストではありません。"
   },
+  "formHijackingTitle": {
+    "message": "フォームハイジャックを検出！"
+  },
+  "formHijackingMessage": {
+    "message": "このページはあなたの認証情報を外部サーバーにリダイレクトしようとしました。データは送信されませんでした。"
+  },
+  "formHijackingTip": {
+    "message": "フォームが密かに変更され、データの送信先が変わりました: "
+  },
   "shadowDomLoginForm": {
     "message": "Shadow DOMに隠されたログインフォームを検出（高リスク）。この技術はセキュリティスキャナーを回避するために使用されます。"
   },

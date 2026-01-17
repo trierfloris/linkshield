@@ -1067,6 +1067,15 @@
   "bitbAttackTip": {
     "message": "Überprüfen Sie immer die Browser-Adressleiste für die echte URL, nicht den Text, der auf der Seite angezeigt wird."
   },
+  "formHijackingTitle": {
+    "message": "Formular-Hijacking erkannt!"
+  },
+  "formHijackingMessage": {
+    "message": "Diese Seite hat versucht, Ihre Anmeldedaten an einen externen Server umzuleiten. Ihre Daten wurden NICHT gesendet."
+  },
+  "formHijackingTip": {
+    "message": "Das Formular wurde heimlich geändert, um Ihre Daten zu senden an: "
+  },
   "shadowDomLoginForm": {
     "message": "Anmeldeformular im Shadow DOM erkannt (hohes Risiko). Diese Technik wird verwendet, um Sicherheitsscanner zu umgehen."
   },

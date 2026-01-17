@@ -1004,6 +1004,15 @@
   "bitbAttackTip": {
     "message": "Zawsze sprawdzaj pasek adresu przeglądarki dla prawdziwego URL, nie tekst wyświetlany na stronie."
   },
+  "formHijackingTitle": {
+    "message": "Wykryto przejęcie formularza!"
+  },
+  "formHijackingMessage": {
+    "message": "Ta strona próbowała przekierować Twoje dane logowania na zewnętrzny serwer. Twoje dane NIE zostały wysłane."
+  },
+  "formHijackingTip": {
+    "message": "Formularz został potajemnie zmodyfikowany, aby wysłać Twoje dane do: "
+  },
   "shadowDomLoginForm": {
     "message": "Wykryto formularz logowania ukryty w Shadow DOM (wysokie ryzyko). Ta technika jest używana do unikania skanerów bezpieczeństwa."
   },

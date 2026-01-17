@@ -1004,6 +1004,15 @@
   "bitbAttackTip": {
     "message": "Luôn kiểm tra thanh địa chỉ trình duyệt để biết URL thực, không phải văn bản hiển thị trong trang."
   },
+  "formHijackingTitle": {
+    "message": "Phát hiện chiếm quyền biểu mẫu!"
+  },
+  "formHijackingMessage": {
+    "message": "Trang này đã cố chuyển hướng thông tin xác thực của bạn đến máy chủ bên ngoài. Dữ liệu của bạn KHÔNG được gửi."
+  },
+  "formHijackingTip": {
+    "message": "Biểu mẫu đã bị sửa đổi bí mật để gửi dữ liệu của bạn đến: "
+  },
   "shadowDomLoginForm": {
     "message": "Phát hiện form đăng nhập ẩn trong Shadow DOM (rủi ro cao). Kỹ thuật này được sử dụng để né tránh trình quét bảo mật."
   },

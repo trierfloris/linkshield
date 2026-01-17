@@ -2767,6 +2767,23 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             return true;
         }
 
+        case 'formHijackingDetected':
+            // Update icon naar rood
+            chrome.action.setIcon({
+                path: {
+                    16: 'icons/red-circle-16.png',
+                    48: 'icons/red-circle-48.png',
+                    128: 'icons/red-circle-128.png'
+                },
+                tabId: sender.tab?.id
+            }).catch(() => {});
+
+            // Log voor debugging
+            console.log('[LinkShield] Form hijacking detected:', request.data);
+
+            sendResponse({ success: true });
+            break;
+
         default:
             console.warn("[onMessage] Onbekend berichttype:", request.type || request.action);
             sendResponse({ success: false, error: "Unknown message type" });

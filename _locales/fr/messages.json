@@ -1067,6 +1067,15 @@
   "bitbAttackTip": {
     "message": "Vérifiez toujours la barre d'adresse du navigateur pour l'URL réelle, pas le texte affiché dans la page."
   },
+  "formHijackingTitle": {
+    "message": "Détournement de formulaire détecté !"
+  },
+  "formHijackingMessage": {
+    "message": "Cette page a tenté de rediriger vos identifiants vers un serveur externe. Vos données n'ont PAS été envoyées."
+  },
+  "formHijackingTip": {
+    "message": "Le formulaire a été secrètement modifié pour envoyer vos données à : "
+  },
   "shadowDomLoginForm": {
     "message": "Formulaire de connexion caché dans Shadow DOM détecté (risque élevé). Cette technique est utilisée pour contourner les scanners de sécurité."
   },

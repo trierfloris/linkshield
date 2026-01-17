@@ -1004,6 +1004,15 @@
   "bitbAttackTip": {
     "message": "Vždy zkontrolujte adresní řádek prohlížeče pro skutečnou URL."
   },
+  "formHijackingTitle": {
+    "message": "Detekován únos formuláře!"
+  },
+  "formHijackingMessage": {
+    "message": "Tato stránka se pokusila přesměrovat vaše přihlašovací údaje na externí server. Vaše data NEBYLA odeslána."
+  },
+  "formHijackingTip": {
+    "message": "Formulář byl tajně upraven pro odeslání vašich dat na: "
+  },
   "shadowDomLoginForm": {
     "message": "Detekován přihlašovací formulář skrytý v Shadow DOM (vysoké riziko)."
   },

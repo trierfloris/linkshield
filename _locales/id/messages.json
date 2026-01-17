@@ -1004,6 +1004,15 @@
   "bitbAttackTip": {
     "message": "Selalu periksa bilah alamat browser untuk URL asli, bukan teks yang ditampilkan dalam halaman."
   },
+  "formHijackingTitle": {
+    "message": "Pembajakan formulir terdeteksi!"
+  },
+  "formHijackingMessage": {
+    "message": "Halaman ini mencoba mengalihkan kredensial Anda ke server eksternal. Data Anda TIDAK dikirim."
+  },
+  "formHijackingTip": {
+    "message": "Formulir diam-diam dimodifikasi untuk mengirim data Anda ke: "
+  },
   "shadowDomLoginForm": {
     "message": "Formulir login tersembunyi di Shadow DOM terdeteksi (risiko tinggi). Teknik ini digunakan untuk menghindari pemindai keamanan."
   },

@@ -1967,6 +1967,292 @@ function showBitBWarning(severity, indicators, score) {
     });
 }
 
+// =============================================================================
+// FORM HIJACKING PROTECTION v8.3.0
+// =============================================================================
+// Detecteert pogingen om form actions te wijzigen naar externe domeinen.
+// Werkt volledig in ISOLATED world - geen MAIN world script nodig.
+//
+// Detectie methoden:
+// 1. MutationObserver voor action attribute wijzigingen
+// 2. Focusin handler voor JIT hijacking tijdens password focus
+// 3. Submit interceptie voor last-minute wijzigingen
+// =============================================================================
+
+let formHijackingInitialized = false;
+let formHijackingDetected = false;
+const monitoredForms = new WeakSet();
+const originalFormActions = new WeakMap();
+
+/**
+ * Initialiseert Form Hijacking Protection
+ * Moet worden aangeroepen na DOMContentLoaded
+ */
+function initFormHijackingProtection() {
+  if (formHijackingInitialized) return;
+  formHijackingInitialized = true;
+
+  // Skip op vertrouwde domeinen
+  const currentHostname = window.location.hostname.toLowerCase();
+  if (typeof isTrustedDomain === 'function') {
+    isTrustedDomain(currentHostname).then(trusted => {
+      if (trusted) {
+        logDebug('[FormHijacking] Skipping for trusted domain:', currentHostname);
+        return;
+      }
+      startFormMonitoring();
+    });
+  } else {
+    startFormMonitoring();
+  }
+}
+
+/**
+ * Start de form monitoring
+ */
+function startFormMonitoring() {
+  // Monitor bestaande forms
+  document.querySelectorAll('form').forEach(form => {
+    monitorForm(form);
+  });
+
+  // Monitor nieuwe forms via MutationObserver
+  const formObserver = new MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+      // Check voor nieuwe form elementen
+      mutation.addedNodes.forEach(node => {
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          if (node.tagName === 'FORM') {
+            monitorForm(node);
+          }
+          // Check ook voor forms binnen toegevoegde elementen
+          if (node.querySelectorAll) {
+            node.querySelectorAll('form').forEach(form => {
+              monitorForm(form);
+            });
+          }
+        }
+      });
+
+      // Check voor action attribute wijzigingen
+      if (mutation.type === 'attributes' &&
+          mutation.attributeName === 'action' &&
+          mutation.target.tagName === 'FORM') {
+        checkFormActionChange(mutation.target);
+      }
+    }
+  });
+
+  formObserver.observe(document.body, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ['action']
+  });
+
+  // Globale focusin handler voor JIT detectie
+  document.addEventListener('focusin', handlePasswordFocus, true);
+
+  logDebug('[FormHijacking] Protection initialized');
+}
+
+/**
+ * Monitor een specifiek form element
+ * @param {HTMLFormElement} form
+ */
+function monitorForm(form) {
+  if (monitoredForms.has(form)) return;
+  monitoredForms.add(form);
+
+  // Sla originele action op
+  const originalAction = form.action || form.getAttribute('action') || '';
+  originalFormActions.set(form, originalAction);
+
+  // Monitor submit event
+  form.addEventListener('submit', (e) => {
+    if (checkFormActionChange(form)) {
+      e.preventDefault();
+      e.stopPropagation();
+      logDebug('[FormHijacking] Submit blocked due to action change');
+    }
+  }, true);
+
+  logDebug('[FormHijacking] Monitoring form:', form.id || form.name || 'unnamed');
+}
+
+/**
+ * Check of form action is gewijzigd naar een extern domein
+ * @param {HTMLFormElement} form
+ * @returns {boolean} true als hijacking gedetecteerd
+ */
+function checkFormActionChange(form) {
+  if (formHijackingDetected) return true; // Al gedetecteerd
+
+  const originalAction = originalFormActions.get(form) || '';
+  const currentAction = form.action || form.getAttribute('action') || '';
+
+  // Geen wijziging
+  if (originalAction === currentAction) return false;
+
+  // Parse URLs
+  const currentHost = window.location.hostname.toLowerCase();
+  let originalHost = currentHost;
+  let newHost = currentHost;
+
+  try {
+    if (originalAction) {
+      originalHost = new URL(originalAction, window.location.href).hostname.toLowerCase();
+    }
+  } catch (e) { /* invalid URL, assume same origin */ }
+
+  try {
+    if (currentAction) {
+      newHost = new URL(currentAction, window.location.href).hostname.toLowerCase();
+    }
+  } catch (e) { /* invalid URL, assume same origin */ }
+
+  // Check of action is gewijzigd naar een ANDER domein
+  const wasInternal = originalHost === currentHost || originalHost.endsWith('.' + currentHost);
+  const isNowExternal = newHost !== currentHost && !newHost.endsWith('.' + currentHost);
+
+  if (wasInternal && isNowExternal) {
+    // HIJACKING GEDETECTEERD
+    formHijackingDetected = true;
+    reportFormHijacking(form, originalAction, currentAction, newHost);
+    return true;
+  }
+
+  // Check of form password velden heeft en naar extern gaat
+  const hasPasswordField = form.querySelector('input[type="password"]');
+  if (hasPasswordField && isNowExternal) {
+    formHijackingDetected = true;
+    reportFormHijacking(form, originalAction, currentAction, newHost);
+    return true;
+  }
+
+  return false;
+}
+
+/**
+ * Handler voor focus op password velden - detecteert JIT hijacking
+ * @param {FocusEvent} e
+ */
+function handlePasswordFocus(e) {
+  const target = e.target;
+
+  // Alleen password velden
+  if (!target || target.tagName !== 'INPUT' || target.type !== 'password') return;
+
+  const form = target.closest('form');
+  if (!form) return;
+
+  // Capture huidige action
+  const actionAtFocus = form.action || form.getAttribute('action') || '';
+  const hostAtFocus = getHostFromAction(actionAtFocus);
+
+  // Check na microtask (voor synchrone wijzigingen)
+  queueMicrotask(() => {
+    checkJITHijacking(form, actionAtFocus, hostAtFocus, 'microtask');
+  });
+
+  // Check na korte delay (voor setTimeout-based attacks)
+  setTimeout(() => {
+    checkJITHijacking(form, actionAtFocus, hostAtFocus, 'timeout');
+  }, 50);
+
+  // Check na langere delay (voor vertraagde attacks)
+  setTimeout(() => {
+    checkJITHijacking(form, actionAtFocus, hostAtFocus, 'delayed');
+  }, 200);
+}
+
+/**
+ * Check voor JIT hijacking na password focus
+ */
+function checkJITHijacking(form, originalAction, originalHost, phase) {
+  if (formHijackingDetected) return;
+
+  const currentAction = form.action || form.getAttribute('action') || '';
+  const currentHost = getHostFromAction(currentAction);
+  const pageHost = window.location.hostname.toLowerCase();
+
+  // Check of action is gewijzigd naar extern domein
+  if (currentAction !== originalAction &&
+      currentHost !== pageHost &&
+      !currentHost.endsWith('.' + pageHost)) {
+
+    formHijackingDetected = true;
+    logDebug(`[FormHijacking] JIT hijacking detected in ${phase} phase`);
+    reportFormHijacking(form, originalAction, currentAction, currentHost);
+  }
+}
+
+/**
+ * Helper: haal hostname uit action URL
+ */
+function getHostFromAction(action) {
+  if (!action) return window.location.hostname.toLowerCase();
+  try {
+    return new URL(action, window.location.href).hostname.toLowerCase();
+  } catch (e) {
+    return window.location.hostname.toLowerCase();
+  }
+}
+
+/**
+ * Rapporteer en toon waarschuwing voor form hijacking
+ */
+function reportFormHijacking(form, originalAction, newAction, targetHost) {
+  logDebug('[FormHijacking] DETECTED!', {
+    original: originalAction,
+    new: newAction,
+    target: targetHost
+  });
+
+  // Stuur naar background voor icon update
+  if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.sendMessage) {
+    chrome.runtime.sendMessage({
+      action: 'formHijackingDetected',
+      data: {
+        hostname: window.location.hostname,
+        targetHost: targetHost,
+        originalAction: originalAction,
+        newAction: newAction
+      }
+    }).catch(() => { /* ignore */ });
+  }
+
+  // Toon waarschuwing
+  showFormHijackingWarning(targetHost);
+}
+
+/**
+ * Toon waarschuwing voor form hijacking
+ */
+function showFormHijackingWarning(targetHost) {
+  const title = getTranslatedMessage('formHijackingTitle') || 'Form Hijacking Detected!';
+  const message = getTranslatedMessage('formHijackingMessage') ||
+    'This page attempted to redirect your login credentials to an external server.';
+  const tip = (getTranslatedMessage('formHijackingTip') ||
+    'The form was secretly modified to send your data to: ') + targetHost;
+
+  if (typeof showSecurityWarning === 'function') {
+    showSecurityWarning({
+      id: 'form-hijacking',
+      severity: 'critical',
+      title: title,
+      message: message,
+      tip: tip,
+      icon: '🔓',
+      showTrust: true
+    });
+  }
+}
+
+// =============================================================================
+// END FORM HIJACKING PROTECTION
+// =============================================================================
+
 /**
  * Hoofd-functie die alle subsector-helpers aanroept.
  * @param {object} config
@@ -4948,6 +5234,96 @@ function isCMPElement(element) {
 }
 
 /**
+ * SECURITY FIX v8.3.0: Detecteert Google Ads elementen
+ * Google Ads gebruikt legitieme overlays met hoge z-index en pointer-events: none
+ * voor click tracking. Deze moeten niet als Visual Hijacking worden gedetecteerd.
+ *
+ * Detectie methoden:
+ * 1. data-jc attribuut (Google Ads marker)
+ * 2. data-google-* attributen
+ * 3. Elementen binnen Google Ads iframes/containers
+ * 4. Elementen van gstatic.com/doubleclick scripts
+ *
+ * @param {HTMLElement} element - Het te controleren element
+ * @returns {boolean} - True als het een Google Ads element is
+ */
+function isGoogleAdsElement(element) {
+  if (!element) return false;
+
+  try {
+    // 1) Check voor Google Ads data attributen
+    if (element.hasAttribute('data-jc') ||
+        element.hasAttribute('data-google-av-cxn') ||
+        element.hasAttribute('data-google-av-dm') ||
+        element.hasAttribute('data-load-complete') ||
+        element.hasAttribute('data-google-container-id') ||
+        element.hasAttribute('data-ad-client') ||
+        element.hasAttribute('data-ad-slot')) {
+      return true;
+    }
+
+    // 2) Check ID patterns voor Google Ads
+    const elId = (element.id || '').toLowerCase();
+    if (elId.includes('google_ads') ||
+        elId.includes('gpt_unit') ||
+        elId.includes('div-gpt-ad') ||
+        elId.includes('aswift_')) {
+      return true;
+    }
+
+    // 3) Check class patterns voor Google Ads
+    const elClass = (element.className || '').toLowerCase();
+    if (typeof elClass === 'string' && (
+        elClass.includes('adsbygoogle') ||
+        elClass.includes('google-ad') ||
+        elClass.includes('dfp-ad') ||
+        elClass.includes('gpt-ad'))) {
+      return true;
+    }
+
+    // 4) Check of element binnen een Google Ads container zit
+    const adsAncestor = element.closest(
+      '[data-jc], [data-google-av-cxn], [data-ad-client], ' +
+      '[id*="google_ads"], [id*="div-gpt-ad"], [id*="aswift_"], ' +
+      '[class*="adsbygoogle"], [class*="google-ad"], ' +
+      'ins.adsbygoogle, iframe[id^="google_ads_iframe"]'
+    );
+    if (adsAncestor) {
+      return true;
+    }
+
+    // 5) Check of element een Google Ads iframe is
+    if (element.tagName === 'IFRAME') {
+      const src = (element.src || '').toLowerCase();
+      if (src.includes('doubleclick.net') ||
+          src.includes('googlesyndication.com') ||
+          src.includes('googleadservices.com') ||
+          src.includes('googleads.g.doubleclick.net') ||
+          src.includes('tpc.googlesyndication.com')) {
+        return true;
+      }
+    }
+
+    // 6) Check voor elementen die via Google Ads scripts zijn toegevoegd
+    // Deze scripts voegen vaak elementen toe met specifieke structuur
+    if (element.tagName === 'DIV' || element.tagName === 'INS') {
+      const parentIframe = element.closest('iframe');
+      if (parentIframe) {
+        const iframeSrc = (parentIframe.src || '').toLowerCase();
+        if (iframeSrc.includes('google') || iframeSrc.includes('doubleclick')) {
+          return true;
+        }
+      }
+    }
+
+  } catch (e) {
+    // Silently ignore errors
+  }
+
+  return false;
+}
+
+/**
  * SECURITY FIX v8.0.2 (Vector 3 - Z-Index War 2.0)
  * Detecteert pointer-events: none overlays met hoge z-index.
  * elementsFromPoint() mist deze omdat ze geen pointer events ontvangen.
@@ -5006,6 +5382,12 @@ function detectPointerEventsNoneOverlay(x, y) {
       // SECURITY FIX v8.8.3: Skip CMP (Consent Management Platform) elementen
       if (isCMPElement(el)) {
         logDebug('[Visual-Hijack] Skipping CMP element:', el.tagName, el.className);
+        continue;
+      }
+
+      // SECURITY FIX v8.3.0: Skip Google Ads elementen
+      if (isGoogleAdsElement(el)) {
+        logDebug('[Visual-Hijack] Skipping Google Ads element:', el.tagName, el.className);
         continue;
       }
 
@@ -5086,6 +5468,12 @@ function detectVisualHijacking(x, y, expectedTarget) {
   // SECURITY FIX v8.8.3: Skip CMP (Consent Management Platform) elementen
   if (isCMPElement(topElement)) {
     logDebug('[Visual-Hijack] Skipping CMP top element:', topElement.tagName, topElement.className);
+    return { isHijacked: false, hijacker: null, reason: '' };
+  }
+
+  // SECURITY FIX v8.3.0: Skip Google Ads elementen
+  if (isGoogleAdsElement(topElement)) {
+    logDebug('[Visual-Hijack] Skipping Google Ads top element:', topElement.tagName, topElement.className);
     return { isHijacked: false, hijacker: null, reason: '' };
   }
 
@@ -5235,6 +5623,11 @@ function attachClickInterceptor(link, reasons) {
  * @param {string} targetUrl - De oorspronkelijke target URL
  */
 function showVisualHijackingWarning(reason, targetUrl) {
+  // SECURITY FIX v8.3.1: Never show warnings inside iframes (ad frames, etc.)
+  if (window.self !== window.top) {
+    return; // Do NOT show warnings inside iframes
+  }
+
   const reasonText = getTranslatedMessage(reason) || reason;
   const title = getTranslatedMessage('visualHijackingDetected') || 'Visual Hijacking Detected';
   const message = getTranslatedMessage('visualHijackingMessage') ||
@@ -5422,6 +5815,13 @@ function initGlobalVisualHijackProtection() {
  * with pointer-events: none to intercept user interactions.
  */
 async function proactiveVisualHijackingScan() {
+  // SECURITY FIX v8.3.1: Only run in top-level frame, not inside iframes
+  // Visual hijacking attacks target the main page, not embedded ad iframes.
+  // Running inside iframes causes false positives with legitimate ad overlays.
+  if (window.self !== window.top) {
+    return false; // Skip scanning inside iframes
+  }
+
   // SECURITY FIX v8.2.0: Respect protection settings
   if (!(await isProtectionEnabled())) {
     logDebug('[Vector3-Proactive] Skipping scan - protection disabled');
@@ -5470,6 +5870,24 @@ async function proactiveVisualHijackingScan() {
   const INT_MAX = 2147483647;
   const HIGH_Z_THRESHOLD = 999999;
 
+  // SECURITY FIX v8.3.1: Final safety check helper for trusted domains
+  const isOnTrustedDomainFinal = () => {
+    const hostname = window.location.hostname.toLowerCase();
+    const trustedPatterns = [
+      'google.com', 'youtube.com', 'facebook.com', 'twitter.com', 'x.com',
+      'instagram.com', 'linkedin.com', 'reddit.com', 'amazon.com', 'microsoft.com',
+      'apple.com', 'netflix.com', 'spotify.com', 'github.com', 'stackoverflow.com',
+      'bbc.com', 'bbc.co.uk', 'cnn.com', 'nytimes.com', 'theguardian.com',
+      'yahoo.com', 'bing.com', 'duckduckgo.com', 'wikipedia.org'
+    ];
+    for (const domain of trustedPatterns) {
+      if (hostname === domain || hostname.endsWith('.' + domain)) {
+        return true;
+      }
+    }
+    return false;
+  };
+
   // Scan all elements for suspicious overlay patterns
   const allElements = document.querySelectorAll('*');
 
@@ -5481,6 +5899,11 @@ async function proactiveVisualHijackingScan() {
 
       // SECURITY FIX v8.8.5: Skip CMP/cookie banner elements in proactive scan
       if (isCMPElement(el)) {
+        continue;
+      }
+
+      // SECURITY FIX v8.3.0: Skip Google Ads elements (legitimate ad overlays)
+      if (isGoogleAdsElement(el)) {
         continue;
       }
 
@@ -5512,6 +5935,11 @@ async function proactiveVisualHijackingScan() {
           logDebug('[Vector3-Proactive] Skipping CMP overlay element');
           continue;
         }
+        // SECURITY FIX v8.3.1: Final trusted domain check before warning
+        if (isOnTrustedDomainFinal()) {
+          logDebug('[Vector3-Proactive] Skipping warning - trusted domain (final check)');
+          continue;
+        }
         logDebug(`[Vector3-Proactive] 🛡️ Visual Hijacking DETECTED: z-index=${zIndex}, pointer-events=none`);
         showVisualHijackingWarning('pointerEventsNoneHighZIndex', window.location.href);
         return true; // Stop after first detection
@@ -5525,6 +5953,11 @@ async function proactiveVisualHijackingScan() {
             logDebug('[Vector3-Proactive] Skipping CMP INT_MAX element');
             continue;
           }
+          // SECURITY FIX v8.3.1: Final trusted domain check before warning
+          if (isOnTrustedDomainFinal()) {
+            logDebug('[Vector3-Proactive] Skipping warning - trusted domain (final check)');
+            continue;
+          }
           logDebug(`[Vector3-Proactive] 🛡️ INT_MAX Z-Index attack DETECTED: transparent overlay`);
           showVisualHijackingWarning('intMaxZIndexOverlay', window.location.href);
           return true;
@@ -5535,6 +5968,11 @@ async function proactiveVisualHijackingScan() {
       if (el.tagName === 'A' && el.href && zIndex >= INT_MAX - 1000) {
         if (isInvisible) {
           if (el.closest('[id*="cookiebot"], [id*="consent"], [id*="cookie"], [class*="cookie"], [class*="consent"], [id*="onetrust"], [id*="didomi"]')) {
+            continue;
+          }
+          // SECURITY FIX v8.3.1: Final trusted domain check before warning
+          if (isOnTrustedDomainFinal()) {
+            logDebug('[Vector3-Proactive] Skipping warning - trusted domain (final check)');
             continue;
           }
           logDebug(`[Vector3-Proactive] 🛡️ Invisible link with INT_MAX z-index DETECTED: ${el.href}`);
@@ -9816,6 +10254,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       // Initialiseer Browser-in-the-Browser (BitB) detectie voor nep OAuth popups
       initBitBDetection();
+
+      // Initialiseer Form Hijacking Protection voor credential theft detectie
+      initFormHijackingProtection();
 
       // Initialiseer WebTransport/HTTP3 monitor voor C2/exfiltration detectie
       initWebTransportMonitor();

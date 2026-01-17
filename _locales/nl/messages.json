@@ -1067,6 +1067,18 @@
   "bitbAttackTip": {
     "message": "Controleer altijd de browser adresbalk voor de echte URL, niet tekst die in de pagina wordt weergegeven."
   },
+  "formHijackingTitle": {
+    "message": "Formulier Hijacking Gedetecteerd!",
+    "description": "Titel voor formulier hijacking waarschuwing"
+  },
+  "formHijackingMessage": {
+    "message": "Deze pagina probeerde uw inloggegevens door te sturen naar een externe server. Uw gegevens zijn NIET verzonden.",
+    "description": "Bericht dat formulier hijacking is geblokkeerd"
+  },
+  "formHijackingTip": {
+    "message": "Het formulier werd stiekem aangepast om uw gegevens te sturen naar: ",
+    "description": "Tip met het kwaadaardige doeldomein"
+  },
   "shadowDomLoginForm": {
     "message": "Loginformulier verborgen in Shadow DOM gedetecteerd (hoog risico). Deze techniek wordt gebruikt om beveiligingsscanners te omzeilen."
   },

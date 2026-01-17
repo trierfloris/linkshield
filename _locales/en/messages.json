@@ -1004,6 +1004,18 @@
   "bitbAttackTip": {
     "message": "Always check the browser address bar for the real URL, not text displayed within the page."
   },
+  "formHijackingTitle": {
+    "message": "Form Hijacking Detected!",
+    "description": "Title for form hijacking warning"
+  },
+  "formHijackingMessage": {
+    "message": "This page attempted to redirect your login credentials to an external server. Your data was NOT sent.",
+    "description": "Message explaining form hijacking was blocked"
+  },
+  "formHijackingTip": {
+    "message": "The form was secretly modified to send your data to: ",
+    "description": "Tip showing the malicious target domain"
+  },
   "shadowDomLoginForm": {
     "message": "Login form hidden in Shadow DOM detected (high risk). This technique is used to evade security scanners."
   },

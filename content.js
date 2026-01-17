@@ -670,6 +670,28 @@ function getDomainFromUrl(url) {
     return null;
   }
 }
+
+/**
+ * Controleert of een hostname een lokaal netwerk adres is
+ * @param {string} hostname - De hostname om te controleren
+ * @returns {boolean} - true als het een lokaal adres is
+ */
+function isLocalNetwork(hostname) {
+  if (!hostname) return false;
+  const h = hostname.toLowerCase();
+  return (
+    h === 'localhost' ||
+    h.endsWith('.local') ||
+    h.endsWith('.localhost') ||
+    h.startsWith('127.') ||
+    h.startsWith('10.') ||
+    h.startsWith('192.168.') ||
+    /^172\.(1[6-9]|2\d|3[01])\./.test(h) ||
+    h === '[::1]' ||
+    h.startsWith('0.0.0.0')
+  );
+}
+
 // Throttle tracking variables (global scope for persistence)
 let lastIframeCheck = 0;
 let lastScriptCheck = 0;
@@ -2954,23 +2976,6 @@ function getMetaRefreshUrl() {
     return null;
   }
 }
-function performSingleCheck(condition, riskWeight, reason, severity = "medium") {
-  if (condition) {
-    return { riskWeight, reason, severity };
-  }
-  return null;
-}
-function applyChecks(checks, reasons, totalRiskRef) {
-  logDebug("Starting applyChecks: Current risk:", totalRiskRef.value);
-  checks.forEach(({ condition, weight, reason, severity }) => {
-    if (condition) {
-      reasons.add(`${reason} (${severity})`);
-      totalRiskRef.value += weight;
-      logDebug(`✅ Risico toegevoegd: ${reason} (${severity}) | Huidige risicoscore: ${totalRiskRef.value}`);
-    }
-  });
-  logDebug("Finished applyChecks: Final risk:", totalRiskRef.value);
-}
 async function applyDynamicChecks(dynamicChecks, url, reasons, totalRiskRef) {
   logDebug("Starting applyDynamicChecks: Current risk:", totalRiskRef.value);
   for (const { func, message, risk, severity } of dynamicChecks) {
@@ -2987,10 +2992,6 @@ async function applyDynamicChecks(dynamicChecks, url, reasons, totalRiskRef) {
     }
   }
   logDebug("Finished applyDynamicChecks: Current risk:", totalRiskRef.value);
-}
-function createAnalysisResult(isSafe, reasons, risk) {
-  logDebug("Generated analysis result:", { isSafe, reasons, risk });
-  return { isSafe, reasons, risk };
 }
 // Controleer URL bij pagina-load
 document.addEventListener('popstate', () => checkCurrentUrl());
@@ -3743,16 +3744,6 @@ async function checkForPhishingAds(link) {
         level = 'safe'; // Kan ook 'safe' zijn als de score te laag is voor een waarschuwing
       }
       // Local Network Calibration: lokale IP's krijgen maximaal 'caution', nooit 'alert'
-      const isLocalNetwork = (host) => {
-        return (
-          /^127\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(host) ||
-          /^192\.168\.\d{1,3}\.\d{1,3}$/.test(host) ||
-          /^10\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(host) ||
-          /^172\.(1[6-9]|2[0-9]|3[0-1])\.\d{1,3}\.\d{1,3}$/.test(host) ||
-          host === 'localhost' ||
-          host.endsWith('.local')
-        );
-      };
       if (level === 'alert' && isLocalNetwork(urlObj.hostname)) {
         level = 'caution';
         logDebug(`📍 Local network calibration: ${urlObj.hostname} beperkt tot 'caution' (was 'alert')`);
@@ -6108,18 +6099,6 @@ function isSearchResultPage() {
   const url = new URL(window.location.href);
   return url.hostname.includes("google.") && (url.pathname === "/search" || url.pathname === "/imgres");
 }
-function detectLoginPage(url = window.location.href) {
-  try {
-    const loginPatterns = /(login|signin|wp-login|auth|authenticate)/i;
-    const urlIndicatesLogin = loginPatterns.test(url);
-    const hasPasswordField = !!document.querySelector('input[type="password"]');
-    logDebug(`Login detection: URL indication: ${urlIndicatesLogin}, Password field: ${hasPasswordField}`);
-    return urlIndicatesLogin || hasPasswordField;
-  } catch (error) {
-    handleError(error, `detectLoginPage: Fout bij detecteren van loginpagina voor URL ${url}`);
-    return false;
-  }
-}
 function isLoginPage(url = window.location.href) {
   try {
     // Controleer op wachtwoordveld
@@ -8078,17 +8057,6 @@ async function performSuspiciousChecks(url) {
     }
   }
   // 12) Bepaal final level en cache
-  // Helper: check of hostname een intern/privé IP-adres is (voor level calibratie)
-  const isLocalNetwork = (host) => {
-    return (
-      /^127\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(host) ||
-      /^192\.168\.\d{1,3}\.\d{1,3}$/.test(host) ||
-      /^10\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(host) ||
-      /^172\.(1[6-9]|2[0-9]|3[0-1])\.\d{1,3}\.\d{1,3}$/.test(host) ||
-      host === 'localhost' ||
-      host.endsWith('.local')
-    );
-  };
   let finalLevel = totalRiskRef.value >= globalConfig.HIGH_THRESHOLD
     ? 'alert'
     : (totalRiskRef.value >= globalConfig.LOW_THRESHOLD ? 'caution' : 'safe');
@@ -9800,29 +9768,6 @@ function isCryptoPhishingUrl(url) {
   }
 }
 
-function hasMetaRedirect() {
-  const metaTag = document.querySelector("meta[http-equiv='refresh']");
-  return Boolean(metaTag && /^\s*\d+\s*;\s*url=/i.test(metaTag.getAttribute("content")));
-}
-function markAsDetected(el) {
-  el.classList.add('linkshield-detected');
-}
-function checkControl(el) {
-  const tag = el.tagName.toUpperCase();
-  const role = el.getAttribute('role');
-  const href = el.getAttribute('href');
-  const type = el.getAttribute('type');
-  const isClickable =
-    href?.startsWith('http') ||
-    typeof el.onclick === 'function' ||
-    tag === 'BUTTON' ||
-    (tag === 'INPUT' && type === 'submit') ||
-    role === 'button';
-  if (isClickable) {
-    el.classList.add('linkshield-detected');
-    logDebug('✅ Element herkend als interactief:', el);
-  }
-}
 document.addEventListener('DOMContentLoaded', async () => {
   // SECURITY FIX v8.8.1: Mark document as protected immediately
   if (document.body) {
@@ -9982,16 +9927,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
     // Local Network Calibration: lokale IP's krijgen maximaal 'caution', nooit 'alert'
     const currentHostname = new URL(currentUrl).hostname;
-    const isLocalNetwork = (host) => {
-      return (
-        /^127\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(host) ||
-        /^192\.168\.\d{1,3}\.\d{1,3}$/.test(host) ||
-        /^10\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(host) ||
-        /^172\.(1[6-9]|2[0-9]|3[0-1])\.\d{1,3}\.\d{1,3}$/.test(host) ||
-        host === 'localhost' ||
-        host.endsWith('.local')
-      );
-    };
     if (finalLevel === 'alert' && isLocalNetwork(currentHostname)) {
       finalLevel = 'caution';
       logDebug(`📍 Local network calibration: ${currentHostname} beperkt tot 'caution' (was 'alert')`);
@@ -12830,11 +12765,4 @@ function warnQRImage(img, { level, reasons = [], url }) {
     : (getTranslatedMessage('suspiciousDomainDetected') || 'Suspicious domain');
   overlay.title = `${getTranslatedMessage('fullUrl') || 'Full URL'}: ${url}\n\n${getTranslatedMessage('reasons') || 'Reasons'}:\n${translatedReasonsForTooltip}`;
   wrapper.appendChild(overlay);
-}
-
-// New: Report phishing (e.g., to PhishTank or custom endpoint)
-function reportPhishing(url) {
-  // Placeholder: Send to background.js or external API
-  chrome.runtime.sendMessage({ action: 'reportPhishing', url });
-  alert(getTranslatedMessage('reportPhishingSuccess') || 'Reported! Thank you for helping improve security.');
 }

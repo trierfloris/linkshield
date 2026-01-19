@@ -995,6 +995,12 @@
   "reason_brandSubdomainPhishing": {
     "message": "Merknaam gedetecteerd op gratis hostingplatform (hoog risico). Legitieme bedrijven gebruiken geen gratis hosting voor officiële diensten."
   },
+  "hostnameBrandKeywordPhishing": {
+    "message": "Verdacht domein: merknaam gecombineerd met phishing-trefwoorden (hoog risico). Voorbeeld: login-microsoft-verify.com is GEEN Microsoft-site."
+  },
+  "reason_hostnameBrandKeywordPhishing": {
+    "message": "Verdacht domein: merknaam gecombineerd met phishing-trefwoorden (hoog risico). Voorbeeld: login-microsoft-verify.com is GEEN Microsoft-site."
+  },
   "nrdTelCombo": {
     "message": "Telefoonnummer op nieuw geregistreerd domein met phishing-zoekwoorden (gemiddeld risico). Dit kan een vishing (voice phishing) poging zijn."
   },
@@ -1610,5 +1616,44 @@
   },
   "imagelessQrCautionTitle": {
     "message": "Let op: Verborgen QR-code gedetecteerd"
+  },
+  "quotaDailyScans": {
+    "message": "Dagelijkse scans"
+  },
+  "quotaResetsAt": {
+    "message": "Reset om $TIME$ UTC",
+    "placeholders": {
+      "TIME": {
+        "content": "$1",
+        "example": "00:00"
+      }
+    }
+  },
+  "quotaUpgrade": {
+    "message": "Upgraden"
+  },
+  "quotaExceededDesc": {
+    "message": "Dagelijkse limiet bereikt - reset om middernacht UTC"
+  },
+  "licenseHaveKey": {
+    "message": "Heb je al een licentie?"
+  },
+  "threatsTodayCount": {
+    "message": "+$1 vandaag",
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "847"
+      }
+    }
+  },
+  "threatsTotalCount": {
+    "message": "$1 geblokkeerd",
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "2431"
+      }
+    }
   }
 }

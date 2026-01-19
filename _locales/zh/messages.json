@@ -995,6 +995,12 @@
   "reason_brandSubdomainPhishing": {
     "message": "在免费托管平台上检测到品牌名称（高风险）。合法公司不会使用免费托管来提供官方服务。"
   },
+  "hostnameBrandKeywordPhishing": {
+    "message": "可疑域名：品牌名称与钓鱼关键词组合（高风险）。示例：login-microsoft-verify.com 不是微软网站。"
+  },
+  "reason_hostnameBrandKeywordPhishing": {
+    "message": "可疑域名：品牌名称与钓鱼关键词组合（高风险）。示例：login-microsoft-verify.com 不是微软网站。"
+  },
   "nrdTelCombo": {
     "message": "在包含钓鱼关键词的新注册域名上发现电话号码（中等风险）。这可能是语音钓鱼尝试。"
   },
@@ -1629,5 +1635,34 @@
   },
   "imagelessQrCautionTitle": {
     "message": "注意：检测到隐藏的二维码"
+  },
+  "quotaDailyScans": {
+    "message": "每日扫描"
+  },
+  "quotaResetsAt": {
+    "message": "于 $TIME$ UTC 重置",
+    "placeholders": {
+      "TIME": {
+        "content": "$1",
+        "example": "00:00"
+      }
+    }
+  },
+  "quotaUpgrade": {
+    "message": "升级"
+  },
+  "quotaExceededDesc": {
+    "message": "已达到每日限额 - UTC午夜重置"
+  },
+  "licenseHaveKey": {
+    "message": "已有密钥？"
+  },
+  "threatsTodayCount": {
+    "message": "+$1 今日",
+    "placeholders": { "COUNT": { "content": "$1", "example": "847" } }
+  },
+  "threatsTotalCount": {
+    "message": "$1 已拦截",
+    "placeholders": { "COUNT": { "content": "$1", "example": "2431" } }
   }
 }

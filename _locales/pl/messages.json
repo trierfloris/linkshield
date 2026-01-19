@@ -932,6 +932,12 @@
   "reason_brandSubdomainPhishing": {
     "message": "Wykryto słowo kluczowe marki na darmowej platformie hostingowej (wysokie ryzyko). Legalne firmy nie używają darmowego hostingu dla oficjalnych usług."
   },
+  "hostnameBrandKeywordPhishing": {
+    "message": "Podejrzana domena: nazwa marki połączona ze słowami kluczowymi phishingu (wysokie ryzyko). Przykład: login-microsoft-verify.com NIE jest stroną Microsoft."
+  },
+  "reason_hostnameBrandKeywordPhishing": {
+    "message": "Podejrzana domena: nazwa marki połączona ze słowami kluczowymi phishingu (wysokie ryzyko). Przykład: login-microsoft-verify.com NIE jest stroną Microsoft."
+  },
   "nrdTelCombo": {
     "message": "Numer telefonu na nowo zarejestrowanej domenie ze słowami kluczowymi phishingu (średnie ryzyko). To może być próba vishingu (phishing głosowy)."
   },
@@ -1629,5 +1635,34 @@
   },
   "imagelessQrCautionTitle": {
     "message": "Uwaga: Wykryto ukryty kod QR"
+  },
+  "quotaDailyScans": {
+    "message": "Dzienne skanowania"
+  },
+  "quotaResetsAt": {
+    "message": "Resetuje się o $TIME$ UTC",
+    "placeholders": {
+      "TIME": {
+        "content": "$1",
+        "example": "00:00"
+      }
+    }
+  },
+  "quotaUpgrade": {
+    "message": "Ulepsz"
+  },
+  "quotaExceededDesc": {
+    "message": "Osiągnięto dzienny limit - resetuje się o północy UTC"
+  },
+  "licenseHaveKey": {
+    "message": "Masz już klucz?"
+  },
+  "threatsTodayCount": {
+    "message": "+$1 dzisiaj",
+    "placeholders": { "COUNT": { "content": "$1", "example": "847" } }
+  },
+  "threatsTotalCount": {
+    "message": "$1 zablokowanych",
+    "placeholders": { "COUNT": { "content": "$1", "example": "2431" } }
   }
 }

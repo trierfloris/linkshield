@@ -932,6 +932,12 @@
   "reason_brandSubdomainPhishing": {
     "message": "Detekováno klíčové slovo značky na bezplatné hostingové platformě (vysoké riziko)."
   },
+  "hostnameBrandKeywordPhishing": {
+    "message": "Podezřelá doména: název značky kombinovaný s phishingovými klíčovými slovy (vysoké riziko). Příklad: login-microsoft-verify.com NENÍ stránka Microsoftu."
+  },
+  "reason_hostnameBrandKeywordPhishing": {
+    "message": "Podezřelá doména: název značky kombinovaný s phishingovými klíčovými slovy (vysoké riziko). Příklad: login-microsoft-verify.com NENÍ stránka Microsoftu."
+  },
   "nrdTelCombo": {
     "message": "Telefonní číslo na nově registrované doméně s phishingovými klíčovými slovy (střední riziko)."
   },
@@ -1629,5 +1635,34 @@
   },
   "imagelessQrCautionTitle": {
     "message": "Pozor: Zjištěn skrytý QR kód"
+  },
+  "quotaDailyScans": {
+    "message": "Denní skenování"
+  },
+  "quotaResetsAt": {
+    "message": "Reset v $TIME$ UTC",
+    "placeholders": {
+      "TIME": {
+        "content": "$1",
+        "example": "00:00"
+      }
+    }
+  },
+  "quotaUpgrade": {
+    "message": "Upgradovat"
+  },
+  "quotaExceededDesc": {
+    "message": "Denní limit dosažen - resetuje se o půlnoci UTC"
+  },
+  "licenseHaveKey": {
+    "message": "Už máte klíč?"
+  },
+  "threatsTodayCount": {
+    "message": "+$1 dnes",
+    "placeholders": { "COUNT": { "content": "$1", "example": "847" } }
+  },
+  "threatsTotalCount": {
+    "message": "$1 zablokováno",
+    "placeholders": { "COUNT": { "content": "$1", "example": "2431" } }
   }
 }

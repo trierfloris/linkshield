@@ -45,6 +45,14 @@ document.addEventListener('DOMContentLoaded', function () {
     const toast = document.getElementById('toast');
     const licenseToggleLink = document.getElementById('licenseToggleLink');
 
+    // v8.4.0: Quota elements
+    const quotaCard = document.getElementById('quotaCard');
+    const quotaTitle = document.getElementById('quotaTitle');
+    const quotaCount = document.getElementById('quotaCount');
+    const quotaBarFill = document.getElementById('quotaBarFill');
+    const quotaReset = document.getElementById('quotaReset');
+    const quotaUpgrade = document.getElementById('quotaUpgrade');
+
     let trialStatus = null;
     let licenseExpanded = false;
     const TRIAL_DAYS = 30;
@@ -243,8 +251,10 @@ document.addEventListener('DOMContentLoaded', function () {
     async function initSettings() {
         try {
             const r = await chrome.storage.sync.get(['backgroundSecurity', 'integratedProtection']);
-            backgroundSecurity.checked = r.backgroundSecurity || false;
-            integratedProtection.checked = r.integratedProtection || false;
+            // v8.4.0: Default to true (enabled) if not explicitly set
+            // Automatic Protection is always free, so both should be ON by default
+            backgroundSecurity.checked = r.backgroundSecurity ?? true;
+            integratedProtection.checked = r.integratedProtection ?? true;
         } catch (e) {}
     }
 
@@ -275,6 +285,67 @@ document.addEventListener('DOMContentLoaded', function () {
                 footer.textContent = msg('lastRuleUpdate') + ' ' + d;
             }
         } catch (e) {}
+    }
+
+    // v8.4.0: Display scan quota for free users
+    async function displayScanQuota() {
+        try {
+            const response = await new Promise((resolve) => {
+                chrome.runtime.sendMessage({ type: 'getScanQuota' }, (response) => {
+                    if (chrome.runtime.lastError) {
+                        resolve(null);
+                    } else {
+                        resolve(response);
+                    }
+                });
+            });
+
+            if (!response || response.isUnlimited) {
+                // Premium or trial user - hide quota card
+                quotaCard.classList.add('hidden');
+                return;
+            }
+
+            // Show quota card for free users
+            quotaCard.classList.remove('hidden');
+
+            // Update count
+            quotaCount.textContent = `${response.count}/${response.limit}`;
+
+            // Update progress bar
+            const percentage = Math.min((response.count / response.limit) * 100, 100);
+            quotaBarFill.style.width = `${percentage}%`;
+
+            // Update styling based on usage
+            quotaCard.classList.remove('warning', 'critical');
+            if (response.count >= response.limit) {
+                quotaCard.classList.add('critical');
+            } else if (percentage >= 75) {
+                quotaCard.classList.add('warning');
+            }
+
+            // Update reset time
+            if (response.resetAt) {
+                const resetDate = new Date(response.resetAt);
+                const resetTime = resetDate.toLocaleTimeString(chrome.i18n.getUILanguage() || 'en', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false,
+                    timeZone: 'UTC'
+                });
+                quotaReset.textContent = msg('quotaResetsAt', [resetTime], `Resets at ${resetTime} UTC`);
+            }
+
+            // Update title
+            quotaTitle.textContent = msg('quotaDailyScans', 'Daily scans');
+
+            // Update upgrade link text
+            quotaUpgrade.textContent = msg('quotaUpgrade', 'Upgrade');
+
+        } catch (e) {
+            // On error, hide quota card (fail-safe)
+            quotaCard.classList.add('hidden');
+        }
     }
 
     // Error translation
@@ -421,7 +492,15 @@ document.addEventListener('DOMContentLoaded', function () {
         await initSettings();
         await updateUI();
         await displayLastUpdate();
+        await displayScanQuota(); // v8.4.0: Show quota for free users
     })();
+
+    // v8.4.0: Real-time quota updates when storage changes
+    chrome.storage.onChanged.addListener((changes, area) => {
+        if (area === 'sync' && changes.scanQuota) {
+            displayScanQuota();
+        }
+    });
 });
 
 // Container

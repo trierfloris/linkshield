@@ -932,6 +932,12 @@
   "reason_brandSubdomainPhishing": {
     "message": "Εντοπίστηκε λέξη-κλειδί μάρκας σε δωρεάν πλατφόρμα φιλοξενίας (υψηλός κίνδυνος). Οι νόμιμες εταιρείες δεν χρησιμοποιούν δωρεάν φιλοξενία για επίσημες υπηρεσίες."
   },
+  "hostnameBrandKeywordPhishing": {
+    "message": "Ύποπτος τομέας: όνομα μάρκας σε συνδυασμό με λέξεις-κλειδιά phishing (υψηλός κίνδυνος). Παράδειγμα: login-microsoft-verify.com ΔΕΝ είναι ιστοσελίδα της Microsoft."
+  },
+  "reason_hostnameBrandKeywordPhishing": {
+    "message": "Ύποπτος τομέας: όνομα μάρκας σε συνδυασμό με λέξεις-κλειδιά phishing (υψηλός κίνδυνος). Παράδειγμα: login-microsoft-verify.com ΔΕΝ είναι ιστοσελίδα της Microsoft."
+  },
   "nrdTelCombo": {
     "message": "Αριθμός τηλεφώνου σε νεοκαταχωρημένο τομέα με λέξεις-κλειδιά phishing (μέτριος κίνδυνος). Αυτή μπορεί να είναι απόπειρα vishing (φωνητικού phishing)."
   },
@@ -1629,5 +1635,34 @@
   },
   "imagelessQrCautionTitle": {
     "message": "Προσοχή: Εντοπίστηκε κρυφός κώδικας QR"
+  },
+  "quotaDailyScans": {
+    "message": "Καθημερινές σαρώσεις"
+  },
+  "quotaResetsAt": {
+    "message": "Επαναφέρεται στις $TIME$ UTC",
+    "placeholders": {
+      "TIME": {
+        "content": "$1",
+        "example": "00:00"
+      }
+    }
+  },
+  "quotaUpgrade": {
+    "message": "Αναβάθμιση"
+  },
+  "quotaExceededDesc": {
+    "message": "Επιτεύχθηκε το ημερήσιο όριο - επαναφορά τα μεσάνυχτα UTC"
+  },
+  "licenseHaveKey": {
+    "message": "Έχετε ήδη κλειδί;"
+  },
+  "threatsTodayCount": {
+    "message": "+$1 σήμερα",
+    "placeholders": { "COUNT": { "content": "$1", "example": "847" } }
+  },
+  "threatsTotalCount": {
+    "message": "$1 αποκλείστηκαν",
+    "placeholders": { "COUNT": { "content": "$1", "example": "2431" } }
   }
 }

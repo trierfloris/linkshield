@@ -932,6 +932,12 @@
   "reason_brandSubdomainPhishing": {
     "message": "Виявлено ключове слово бренду на безкоштовній хостинг-платформі (високий ризик). Легітимні компанії не використовують безкоштовний хостинг для офіційних сервісів."
   },
+  "hostnameBrandKeywordPhishing": {
+    "message": "Підозрілий домен: назва бренду в поєднанні з фішинговими ключовими словами (високий ризик). Приклад: login-microsoft-verify.com НЕ є сайтом Microsoft."
+  },
+  "reason_hostnameBrandKeywordPhishing": {
+    "message": "Підозрілий домен: назва бренду в поєднанні з фішинговими ключовими словами (високий ризик). Приклад: login-microsoft-verify.com НЕ є сайтом Microsoft."
+  },
   "nrdTelCombo": {
     "message": "Номер телефону на нещодавно зареєстрованому домені з фішинговими ключовими словами (середній ризик). Це може бути спроба вішингу (голосового фішингу)."
   },
@@ -1629,5 +1635,34 @@
   },
   "imagelessQrCautionTitle": {
     "message": "Увага: Виявлено прихований QR-код"
+  },
+  "quotaDailyScans": {
+    "message": "Щоденні сканування"
+  },
+  "quotaResetsAt": {
+    "message": "Скидання о $TIME$ UTC",
+    "placeholders": {
+      "TIME": {
+        "content": "$1",
+        "example": "00:00"
+      }
+    }
+  },
+  "quotaUpgrade": {
+    "message": "Оновити"
+  },
+  "quotaExceededDesc": {
+    "message": "Денний ліміт досягнуто - скидання опівночі UTC"
+  },
+  "licenseHaveKey": {
+    "message": "Вже є ключ?"
+  },
+  "threatsTodayCount": {
+    "message": "+$1 сьогодні",
+    "placeholders": { "COUNT": { "content": "$1", "example": "847" } }
+  },
+  "threatsTotalCount": {
+    "message": "$1 заблоковано",
+    "placeholders": { "COUNT": { "content": "$1", "example": "2431" } }
   }
 }

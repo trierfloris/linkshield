@@ -995,6 +995,12 @@
   "reason_brandSubdomainPhishing": {
     "message": "تم اكتشاف اسم العلامة التجارية على منصة استضافة مجانية (خطر عالٍ). الشركات الشرعية لا تستخدم الاستضافة المجانية للخدمات الرسمية."
   },
+  "hostnameBrandKeywordPhishing": {
+    "message": "نطاق مشبوه: اسم علامة تجارية مدمج مع كلمات تصيد احتيالي (خطر عالٍ). مثال: login-microsoft-verify.com ليس موقع Microsoft."
+  },
+  "reason_hostnameBrandKeywordPhishing": {
+    "message": "نطاق مشبوه: اسم علامة تجارية مدمج مع كلمات تصيد احتيالي (خطر عالٍ). مثال: login-microsoft-verify.com ليس موقع Microsoft."
+  },
   "nrdTelCombo": {
     "message": "رقم هاتف على نطاق مسجل حديثاً مع كلمات تصيد احتيالي (خطر متوسط). قد يكون هذا محاولة تصيد صوتي."
   },
@@ -1629,5 +1635,34 @@
   },
   "imagelessQrCautionTitle": {
     "message": "تنبيه: تم اكتشاف رمز QR مخفي"
+  },
+  "quotaDailyScans": {
+    "message": "عمليات الفحص اليومية"
+  },
+  "quotaResetsAt": {
+    "message": "يُعاد التعيين في $TIME$ بالتوقيت العالمي",
+    "placeholders": {
+      "TIME": {
+        "content": "$1",
+        "example": "00:00"
+      }
+    }
+  },
+  "quotaUpgrade": {
+    "message": "ترقية"
+  },
+  "quotaExceededDesc": {
+    "message": "تم الوصول إلى الحد اليومي - يتم إعادة التعيين في منتصف الليل بالتوقيت العالمي"
+  },
+  "licenseHaveKey": {
+    "message": "هل لديك مفتاح بالفعل؟"
+  },
+  "threatsTodayCount": {
+    "message": "+$1 اليوم",
+    "placeholders": { "COUNT": { "content": "$1", "example": "847" } }
+  },
+  "threatsTotalCount": {
+    "message": "$1 محظور",
+    "placeholders": { "COUNT": { "content": "$1", "example": "2431" } }
   }
 }

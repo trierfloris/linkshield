@@ -932,6 +932,12 @@
   "reason_brandSubdomainPhishing": {
     "message": "Cuvânt cheie de brand detectat pe platforma de găzduire gratuită (risc ridicat). Companiile legitime nu folosesc găzduire gratuită pentru servicii oficiale."
   },
+  "hostnameBrandKeywordPhishing": {
+    "message": "Domeniu suspect: nume de brand combinat cu cuvinte cheie de phishing (risc ridicat). Exemplu: login-microsoft-verify.com NU este un site Microsoft."
+  },
+  "reason_hostnameBrandKeywordPhishing": {
+    "message": "Domeniu suspect: nume de brand combinat cu cuvinte cheie de phishing (risc ridicat). Exemplu: login-microsoft-verify.com NU este un site Microsoft."
+  },
   "nrdTelCombo": {
     "message": "Număr de telefon pe un domeniu recent înregistrat cu cuvinte cheie de phishing (risc mediu). Aceasta poate fi o încercare de vishing (phishing vocal)."
   },
@@ -1629,5 +1635,34 @@
   },
   "imagelessQrCautionTitle": {
     "message": "Atenție: Cod QR ascuns detectat"
+  },
+  "quotaDailyScans": {
+    "message": "Scanări zilnice"
+  },
+  "quotaResetsAt": {
+    "message": "Se resetează la $TIME$ UTC",
+    "placeholders": {
+      "TIME": {
+        "content": "$1",
+        "example": "00:00"
+      }
+    }
+  },
+  "quotaUpgrade": {
+    "message": "Actualizare"
+  },
+  "quotaExceededDesc": {
+    "message": "Limita zilnică atinsă - se resetează la miezul nopții UTC"
+  },
+  "licenseHaveKey": {
+    "message": "Ai deja o cheie?"
+  },
+  "threatsTodayCount": {
+    "message": "+$1 astăzi",
+    "placeholders": { "COUNT": { "content": "$1", "example": "847" } }
+  },
+  "threatsTotalCount": {
+    "message": "$1 blocate",
+    "placeholders": { "COUNT": { "content": "$1", "example": "2431" } }
   }
 }

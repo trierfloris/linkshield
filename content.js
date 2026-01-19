@@ -126,6 +126,22 @@ const earlyMutationBuffer = [];
 let earlyObserverActive = true;
 let configReady = false;
 
+// v8.4.1: Smart Link Scanning (PRO feature) toggle state
+// This is set during initialization and controls whether link scanning is active
+let smartLinkScanningEnabled = false;
+
+// v8.4.1: Listen for storage changes to update Smart Link Scanning toggle in real-time
+// This ensures the feature is immediately enabled/disabled when user toggles in popup
+if (typeof chrome !== 'undefined' && chrome.storage && chrome.storage.onChanged) {
+  chrome.storage.onChanged.addListener((changes, areaName) => {
+    if (areaName === 'sync' && changes.integratedProtection) {
+      const newValue = changes.integratedProtection.newValue;
+      smartLinkScanningEnabled = newValue === true;
+      logDebug(`[Settings] Smart Link Scanning toggled: ${smartLinkScanningEnabled}`);
+    }
+  });
+}
+
 // Shadow DOM configuratie - SECURITY FIX v8.0.0 (Vector 2)
 const MAX_SHADOW_DEPTH = 20; // Verhoogd van 5 naar 20 voor diepe Shadow DOM nesting
 
@@ -187,10 +203,13 @@ async function processEarlyMutationBuffer() {
 /**
  * SECURITY FIX v8.4.0: Immediate dangerous URI check at scan entry point
  * Performs fast check BEFORE any caching or complex parsing
+ * v8.4.1: Only runs if Smart Link Scanning (integratedProtection) is enabled
  * @param {HTMLAnchorElement} link - The link element to check
  * @returns {boolean} - true if dangerous URI was blocked, false otherwise
  */
 function immediateUriSecurityCheck(link) {
+  // v8.4.1: Skip if Smart Link Scanning is disabled (PRO feature)
+  if (!smartLinkScanningEnabled) return false;
   if (!link) return false;
 
   // Get BOTH href property AND raw attribute - browsers don't decode protocol in encoded URIs
@@ -287,10 +306,13 @@ function immediateUriSecurityCheck(link) {
  * Scant een node en al zijn children voor links, inclusief Shadow DOM
  * SECURITY FIX v8.0.0: Recursieve Shadow DOM scanning tot depth 20
  * SECURITY FIX v8.4.0: Immediate URI security checks at entry point
+ * v8.4.1: Only runs if Smart Link Scanning (integratedProtection) is enabled
  * @param {Node} node - De node om te scannen
  * @param {number} shadowDepth - Huidige Shadow DOM diepte
  */
 async function scanNodeForLinks(node, shadowDepth = 0) {
+  // v8.4.1: Skip if Smart Link Scanning is disabled (PRO feature)
+  if (!smartLinkScanningEnabled) return;
   if (!node || shadowDepth > MAX_SHADOW_DEPTH) return;
 
   // Check directe links
@@ -347,27 +369,48 @@ async function scanNodeForLinks(node, shadowDepth = 0) {
 
 /**
  * Callback wanneer config klaar is - verwerk buffer en start normale observer
+ * v8.4.1: Now checks integratedProtection (Smart Link Scanning) setting
  */
-function onConfigReady() {
+async function onConfigReady() {
   if (configReady) return;
   configReady = true;
 
-  // Verwerk gebufferde mutations
-  processEarlyMutationBuffer();
+  // v8.4.1: Check if Smart Link Scanning (integratedProtection) is enabled
+  // This is a PRO feature - only scan links if the user has it enabled
+  try {
+    const settings = await getStoredSettings();
+    smartLinkScanningEnabled = settings.integratedProtection === true;
+    logDebug(`[EarlyObserver] Smart Link Scanning enabled: ${smartLinkScanningEnabled}`);
+  } catch (e) {
+    // Default to false if settings can't be read (PRO feature should be opt-in)
+    smartLinkScanningEnabled = false;
+    logDebug('[EarlyObserver] Could not read settings, Smart Link Scanning disabled');
+  }
 
   // Stop early observer (wordt vervangen door hoofdobserver)
   earlyObserverActive = false;
 
-  // Schedule een fallback full-page scan met requestIdleCallback
-  // SECURITY FIX v8.0.0: Vangt gemiste elementen op
-  scheduleFullPageScan();
+  // v8.4.1: Only process buffered mutations and schedule scan if Smart Link Scanning is enabled
+  if (smartLinkScanningEnabled) {
+    // Verwerk gebufferde mutations
+    processEarlyMutationBuffer();
 
-  logDebug('[EarlyObserver] Config ready, buffer processed, fallback scan scheduled');
+    // Schedule een fallback full-page scan met requestIdleCallback
+    // SECURITY FIX v8.0.0: Vangt gemiste elementen op
+    scheduleFullPageScan();
+
+    logDebug('[EarlyObserver] Config ready, buffer processed, fallback scan scheduled');
+  } else {
+    // Clear the buffer without processing - Smart Link Scanning is disabled
+    earlyMutationBuffer.length = 0;
+    logDebug('[EarlyObserver] Config ready, Smart Link Scanning disabled - skipping link scans');
+  }
 }
 
 /**
  * PERFORMANCE FIX v8.6.0: Optimized progressive scanning
  * Target: <10 seconds for 5000 links
+ * v8.4.1: Only runs if Smart Link Scanning (integratedProtection) is enabled
  *
  * Strategy:
  * 1. Viewport-first: Scan visible links immediately (blocking)
@@ -381,6 +424,12 @@ function onConfigReady() {
 const scannedLinksSet = new WeakSet();
 
 function scheduleFullPageScan() {
+  // v8.4.1: Skip if Smart Link Scanning is disabled (PRO feature)
+  if (!smartLinkScanningEnabled) {
+    logDebug('[ProgressiveScan] Skipped - Smart Link Scanning disabled');
+    return;
+  }
+
   const BATCH_SIZE = 200; // PERFORMANCE FIX v8.6.0: Increased from 100 to 200
   const BATCH_DELAY = 0; // ms between batches (0 = requestIdleCallback handles timing)
   const startTime = performance.now();
@@ -2902,7 +2951,8 @@ async function loadConfig() {
 (async () => {
   await loadConfig();
   // SECURITY FIX v8.0.0: Trigger early observer buffer processing
-  onConfigReady();
+  // v8.4.1: Must await to ensure smartLinkScanningEnabled is set before any scanning
+  await onConfigReady();
 })();
 // Cache voor JSON-bestanden met expiratie
 const jsonCache = {};
@@ -4628,6 +4678,12 @@ function detectConfusableCharacters(hostname) {
 }
 
 function classifyAndCheckLink(link) {
+  // v8.4.1: Skip if Smart Link Scanning is disabled (PRO feature)
+  // This check is placed at the top to prevent all link scanning when disabled
+  if (!smartLinkScanningEnabled) {
+    return;
+  }
+
   if (!link || !link.href) {
     logDebug(`Skipping classification: Invalid or missing link: ${link || 'undefined'}`);
     return; // Sla volledig ongeldige links over
@@ -4923,6 +4979,12 @@ async function showIntroBannerOnce(message) {
  * @param {{ level: 'safe'|'caution'|'alert', reasons: string[] }} options
  */
 async function warnLinkByLevel(link, { level, reasons }) {
+  // v8.4.1: Skip ALL warnings if Smart Link Scanning is disabled (PRO feature)
+  // This is the final guard - no warnings will be shown if feature is off
+  if (!smartLinkScanningEnabled) {
+    return;
+  }
+
   // Verwijder oude styling/iconen
   clearWarning(link);
   injectWarningIconStyles();
@@ -8283,7 +8345,9 @@ function storeInCache(url, result) {
  * @param {string} url - De URL die gecontroleerd moet worden.
  * @returns {Promise<{level: 'safe'|'caution'|'alert', risk: number, reasons: string[]}>}
  */
-async function performSuspiciousChecks(url) {
+async function performSuspiciousChecks(url, options = {}) {
+  // v8.4.1: countQuota option - only true when checking the current PAGE URL (not links)
+  const { countQuota = false } = options;
   await ensureConfigReady();
 
   // =============================================================================
@@ -8326,8 +8390,10 @@ async function performSuspiciousChecks(url) {
     logDebug(`Cache hit voor verdachte controles: ${url}`);
     return cachedEntry.result;
   }
+
   // 2) Feature flag
-  if (!await isProtectionEnabled()) {
+  const protectionEnabled = await isProtectionEnabled();
+  if (!protectionEnabled) {
     const fallback = { level: 'safe', risk: 0, reasons: [] };
     window.linkRiskCache.set(url, { result: fallback, timestamp: Date.now() });
     return fallback;
@@ -8354,11 +8420,57 @@ async function performSuspiciousChecks(url) {
 
   // 3b) Early exit for globally trusted domains (TrustedDomains.json)
   const hostname = urlObj.hostname.toLowerCase();
-  if (await isTrustedDomain(hostname)) {
+  const isTrusted = await isTrustedDomain(hostname);
+  if (isTrusted) {
     logDebug(`[performSuspiciousChecks] Trusted domain, skipping checks: ${hostname}`);
     const safeResult = { level: 'safe', risk: 0, reasons: ['trustedDomain'] };
     window.linkRiskCache.set(url, { result: safeResult, timestamp: Date.now() });
     return safeResult;
+  }
+
+  // 3c) v8.4.0: Scan quota check for free users
+  // v8.4.1 FIX: Only count quota when:
+  // 1. countQuota option is true (only for current PAGE URL checks, not link scanning)
+  // 2. Running in TOP-LEVEL frame (not iframes)
+  const isTopFrame = window.self === window.top;
+  const shouldCountQuota = countQuota && isTopFrame;
+
+  if (shouldCountQuota) {
+    // Extract registrable domain for quota tracking (e.g., "sub.example.com" -> "example.com")
+    // v8.4.0 FIX: Use extractMainDomain directly (getRegistrableDomain expects URL, not hostname)
+    const quotaDomain = extractMainDomain(hostname) || hostname;
+    try {
+      const quotaCheck = await new Promise((resolve) => {
+        chrome.runtime.sendMessage({ type: 'canScanDomain', domain: quotaDomain }, (response) => {
+          if (chrome.runtime.lastError) {
+            resolve({ allowed: true, reason: 'error' }); // Fail-safe
+          } else {
+            resolve(response || { allowed: true, reason: 'error' });
+          }
+        });
+      });
+
+      if (!quotaCheck.allowed && quotaCheck.reason === 'quota_exceeded') {
+        logDebug(`[performSuspiciousChecks] Quota exceeded, skipping scan for: ${hostname}`);
+        // v8.4.1: Disable Smart Link Scanning globally when quota exceeded
+        // This stops all further link scanning until quota resets or user upgrades
+        smartLinkScanningEnabled = false;
+        logDebug('[performSuspiciousChecks] Smart Link Scanning disabled due to quota');
+        const quotaResult = { level: 'safe', risk: 0, reasons: ['quotaExceeded'], quotaExceeded: true };
+        // Don't cache quota exceeded results - user might upgrade
+        return quotaResult;
+      }
+
+      // v8.4.0: Record domain scan IMMEDIATELY after quota check passes
+      // This ensures the domain is counted even if later checks return early
+      if (quotaCheck.reason === 'within_quota') {
+        chrome.runtime.sendMessage({ type: 'recordDomainScan', domain: quotaDomain });
+        logDebug(`[performSuspiciousChecks] Quota recorded for PAGE: ${quotaDomain}`);
+      }
+    } catch (quotaError) {
+      logDebug(`[performSuspiciousChecks] Quota check error, continuing: ${quotaError}`);
+      // Fail-safe: continue with scan on error
+    }
   }
 
   // 4) Early exits voor niet-http(s) protocollen
@@ -8515,6 +8627,7 @@ async function performSuspiciousChecks(url) {
     risk: Number(totalRiskRef.value.toFixed(1)),
     reasons: Array.from(reasons)
   };
+
   window.linkRiskCache.set(url, { result: finalResult, timestamp: Date.now() });
   logDebug(`Resultaat voor ${url}:`, finalResult);
   return finalResult;
@@ -8968,6 +9081,15 @@ function checkStaticConditions(url, reasons, totalRiskRef) {
     logDebug(`Static: brandSubdomainPhishing - ${brandSubdomainResult.brand} on free hosting`);
     reasons.add('brandSubdomainPhishing');
     totalRiskRef.value += brandSubdomainResult.score;
+  }
+
+  // 7) Hostname Brand + Keyword Phishing detectie
+  // Detecteert brand + phishing keywords in hostname (bijv. login-microsoft-verify.com)
+  const hostnameBrandResult = detectHostnameBrandKeywordPhishing(url);
+  if (hostnameBrandResult.detected && !reasons.has('hostnameBrandKeywordPhishing')) {
+    logDebug(`Static: hostnameBrandKeywordPhishing - ${hostnameBrandResult.brand} + ${hostnameBrandResult.keywords.join(', ')}`);
+    reasons.add('hostnameBrandKeywordPhishing');
+    totalRiskRef.value += hostnameBrandResult.score;
   }
 }
 /**
@@ -9886,6 +10008,69 @@ function detectBrandSubdomainPhishing(url) {
 }
 
 /**
+ * Detecteert brand + phishing keyword combinaties in HOSTNAME.
+ * Bijv: login-microsoft-verify.com, secure-paypal-update.net
+ *
+ * @param {string} url - De URL om te analyseren
+ * @returns {{detected: boolean, brand: string|null, keywords: string[], score: number}}
+ */
+function detectHostnameBrandKeywordPhishing(url) {
+    try {
+        const parsedUrl = new URL(url);
+        const hostname = parsedUrl.hostname.toLowerCase();
+
+        // Whitelist check - skip legitieme merkdomeinen
+        const legitimateDomains = globalConfig?.LEGITIMATE_BRAND_DOMAINS || [];
+        for (const legit of legitimateDomains) {
+            if (hostname === legit || hostname.endsWith('.' + legit)) {
+                return { detected: false, brand: null, keywords: [], score: 0 };
+            }
+        }
+
+        // Haal domeinnaam zonder TLD (bijv. "login-microsoft-verify" van "login-microsoft-verify.com")
+        const parts = hostname.split('.');
+        const domainName = parts.length >= 2 ? parts.slice(0, -1).join('.') : hostname;
+
+        // Brand keywords uit config
+        const brandKeywords = globalConfig?.BRAND_KEYWORDS || [];
+
+        // Phishing action keywords die vaak gecombineerd worden met merknamen
+        const phishingKeywords = ['login', 'secure', 'verify', 'update', 'account', 'signin',
+                                  'auth', 'confirm', 'password', 'billing', 'payment', 'support'];
+
+        for (const brand of brandKeywords) {
+            const brandLower = brand.toLowerCase();
+            if (domainName.includes(brandLower)) {
+                // Zoek phishing keywords (die niet het merk zelf zijn)
+                const foundKeywords = phishingKeywords.filter(k =>
+                    k !== brandLower && domainName.includes(k));
+
+                if (foundKeywords.length >= 1) {
+                    // Score berekening:
+                    // - Base score: 8 punten voor brand + keyword combo
+                    // - High-value brands (Microsoft, Google, etc.): +2 punten
+                    // - Extra punten per gevonden keyword
+                    const highValueBrands = ['microsoft', 'google', 'apple', 'paypal', 'amazon', 'ing', 'rabo', 'abnamro', 'digid'];
+                    let score = highValueBrands.includes(brandLower) ? 10 : 8;
+
+                    const highRiskKeywords = ['login', 'verify', 'secure', 'password', 'signin'];
+                    for (const kw of foundKeywords) {
+                        score += highRiskKeywords.includes(kw) ? 3 : 2;
+                    }
+
+                    logDebug(`[HostnameBrandKeyword] Detected: ${brand} + [${foundKeywords.join(', ')}] in ${hostname}, score=${Math.min(score, 20)}`);
+                    return { detected: true, brand, keywords: foundKeywords, score: Math.min(score, 20) };
+                }
+            }
+        }
+        return { detected: false, brand: null, keywords: [], score: 0 };
+    } catch (error) {
+        logError(`[HostnameBrandKeyword] Error: ${error.message}`);
+        return { detected: false, brand: null, keywords: [], score: 0 };
+    }
+}
+
+/**
  * Analyzes a URL's redirect chain by calling the background service worker.
  * Only triggered for shortened URLs or links with 'caution' level.
  *
@@ -10355,7 +10540,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
     });
     // --- 2. URL-specifieke checks ---
-    const urlResult = await performSuspiciousChecks(currentUrl);
+    // v8.4.1: countQuota: true - this is the CURRENT PAGE URL check, should count towards quota
+    const urlResult = await performSuspiciousChecks(currentUrl, { countQuota: true });
     // --- 3. Combineer alle redenen en bereken totaalrisico ---
     const allReasons = new Set([
       ...urlResult.reasons,
@@ -10531,7 +10717,8 @@ async function checkCurrentUrl() {
       : await getFinalUrl(currentUrl);
     logDebug("[Content] Final URL after redirects:", finalUrl);
     // 1) Paginacheck
-    const pageResult = await performSuspiciousChecks(finalUrl);
+    // v8.4.1: countQuota: true - this is the CURRENT PAGE URL check, should count towards quota
+    const pageResult = await performSuspiciousChecks(finalUrl, { countQuota: true });
     logDebug("[Content] Page check result:", pageResult);
     // Valideer level
     let level = pageResult.level;

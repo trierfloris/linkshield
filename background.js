@@ -3,9 +3,25 @@
 // =================================================================================
 
 // ==== Globale Instellingen en Debugging ====
-const IS_PRODUCTION = true; // Zet op 'true' voor productie build.
+const IS_PRODUCTION = true;
 const CACHE_TTL = 24 * 60 * 60 * 1000;
 const API_TIMEOUT_MS = 5000; // 5 seconden timeout voor API calls (verlaagd van 10s)
+
+// ==== License & Trial Constants (MUST be early for quota functions) ====
+const MS_PER_DAY = 24 * 60 * 60 * 1000;
+const TRIAL_DAYS = 30;
+
+// ==== Globale Drempels en Configuratie ====
+// MUST be early - used by functions that run at startup (loadSslLabsRateLimitState, initializeProtectionImmediately)
+let globalThresholds = {
+    LOW_THRESHOLD: 4,
+    MEDIUM_THRESHOLD: 8,
+    HIGH_THRESHOLD: 15,
+    DOMAIN_AGE_MIN_RISK: 5,
+    YOUNG_DOMAIN_RISK: 5,
+    YOUNG_DOMAIN_THRESHOLD_DAYS: 7,
+    DEBUG_MODE: false // Wordt overschreven door opgeslagen config
+};
 
 /**
  * Veilige i18n wrapper met null checks
@@ -27,58 +43,32 @@ function safeGetMessage(key, fallback) {
 
 /**
  * PERFORMANCE FIX v8.1.0: Non-blocking protection initialization
- * Called IMMEDIATELY at startup to enable protection using cached status.
- * Does NOT wait for network - protection is active within milliseconds.
+ * Called IMMEDIATELY at startup to enable protection.
+ * v8.4.0: Automatic Protection is ALWAYS FREE - no trial check needed
  */
 async function initializeProtectionImmediately() {
     const startTime = Date.now();
     try {
-        // SECURITY FIX v8.7.0: Check Emergency Mode status FIRST
-        // Als Emergency Mode actief is, bescherming ALTIJD inschakelen
-        if (EMERGENCY_MODE_ENABLED) {
-            const emergencyStatus = await getEmergencyModeStatus();
-            if (emergencyStatus.isEmergencyMode) {
-                console.warn('[INIT-FAST] Emergency Mode active - enabling protection unconditionally');
-                await manageDNRules();
-                return { initialized: true, emergencyMode: true, timeMs: Date.now() - startTime };
-            }
+        // v8.4.0: Ensure protection settings are enabled (fix corrupted state from previous versions)
+        // Automatic Protection is always free, so these should always be true by default
+        const settings = await chrome.storage.sync.get(['backgroundSecurity', 'integratedProtection']);
+        if (settings.backgroundSecurity === false || settings.integratedProtection === false) {
+            console.log('[INIT-FAST] Resetting protection settings to enabled (v8.4.0 migration)');
+            await chrome.storage.sync.set({ backgroundSecurity: true, integratedProtection: true });
         }
 
-        // Read cached status - this is fast (local storage)
-        const data = await chrome.storage.sync.get([
-            'licenseValid',
-            'trialStartDate',
-            'backgroundSecurity'
-        ]);
-
-        // Calculate trial status locally (no network)
-        const now = Date.now();
-        const trialStart = data.trialStartDate || now;
-        const trialDays = Math.floor((now - trialStart) / (1000 * 60 * 60 * 24));
-        const isInTrial = trialDays < (globalThresholds.TRIAL_DAYS || 30);
-        const hasLicense = data.licenseValid === true;
-
-        // Enable protection if user has license OR is in trial
-        const shouldProtect = hasLicense || isInTrial;
-
-        if (shouldProtect || FAIL_SAFE_MODE) {
-            // CRITICAL: Enable DNR rules immediately
-            await manageDNRules();
-            console.log(`[INIT-FAST] Protection enabled in ${Date.now() - startTime}ms (license: ${hasLicense}, trial: ${isInTrial})`);
-        } else {
-            console.log(`[INIT-FAST] Protection not enabled - trial expired and no license`);
-        }
-
-        return { initialized: true, hasLicense, isInTrial, timeMs: Date.now() - startTime };
+        // v8.4.0: Always enable protection - Automatic Protection is FREE
+        await manageDNRules();
+        console.log(`[INIT-FAST] Protection enabled in ${Date.now() - startTime}ms (always free)`);
+        return { initialized: true, timeMs: Date.now() - startTime };
     } catch (err) {
         console.error("[INIT-FAST] Error:", err);
-        // FAIL-SAFE: On any error, try to enable protection anyway
-        if (FAIL_SAFE_MODE) {
-            try {
-                await manageDNRules();
-                console.warn("[INIT-FAST] FAIL-SAFE: Protection enabled despite error");
-            } catch (e) { /* ignore */ }
-        }
+        // Try to enable protection anyway on error
+        try {
+            await chrome.storage.sync.set({ backgroundSecurity: true });
+            await manageDNRules();
+            console.warn("[INIT-FAST] Protection enabled despite error");
+        } catch (e) { /* ignore */ }
         return { initialized: false, error: err.message };
     }
 }
@@ -129,6 +119,207 @@ async function saveSslLabsRateLimitState(timestamp) {
 // Laad rate limit state bij SW startup
 loadSslLabsRateLimitState();
 
+// =================================================================================
+// SCAN QUOTA MANAGEMENT (v8.4.0)
+// Gratis gebruikers: max 20 unieke domeinen per dag
+// Premium/Trial gebruikers: unlimited
+// =================================================================================
+
+const DAILY_SCAN_QUOTA = 20; // Max unieke domeinen per dag voor gratis users
+
+/**
+ * Haalt de huidige scan quota status op
+ * @returns {Promise<{domainsScanned: string[], count: number, limit: number, resetAt: number, isUnlimited: boolean}>}
+ */
+async function getScanQuotaStatus() {
+    try {
+        // v8.4.0 FIX: Use storage.local instead of sync to avoid MAX_WRITE_OPERATIONS_PER_MINUTE quota
+        const [quotaData, trialStatus] = await Promise.all([
+            chrome.storage.local.get(['scanQuota']),
+            checkTrialStatus()
+        ]);
+
+        const isUnlimited = trialStatus.hasLicense || trialStatus.isActive;
+        const now = Date.now();
+        const quota = quotaData.scanQuota || { domains: [], resetAt: getNextResetTime() };
+
+        // Check of quota gereset moet worden
+        if (now >= quota.resetAt) {
+            const newQuota = { domains: [], resetAt: getNextResetTime() };
+            await chrome.storage.local.set({ scanQuota: newQuota });
+
+            // v8.4.0: Auto-enable Smart Link Scanning when quota resets (for free users)
+            if (!isUnlimited) {
+                await chrome.storage.sync.set({ integratedProtection: true });
+                // Notify popup about the reset
+                chrome.runtime.sendMessage({ type: 'quotaReset' }).catch(() => {});
+            }
+
+            return {
+                domainsScanned: [],
+                count: 0,
+                limit: DAILY_SCAN_QUOTA,
+                resetAt: newQuota.resetAt,
+                isUnlimited
+            };
+        }
+
+        return {
+            domainsScanned: quota.domains || [],
+            count: (quota.domains || []).length,
+            limit: DAILY_SCAN_QUOTA,
+            resetAt: quota.resetAt,
+            isUnlimited
+        };
+    } catch (error) {
+        console.error('[ScanQuota] Error getting status:', error);
+        return {
+            domainsScanned: [],
+            count: 0,
+            limit: DAILY_SCAN_QUOTA,
+            resetAt: getNextResetTime(),
+            isUnlimited: true // Fail-safe: allow scanning on error
+        };
+    }
+}
+
+/**
+ * Berekent de volgende reset tijd (middernacht UTC)
+ * @returns {number} Timestamp van volgende reset
+ */
+function getNextResetTime() {
+    const now = new Date();
+    const tomorrow = new Date(Date.UTC(
+        now.getUTCFullYear(),
+        now.getUTCMonth(),
+        now.getUTCDate() + 1,
+        0, 0, 0, 0
+    ));
+    return tomorrow.getTime();
+}
+
+/**
+ * Controleert of een domein gescand mag worden
+ * @param {string} domain - Het domein om te controleren
+ * @returns {Promise<{allowed: boolean, reason: string, quotaStatus: object}>}
+ */
+async function canScanDomain(domain) {
+    try {
+        // v8.4.0 FIX: Allow empty domains (e.g., from mailto: URLs) without counting
+        if (!domain || domain.trim() === '') {
+            return { allowed: true, reason: 'empty_domain' };
+        }
+
+        const status = await getScanQuotaStatus();
+
+        // Premium/trial users hebben geen limiet
+        if (status.isUnlimited) {
+            return {
+                allowed: true,
+                reason: 'unlimited',
+                quotaStatus: status
+            };
+        }
+
+        // Check of domein al gescand is vandaag (telt niet mee)
+        if (status.domainsScanned.includes(domain)) {
+            return {
+                allowed: true,
+                reason: 'already_scanned',
+                quotaStatus: status
+            };
+        }
+
+        // Check quota limiet
+        if (status.count >= status.limit) {
+            return {
+                allowed: false,
+                reason: 'quota_exceeded',
+                quotaStatus: status
+            };
+        }
+
+        return {
+            allowed: true,
+            reason: 'within_quota',
+            quotaStatus: status
+        };
+    } catch (error) {
+        console.error('[ScanQuota] Error checking domain:', error);
+        return {
+            allowed: true, // Fail-safe
+            reason: 'error',
+            quotaStatus: null
+        };
+    }
+}
+
+/**
+ * Registreert dat een domein is gescand
+ * @param {string} domain - Het gescande domein
+ * @returns {Promise<{recorded: boolean, quotaStatus: object}>}
+ */
+async function recordDomainScan(domain) {
+    try {
+        // v8.4.0 FIX: Skip empty domains (e.g., from mailto: URLs)
+        if (!domain || domain.trim() === '') {
+            return { recorded: false, reason: 'empty_domain' };
+        }
+
+        const status = await getScanQuotaStatus();
+
+        // Premium/trial users: geen tracking nodig
+        if (status.isUnlimited) {
+            return { recorded: false, quotaStatus: status };
+        }
+
+        // Domein al gescand vandaag: geen actie
+        if (status.domainsScanned.includes(domain)) {
+            return { recorded: false, quotaStatus: status };
+        }
+
+        // Voeg domein toe aan lijst
+        const newDomains = [...status.domainsScanned, domain];
+        const newQuota = {
+            domains: newDomains,
+            resetAt: status.resetAt
+        };
+        await chrome.storage.local.set({ scanQuota: newQuota });
+
+        // v8.4.0 FIX: Broadcast quota update to popup (storage.local events don't propagate to popup in MV3)
+        chrome.runtime.sendMessage({ type: 'quotaUpdated', count: newDomains.length }).catch(() => {
+            // Popup might not be open - ignore error
+        });
+
+        return {
+            recorded: true,
+            quotaStatus: {
+                ...status,
+                domainsScanned: newDomains,
+                count: newDomains.length
+            }
+        };
+    } catch (error) {
+        console.error('[ScanQuota] Error recording scan:', error);
+        return { recorded: false, quotaStatus: null };
+    }
+}
+
+/**
+ * Reset de scan quota (wordt aangeroepen door alarm of handmatig)
+ */
+async function resetScanQuota() {
+    try {
+        const newQuota = { domains: [], resetAt: getNextResetTime() };
+        await chrome.storage.local.set({ scanQuota: newQuota });
+        if (globalThresholds.DEBUG_MODE) {
+            console.log('[ScanQuota] Quota reset completed');
+        }
+    } catch (error) {
+        console.error('[ScanQuota] Error resetting quota:', error);
+    }
+}
+
 // Overschrijf console-functies voor productieomgeving
 if (IS_PRODUCTION) {
     console.log = function () { };
@@ -174,22 +365,7 @@ async function fetchWithTimeout(url, options = {}, timeout = API_TIMEOUT_MS) {
     }
 }
 
-
-// ==== Globale Drempels en Configuratie Lading ====
-// Deze worden gebruikt in het background script zelf
-let globalThresholds = {
-    LOW_THRESHOLD: 4,
-    MEDIUM_THRESHOLD: 8,
-    HIGH_THRESHOLD: 15,
-    DOMAIN_AGE_MIN_RISK: 5,
-    YOUNG_DOMAIN_RISK: 5,
-    YOUNG_DOMAIN_THRESHOLD_DAYS: 7, // Correcte spelling
-    DEBUG_MODE: false // Wordt overschreven door opgeslagen config
-};
-
-// ==== License & Trial Constants (vroeg gedefinieerd voor gebruik in startup) ====
-const MS_PER_DAY = 24 * 60 * 60 * 1000;
-const TRIAL_DAYS = 30;
+// ==== License Grace Period Constants ====
 const LICENSE_GRACE_PERIOD_DAYS = 7;
 const LICENSE_GRACE_PERIOD_MS = LICENSE_GRACE_PERIOD_DAYS * MS_PER_DAY;
 
@@ -447,51 +623,11 @@ async function performStartupLicenseCheck() {
             }
         }
 
-        // Check of achtergrondbeveiliging toegestaan is
-        const isAllowed = await isBackgroundSecurityAllowed();
-
-        if (!isAllowed) {
-            // SECURITY FIX v7.9.2: Check of licentie EXPLICIET is geïnvalideerd
-            // Als de server heeft bevestigd dat de licentie ongeldig is, negeer FAIL_SAFE
-            if (explicitlyInvalidated) {
-                console.log("[INIT] Licentie expliciet ongeldig - bescherming wordt uitgeschakeld ondanks FAIL_SAFE");
-                await chrome.storage.sync.set({ backgroundSecurity: false });
-                await clearDynamicRules();
-                await manageDNRules();
-                return;
-            }
-
-            // SECURITY FIX v7.9.1: Check of we in FAIL_SAFE_MODE zijn (alleen als NIET expliciet geïnvalideerd)
-            if (FAIL_SAFE_MODE) {
-                // Check of er bestaande regels zijn die we kunnen behouden
-                const existingRules = await chrome.declarativeNetRequest.getDynamicRules();
-
-                if (existingRules.length > 0) {
-                    // Er zijn bestaande regels - behoud ze in fail-safe mode
-                    console.warn("[INIT] Trial/licentie niet toegestaan maar FAIL_SAFE: behoud bestaande regels");
-                    await showFailSafeNotification('protection_preserved');
-                } else {
-                    // SECURITY FIX v8.6.0: FAIL-SAFE ook voor fresh installs zonder bestaande regels
-                    // Dit voorkomt dat een DDoS op de licentieserver nieuwe gebruikers kan "ontwapenen"
-                    console.warn("[INIT] Fresh install zonder licentie maar FAIL_SAFE: activeer bescherming");
-                    await showFailSafeNotification('fresh_install_failsafe');
-                }
-                // SECURITY FIX v8.0.0: ALTIJD manageDNRules() aanroepen om rulesets te activeren!
-                // Dit zorgt ervoor dat statische rulesets (manifest) ook actief worden
-                await manageDNRules();
-                return;
-            }
-
-            // Trial verlopen zonder licentie OF grace period verlopen - forceer backgroundSecurity uit
-            // Dit pad wordt ALLEEN bereikt als FAIL_SAFE_MODE UIT staat
-            await chrome.storage.sync.set({ backgroundSecurity: false });
-            await clearDynamicRules();
-            await manageDNRules();
-        } else {
-            // SECURITY FIX v8.0.0: Ook als isAllowed=true, activeer rulesets
-            // Dit is cruciaal voor nieuwe sessies waar de SW net is opgestart
-            await manageDNRules();
-        }
+        // v8.4.0: Automatic Protection is ALWAYS FREE
+        // DNR rules are always enabled regardless of trial/license status
+        // Only Smart Link Scanning has quota limits after trial expires
+        await manageDNRules();
+        console.log("[INIT] Automatic Protection enabled (always free)");
     } catch (err) {
         console.error("[INIT] Fout bij startup licentie check:", err);
         // SECURITY FIX: Bij ELKE error, behoud bescherming als FAIL_SAFE_MODE actief is
@@ -769,16 +905,14 @@ async function updateIconBasedOnSafety(level, reasons, risk, url) {
 let isUpdatingRules = false; // Debounce flag to prevent overlapping updates
 let lastUpdate = 0; // Timestamp of the last update for additional control
 
-/** Manages the enabling/disabling of declarativeNetRequest rulesets based on settings and license */
+/** Manages the enabling/disabling of declarativeNetRequest rulesets based on settings */
 async function manageDNRules() {
     try {
         const { backgroundSecurity } = await chrome.storage.sync.get('backgroundSecurity');
 
-        // LICENTIE CHECK: Controleer of achtergrondbeveiliging toegestaan is
-        const isAllowed = await isBackgroundSecurityAllowed();
-
-        // Alleen inschakelen als backgroundSecurity AAN staat EN licentie/trial actief is
-        if (backgroundSecurity && isAllowed) {
+        // v8.4.0: Removed trial check - Automatic Protection (DNR rules) is ALWAYS FREE
+        // DNR rules only depend on user's backgroundSecurity setting, not trial status
+        if (backgroundSecurity !== false) {
             await chrome.declarativeNetRequest.updateEnabledRulesets({
                 enableRulesetIds: ["ruleset_1"]
             });
@@ -788,11 +922,7 @@ async function manageDNRules() {
                 disableRulesetIds: ["ruleset_1"]
             });
             if (globalThresholds.DEBUG_MODE) {
-                if (!isAllowed) {
-                    console.log("DNR Ruleset 1 disabled: trial verlopen zonder licentie.");
-                } else {
-                    console.log("DNR Ruleset 1 disabled: backgroundSecurity is off.");
-                }
+                console.log("DNR Ruleset 1 disabled: backgroundSecurity is off.");
             }
         }
     } catch (error) {
@@ -807,13 +937,8 @@ async function fetchAndLoadRules() {
         return;
     }
 
-    // LICENTIE CHECK: Stop als trial verlopen is zonder licentie
-    const isAllowed = await isBackgroundSecurityAllowed();
-    if (!isAllowed) {
-        if (globalThresholds.DEBUG_MODE) console.log("fetchAndLoadRules overgeslagen: trial verlopen zonder licentie.");
-        await clearDynamicRules(); // Verwijder bestaande regels
-        return;
-    }
+    // v8.4.0: Removed trial check - Automatic Protection (dynamic rules) is ALWAYS FREE
+    // Dynamic rules are fetched regardless of trial status
 
     isUpdatingRules = true;
 
@@ -1959,7 +2084,7 @@ const pendingBlockUrls = new Set();
     try {
         const allAlarms = await chrome.alarms.getAll();
         // Keep only the important recurring alarms, clean up everything else
-        const keepAlarms = ['fetchRulesHourly', 'license_revalidation_check', 'cleanSSLCache', 'clearAlertBadge'];
+        const keepAlarms = ['fetchRulesHourly', 'license_revalidation_check', 'cleanSSLCache', 'clearAlertBadge', 'resetScanQuota'];
         const alarmsToClean = allAlarms.filter(a => !keepAlarms.includes(a.name));
 
         if (alarmsToClean.length > 0) {
@@ -2041,6 +2166,22 @@ chrome.runtime.onInstalled.addListener(async (details) => {
         });
         if (globalThresholds.DEBUG_MODE) console.log("SSL cache cleanup alarm created (30min interval).");
 
+        // v8.4.0: Scan quota reset alarm (midnight UTC daily)
+        // Calculates minutes until next midnight UTC
+        const now = new Date();
+        const nextMidnightUTC = new Date(Date.UTC(
+            now.getUTCFullYear(),
+            now.getUTCMonth(),
+            now.getUTCDate() + 1,
+            0, 0, 0, 0
+        ));
+        const minutesUntilReset = Math.ceil((nextMidnightUTC.getTime() - now.getTime()) / 60000);
+        chrome.alarms.create("resetScanQuota", {
+            delayInMinutes: minutesUntilReset,
+            periodInMinutes: 24 * 60 // Repeat daily
+        });
+        if (globalThresholds.DEBUG_MODE) console.log(`Scan quota reset alarm created (next reset in ${minutesUntilReset} minutes).`);
+
     } catch (error) {
         console.error("Error during extension installation or update:", error);
     }
@@ -2058,73 +2199,28 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
     if (alarm.name === "license_revalidation_check") {
         if (globalThresholds.DEBUG_MODE) console.log("License revalidation alarm triggered (12h interval).");
 
-        // Voer revalidatie uit en check grace period
+        // v8.4.0: Automatic Protection is ALWAYS FREE
+        // License revalidation only updates license status for quota purposes
+        // It does NOT disable protection (backgroundSecurity stays unchanged)
         (async () => {
             try {
                 const result = await revalidateLicense();
 
-                // SECURITY FIX v7.9.1: Onderscheid netwerk errors van echte invalidatie
-                if (result.networkError && FAIL_SAFE_MODE) {
-                    // Netwerk error + FAIL_SAFE: behoud bescherming
-                    console.warn("[Alarm] Revalidatie gefaald door netwerk - FAIL_SAFE mode: bescherming behouden");
-                    await showFailSafeNotification('network_error');
-                    // SECURITY FIX v8.0.0: Zorg dat rulesets actief blijven
-                    await manageDNRules();
-                    return;
-                }
-
-                // SECURITY FIX v7.9.2: Check of server EXPLICIET heeft gezegd dat licentie ongeldig is
-                const explicitlyInvalidated = result.explicitlyInvalidated === true;
-
-                // Als revalidatie mislukt, check of grace period verlopen is
-                if (!result.revalidated || !result.valid) {
-                    const graceStatus = await checkLicenseGracePeriod();
-
-                    if (graceStatus.expired) {
-                        // SECURITY FIX v7.9.2: Bij expliciete invalidatie, negeer FAIL_SAFE
-                        if (explicitlyInvalidated) {
-                            console.log("[Alarm] Licentie EXPLICIET ongeldig door server - bescherming wordt uitgeschakeld");
-                            await chrome.storage.sync.set({ licenseValid: false });
-                            invalidateTrialCache();
-                            await chrome.storage.sync.set({ backgroundSecurity: false });
-                            await clearDynamicRules();
-                            await manageDNRules();
-                            return;
-                        }
-
-                        // SECURITY FIX v7.9.1: Check FAIL_SAFE_MODE (alleen als NIET expliciet geïnvalideerd)
-                        if (FAIL_SAFE_MODE) {
-                            // Check of er bestaande regels zijn
-                            const existingRules = await chrome.declarativeNetRequest.getDynamicRules();
-
-                            if (existingRules.length > 0) {
-                                console.warn("[Alarm] Grace period verlopen maar FAIL_SAFE: behoud bestaande regels");
-                                await showFailSafeNotification('grace_expired_failsafe');
-                                // SECURITY FIX v8.0.0: Zorg dat rulesets actief blijven
-                                await manageDNRules();
-                                return;
-                            }
-                        }
-
-                        if (globalThresholds.DEBUG_MODE) {
-                            console.log("[Alarm] Grace period verlopen na mislukte revalidatie - licentie wordt ongeldig");
-                        }
-                        await chrome.storage.sync.set({ licenseValid: false });
-                        invalidateTrialCache();
-                        await chrome.storage.sync.set({ backgroundSecurity: false });
-                        await clearDynamicRules();
-                        await manageDNRules();
+                // Update license validity status (affects quota, not protection)
+                if (result.revalidated && !result.valid) {
+                    await chrome.storage.sync.set({ licenseValid: false });
+                    invalidateTrialCache();
+                    if (globalThresholds.DEBUG_MODE) {
+                        console.log("[Alarm] License marked invalid (only affects quota, not protection)");
                     }
                 }
+
+                // Always ensure DNR rules are active
+                await manageDNRules();
             } catch (error) {
                 console.error("[ERROR] Error in license revalidation alarm:", error.message);
-                // SECURITY FIX: Bij error, behoud bescherming als FAIL_SAFE_MODE actief is
-                if (FAIL_SAFE_MODE) {
-                    console.warn("[Alarm] Error tijdens revalidatie - FAIL_SAFE: bescherming behouden");
-                    await showFailSafeNotification('error_failsafe');
-                    // SECURITY FIX v8.0.0: Zorg dat rulesets actief blijven
-                    await manageDNRules();
-                }
+                // Ensure protection stays active on error
+                await manageDNRules();
             }
         })();
     }
@@ -2146,6 +2242,12 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
         // Sla cache op
         saveSslCacheToStorage();
         if (globalThresholds.DEBUG_MODE) console.log("SSL cache cleanup completed via alarm.");
+    }
+
+    // v8.4.0: Scan quota daily reset
+    if (alarm.name === "resetScanQuota") {
+        await resetScanQuota();
+        if (globalThresholds.DEBUG_MODE) console.log("[ScanQuota] Daily quota reset completed via alarm.");
     }
 
     // MV3 FIX: Clear alert badge after delay (replaces setInterval animation)
@@ -2216,10 +2318,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
         case 'validateLicense':
             validateLicenseKey(request.licenseKey)
-                .then(result => {
+                .then(async (result) => {
                     // Invalideer cache bij succesvolle licentie activatie
                     if (result.success) {
                         invalidateTrialCache();
+                        // v8.4.0: Enable both protection features when license is activated
+                        await chrome.storage.sync.set({
+                            backgroundSecurity: true,
+                            integratedProtection: true
+                        });
                         // Heractiveer achtergrondbeveiliging met nieuwe status
                         manageDNRules();
                         fetchAndLoadRules();
@@ -2306,6 +2413,34 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 });
             return true;
 
+        // v8.4.0: Scan Quota Management
+        case 'getScanQuota':
+            getScanQuotaStatus()
+                .then(status => sendResponse(status))
+                .catch(error => {
+                    console.error("[getScanQuota] Error:", error);
+                    sendResponse({ count: 0, limit: DAILY_SCAN_QUOTA, isUnlimited: true });
+                });
+            return true;
+
+        case 'canScanDomain':
+            canScanDomain(request.domain)
+                .then(result => sendResponse(result))
+                .catch(error => {
+                    console.error("[canScanDomain] Error:", error);
+                    sendResponse({ allowed: true, reason: 'error' });
+                });
+            return true;
+
+        case 'recordDomainScan':
+            recordDomainScan(request.domain)
+                .then(result => sendResponse(result))
+                .catch(error => {
+                    console.error("[recordDomainScan] Error:", error);
+                    sendResponse({ recorded: false });
+                });
+            return true;
+
         case 'checkUrl':
             sendResponse({ status: "not_implemented" });
             return true;
@@ -2362,16 +2497,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
             (async () => {
                 try {
-                    // LICENTIE CHECK: Controleer of achtergrondscans toegestaan zijn
-                    const isAllowed = await isBackgroundSecurityAllowed();
-                    if (!isAllowed) {
-                        if (globalThresholds.DEBUG_MODE) {
-                            console.log("[Background] checkResult overgeslagen: trial verlopen zonder licentie.");
-                        }
-                        sendResponse({ status: 'skipped', reason: 'trial_expired' });
-                        return;
-                    }
-
+                    // v8.4.0: Removed trial check - Automatic Protection (icon badges) is ALWAYS FREE
+                    // Only Smart Link Scanning has quota limits, not icon badge updates
                     const { integratedProtection } = await chrome.storage.sync.get('integratedProtection');
                     if (!integratedProtection) {
                         if (globalThresholds.DEBUG_MODE) {
@@ -2866,10 +2993,8 @@ chrome.storage.onChanged.addListener(async (changes, area) => {
             if ('licenseValid' in changes || 'installDate' in changes || 'trialDays' in changes) {
                 invalidateTrialCache();
 
-                // Controleer of achtergrondbeveiliging (de)geactiveerd moet worden
-                const isAllowed = await isBackgroundSecurityAllowed();
-
-                // Update DNR regels op basis van nieuwe status
+                // v8.4.0: Automatic Protection is ALWAYS FREE - no license check needed
+                // Just update DNR rules and refresh if license becomes valid
                 await manageDNRules();
 
                 // Als licentie nu geldig is (was ongeldig), herlaad regels
@@ -2877,10 +3002,7 @@ chrome.storage.onChanged.addListener(async (changes, area) => {
                     await fetchAndLoadRules();
                 }
 
-                // Als licentie nu ongeldig is (was geldig) of trial verlopen, verwijder regels
-                if (!isAllowed) {
-                    await clearDynamicRules();
-                }
+                // v8.4.0: Removed rule clearing on trial expiry - protection stays active
             }
 
             // Regel updates als backgroundSecurity verandert

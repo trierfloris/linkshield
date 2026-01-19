@@ -932,6 +932,12 @@
   "reason_brandSubdomainPhishing": {
     "message": "Márka kulcsszó észlelve ingyenes tárhelyen (magas kockázat). A legitim cégek nem használnak ingyenes tárhelyet hivatalos szolgáltatásokhoz."
   },
+  "hostnameBrandKeywordPhishing": {
+    "message": "Gyanús domain: márkanév adathalász kulcsszavakkal kombinálva (magas kockázat). Példa: login-microsoft-verify.com NEM Microsoft oldal."
+  },
+  "reason_hostnameBrandKeywordPhishing": {
+    "message": "Gyanús domain: márkanév adathalász kulcsszavakkal kombinálva (magas kockázat). Példa: login-microsoft-verify.com NEM Microsoft oldal."
+  },
   "nrdTelCombo": {
     "message": "Telefonszám újonnan regisztrált domainen adathalász kulcsszavakkal (közepes kockázat). Ez vishing (hangalapú adathalász) kísérlet lehet."
   },
@@ -1629,5 +1635,34 @@
   },
   "imagelessQrCautionTitle": {
     "message": "Figyelem: Rejtett QR-kód észlelve"
+  },
+  "quotaDailyScans": {
+    "message": "Napi vizsgálatok"
+  },
+  "quotaResetsAt": {
+    "message": "Visszaáll: $TIME$ UTC",
+    "placeholders": {
+      "TIME": {
+        "content": "$1",
+        "example": "00:00"
+      }
+    }
+  },
+  "quotaUpgrade": {
+    "message": "Frissítés"
+  },
+  "quotaExceededDesc": {
+    "message": "Napi limit elérve - éjfélkor UTC visszaáll"
+  },
+  "licenseHaveKey": {
+    "message": "Már van kulcsod?"
+  },
+  "threatsTodayCount": {
+    "message": "+$1 ma",
+    "placeholders": { "COUNT": { "content": "$1", "example": "847" } }
+  },
+  "threatsTotalCount": {
+    "message": "$1 blokkolva",
+    "placeholders": { "COUNT": { "content": "$1", "example": "2431" } }
   }
 }

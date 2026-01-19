@@ -995,6 +995,12 @@
   "reason_brandSubdomainPhishing": {
     "message": "無料ホスティングプラットフォームでブランド名を検出（高リスク）。正規の企業は公式サービスに無料ホスティングを使用しません。"
   },
+  "hostnameBrandKeywordPhishing": {
+    "message": "疑わしいドメイン：ブランド名とフィッシングキーワードの組み合わせ（高リスク）。例：login-microsoft-verify.comはMicrosoftサイトではありません。"
+  },
+  "reason_hostnameBrandKeywordPhishing": {
+    "message": "疑わしいドメイン：ブランド名とフィッシングキーワードの組み合わせ（高リスク）。例：login-microsoft-verify.comはMicrosoftサイトではありません。"
+  },
   "nrdTelCombo": {
     "message": "フィッシングキーワードを含む新規登録ドメインに電話番号（中リスク）。これはビッシング（音声フィッシング）の試みかもしれません。"
   },
@@ -1629,5 +1635,34 @@
   },
   "imagelessQrCautionTitle": {
     "message": "注意: 隠しQRコードが検出されました"
+  },
+  "quotaDailyScans": {
+    "message": "1日のスキャン数"
+  },
+  "quotaResetsAt": {
+    "message": "$TIME$ UTCにリセット",
+    "placeholders": {
+      "TIME": {
+        "content": "$1",
+        "example": "00:00"
+      }
+    }
+  },
+  "quotaUpgrade": {
+    "message": "アップグレード"
+  },
+  "quotaExceededDesc": {
+    "message": "1日の上限に達しました - UTC午前0時にリセットされます"
+  },
+  "licenseHaveKey": {
+    "message": "すでにキーをお持ちですか？"
+  },
+  "threatsTodayCount": {
+    "message": "+$1 本日",
+    "placeholders": { "COUNT": { "content": "$1", "example": "847" } }
+  },
+  "threatsTotalCount": {
+    "message": "$1 ブロック済み",
+    "placeholders": { "COUNT": { "content": "$1", "example": "2431" } }
   }
 }

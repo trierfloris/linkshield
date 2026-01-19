@@ -995,6 +995,12 @@
   "reason_brandSubdomainPhishing": {
     "message": "Обнаружено название бренда на бесплатном хостинге (высокий риск). Легитимные компании не используют бесплатный хостинг для официальных сервисов."
   },
+  "hostnameBrandKeywordPhishing": {
+    "message": "Подозрительный домен: название бренда в сочетании с фишинговыми ключевыми словами (высокий риск). Пример: login-microsoft-verify.com НЕ является сайтом Microsoft."
+  },
+  "reason_hostnameBrandKeywordPhishing": {
+    "message": "Подозрительный домен: название бренда в сочетании с фишинговыми ключевыми словами (высокий риск). Пример: login-microsoft-verify.com НЕ является сайтом Microsoft."
+  },
   "nrdTelCombo": {
     "message": "Номер телефона на недавно зарегистрированном домене с фишинговыми ключевыми словами (средний риск). Это может быть попытка вишинга (голосового фишинга)."
   },
@@ -1629,5 +1635,34 @@
   },
   "imagelessQrCautionTitle": {
     "message": "Внимание: Обнаружен скрытый QR-код"
+  },
+  "quotaDailyScans": {
+    "message": "Ежедневные сканирования"
+  },
+  "quotaResetsAt": {
+    "message": "Сброс в $TIME$ UTC",
+    "placeholders": {
+      "TIME": {
+        "content": "$1",
+        "example": "00:00"
+      }
+    }
+  },
+  "quotaUpgrade": {
+    "message": "Обновить"
+  },
+  "quotaExceededDesc": {
+    "message": "Дневной лимит достигнут - сброс в полночь UTC"
+  },
+  "licenseHaveKey": {
+    "message": "Уже есть ключ?"
+  },
+  "threatsTodayCount": {
+    "message": "+$1 сегодня",
+    "placeholders": { "COUNT": { "content": "$1", "example": "847" } }
+  },
+  "threatsTotalCount": {
+    "message": "$1 заблокировано",
+    "placeholders": { "COUNT": { "content": "$1", "example": "2431" } }
   }
 }

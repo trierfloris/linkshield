@@ -995,6 +995,12 @@
   "reason_brandSubdomainPhishing": {
     "message": "무료 호스팅 플랫폼에서 브랜드 이름 감지됨 (높은 위험). 합법적인 회사는 공식 서비스에 무료 호스팅을 사용하지 않습니다."
   },
+  "hostnameBrandKeywordPhishing": {
+    "message": "의심스러운 도메인: 브랜드 이름과 피싱 키워드 조합 (높은 위험). 예: login-microsoft-verify.com은 Microsoft 사이트가 아닙니다."
+  },
+  "reason_hostnameBrandKeywordPhishing": {
+    "message": "의심스러운 도메인: 브랜드 이름과 피싱 키워드 조합 (높은 위험). 예: login-microsoft-verify.com은 Microsoft 사이트가 아닙니다."
+  },
   "nrdTelCombo": {
     "message": "피싱 키워드가 있는 신규 등록 도메인에 전화번호 (중간 위험). 비싱(음성 피싱) 시도일 수 있습니다."
   },
@@ -1629,5 +1635,34 @@
   },
   "imagelessQrCautionTitle": {
     "message": "주의: 숨겨진 QR 코드 감지"
+  },
+  "quotaDailyScans": {
+    "message": "일일 스캔"
+  },
+  "quotaResetsAt": {
+    "message": "$TIME$ UTC에 재설정",
+    "placeholders": {
+      "TIME": {
+        "content": "$1",
+        "example": "00:00"
+      }
+    }
+  },
+  "quotaUpgrade": {
+    "message": "업그레이드"
+  },
+  "quotaExceededDesc": {
+    "message": "일일 한도에 도달했습니다 - UTC 자정에 재설정됩니다"
+  },
+  "licenseHaveKey": {
+    "message": "이미 키가 있으신가요?"
+  },
+  "threatsTodayCount": {
+    "message": "+$1 오늘",
+    "placeholders": { "COUNT": { "content": "$1", "example": "847" } }
+  },
+  "threatsTotalCount": {
+    "message": "$1 차단됨",
+    "placeholders": { "COUNT": { "content": "$1", "example": "2431" } }
   }
 }

@@ -932,6 +932,12 @@
   "reason_brandSubdomainPhishing": {
     "message": "ตรวจพบคีย์เวิร์ดแบรนด์บนแพลตฟอร์มโฮสติ้งฟรี (ความเสี่ยงสูง) บริษัทที่ถูกต้องไม่ใช้โฮสติ้งฟรีสำหรับบริการอย่างเป็นทางการ"
   },
+  "hostnameBrandKeywordPhishing": {
+    "message": "โดเมนน่าสงสัย: ชื่อแบรนด์รวมกับคีย์เวิร์ดฟิชชิ่ง (ความเสี่ยงสูง) ตัวอย่าง: login-microsoft-verify.com ไม่ใช่เว็บไซต์ Microsoft"
+  },
+  "reason_hostnameBrandKeywordPhishing": {
+    "message": "โดเมนน่าสงสัย: ชื่อแบรนด์รวมกับคีย์เวิร์ดฟิชชิ่ง (ความเสี่ยงสูง) ตัวอย่าง: login-microsoft-verify.com ไม่ใช่เว็บไซต์ Microsoft"
+  },
   "nrdTelCombo": {
     "message": "หมายเลขโทรศัพท์บนโดเมนที่ลงทะเบียนใหม่พร้อมคีย์เวิร์ดฟิชชิ่ง (ความเสี่ยงปานกลาง) อาจเป็นความพยายาม vishing (ฟิชชิ่งทางเสียง)"
   },
@@ -1629,5 +1635,34 @@
   },
   "imagelessQrCautionTitle": {
     "message": "ระวัง: ตรวจพบ QR โค้ดที่ซ่อนอยู่"
+  },
+  "quotaDailyScans": {
+    "message": "การสแกนรายวัน"
+  },
+  "quotaResetsAt": {
+    "message": "รีเซ็ตเวลา $TIME$ UTC",
+    "placeholders": {
+      "TIME": {
+        "content": "$1",
+        "example": "00:00"
+      }
+    }
+  },
+  "quotaUpgrade": {
+    "message": "อัปเกรด"
+  },
+  "quotaExceededDesc": {
+    "message": "ถึงขีดจำกัดรายวันแล้ว - รีเซ็ตตอนเที่ยงคืน UTC"
+  },
+  "licenseHaveKey": {
+    "message": "มีคีย์อยู่แล้ว?"
+  },
+  "threatsTodayCount": {
+    "message": "+$1 วันนี้",
+    "placeholders": { "COUNT": { "content": "$1", "example": "847" } }
+  },
+  "threatsTotalCount": {
+    "message": "$1 ถูกบล็อก",
+    "placeholders": { "COUNT": { "content": "$1", "example": "2431" } }
   }
 }

@@ -1,8 +1,16 @@
 window.CONFIG = {
     // =============================================================================
     // LINKSHIELD CONFIG - Geüpdatet voor 2026
-    // Laatste update: 2026-01-01
+    // Laatste update: 2026-01-18
     // =============================================================================
+
+    // =============================================================================
+    // SCAN QUOTA SETTINGS (v8.4.0)
+    // Gratis gebruikers: max 20 unieke domeinen per dag
+    // Premium/Trial gebruikers: unlimited
+    // =============================================================================
+    DAILY_SCAN_QUOTA: 20,           // Max unieke domeinen per dag voor gratis users
+    QUOTA_RESET_HOUR_UTC: 0,        // Reset om middernacht UTC
 
     // Verdachte Top-Level Domeinen (TLD's)
     // Uitgebreid met nieuwe TLD's die in 2025-2026 veel voor phishing worden gebruikt

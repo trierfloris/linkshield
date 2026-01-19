@@ -932,6 +932,12 @@
   "reason_brandSubdomainPhishing": {
     "message": "Phát hiện từ khóa thương hiệu trên nền tảng lưu trữ miễn phí (rủi ro cao). Các công ty hợp pháp không sử dụng lưu trữ miễn phí cho dịch vụ chính thức."
   },
+  "hostnameBrandKeywordPhishing": {
+    "message": "Tên miền đáng ngờ: tên thương hiệu kết hợp với từ khóa lừa đảo (rủi ro cao). Ví dụ: login-microsoft-verify.com KHÔNG phải trang web Microsoft."
+  },
+  "reason_hostnameBrandKeywordPhishing": {
+    "message": "Tên miền đáng ngờ: tên thương hiệu kết hợp với từ khóa lừa đảo (rủi ro cao). Ví dụ: login-microsoft-verify.com KHÔNG phải trang web Microsoft."
+  },
   "nrdTelCombo": {
     "message": "Số điện thoại trên tên miền mới đăng ký với từ khóa lừa đảo (rủi ro trung bình). Đây có thể là nỗ lực vishing (lừa đảo qua điện thoại)."
   },
@@ -1629,5 +1635,34 @@
   },
   "imagelessQrCautionTitle": {
     "message": "Cảnh báo: Phát hiện mã QR ẩn"
+  },
+  "quotaDailyScans": {
+    "message": "Quét hàng ngày"
+  },
+  "quotaResetsAt": {
+    "message": "Đặt lại lúc $TIME$ UTC",
+    "placeholders": {
+      "TIME": {
+        "content": "$1",
+        "example": "00:00"
+      }
+    }
+  },
+  "quotaUpgrade": {
+    "message": "Nâng cấp"
+  },
+  "quotaExceededDesc": {
+    "message": "Đã đạt giới hạn hàng ngày - đặt lại lúc nửa đêm UTC"
+  },
+  "licenseHaveKey": {
+    "message": "Đã có khóa?"
+  },
+  "threatsTodayCount": {
+    "message": "+$1 hôm nay",
+    "placeholders": { "COUNT": { "content": "$1", "example": "847" } }
+  },
+  "threatsTotalCount": {
+    "message": "$1 đã chặn",
+    "placeholders": { "COUNT": { "content": "$1", "example": "2431" } }
   }
 }

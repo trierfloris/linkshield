@@ -995,6 +995,12 @@
   "reason_brandSubdomainPhishing": {
     "message": "मुफ्त होस्टिंग प्लेटफॉर्म पर ब्रांड नाम पाया गया (उच्च जोखिम)। वैध कंपनियां आधिकारिक सेवाओं के लिए मुफ्त होस्टिंग का उपयोग नहीं करतीं।"
   },
+  "hostnameBrandKeywordPhishing": {
+    "message": "संदिग्ध डोमेन: ब्रांड नाम फ़िशिंग कीवर्ड के साथ संयुक्त (उच्च जोखिम)। उदाहरण: login-microsoft-verify.com Microsoft साइट नहीं है।"
+  },
+  "reason_hostnameBrandKeywordPhishing": {
+    "message": "संदिग्ध डोमेन: ब्रांड नाम फ़िशिंग कीवर्ड के साथ संयुक्त (उच्च जोखिम)। उदाहरण: login-microsoft-verify.com Microsoft साइट नहीं है।"
+  },
   "nrdTelCombo": {
     "message": "फिशिंग कीवर्ड के साथ नए पंजीकृत डोमेन पर फोन नंबर (मध्यम जोखिम)। यह विशिंग (वॉयस फिशिंग) प्रयास हो सकता है।"
   },
@@ -1629,5 +1635,34 @@
   },
   "imagelessQrCautionTitle": {
     "message": "सावधान: छिपा हुआ QR कोड पता चला"
+  },
+  "quotaDailyScans": {
+    "message": "दैनिक स्कैन"
+  },
+  "quotaResetsAt": {
+    "message": "$TIME$ UTC पर रीसेट",
+    "placeholders": {
+      "TIME": {
+        "content": "$1",
+        "example": "00:00"
+      }
+    }
+  },
+  "quotaUpgrade": {
+    "message": "अपग्रेड करें"
+  },
+  "quotaExceededDesc": {
+    "message": "दैनिक सीमा पूरी हो गई - मध्यरात्रि UTC पर रीसेट होगी"
+  },
+  "licenseHaveKey": {
+    "message": "क्या आपके पास पहले से कुंजी है?"
+  },
+  "threatsTodayCount": {
+    "message": "+$1 आज",
+    "placeholders": { "COUNT": { "content": "$1", "example": "847" } }
+  },
+  "threatsTotalCount": {
+    "message": "$1 अवरुद्ध",
+    "placeholders": { "COUNT": { "content": "$1", "example": "2431" } }
   }
 }

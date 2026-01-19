@@ -932,6 +932,12 @@
   "reason_brandSubdomainPhishing": {
     "message": "Kata kunci merek terdeteksi pada platform hosting gratis (risiko tinggi). Perusahaan yang sah tidak menggunakan hosting gratis untuk layanan resmi."
   },
+  "hostnameBrandKeywordPhishing": {
+    "message": "Domain mencurigakan: nama merek dikombinasikan dengan kata kunci phishing (risiko tinggi). Contoh: login-microsoft-verify.com BUKAN situs Microsoft."
+  },
+  "reason_hostnameBrandKeywordPhishing": {
+    "message": "Domain mencurigakan: nama merek dikombinasikan dengan kata kunci phishing (risiko tinggi). Contoh: login-microsoft-verify.com BUKAN situs Microsoft."
+  },
   "nrdTelCombo": {
     "message": "Nomor telepon pada domain yang baru terdaftar dengan kata kunci phishing (risiko sedang). Ini mungkin upaya vishing (phishing suara)."
   },
@@ -1629,5 +1635,34 @@
   },
   "imagelessQrCautionTitle": {
     "message": "Peringatan: Kode QR Tersembunyi Terdeteksi"
+  },
+  "quotaDailyScans": {
+    "message": "Pemindaian harian"
+  },
+  "quotaResetsAt": {
+    "message": "Reset pada $TIME$ UTC",
+    "placeholders": {
+      "TIME": {
+        "content": "$1",
+        "example": "00:00"
+      }
+    }
+  },
+  "quotaUpgrade": {
+    "message": "Tingkatkan"
+  },
+  "quotaExceededDesc": {
+    "message": "Batas harian tercapai - direset tengah malam UTC"
+  },
+  "licenseHaveKey": {
+    "message": "Sudah punya kunci?"
+  },
+  "threatsTodayCount": {
+    "message": "+$1 hari ini",
+    "placeholders": { "COUNT": { "content": "$1", "example": "847" } }
+  },
+  "threatsTotalCount": {
+    "message": "$1 diblokir",
+    "placeholders": { "COUNT": { "content": "$1", "example": "2431" } }
   }
 }

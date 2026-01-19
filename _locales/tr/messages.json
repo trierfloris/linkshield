@@ -932,6 +932,12 @@
   "reason_brandSubdomainPhishing": {
     "message": "Ücretsiz barındırma platformunda marka anahtar kelimesi tespit edildi (yüksek risk). Meşru şirketler resmi hizmetler için ücretsiz barındırma kullanmaz."
   },
+  "hostnameBrandKeywordPhishing": {
+    "message": "Şüpheli alan adı: marka adı kimlik avı anahtar kelimeleriyle birleştirilmiş (yüksek risk). Örnek: login-microsoft-verify.com Microsoft sitesi DEĞİLDİR."
+  },
+  "reason_hostnameBrandKeywordPhishing": {
+    "message": "Şüpheli alan adı: marka adı kimlik avı anahtar kelimeleriyle birleştirilmiş (yüksek risk). Örnek: login-microsoft-verify.com Microsoft sitesi DEĞİLDİR."
+  },
   "nrdTelCombo": {
     "message": "Kimlik avı anahtar kelimeleri ile yeni kayıtlı alan adında telefon numarası (orta risk). Bu bir sesli kimlik avı (vishing) girişimi olabilir."
   },
@@ -1629,5 +1635,34 @@
   },
   "imagelessQrCautionTitle": {
     "message": "Dikkat: Gizli QR Kodu Tespit Edildi"
+  },
+  "quotaDailyScans": {
+    "message": "Günlük taramalar"
+  },
+  "quotaResetsAt": {
+    "message": "$TIME$ UTC'de sıfırlanır",
+    "placeholders": {
+      "TIME": {
+        "content": "$1",
+        "example": "00:00"
+      }
+    }
+  },
+  "quotaUpgrade": {
+    "message": "Yükselt"
+  },
+  "quotaExceededDesc": {
+    "message": "Günlük limite ulaşıldı - gece yarısı UTC'de sıfırlanır"
+  },
+  "licenseHaveKey": {
+    "message": "Zaten bir anahtarınız var mı?"
+  },
+  "threatsTodayCount": {
+    "message": "+$1 bugün",
+    "placeholders": { "COUNT": { "content": "$1", "example": "847" } }
+  },
+  "threatsTotalCount": {
+    "message": "$1 engellendi",
+    "placeholders": { "COUNT": { "content": "$1", "example": "2431" } }
   }
 }

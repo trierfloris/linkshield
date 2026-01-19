@@ -287,21 +287,27 @@
             letter-spacing: 0.2px;
         }
 
-        /* License Key Toggle Link */
-        .license-toggle-link {
-            display: block;
+        /* License Section (inside status card) */
+        .license-inline {
+            margin-top: 12px;
             text-align: center;
-            margin-top: 10px;
+        }
+
+        .license-inline.hidden {
+            display: none;
+        }
+
+        .license-toggle-link {
+            display: inline-block;
             font-size: 11px;
-            color: #92400e;
+            color: rgba(0, 0, 0, 0.5);
             text-decoration: none;
             cursor: pointer;
-            opacity: 0.8;
-            transition: opacity 0.2s;
+            transition: color 0.2s;
         }
 
         .license-toggle-link:hover {
-            opacity: 1;
+            color: rgba(0, 0, 0, 0.7);
             text-decoration: underline;
         }
 
@@ -309,12 +315,12 @@
             display: none;
         }
 
-        /* License Input (inline in card) */
-        .license-section {
+        .license-input-wrapper {
             display: none;
+            margin-top: 8px;
         }
 
-        .license-section.show {
+        .license-input-wrapper.show {
             display: block;
         }
 
@@ -581,16 +587,43 @@
             margin-bottom: 2px;
         }
 
-        .premium-tag {
-            display: inline-block;
+        /* Feature Tags - Professional Labels */
+        .feature-tag {
+            display: inline-flex;
+            align-items: center;
             font-size: 8px;
             font-weight: 700;
-            padding: 2px 4px;
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
+            padding: 2px 6px;
             border-radius: 3px;
             text-transform: uppercase;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.5px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .feature-tag.free {
+            background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+            color: white;
+        }
+
+        .feature-tag.pro {
+            background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+            color: white;
+            position: relative;
+        }
+
+        .feature-tag.pro::before {
+            content: "★";
+            margin-right: 3px;
+            font-size: 7px;
+        }
+
+        .feature-tag.hidden {
+            display: none;
+        }
+
+        /* Legacy support */
+        .premium-tag {
+            display: none;
         }
 
         .premium-tag.hidden {
@@ -601,6 +634,30 @@
             font-size: 11px;
             color: #6b7280;
             line-height: 1.4;
+        }
+
+        .threats-today {
+            display: none;
+            font-size: 8px;
+            font-weight: 700;
+            color: #047857;
+            margin-left: 4px;
+            padding: 2px 6px;
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border-radius: 3px;
+            white-space: nowrap;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .threats-today.show {
+            display: inline-flex;
+        }
+
+        .toggle-subtitle {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2px;
         }
 
         /* Toggle Switch */
@@ -851,6 +908,91 @@
             0%, 100% { opacity: 1; }
             50% { opacity: 0.5; }
         }
+
+        /* ================================
+           STATUS CARD QUOTA INDICATOR
+           ================================ */
+        .status-quota {
+            margin: 12px 0;
+            padding: 10px 12px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 8px;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+        }
+
+        .status-quota.hidden {
+            display: none;
+        }
+
+        .status-quota-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .status-quota-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .status-quota-count {
+            font-size: 13px;
+            font-weight: 700;
+            color: #374151;
+        }
+
+        .status-quota.warning .status-quota-count {
+            color: #d97706;
+        }
+
+        .status-quota.critical .status-quota-count {
+            color: #dc2626;
+        }
+
+        .status-quota-bar {
+            height: 6px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 6px;
+        }
+
+        .status-quota-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981 0%, #34d399 100%);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .status-quota.warning .status-quota-bar-fill {
+            background: linear-gradient(90deg, #f59e0b 0%, #fbbf24 100%);
+        }
+
+        .status-quota.critical .status-quota-bar-fill {
+            background: linear-gradient(90deg, #ef4444 0%, #f87171 100%);
+        }
+
+        .status-quota-footer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .status-quota-reset {
+            font-size: 10px;
+            color: #6b7280;
+        }
+
+        .status-card.expired .status-quota {
+            background: rgba(255, 255, 255, 0.6);
+            border-color: rgba(239, 68, 68, 0.2);
+        }
+
+        .status-card.expired .status-quota-title {
+            color: #991b1b;
+        }
     </style>
 </head>
 <body>
@@ -886,28 +1028,39 @@
             <!-- Subtitle -->
             <div class="status-sub" id="statusSub"><span class="dot"></span><span id="statusSubText">Trial · 30 days left</span></div>
 
+            <!-- Quota Indicator (shown for expired/free users) -->
+            <div class="status-quota hidden" id="quotaCard">
+                <div class="status-quota-header">
+                    <span class="status-quota-title" id="quotaTitle">Daily scans</span>
+                    <span class="status-quota-count" id="quotaCount">0/20</span>
+                </div>
+                <div class="status-quota-bar">
+                    <div class="status-quota-bar-fill" id="quotaBarFill" style="width: 0%"></div>
+                </div>
+                <div class="status-quota-footer">
+                    <span class="status-quota-reset" id="quotaReset">Resets at 00:00 UTC</span>
+                </div>
+            </div>
+
             <!-- CTA Button (Trial/Expired) -->
             <a href="https://linkshield.lemonsqueezy.com/checkout/buy/98bd4872-bebd-470b-bb6e-508a7a1bbae2" target="_blank" class="cta-button" id="ctaButton">
                 <span id="ctaText">Upgrade to Premium</span>
                 <span class="price" id="ctaPrice">€1.99/month · 3 devices</span>
             </a>
 
-            <!-- License Toggle Link (shown in trial, hidden when license section is open) -->
-            <span class="license-toggle-link" id="licenseToggleLink">Use license key</span>
-
-            <!-- Divider (hidden by default, shown in expired or when license section is open) -->
-            <div class="divider hidden" id="divider"><span id="dividerText">or</span></div>
-
-            <!-- License Input (hidden by default) -->
-            <div class="license-section" id="licenseSection">
-                <div class="license-input-row">
-                    <input type="text" id="licenseInput" placeholder="XXXX-XXXX-XXXX">
-                    <button id="activateBtn">
-                        <span class="spinner" id="spinner"></span>
-                        <span id="activateBtnText">Activate</span>
-                    </button>
+            <!-- License Section (inside status card) -->
+            <div class="license-inline hidden" id="licenseSectionWrapper">
+                <a href="#" class="license-toggle-link" id="licenseToggleLink">Already have a key?</a>
+                <div class="license-input-wrapper" id="licenseSection">
+                    <div class="license-input-row">
+                        <input type="text" id="licenseInput" placeholder="Enter license key" aria-label="License key">
+                        <button id="activateBtn">
+                            <span class="spinner" id="spinner"></span>
+                            <span id="activateBtnText">Activate</span>
+                        </button>
+                    </div>
+                    <div class="license-error" id="licenseError"></div>
                 </div>
-                <div class="license-error" id="licenseError"></div>
             </div>
 
             <!-- Premium Management -->
@@ -949,19 +1102,11 @@
             <div class="toggle-info">
                 <div class="toggle-header">
                     <span class="toggle-title" id="toggle1Title">Automatic protection</span>
-                    <span class="live-badge" id="liveBadge">Live</span>
-                    <div class="toggle-help" id="toggle1Help">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"/>
-                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
-                            <line x1="12" y1="17" x2="12.01" y2="17"/>
-                        </svg>
-                        <div class="tooltip" id="toggle1Tooltip">Requires Premium to enable this feature.</div>
-                    </div>
+                    <span class="feature-tag free" id="freeTag">FREE</span>
+                    <span class="threats-today" id="threatsToday"></span>
                 </div>
                 <div class="toggle-subtitle">
-                    <span class="premium-tag" id="premiumTag">PRO</span>
-                    <span class="toggle-desc" id="toggle1Desc">Stops even the newest threats hourly</span>
+                    <span class="toggle-desc" id="toggle1Desc">Blocks known phishing & malware sites</span>
                 </div>
             </div>
             <label class="toggle-switch">
@@ -970,15 +1115,16 @@
             </label>
         </div>
 
-        <div class="toggle-card">
+        <div class="toggle-card" id="smartLinkCard">
             <div class="toggle-info">
                 <div class="toggle-header">
                     <span class="toggle-title" id="toggle2Title">Smart link scanning</span>
+                    <span class="feature-tag pro" id="proTag">PRO</span>
                     <div class="toggle-help features" id="toggle2Help">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <circle cx="12" cy="12" r="10"/>
-                            <line x1="12" y1="16" x2="12" y2="12"/>
-                            <line x1="12" y1="8" x2="12.01" y2="8"/>
+                            <circle cx="12" cy="8" r="1" fill="currentColor" stroke="none"/>
+                            <rect x="11" y="11" width="2" height="6" rx="0.5" fill="currentColor" stroke="none"/>
                         </svg>
                         <div class="tooltip" id="toggle2Tooltip">
                             <div class="tooltip-title">
@@ -1004,7 +1150,7 @@
                 <div class="toggle-desc" id="toggle2Desc">Warns before you click risky links</div>
             </div>
             <label class="toggle-switch">
-                <input type="checkbox" id="integratedProtection">
+                <input type="checkbox" id="integratedProtection" aria-label="Enable smart link scanning">
                 <span class="toggle-slider"></span>
             </label>
         </div>

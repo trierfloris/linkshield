@@ -51,6 +51,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const tooltipFeature8 = document.getElementById('tooltipFeature8');
     const tooltipFeature9 = document.getElementById('tooltipFeature9');
     const tooltipFeature10 = document.getElementById('tooltipFeature10');
+    const tooltipFeature11 = document.getElementById('tooltipFeature11');
     const tooltipFooter = document.getElementById('tooltipFooter');
     const freeTag = document.getElementById('freeTag');
     const proTag = document.getElementById('proTag');
@@ -206,6 +207,15 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         if (tooltipFeature9) tooltipFeature9.textContent = msg('tooltipFeature9');
         if (tooltipFeature10) tooltipFeature10.textContent = msg('tooltipFeature10');
+        if (tooltipFeature11) {
+            const newBadge = tooltipFeature11.querySelector('.new-badge');
+            if (newBadge) {
+                newBadge.textContent = msg('tooltipNewBadge');
+                tooltipFeature11.firstChild.textContent = msg('tooltipFeature11') + ' ';
+            } else {
+                tooltipFeature11.textContent = msg('tooltipFeature11');
+            }
+        }
         if (tooltipFooter) tooltipFooter.textContent = msg('tooltipFooter');
 
         licenseInput.placeholder = msg('licenseKeyPlaceholder');

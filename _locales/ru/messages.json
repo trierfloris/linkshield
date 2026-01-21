@@ -1126,8 +1126,12 @@
     "message": "Скрытого кода (Shadow DOM)",
     "description": "Tooltip feature 10"
   },
+  "tooltipFeature11": {
+    "message": "Кража OAuth-токенов",
+    "description": "Tooltip feature 11 - OAuth token theft protection"
+  },
   "tooltipFooter": {
-    "message": "10 уровней защиты активны",
+    "message": "11 уровней защиты активны",
     "description": "Footer text for tooltip"
   },
   "tooltipNewBadge": {

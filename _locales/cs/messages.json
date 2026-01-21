@@ -1063,8 +1063,12 @@
     "message": "Skrytému kódu (Shadow DOM)",
     "description": "Tooltip feature 10"
   },
+  "tooltipFeature11": {
+    "message": "Krádež OAuth tokenů",
+    "description": "Tooltip feature 11 - OAuth token theft protection"
+  },
   "tooltipFooter": {
-    "message": "10 bezpečnostních vrstev aktivních",
+    "message": "11 bezpečnostních vrstev aktivních",
     "description": "Footer text for tooltip"
   },
   "tooltipNewBadge": {

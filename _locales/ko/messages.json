@@ -1126,8 +1126,12 @@
     "message": "숨겨진 코드 (Shadow DOM)",
     "description": "Tooltip feature 10"
   },
+  "tooltipFeature11": {
+    "message": "OAuth 토큰 탈취",
+    "description": "Tooltip feature 11 - OAuth token theft protection"
+  },
   "tooltipFooter": {
-    "message": "10개 보안 레이어 활성화",
+    "message": "11개 보안 레이어 활성화",
     "description": "Footer text for tooltip"
   },
   "tooltipNewBadge": {

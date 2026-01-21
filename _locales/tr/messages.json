@@ -1063,8 +1063,12 @@
     "message": "Gizli kod (Shadow DOM)",
     "description": "Tooltip feature 10"
   },
+  "tooltipFeature11": {
+    "message": "OAuth token hırsızlığı",
+    "description": "Tooltip feature 11 - OAuth token theft protection"
+  },
   "tooltipFooter": {
-    "message": "10 guvenlik katmani aktif",
+    "message": "11 guvenlik katmani aktif",
     "description": "Footer text for tooltip"
   },
   "tooltipNewBadge": {

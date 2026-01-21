@@ -1126,8 +1126,12 @@
     "message": "Code caché (Shadow DOM)",
     "description": "Tooltip feature 10"
   },
+  "tooltipFeature11": {
+    "message": "Vol de jetons OAuth",
+    "description": "Tooltip feature 11 - OAuth token theft protection"
+  },
   "tooltipFooter": {
-    "message": "10 couches de sécurité actives",
+    "message": "11 couches de sécurité actives",
     "description": "Footer text for tooltip"
   },
   "tooltipNewBadge": {

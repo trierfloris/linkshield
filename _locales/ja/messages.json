@@ -1126,8 +1126,12 @@
     "message": "隠しコード (Shadow DOM)",
     "description": "Tooltip feature 10"
   },
+  "tooltipFeature11": {
+    "message": "OAuthトークンの窃取",
+    "description": "Tooltip feature 11 - OAuth token theft protection"
+  },
   "tooltipFooter": {
-    "message": "10のセキュリティ層が有効",
+    "message": "11のセキュリティ層が有効",
     "description": "Footer text for tooltip"
   },
   "tooltipNewBadge": {

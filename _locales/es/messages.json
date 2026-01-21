@@ -1126,8 +1126,12 @@
     "message": "Código oculto (Shadow DOM)",
     "description": "Tooltip feature 10"
   },
+  "tooltipFeature11": {
+    "message": "Robo de tokens OAuth",
+    "description": "Tooltip feature 11 - OAuth token theft protection"
+  },
   "tooltipFooter": {
-    "message": "10 capas de seguridad activas",
+    "message": "11 capas de seguridad activas",
     "description": "Footer text for tooltip"
   },
   "tooltipNewBadge": {

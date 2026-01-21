@@ -1126,8 +1126,12 @@
     "message": "隐藏代码 (Shadow DOM)",
     "description": "Tooltip feature 10"
   },
+  "tooltipFeature11": {
+    "message": "窃取OAuth令牌",
+    "description": "Tooltip feature 11 - OAuth token theft protection"
+  },
   "tooltipFooter": {
-    "message": "10层安全防护已激活",
+    "message": "11层安全防护已激活",
     "description": "Footer text for tooltip"
   },
   "tooltipNewBadge": {

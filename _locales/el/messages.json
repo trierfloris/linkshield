@@ -1063,8 +1063,12 @@
     "message": "Κρυφό κώδικα (Shadow DOM)",
     "description": "Tooltip feature 10"
   },
+  "tooltipFeature11": {
+    "message": "Κλοπή OAuth token",
+    "description": "Tooltip feature 11 - OAuth token theft protection"
+  },
   "tooltipFooter": {
-    "message": "10 επίπεδα ασφαλείας ενεργά",
+    "message": "11 επίπεδα ασφαλείας ενεργά",
     "description": "Footer text for tooltip"
   },
   "tooltipNewBadge": {

@@ -1063,8 +1063,12 @@
     "message": "Cod ascuns (Shadow DOM)",
     "description": "Tooltip feature 10"
   },
+  "tooltipFeature11": {
+    "message": "Furt de jetoane OAuth",
+    "description": "Tooltip feature 11 - OAuth token theft protection"
+  },
   "tooltipFooter": {
-    "message": "10 straturi de securitate active",
+    "message": "11 straturi de securitate active",
     "description": "Footer text for tooltip"
   },
   "tooltipNewBadge": {

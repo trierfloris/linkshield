@@ -1126,8 +1126,12 @@
     "message": "छिपा कोड (Shadow DOM)",
     "description": "Tooltip feature 10"
   },
+  "tooltipFeature11": {
+    "message": "OAuth टोकन चोरी",
+    "description": "Tooltip feature 11 - OAuth token theft protection"
+  },
   "tooltipFooter": {
-    "message": "10 सुरक्षा परतें सक्रिय",
+    "message": "11 सुरक्षा परतें सक्रिय",
     "description": "Footer text for tooltip"
   },
   "tooltipNewBadge": {

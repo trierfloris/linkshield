@@ -1126,8 +1126,12 @@
     "message": "الكود المخفي (Shadow DOM)",
     "description": "Tooltip feature 10"
   },
+  "tooltipFeature11": {
+    "message": "سرقة رمز OAuth",
+    "description": "Tooltip feature 11 - OAuth token theft protection"
+  },
   "tooltipFooter": {
-    "message": "10 طبقات أمان نشطة",
+    "message": "11 طبقات أمان نشطة",
     "description": "Footer text for tooltip"
   },
   "tooltipNewBadge": {

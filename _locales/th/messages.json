@@ -1063,8 +1063,12 @@
     "message": "โค้ดที่ซ่อนอยู่ (Shadow DOM)",
     "description": "Tooltip feature 10"
   },
+  "tooltipFeature11": {
+    "message": "ขโมย OAuth token",
+    "description": "Tooltip feature 11 - OAuth token theft protection"
+  },
   "tooltipFooter": {
-    "message": "10 ชั้นความปลอดภัยทำงานอยู่",
+    "message": "11 ชั้นความปลอดภัยทำงานอยู่",
     "description": "Footer text for tooltip"
   },
   "tooltipNewBadge": {

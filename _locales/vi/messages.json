@@ -1063,8 +1063,12 @@
     "message": "Ma an (Shadow DOM)",
     "description": "Tooltip feature 10"
   },
+  "tooltipFeature11": {
+    "message": "Đánh cắp token OAuth",
+    "description": "Tooltip feature 11 - OAuth token theft protection"
+  },
   "tooltipFooter": {
-    "message": "10 lop bao mat dang hoat dong",
+    "message": "11 lop bao mat dang hoat dong",
     "description": "Footer text for tooltip"
   },
   "tooltipNewBadge": {

@@ -1063,8 +1063,12 @@
     "message": "Rejtett kód (Shadow DOM)",
     "description": "Tooltip feature 10"
   },
+  "tooltipFeature11": {
+    "message": "OAuth token lopás",
+    "description": "Tooltip feature 11 - OAuth token theft protection"
+  },
   "tooltipFooter": {
-    "message": "10 biztonsági réteg aktív",
+    "message": "11 biztonsági réteg aktív",
     "description": "Footer text for tooltip"
   },
   "tooltipNewBadge": {

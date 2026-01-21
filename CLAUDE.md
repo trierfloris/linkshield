@@ -360,6 +360,105 @@ Located in `tests/e2e/`
 
 ---
 
+## Development Guidelines
+
+### New Security Detection Features
+
+**CRITICAL:** Every new security detection feature MUST follow these rules:
+
+1. **integratedProtection Check Required**
+   - The function must check if `integratedProtection` (Smart Link Scanning) is enabled
+   - Use `await isProtectionEnabled()` at the start of the function
+   - Return early/skip detection if protection is disabled
+
+2. **Trusted Domain Check Required**
+   - The function must skip detection on domains listed in `TrustedDomains.json`
+   - Use `await isTrustedDomain(hostname)` to check
+   - This prevents false positives on major legitimate sites (e.g., facebook.com, google.com)
+
+3. **Example Pattern:**
+```javascript
+async function detectNewThreat() {
+    // 1. Check config enabled
+    if (!globalConfig?.FEATURE?.enabled) {
+        return { detected: false };
+    }
+
+    // 2. Check integratedProtection enabled
+    if (!(await isProtectionEnabled())) {
+        return { detected: false };
+    }
+
+    // 3. Skip trusted domains
+    const hostname = window.location.hostname;
+    if (await isTrustedDomain(hostname)) {
+        return { detected: false };
+    }
+
+    // ... actual detection logic ...
+}
+```
+
+### Internationalization (i18n) Requirements
+
+**CRITICAL:** Every new i18n key MUST have translations in all 24 locales:
+
+1. **Native Translations Only** - No English fallbacks
+   - Each locale file must contain the actual native language translation
+   - Do NOT use English text as a placeholder in non-English locales
+
+2. **Supported Locales (24 total):**
+   - ar, cs, de, el, en, es, fr, hi, hu, id, it, ja, ko, nl, pl, pt, pt_BR, ro, ru, th, tr, uk, vi, zh
+
+3. **Key Naming Convention:**
+   - Titles: `featureNameTitle` (e.g., `fakeTurnstileTitle`)
+   - Messages: `featureNameMessage` (e.g., `fakeTurnstileMessage`)
+   - Reason keys (for alert page): `featureNameDetected` (e.g., `fakeTurnstileDetected`)
+
+4. **Reason Keys for Alert Page:**
+   - When adding a new detection that appears in the alert reason list, you MUST add a corresponding reason key
+   - The reason key is used in `alert.js` via `safeGetMessage(reasonKey)`
+   - Format: Short description with risk level, e.g., "Fake security verification detected (high risk)."
+
+### Popup Tooltip Requirements
+
+**CRITICAL:** Every new Smart Link Scanning feature MUST be added to the popup tooltip:
+
+1. **Add to popup.html:**
+   - Add new `<li id="tooltipFeatureN">` in the tooltip list
+   - For new features, add `<span class="new-badge">New</span>` after the text
+   - Update the footer counter (e.g., "12 security layers active")
+
+2. **Add to popup.js:**
+   - Add element reference: `const tooltipFeatureN = document.getElementById('tooltipFeatureN');`
+   - Add translation logic with badge handling
+
+3. **Add translations to all 24 locales:**
+   - Add `tooltipFeatureN` key with native translation
+   - Update `tooltipFooter` with new count in native language
+
+4. **Example (popup.html):**
+```html
+<li id="tooltipFeature12">Fake security checks <span class="new-badge">New</span></li>
+```
+
+5. **Example (popup.js):**
+```javascript
+const tooltipFeature12 = document.getElementById('tooltipFeature12');
+// In translation section:
+if (tooltipFeature12) {
+    const newBadge = tooltipFeature12.querySelector('.new-badge');
+    if (newBadge) {
+        newBadge.textContent = msg('tooltipNewBadge');
+        tooltipFeature12.firstChild.textContent = msg('tooltipFeature12') + ' ';
+    } else {
+        tooltipFeature12.textContent = msg('tooltipFeature12');
+    }
+}
+```
+
+---
+
 ## Known Issues / Future Work
 
 1. **Not Detected (requires MAIN world):**

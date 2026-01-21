@@ -1067,8 +1067,12 @@
     "message": "Krádež OAuth tokenů",
     "description": "Tooltip feature 11 - OAuth token theft protection"
   },
+  "tooltipFeature12": {
+    "message": "Falešné bezpečnostní kontroly",
+    "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
+  },
   "tooltipFooter": {
-    "message": "11 bezpečnostních vrstev aktivních",
+    "message": "12 bezpečnostních vrstev aktivních",
     "description": "Footer text for tooltip"
   },
   "tooltipNewBadge": {
@@ -1693,6 +1697,9 @@
   },
   "fakeTurnstileMessage": {
     "message": "Tato stránka zobrazuje falešné ověření Cloudflare. To se často používá při phishingových útocích."
+  },
+  "fakeTurnstileDetected": {
+    "message": "Detekováno falešné bezpečnostní ověření (vysoké riziko). Tato stránka napodobuje Cloudflare/CAPTCHA, aby vás oklamala."
   },
   "splitQrTitle": {
     "message": "🔍 Detekován rozdělený QR kód"

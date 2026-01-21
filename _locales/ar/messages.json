@@ -1130,8 +1130,12 @@
     "message": "سرقة رمز OAuth",
     "description": "Tooltip feature 11 - OAuth token theft protection"
   },
+  "tooltipFeature12": {
+    "message": "فحوصات أمان مزيفة",
+    "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
+  },
   "tooltipFooter": {
-    "message": "11 طبقات أمان نشطة",
+    "message": "12 طبقة أمان نشطة",
     "description": "Footer text for tooltip"
   },
   "tooltipNewBadge": {
@@ -1693,6 +1697,9 @@
   },
   "fakeTurnstileMessage": {
     "message": "هذه الصفحة تعرض تحقق Cloudflare مزيف. يُستخدم هذا غالبًا في هجمات التصيد الاحتيالي."
+  },
+  "fakeTurnstileDetected": {
+    "message": "تم اكتشاف فحص أمني مزيف (خطر عالٍ). هذه الصفحة تقلد Cloudflare/CAPTCHA لخداعك."
   },
   "splitQrTitle": {
     "message": "🔍 تم اكتشاف رمز QR مقسم"

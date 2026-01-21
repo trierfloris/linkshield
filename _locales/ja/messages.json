@@ -1130,8 +1130,12 @@
     "message": "OAuthトークンの窃取",
     "description": "Tooltip feature 11 - OAuth token theft protection"
   },
+  "tooltipFeature12": {
+    "message": "偽のセキュリティチェック",
+    "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
+  },
   "tooltipFooter": {
-    "message": "11のセキュリティ層が有効",
+    "message": "12のセキュリティ層が有効",
     "description": "Footer text for tooltip"
   },
   "tooltipNewBadge": {
@@ -1693,6 +1697,9 @@
   },
   "fakeTurnstileMessage": {
     "message": "このページは偽のCloudflare検証を表示しています。これはフィッシング攻撃でよく使用されます。"
+  },
+  "fakeTurnstileDetected": {
+    "message": "偽のセキュリティ検証を検出しました（高リスク）。このページはCloudflare/CAPTCHAを模倣してあなたを欺こうとしています。"
   },
   "splitQrTitle": {
     "message": "🔍 分割QRコードを検出しました"

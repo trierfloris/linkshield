@@ -1130,8 +1130,12 @@
     "message": "OAuth-Token-Diebstahl",
     "description": "Tooltip feature 11 - OAuth token theft protection"
   },
+  "tooltipFeature12": {
+    "message": "Gefälschte Sicherheitsprüfungen",
+    "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
+  },
   "tooltipFooter": {
-    "message": "11 Sicherheitsebenen aktiv",
+    "message": "12 Sicherheitsebenen aktiv",
     "description": "Footer text for tooltip"
   },
   "tooltipNewBadge": {
@@ -1693,6 +1697,9 @@
   },
   "fakeTurnstileMessage": {
     "message": "Diese Seite zeigt eine gefälschte Cloudflare-Überprüfung an. Dies wird häufig bei Phishing-Angriffen verwendet."
+  },
+  "fakeTurnstileDetected": {
+    "message": "Gefälschte Sicherheitsüberprüfung erkannt (hohes Risiko). Diese Seite imitiert Cloudflare/CAPTCHA, um Sie zu täuschen."
   },
   "splitQrTitle": {
     "message": "🔍 Geteilter QR-Code Erkannt"

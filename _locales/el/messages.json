@@ -1067,8 +1067,12 @@
     "message": "Κλοπή OAuth token",
     "description": "Tooltip feature 11 - OAuth token theft protection"
   },
+  "tooltipFeature12": {
+    "message": "Ψεύτικοι έλεγχοι ασφαλείας",
+    "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
+  },
   "tooltipFooter": {
-    "message": "11 επίπεδα ασφαλείας ενεργά",
+    "message": "12 επίπεδα ασφαλείας ενεργά",
     "description": "Footer text for tooltip"
   },
   "tooltipNewBadge": {
@@ -1693,6 +1697,9 @@
   },
   "fakeTurnstileMessage": {
     "message": "Αυτή η σελίδα εμφανίζει ψεύτικη επαλήθευση Cloudflare. Αυτό χρησιμοποιείται συχνά σε επιθέσεις phishing."
+  },
+  "fakeTurnstileDetected": {
+    "message": "Εντοπίστηκε ψεύτικη επαλήθευση ασφαλείας (υψηλός κίνδυνος). Αυτή η σελίδα μιμείται το Cloudflare/CAPTCHA για να σας εξαπατήσει."
   },
   "splitQrTitle": {
     "message": "🔍 Εντοπίστηκε διαχωρισμένος κωδικός QR"

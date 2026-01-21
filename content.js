@@ -1272,10 +1272,27 @@ function showClipboardWarning(type, score) {
  *
  * @see https://pushsecurity.com/blog/consentfix
  */
-function initOAuthPasteGuard() {
+async function initOAuthPasteGuard() {
     if (!globalConfig?.ADVANCED_THREAT_DETECTION?.oauthProtection?.enabled) {
         logDebug('[OAuthGuard] Disabled in config');
         return;
+    }
+
+    // Skip if Smart Link Scanning (integratedProtection) is disabled
+    if (!(await isProtectionEnabled())) {
+        logDebug('[OAuthGuard] Disabled - integratedProtection is off');
+        return;
+    }
+
+    // Skip on trusted domains from TrustedDomains.json
+    const currentHost = window.location.hostname.toLowerCase();
+    try {
+        if (await isTrustedDomain(currentHost)) {
+            logDebug(`[OAuthGuard] Skipped - ${currentHost} is a trusted domain`);
+            return;
+        }
+    } catch (e) {
+        // Continue if trust check fails
     }
 
     const config = globalConfig.ADVANCED_THREAT_DETECTION.oauthProtection;
@@ -1283,8 +1300,7 @@ function initOAuthPasteGuard() {
     // Compile patterns eenmalig
     const dangerousPatterns = config.patterns.map(p => new RegExp(p, 'i'));
 
-    // Check of huidige domein paste mag toestaan
-    const currentHost = window.location.hostname.toLowerCase();
+    // Check of huidige domein paste mag toestaan (extra config-based whitelist)
     const isPasteAllowed = config.allowedPasteDomains.some(domain =>
         currentHost === domain || currentHost.endsWith('.' + domain)
     );
@@ -6150,9 +6166,24 @@ async function proactiveVisualHijackingScan() {
  *
  * @returns {Object} - { detected: boolean, indicators: string[], score: number }
  */
-function detectFakeTurnstile() {
+async function detectFakeTurnstile() {
     if (!globalConfig?.ADVANCED_THREAT_DETECTION?.fakeTurnstile?.enabled) {
         return { detected: false, indicators: [], score: 0 };
+    }
+
+    // Skip if Smart Link Scanning (integratedProtection) is disabled
+    if (!(await isProtectionEnabled())) {
+        return { detected: false, indicators: [], score: 0 };
+    }
+
+    // Skip check on trusted domains (e.g., facebook.com)
+    try {
+        const currentHostname = window.location.hostname;
+        if (await isTrustedDomain(currentHostname)) {
+            return { detected: false, indicators: [], score: 0 };
+        }
+    } catch (e) {
+        // Continue with check if trust verification fails
     }
 
     const config = globalConfig.ADVANCED_THREAT_DETECTION.fakeTurnstile;
@@ -10660,7 +10691,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       initClipboardGuard();
 
       // Initialiseer OAuth Paste Guard voor ConsentFix/token theft detectie (v8.5.0)
-      initOAuthPasteGuard();
+      await initOAuthPasteGuard();
 
       // Initialiseer ClickFix Attack detectie voor PowerShell/CMD injectie via nep-CAPTCHA
       initClickFixDetection();
@@ -10737,7 +10768,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       logDebug(`⚠️ Verdachte scripts: ${suspiciousScripts.join(', ')}`);
     }
     // 1c2. SECURITY FIX v8.5.0: Fake Turnstile/CAPTCHA detectie
-    const fakeTurnstileResult = detectFakeTurnstile();
+    const fakeTurnstileResult = await detectFakeTurnstile();
     if (fakeTurnstileResult.detected) {
       reasonsForPage.add('fakeTurnstileDetected');
       pageRisk += fakeTurnstileResult.score;

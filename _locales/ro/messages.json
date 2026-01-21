@@ -1067,8 +1067,12 @@
     "message": "Furt de jetoane OAuth",
     "description": "Tooltip feature 11 - OAuth token theft protection"
   },
+  "tooltipFeature12": {
+    "message": "Verificări de securitate false",
+    "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
+  },
   "tooltipFooter": {
-    "message": "11 straturi de securitate active",
+    "message": "12 straturi de securitate active",
     "description": "Footer text for tooltip"
   },
   "tooltipNewBadge": {
@@ -1693,6 +1697,9 @@
   },
   "fakeTurnstileMessage": {
     "message": "Această pagină afișează o verificare Cloudflare falsă. Aceasta este adesea folosită în atacuri de phishing."
+  },
+  "fakeTurnstileDetected": {
+    "message": "Verificare de securitate falsă detectată (risc ridicat). Această pagină imită Cloudflare/CAPTCHA pentru a vă înșela."
   },
   "splitQrTitle": {
     "message": "🔍 Cod QR împărțit detectat"

@@ -1067,8 +1067,12 @@
     "message": "Đánh cắp token OAuth",
     "description": "Tooltip feature 11 - OAuth token theft protection"
   },
+  "tooltipFeature12": {
+    "message": "Kiểm tra bảo mật giả",
+    "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
+  },
   "tooltipFooter": {
-    "message": "11 lop bao mat dang hoat dong",
+    "message": "12 lớp bảo mật đang hoạt động",
     "description": "Footer text for tooltip"
   },
   "tooltipNewBadge": {
@@ -1693,6 +1697,9 @@
   },
   "fakeTurnstileMessage": {
     "message": "Trang này đang hiển thị xác minh Cloudflare giả. Điều này thường được sử dụng trong các cuộc tấn công lừa đảo."
+  },
+  "fakeTurnstileDetected": {
+    "message": "Phát hiện xác minh bảo mật giả (rủi ro cao). Trang này mô phỏng Cloudflare/CAPTCHA để lừa bạn."
   },
   "splitQrTitle": {
     "message": "🔍 Phát hiện mã QR bị chia tách"

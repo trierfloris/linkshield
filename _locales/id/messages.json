@@ -1067,8 +1067,12 @@
     "message": "Pencurian token OAuth",
     "description": "Tooltip feature 11 - OAuth token theft protection"
   },
+  "tooltipFeature12": {
+    "message": "Pemeriksaan keamanan palsu",
+    "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
+  },
   "tooltipFooter": {
-    "message": "11 lapisan keamanan aktif",
+    "message": "12 lapisan keamanan aktif",
     "description": "Footer text for tooltip"
   },
   "tooltipNewBadge": {
@@ -1693,6 +1697,9 @@
   },
   "fakeTurnstileMessage": {
     "message": "Halaman ini menampilkan verifikasi Cloudflare palsu. Ini sering digunakan dalam serangan phishing."
+  },
+  "fakeTurnstileDetected": {
+    "message": "Verifikasi keamanan palsu terdeteksi (risiko tinggi). Halaman ini meniru Cloudflare/CAPTCHA untuk menipu Anda."
   },
   "splitQrTitle": {
     "message": "🔍 Kode QR Terbagi Terdeteksi"

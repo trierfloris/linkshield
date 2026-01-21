@@ -1130,8 +1130,12 @@
     "message": "窃取OAuth令牌",
     "description": "Tooltip feature 11 - OAuth token theft protection"
   },
+  "tooltipFeature12": {
+    "message": "虚假安全检查",
+    "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
+  },
   "tooltipFooter": {
-    "message": "11层安全防护已激活",
+    "message": "12层安全防护已激活",
     "description": "Footer text for tooltip"
   },
   "tooltipNewBadge": {
@@ -1693,6 +1697,9 @@
   },
   "fakeTurnstileMessage": {
     "message": "此页面正在显示虚假的Cloudflare验证。这通常用于网络钓鱼攻击。"
+  },
+  "fakeTurnstileDetected": {
+    "message": "检测到虚假安全验证（高风险）。此页面模仿Cloudflare/CAPTCHA来欺骗您。"
   },
   "splitQrTitle": {
     "message": "🔍 检测到分割的二维码"

@@ -1067,8 +1067,12 @@
     "message": "OAuth token hırsızlığı",
     "description": "Tooltip feature 11 - OAuth token theft protection"
   },
+  "tooltipFeature12": {
+    "message": "Sahte güvenlik kontrolleri",
+    "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
+  },
   "tooltipFooter": {
-    "message": "11 guvenlik katmani aktif",
+    "message": "12 güvenlik katmanı aktif",
     "description": "Footer text for tooltip"
   },
   "tooltipNewBadge": {
@@ -1693,6 +1697,9 @@
   },
   "fakeTurnstileMessage": {
     "message": "Bu sayfa sahte bir Cloudflare doğrulaması gösteriyor. Bu genellikle kimlik avı saldırılarında kullanılır."
+  },
+  "fakeTurnstileDetected": {
+    "message": "Sahte güvenlik doğrulaması tespit edildi (yüksek risk). Bu sayfa sizi kandırmak için Cloudflare/CAPTCHA'yı taklit ediyor."
   },
   "splitQrTitle": {
     "message": "🔍 Bölünmüş QR Kodu Tespit Edildi"

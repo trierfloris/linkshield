@@ -1133,8 +1133,12 @@
     "message": "OAuth-tokendiefstal",
     "description": "Tooltip feature 11 - OAuth token theft protection"
   },
+  "tooltipFeature12": {
+    "message": "Nep beveiligingscontroles",
+    "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
+  },
   "tooltipFooter": {
-    "message": "11 beveiligingslagen actief",
+    "message": "12 beveiligingslagen actief",
     "description": "Footer tekst voor tooltip"
   },
   "tooltipNewBadge": {
@@ -1674,6 +1678,9 @@
   },
   "fakeTurnstileMessage": {
     "message": "Deze pagina toont een nep Cloudflare-verificatie. Dit wordt vaak gebruikt bij phishing-aanvallen."
+  },
+  "fakeTurnstileDetected": {
+    "message": "Nep beveiligingsverificatie gedetecteerd (hoog risico). Deze pagina bootst Cloudflare/CAPTCHA na om u te misleiden."
   },
   "splitQrTitle": {
     "message": "🔍 Gesplitste QR Code Gedetecteerd"

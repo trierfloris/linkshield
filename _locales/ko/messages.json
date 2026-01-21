@@ -1130,8 +1130,12 @@
     "message": "OAuth 토큰 탈취",
     "description": "Tooltip feature 11 - OAuth token theft protection"
   },
+  "tooltipFeature12": {
+    "message": "가짜 보안 검사",
+    "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
+  },
   "tooltipFooter": {
-    "message": "11개 보안 레이어 활성화",
+    "message": "12개 보안 레이어 활성화",
     "description": "Footer text for tooltip"
   },
   "tooltipNewBadge": {
@@ -1693,6 +1697,9 @@
   },
   "fakeTurnstileMessage": {
     "message": "이 페이지에 가짜 Cloudflare 인증이 표시되고 있습니다. 이것은 피싱 공격에 자주 사용됩니다."
+  },
+  "fakeTurnstileDetected": {
+    "message": "가짜 보안 인증이 감지되었습니다 (높은 위험). 이 페이지는 당신을 속이기 위해 Cloudflare/CAPTCHA를 모방합니다."
   },
   "splitQrTitle": {
     "message": "🔍 분할 QR 코드 감지됨"

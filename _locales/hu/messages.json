@@ -1067,8 +1067,12 @@
     "message": "OAuth token lopás",
     "description": "Tooltip feature 11 - OAuth token theft protection"
   },
+  "tooltipFeature12": {
+    "message": "Hamis biztonsági ellenőrzések",
+    "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
+  },
   "tooltipFooter": {
-    "message": "11 biztonsági réteg aktív",
+    "message": "12 biztonsági réteg aktív",
     "description": "Footer text for tooltip"
   },
   "tooltipNewBadge": {
@@ -1693,6 +1697,9 @@
   },
   "fakeTurnstileMessage": {
     "message": "Ez az oldal hamis Cloudflare ellenőrzést jelenít meg. Ezt gyakran használják adathalász támadásokban."
+  },
+  "fakeTurnstileDetected": {
+    "message": "Hamis biztonsági ellenőrzés észlelve (magas kockázat). Ez az oldal a Cloudflare/CAPTCHA-t utánozza, hogy megtévesszen."
   },
   "splitQrTitle": {
     "message": "🔍 Osztott QR-kód észlelve"

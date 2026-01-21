@@ -52,6 +52,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const tooltipFeature9 = document.getElementById('tooltipFeature9');
     const tooltipFeature10 = document.getElementById('tooltipFeature10');
     const tooltipFeature11 = document.getElementById('tooltipFeature11');
+    const tooltipFeature12 = document.getElementById('tooltipFeature12');
     const tooltipFooter = document.getElementById('tooltipFooter');
     const freeTag = document.getElementById('freeTag');
     const proTag = document.getElementById('proTag');
@@ -214,6 +215,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 tooltipFeature11.firstChild.textContent = msg('tooltipFeature11') + ' ';
             } else {
                 tooltipFeature11.textContent = msg('tooltipFeature11');
+            }
+        }
+        if (tooltipFeature12) {
+            const newBadge = tooltipFeature12.querySelector('.new-badge');
+            if (newBadge) {
+                newBadge.textContent = msg('tooltipNewBadge');
+                tooltipFeature12.firstChild.textContent = msg('tooltipFeature12') + ' ';
+            } else {
+                tooltipFeature12.textContent = msg('tooltipFeature12');
             }
         }
         if (tooltipFooter) tooltipFooter.textContent = msg('tooltipFooter');

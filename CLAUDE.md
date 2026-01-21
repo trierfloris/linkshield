@@ -4,7 +4,7 @@
 
 **LinkShield** is a Chrome browser extension that protects users from phishing, malicious links, and various web-based attacks. It provides real-time security warnings for suspicious URLs, visual hijacking attempts, form hijacking, and more.
 
-**Current Version:** 8.3.2
+**Current Version:** 8.5.0
 **Manifest Version:** 3
 
 ---
@@ -40,6 +40,58 @@
 ---
 
 ## Recent Implementations
+
+### v8.5.0 - Advanced Threat Detection (2026-01)
+
+**Purpose:** Protect against new phishing techniques discovered in 2025-2026.
+
+**New Features:**
+
+| Feature | Description | Location |
+|---------|-------------|----------|
+| OAuth Paste Guard | Blocks pasting of localhost OAuth tokens (ConsentFix attack) | `content.js:initOAuthPasteGuard()` |
+| Fake Turnstile Detection | Detects fake Cloudflare CAPTCHA/Turnstile UI | `content.js:detectFakeTurnstile()` |
+| Split QR Detection | Detects QR codes split into multiple images | `content.js:SplitQRDetector` |
+
+**Files Modified:**
+- `config.js` - Added `ADVANCED_THREAT_DETECTION` configuration section
+- `content.js` - Added 3 new detection modules
+- `background.js` - Added message handlers and statistics tracking
+- All 24 locale files - Added 8 new i18n keys
+
+**New Config Section:**
+```javascript
+ADVANCED_THREAT_DETECTION: {
+    enabled: true,
+    scores: {
+        FAKE_TURNSTILE_INDICATOR: 15,
+        OAUTH_TOKEN_PASTE_ATTEMPT: 20,
+        SPLIT_QR_DETECTED: 12,
+        NESTED_QR_DETECTED: 14,
+        CONSENTFIX_PATTERN: 18
+    },
+    splitQR: { ... },
+    oauthProtection: { ... },
+    fakeTurnstile: { ... }
+}
+```
+
+**New i18n Keys:**
+- `oauthTheftTitle`, `oauthTheftMessage`, `oauthTheftTip`
+- `fakeTurnstileTitle`, `fakeTurnstileMessage`
+- `splitQrTitle`, `splitQrMessage`
+- `understoodButton`
+
+**Test Pages:**
+- `tests/scenarios/attack-vectors/consentfix-oauth.html`
+- `tests/scenarios/attack-vectors/fake-turnstile.html`
+- `tests/scenarios/attack-vectors/split-qr.html`
+
+**References:**
+- ConsentFix: https://pushsecurity.com/blog/consentfix
+- Split QR: https://blog.barracuda.com/2025/08/20/threat-spotlight-split-nested-qr-codes-quishing-attacks
+
+---
 
 ### v8.3.2 - Smart Link Scanning Feature Tooltip (Marketing UX)
 
@@ -325,6 +377,7 @@ Located in `tests/e2e/`
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 8.5.0 | 2026-01 | Advanced Threat Detection (OAuth Guard, Fake Turnstile, Split QR) |
 | 8.3.2 | 2026-01 | Smart Link Scanning tooltip (marketing UX) |
 | 8.3.1 | 2026-01 | Visual Hijacking iframe fix |
 | 8.3.0 | 2026-01 | Form Hijacking Protection |

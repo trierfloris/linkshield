@@ -634,5 +634,74 @@ SUSPICIOUS_URL_PATTERNS: [
             obfuscatedUrl: 7,      // Base64/encoded URL components
             invalidUrl: 5,         // Malformed URL
         }
+    },
+
+    // SECURITY FIX v8.5.0: Advanced Threat Detection
+    // Detecteert nieuwe aanvalstechnieken: OAuth token theft, fake Turnstile, split QR codes
+    ADVANCED_THREAT_DETECTION: {
+        enabled: true,
+
+        // Risk scores per detectie type
+        scores: {
+            FAKE_TURNSTILE_INDICATOR: 15,      // Nep Cloudflare verificatie
+            OAUTH_TOKEN_PASTE_ATTEMPT: 20,     // KRITIEK - OAuth token theft
+            SPLIT_QR_DETECTED: 12,             // Gesplitste QR code
+            NESTED_QR_DETECTED: 14,            // Geneste QR code
+            CONSENTFIX_PATTERN: 18             // ConsentFix aanvalspatroon
+        },
+
+        // Split QR configuratie
+        splitQR: {
+            enabled: true,
+            adjacencyTolerance: 5,        // pixels tussen fragmenten
+            minFragments: 2,
+            maxFragments: 6,
+            minFragmentSize: 20,          // minimum px
+            maxFragmentSize: 300          // maximum px
+        },
+
+        // OAuth/Localhost protection
+        oauthProtection: {
+            enabled: true,
+            // Patronen voor OAuth codes in localhost URLs
+            patterns: [
+                'localhost.*\\?code=',
+                '127\\.0\\.0\\.1.*\\?code=',
+                'localhost.*authorization_code',
+                'localhost.*access_token',
+                'localhost.*id_token',
+                '\\?code=M\\.R3_',           // Microsoft specifiek
+                '\\?code=4/'                  // Google specifiek
+            ],
+            // Domeinen waar paste WEL is toegestaan (legitieme dev omgevingen)
+            allowedPasteDomains: [
+                'localhost',
+                '127.0.0.1',
+                'github.com',
+                'stackoverflow.com',
+                'learn.microsoft.com',
+                'portal.azure.com'
+            ]
+        },
+
+        // Fake Turnstile detectie
+        fakeTurnstile: {
+            enabled: true,
+            // Legitieme Turnstile iframe origins
+            legitimateOrigins: [
+                'challenges.cloudflare.com',
+                'cdn-cgi.cloudflare.com'
+            ],
+            // Tekst patronen die wijzen op Turnstile UI
+            textPatterns: [
+                'verify you are human',
+                'checking if the site connection is secure',
+                'verifying you are human',
+                'please wait while we verify',
+                'human verification',
+                'controleren of de verbinding veilig is',  // NL
+                'überprüfung ihrer verbindung'             // DE
+            ]
+        }
     }
 };

@@ -1659,10 +1659,44 @@
   },
   "threatsTodayCount": {
     "message": "+$1 hôm nay",
-    "placeholders": { "COUNT": { "content": "$1", "example": "847" } }
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "847"
+      }
+    }
   },
   "threatsTotalCount": {
     "message": "$1 đã chặn",
-    "placeholders": { "COUNT": { "content": "$1", "example": "2431" } }
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "2431"
+      }
+    }
+  },
+  "oauthTheftTitle": {
+    "message": "🛡️ Đã chặn đánh cắp mã OAuth"
+  },
+  "oauthTheftMessage": {
+    "message": "Bạn đã cố dán URL xác thực. Đây là kỹ thuật lừa đảo được biết đến với tên 'ConsentFix' đánh cắp quyền truy cập tài khoản của bạn."
+  },
+  "oauthTheftTip": {
+    "message": "Không bao giờ dán URL chứa ?code= hoặc mã truy cập vào các trang web."
+  },
+  "fakeTurnstileTitle": {
+    "message": "⚠️ Phát hiện kiểm tra bảo mật giả"
+  },
+  "fakeTurnstileMessage": {
+    "message": "Trang này đang hiển thị xác minh Cloudflare giả. Điều này thường được sử dụng trong các cuộc tấn công lừa đảo."
+  },
+  "splitQrTitle": {
+    "message": "🔍 Phát hiện mã QR bị chia tách"
+  },
+  "splitQrMessage": {
+    "message": "Đã phát hiện mã QR bị chia thành nhiều hình ảnh. Kỹ thuật này được sử dụng để tránh các trình quét bảo mật."
+  },
+  "understoodButton": {
+    "message": "Tôi Hiểu"
   }
 }

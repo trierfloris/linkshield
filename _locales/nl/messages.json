@@ -1655,5 +1655,29 @@
         "example": "2431"
       }
     }
+  },
+  "oauthTheftTitle": {
+    "message": "🛡️ OAuth Token Diefstal Geblokkeerd"
+  },
+  "oauthTheftMessage": {
+    "message": "U probeerde een authenticatie-URL te plakken. Dit is een bekende phishing-techniek genaamd 'ConsentFix' die uw accounttoegang steelt."
+  },
+  "oauthTheftTip": {
+    "message": "Plak nooit URLs met ?code= of access tokens in websites."
+  },
+  "fakeTurnstileTitle": {
+    "message": "⚠️ Nep Beveiligingscontrole Gedetecteerd"
+  },
+  "fakeTurnstileMessage": {
+    "message": "Deze pagina toont een nep Cloudflare-verificatie. Dit wordt vaak gebruikt bij phishing-aanvallen."
+  },
+  "splitQrTitle": {
+    "message": "🔍 Gesplitste QR Code Gedetecteerd"
+  },
+  "splitQrMessage": {
+    "message": "Een QR-code opgesplitst in meerdere afbeeldingen is gedetecteerd. Deze techniek wordt gebruikt om beveiligingsscanners te omzeilen."
+  },
+  "understoodButton": {
+    "message": "Ik Begrijp Het"
   }
 }

@@ -1659,10 +1659,44 @@
   },
   "threatsTodayCount": {
     "message": "+$1 bugün",
-    "placeholders": { "COUNT": { "content": "$1", "example": "847" } }
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "847"
+      }
+    }
   },
   "threatsTotalCount": {
     "message": "$1 engellendi",
-    "placeholders": { "COUNT": { "content": "$1", "example": "2431" } }
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "2431"
+      }
+    }
+  },
+  "oauthTheftTitle": {
+    "message": "🛡️ OAuth Token Hırsızlığı Engellendi"
+  },
+  "oauthTheftMessage": {
+    "message": "Bir kimlik doğrulama URL'si yapıştırmaya çalıştınız. Bu, hesap erişiminizi çalan 'ConsentFix' adlı bilinen bir kimlik avı tekniğidir."
+  },
+  "oauthTheftTip": {
+    "message": "?code= veya erişim belirteçleri içeren URL'leri asla web sitelerine yapıştırmayın."
+  },
+  "fakeTurnstileTitle": {
+    "message": "⚠️ Sahte Güvenlik Kontrolü Tespit Edildi"
+  },
+  "fakeTurnstileMessage": {
+    "message": "Bu sayfa sahte bir Cloudflare doğrulaması gösteriyor. Bu genellikle kimlik avı saldırılarında kullanılır."
+  },
+  "splitQrTitle": {
+    "message": "🔍 Bölünmüş QR Kodu Tespit Edildi"
+  },
+  "splitQrMessage": {
+    "message": "Birden fazla görüntüye bölünmüş bir QR kodu tespit edildi. Bu teknik güvenlik tarayıcılarını atlatmak için kullanılır."
+  },
+  "understoodButton": {
+    "message": "Anladım"
   }
 }

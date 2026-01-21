@@ -1261,6 +1261,236 @@ function showClipboardWarning(type, score) {
 }
 
 // =============================
+// OAUTH PASTE GUARD (v8.5.0)
+// Beschermt tegen ConsentFix en OAuth token theft aanvallen
+// =============================
+
+/**
+ * SECURITY FIX v8.5.0: OAuth Token Paste Guard
+ * Blokkeert het plakken van localhost URLs met OAuth tokens
+ * Beschermt tegen ConsentFix en vergelijkbare token-theft aanvallen
+ *
+ * @see https://pushsecurity.com/blog/consentfix
+ */
+function initOAuthPasteGuard() {
+    if (!globalConfig?.ADVANCED_THREAT_DETECTION?.oauthProtection?.enabled) {
+        logDebug('[OAuthGuard] Disabled in config');
+        return;
+    }
+
+    const config = globalConfig.ADVANCED_THREAT_DETECTION.oauthProtection;
+
+    // Compile patterns eenmalig
+    const dangerousPatterns = config.patterns.map(p => new RegExp(p, 'i'));
+
+    // Check of huidige domein paste mag toestaan
+    const currentHost = window.location.hostname.toLowerCase();
+    const isPasteAllowed = config.allowedPasteDomains.some(domain =>
+        currentHost === domain || currentHost.endsWith('.' + domain)
+    );
+
+    if (isPasteAllowed) {
+        logDebug(`[OAuthGuard] Paste allowed on ${currentHost}`);
+        return;
+    }
+
+    document.addEventListener('paste', handleOAuthPaste, true);
+    logDebug('[OAuthGuard] Initialized');
+
+    function handleOAuthPaste(e) {
+        try {
+            const pastedText = (e.clipboardData || window.clipboardData)?.getData('text') || '';
+
+            if (!pastedText || pastedText.length < 10) return;
+
+            // Check tegen alle gevaarlijke patronen
+            for (const pattern of dangerousPatterns) {
+                if (pattern.test(pastedText)) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    logDebug(`[OAuthGuard] 🛑 BLOCKED OAuth token paste attempt`);
+                    logDebug(`[OAuthGuard] Pattern matched: ${pattern.source}`);
+
+                    showOAuthTheftWarning(pastedText, pattern.source);
+
+                    // Rapporteer aan background
+                    if (typeof chrome !== 'undefined' && chrome.runtime?.sendMessage) {
+                        chrome.runtime.sendMessage({
+                            type: 'oauthTheftAttempt',
+                            url: window.location.href,
+                            pattern: pattern.source,
+                            blocked: true,
+                            timestamp: Date.now()
+                        }).catch(() => {});
+                    }
+
+                    return false;
+                }
+            }
+        } catch (err) {
+            handleError(err, 'OAuthPasteGuard');
+        }
+    }
+}
+
+/**
+ * Toont waarschuwing voor OAuth token theft poging
+ * Gebruikt vergelijkbare stijl als showFormHijackingWarning()
+ *
+ * @param {string} pastedContent - De geblokkeerde content (wordt NIET getoond aan user)
+ * @param {string} matchedPattern - Het patroon dat matchte
+ */
+function showOAuthTheftWarning(pastedContent, matchedPattern) {
+    // Voorkom dubbele warnings
+    if (document.getElementById('linkshield-oauth-warning')) return;
+
+    const overlay = document.createElement('div');
+    overlay.id = 'linkshield-oauth-warning';
+    overlay.setAttribute('role', 'alertdialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.setAttribute('aria-labelledby', 'ls-oauth-title');
+
+    // Haal vertalingen op
+    const title = getTranslatedMessage('oauthTheftTitle') || '⚠️ OAuth Token Theft Blocked';
+    const message = getTranslatedMessage('oauthTheftMessage') ||
+        'You tried to paste an authentication URL. This is a known phishing technique called "ConsentFix".';
+    const tip = getTranslatedMessage('oauthTheftTip') ||
+        'Never paste URLs containing ?code= or access tokens into websites.';
+    const btnText = getTranslatedMessage('understoodButton') || 'I Understand';
+
+    overlay.innerHTML = `
+        <div class="linkshield-warning-backdrop"></div>
+        <div class="linkshield-warning-modal" role="document">
+            <div class="linkshield-warning-header linkshield-critical">
+                <span class="linkshield-warning-icon">🛡️</span>
+                <h2 id="ls-oauth-title">${title}</h2>
+            </div>
+            <div class="linkshield-warning-body">
+                <p>${message}</p>
+                <div class="linkshield-warning-tip">
+                    <strong>💡 Tip:</strong> ${tip}
+                </div>
+            </div>
+            <div class="linkshield-warning-footer">
+                <button id="ls-oauth-dismiss" class="linkshield-btn-primary">${btnText}</button>
+            </div>
+        </div>
+    `;
+
+    // Inject styles als ze nog niet bestaan
+    if (!document.getElementById('linkshield-oauth-styles')) {
+        const styles = document.createElement('style');
+        styles.id = 'linkshield-oauth-styles';
+        styles.textContent = `
+            #linkshield-oauth-warning {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 2147483647;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            }
+            .linkshield-warning-backdrop {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.7);
+            }
+            .linkshield-warning-modal {
+                position: relative;
+                background: #fff;
+                border-radius: 12px;
+                max-width: 480px;
+                width: 90%;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+                overflow: hidden;
+            }
+            .linkshield-warning-header {
+                padding: 20px 24px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+            .linkshield-warning-header.linkshield-critical {
+                background: linear-gradient(135deg, #dc2626, #b91c1c);
+                color: white;
+            }
+            .linkshield-warning-icon {
+                font-size: 28px;
+            }
+            .linkshield-warning-header h2 {
+                margin: 0;
+                font-size: 18px;
+                font-weight: 600;
+            }
+            .linkshield-warning-body {
+                padding: 24px;
+            }
+            .linkshield-warning-body p {
+                margin: 0 0 16px 0;
+                color: #374151;
+                line-height: 1.6;
+            }
+            .linkshield-warning-tip {
+                background: #fef3c7;
+                border-left: 4px solid #f59e0b;
+                padding: 12px 16px;
+                border-radius: 0 8px 8px 0;
+                font-size: 14px;
+                color: #92400e;
+            }
+            .linkshield-warning-footer {
+                padding: 16px 24px;
+                background: #f9fafb;
+                display: flex;
+                justify-content: flex-end;
+            }
+            .linkshield-btn-primary {
+                background: #2563eb;
+                color: white;
+                border: none;
+                padding: 10px 24px;
+                border-radius: 8px;
+                font-size: 14px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: background 0.2s;
+            }
+            .linkshield-btn-primary:hover {
+                background: #1d4ed8;
+            }
+        `;
+        document.head.appendChild(styles);
+    }
+
+    document.body.appendChild(overlay);
+
+    // Event handlers
+    const dismissBtn = document.getElementById('ls-oauth-dismiss');
+    dismissBtn?.addEventListener('click', () => overlay.remove());
+    dismissBtn?.focus();
+
+    // Escape key
+    const handleEscape = (e) => {
+        if (e.key === 'Escape') {
+            overlay.remove();
+            document.removeEventListener('keydown', handleEscape);
+        }
+    };
+    document.addEventListener('keydown', handleEscape);
+
+    // Auto-dismiss na 30 seconden
+    setTimeout(() => overlay.remove(), 30000);
+}
+
+// =============================
 // CLICKFIX ATTACK DETECTION
 // Detecteert ClickFix aanvallen waar gebruikers misleid worden om
 // PowerShell/CMD commando's te kopiëren en plakken via nep-CAPTCHA of "Fix it" prompts
@@ -6048,6 +6278,116 @@ async function proactiveVisualHijackingScan() {
   return false;
 }
 
+/**
+ * SECURITY FIX v8.5.0: Fake Cloudflare Turnstile Detection
+ * Detecteert nep CAPTCHA/Turnstile verificaties die gebruikt worden
+ * in ConsentFix en andere social engineering aanvallen
+ *
+ * @returns {Object} - { detected: boolean, indicators: string[], score: number }
+ */
+function detectFakeTurnstile() {
+    if (!globalConfig?.ADVANCED_THREAT_DETECTION?.fakeTurnstile?.enabled) {
+        return { detected: false, indicators: [], score: 0 };
+    }
+
+    const config = globalConfig.ADVANCED_THREAT_DETECTION.fakeTurnstile;
+    const indicators = [];
+    let score = 0;
+
+    try {
+        // Stap 1: Check voor legitieme Turnstile iframes
+        const iframes = document.querySelectorAll('iframe');
+        let hasLegitimateTurnstile = false;
+
+        for (const iframe of iframes) {
+            if (!iframe.src) continue;
+            try {
+                const iframeSrc = iframe.src.toLowerCase();
+                if (config.legitimateOrigins.some(origin => iframeSrc.includes(origin))) {
+                    hasLegitimateTurnstile = true;
+                    break;
+                }
+            } catch (e) { /* cross-origin */ }
+        }
+
+        // Stap 2: Check voor Turnstile-achtige UI elementen
+        const bodyText = document.body?.innerText?.toLowerCase() || '';
+        const bodyHtml = document.body?.innerHTML?.toLowerCase() || '';
+
+        let hasTurnstileText = false;
+        for (const pattern of config.textPatterns) {
+            if (bodyText.includes(pattern.toLowerCase())) {
+                hasTurnstileText = true;
+                indicators.push(`turnstile_text: "${pattern}"`);
+                break;
+            }
+        }
+
+        // Stap 3: Check voor Turnstile branding/styling zonder legitieme iframe
+        const hasTurnstileBranding =
+            bodyHtml.includes('cf-turnstile') ||
+            bodyHtml.includes('cloudflare') ||
+            bodyHtml.includes('turnstile-widget') ||
+            !!document.querySelector('[class*="turnstile"]') ||
+            !!document.querySelector('[id*="turnstile"]');
+
+        if (hasTurnstileBranding) {
+            indicators.push('turnstile_branding_found');
+        }
+
+        // Stap 4: Check voor checkbox met "I'm human" zonder Turnstile
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        for (const cb of checkboxes) {
+            const parentText = cb.parentElement?.innerText?.toLowerCase() || '';
+            const labelText = document.querySelector(`label[for="${cb.id}"]`)?.innerText?.toLowerCase() || '';
+            const combinedText = parentText + ' ' + labelText;
+
+            if (combinedText.match(/human|robot|not a robot|i('| a)?m human|verify/)) {
+                indicators.push('fake_human_checkbox');
+                break;
+            }
+        }
+
+        // Stap 5: Check voor spinner/loading animatie met verificatie tekst
+        const spinners = document.querySelectorAll('[class*="spinner"], [class*="loading"], [class*="loader"]');
+        for (const spinner of spinners) {
+            const nearbyText = spinner.parentElement?.innerText?.toLowerCase() || '';
+            if (nearbyText.match(/verify|check|secure|human/)) {
+                indicators.push('fake_verification_spinner');
+                break;
+            }
+        }
+
+        // Bepaal of het fake is
+        const isFake = (hasTurnstileText || hasTurnstileBranding || indicators.length > 0) &&
+                       !hasLegitimateTurnstile;
+
+        if (isFake) {
+            score = globalConfig.ADVANCED_THREAT_DETECTION.scores.FAKE_TURNSTILE_INDICATOR;
+
+            logDebug(`[FakeTurnstile] 🚨 DETECTED - Score: ${score}`);
+            logDebug(`[FakeTurnstile] Indicators: ${indicators.join(', ')}`);
+
+            // Rapporteer aan background
+            if (typeof chrome !== 'undefined' && chrome.runtime?.sendMessage) {
+                chrome.runtime.sendMessage({
+                    type: 'fakeTurnstileDetected',
+                    url: window.location.href,
+                    indicators: indicators,
+                    score: score,
+                    timestamp: Date.now()
+                }).catch(() => {});
+            }
+        }
+
+        return { detected: isFake, indicators, score };
+
+    } catch (err) {
+        handleError(err, 'FakeTurnstileDetection');
+        return { detected: false, indicators: [], score: 0 };
+    }
+}
+
 // Run proactive scan after page load
 function initProactiveVisualHijackingScan() {
   // Initial scan with delay to let page render
@@ -10434,6 +10774,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       // Initialiseer Clipboard Guard voor crypto hijacking detectie
       initClipboardGuard();
 
+      // Initialiseer OAuth Paste Guard voor ConsentFix/token theft detectie (v8.5.0)
+      initOAuthPasteGuard();
+
       // Initialiseer ClickFix Attack detectie voor PowerShell/CMD injectie via nep-CAPTCHA
       initClickFixDetection();
 
@@ -10451,6 +10794,23 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (tableQRScanner) {
         tableQRScanner.scanAllTables(); // Initial scan bij page load
       }
+
+      // SECURITY FIX v8.5.0: Split QR Detection - scan voor opgesplitste QR codes
+      // Wordt async uitgevoerd om main thread niet te blokkeren
+      (async () => {
+        try {
+          const splitQRResult = await getSplitQRDetector().scan();
+          if (splitQRResult.detected) {
+            logDebug(`[SplitQR] Detected split QR code at page load: ${splitQRResult.url}`);
+            // Warn de gebruiker indien malicious URL
+            if (typeof warnMaliciousQRCode === 'function') {
+              warnMaliciousQRCode(splitQRResult.url, 'split_qr');
+            }
+          }
+        } catch (e) {
+          handleError(e, 'SplitQR initial scan');
+        }
+      })();
 
       // SECURITY FIX v8.2.0: All page-wide checks moved inside protection block
       const currentUrl = window.location.href;
@@ -10490,6 +10850,13 @@ document.addEventListener('DOMContentLoaded', async () => {
       suspiciousScripts.forEach(r => reasonsForPage.add(r));
       pageRisk += 5.0;
       logDebug(`⚠️ Verdachte scripts: ${suspiciousScripts.join(', ')}`);
+    }
+    // 1c2. SECURITY FIX v8.5.0: Fake Turnstile/CAPTCHA detectie
+    const fakeTurnstileResult = detectFakeTurnstile();
+    if (fakeTurnstileResult.detected) {
+      reasonsForPage.add('fakeTurnstileDetected');
+      pageRisk += fakeTurnstileResult.score;
+      logDebug(`⚠️ Fake Turnstile detected: ${fakeTurnstileResult.indicators.join(', ')}`);
     }
     // 1d. Loginpagina-checks
     if (detectLoginPage(currentUrl)) {
@@ -11488,6 +11855,253 @@ class ImageScannerOptimized {
 
 // Global image scanner instance
 let imageScanner = null;
+
+// =============================================================================
+// SPLIT QR CODE DETECTION (v8.5.0)
+// Detecteert QR codes die opgesplitst zijn in meerdere afbeeldingen
+// om security scanners te omzeilen (Gabagool PhaaS techniek)
+// =============================================================================
+
+/**
+ * SECURITY FIX v8.5.0: Split QR Code Detection
+ * Detecteert QR codes die opgesplitst zijn in meerdere afbeeldingen
+ * om security scanners te omzeilen (Gabagool PhaaS techniek)
+ */
+class SplitQRDetector {
+    constructor() {
+        this.config = globalConfig?.ADVANCED_THREAT_DETECTION?.splitQR || {
+            enabled: true,
+            adjacencyTolerance: 5,
+            minFragments: 2,
+            maxFragments: 6,
+            minFragmentSize: 20,
+            maxFragmentSize: 300
+        };
+        this.scannedGroups = new WeakSet();
+    }
+
+    /**
+     * Scan de pagina voor split QR codes
+     * @returns {Promise<Object>} - { detected: boolean, url?: string, fragmentCount?: number }
+     */
+    async scan() {
+        if (!this.config.enabled) {
+            return { detected: false };
+        }
+
+        return new Promise((resolve) => {
+            // Gebruik requestIdleCallback om main thread niet te blokkeren
+            const doScan = () => {
+                try {
+                    const result = this._performScan();
+                    resolve(result);
+                } catch (err) {
+                    handleError(err, 'SplitQRDetector');
+                    resolve({ detected: false });
+                }
+            };
+
+            if (typeof requestIdleCallback === 'function') {
+                requestIdleCallback(doScan, { timeout: 2000 });
+            } else {
+                setTimeout(doScan, 100);
+            }
+        });
+    }
+
+    _performScan() {
+        // Stap 1: Verzamel kandidaat-afbeeldingen
+        const images = Array.from(document.querySelectorAll('img'));
+        const candidates = [];
+
+        for (const img of images) {
+            // Skip afbeeldingen die al gescand zijn door reguliere scanner
+            if (img.dataset.linkshieldQrScanned) continue;
+
+            const rect = img.getBoundingClientRect();
+
+            // Filter op grootte (QR fragmenten zijn typisch klein en vierkant-achtig)
+            if (rect.width >= this.config.minFragmentSize &&
+                rect.width <= this.config.maxFragmentSize &&
+                rect.height >= this.config.minFragmentSize &&
+                rect.height <= this.config.maxFragmentSize &&
+                Math.abs(rect.width - rect.height) < 50) { // Bijna vierkant
+
+                candidates.push({
+                    img,
+                    rect,
+                    centerX: rect.left + rect.width / 2,
+                    centerY: rect.top + rect.height / 2
+                });
+            }
+        }
+
+        if (candidates.length < this.config.minFragments) {
+            return { detected: false };
+        }
+
+        logDebug(`[SplitQR] Found ${candidates.length} candidate fragments`);
+
+        // Stap 2: Groepeer aangrenzende afbeeldingen
+        const groups = this._groupAdjacentImages(candidates);
+
+        // Stap 3: Scan elke groep
+        for (const group of groups) {
+            if (group.length >= this.config.minFragments &&
+                group.length <= this.config.maxFragments) {
+
+                const result = this._scanGroup(group);
+                if (result.detected) {
+                    logDebug(`[SplitQR] 🚨 DETECTED split QR with ${group.length} fragments`);
+                    logDebug(`[SplitQR] URL: ${result.url}`);
+
+                    // Rapporteer aan background
+                    if (typeof chrome !== 'undefined' && chrome.runtime?.sendMessage) {
+                        chrome.runtime.sendMessage({
+                            type: 'splitQRDetected',
+                            url: window.location.href,
+                            qrUrl: result.url,
+                            fragmentCount: group.length,
+                            timestamp: Date.now()
+                        }).catch(() => {});
+                    }
+
+                    return result;
+                }
+            }
+        }
+
+        return { detected: false };
+    }
+
+    _groupAdjacentImages(candidates) {
+        const groups = [];
+        const used = new Set();
+        const tolerance = this.config.adjacencyTolerance;
+
+        for (let i = 0; i < candidates.length; i++) {
+            if (used.has(i)) continue;
+
+            const group = [candidates[i]];
+            used.add(i);
+
+            // BFS om alle aangrenzende afbeeldingen te vinden
+            const queue = [candidates[i]];
+
+            while (queue.length > 0) {
+                const current = queue.shift();
+
+                for (let j = 0; j < candidates.length; j++) {
+                    if (used.has(j)) continue;
+
+                    if (this._isAdjacent(current.rect, candidates[j].rect, tolerance)) {
+                        group.push(candidates[j]);
+                        used.add(j);
+                        queue.push(candidates[j]);
+                    }
+                }
+            }
+
+            if (group.length >= this.config.minFragments) {
+                groups.push(group);
+            }
+        }
+
+        return groups;
+    }
+
+    _isAdjacent(rect1, rect2, tolerance) {
+        // Check horizontale aangrenzendheid
+        const horizontalAdjacent =
+            Math.abs(rect1.right - rect2.left) <= tolerance ||
+            Math.abs(rect2.right - rect1.left) <= tolerance;
+
+        // Check verticale aangrenzendheid
+        const verticalAdjacent =
+            Math.abs(rect1.bottom - rect2.top) <= tolerance ||
+            Math.abs(rect2.bottom - rect1.top) <= tolerance;
+
+        // Check of ze op dezelfde rij/kolom staan
+        const sameRow = Math.abs(rect1.top - rect2.top) < rect1.height / 2;
+        const sameColumn = Math.abs(rect1.left - rect2.left) < rect1.width / 2;
+
+        return (horizontalAdjacent && sameRow) || (verticalAdjacent && sameColumn);
+    }
+
+    _scanGroup(group) {
+        try {
+            // Sorteer op positie (links-naar-rechts, boven-naar-onder)
+            group.sort((a, b) => {
+                const rowDiff = Math.floor(a.rect.top / 50) - Math.floor(b.rect.top / 50);
+                if (rowDiff !== 0) return rowDiff;
+                return a.rect.left - b.rect.left;
+            });
+
+            // Bereken totale grootte
+            const minX = Math.min(...group.map(g => g.rect.left));
+            const minY = Math.min(...group.map(g => g.rect.top));
+            const maxX = Math.max(...group.map(g => g.rect.right));
+            const maxY = Math.max(...group.map(g => g.rect.bottom));
+
+            const totalWidth = Math.ceil(maxX - minX);
+            const totalHeight = Math.ceil(maxY - minY);
+
+            // Maak canvas
+            const canvas = document.createElement('canvas');
+            canvas.width = totalWidth;
+            canvas.height = totalHeight;
+            const ctx = canvas.getContext('2d');
+
+            if (!ctx) return { detected: false };
+
+            // Teken alle fragmenten op het canvas
+            for (const item of group) {
+                const x = Math.round(item.rect.left - minX);
+                const y = Math.round(item.rect.top - minY);
+
+                try {
+                    ctx.drawImage(item.img, x, y, item.rect.width, item.rect.height);
+                } catch (e) {
+                    // Cross-origin image, skip
+                    continue;
+                }
+            }
+
+            // Scan met jsQR
+            const imageData = ctx.getImageData(0, 0, totalWidth, totalHeight);
+
+            if (typeof jsQR === 'function') {
+                const qrResult = jsQR(imageData.data, totalWidth, totalHeight);
+
+                if (qrResult && qrResult.data) {
+                    return {
+                        detected: true,
+                        url: qrResult.data,
+                        fragmentCount: group.length,
+                        type: 'split_qr_code',
+                        score: globalConfig?.ADVANCED_THREAT_DETECTION?.scores?.SPLIT_QR_DETECTED || 12
+                    };
+                }
+            }
+
+            return { detected: false };
+
+        } catch (err) {
+            handleError(err, 'SplitQR.scanGroup');
+            return { detected: false };
+        }
+    }
+}
+
+// Singleton instance
+let splitQRDetector = null;
+
+function getSplitQRDetector() {
+    if (!splitQRDetector) {
+        splitQRDetector = new SplitQRDetector();
+    }
+    return splitQRDetector;
+}
 
 // =============================================================================
 // WEBTRANSPORT MONITOR - Detecteert misbruik van WebTransport/HTTP3 voor C2/exfiltration

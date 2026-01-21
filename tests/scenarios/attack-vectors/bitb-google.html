@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BitB Google Login Test - LinkShield</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+        .test-info {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: #333;
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            z-index: 1;
+        }
+        .trigger-button {
+            background: #4285f4;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 100px auto;
+            display: block;
+        }
+        /* Fake browser window */
+        .bitb-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 450px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            z-index: 9999;
+            overflow: hidden;
+        }
+        .bitb-modal.active {
+            display: block;
+        }
+        /* Fake window chrome */
+        .window-header {
+            background: linear-gradient(to bottom, #e8e8e8, #d0d0d0);
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #b0b0b0;
+        }
+        .traffic-lights {
+            display: flex;
+            gap: 6px;
+        }
+        .traffic-light {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .traffic-light.close { background: #ff5f57; }
+        .traffic-light.minimize { background: #ffbd2e; }
+        .traffic-light.maximize { background: #28c940; }
+        /* Fake URL bar */
+        .fake-url-bar {
+            flex: 1;
+            margin-left: 20px;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            padding: 5px 15px;
+            display: flex;
+            align-items: center;
+            font-size: 13px;
+        }
+        .fake-url-bar .padlock {
+            color: #28a745;
+            margin-right: 8px;
+        }
+        .fake-url-bar .url-text {
+            color: #333;
+        }
+        /* Login form content */
+        .login-content {
+            padding: 40px;
+            text-align: center;
+        }
+        .google-logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #4285f4;
+            margin-bottom: 10px;
+        }
+        .login-content h2 {
+            font-size: 24px;
+            font-weight: 400;
+            margin-bottom: 8px;
+            color: #202124;
+        }
+        .login-content p {
+            color: #5f6368;
+            margin-bottom: 30px;
+        }
+        .login-content input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            font-size: 16px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+        .login-content input:focus {
+            outline: none;
+            border-color: #4285f4;
+        }
+        .login-content button {
+            background: #4285f4;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        /* Overlay backdrop */
+        .backdrop {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 9998;
+        }
+        .backdrop.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-info">
+        <strong>TEST:</strong> Browser-in-the-Browser (BitB) Attack<br>
+        <strong>Expected:</strong> BitB warning shown<br>
+        <strong>Triggers:</strong> bitbAttackTip, detectFakeUrlBars
+    </div>
+
+    <h1>Sample Website</h1>
+    <p>Click the button below to sign in with your Google account:</p>
+    <button class="trigger-button" onclick="showFakeLogin()">Sign in with Google</button>
+
+    <!-- Fake BitB popup -->
+    <div class="backdrop" id="backdrop" onclick="hideFakeLogin()"></div>
+    <div class="bitb-modal" id="bitbModal">
+        <!-- Fake window chrome with traffic lights -->
+        <div class="window-header">
+            <div class="traffic-lights">
+                <span class="traffic-light close"></span>
+                <span class="traffic-light minimize"></span>
+                <span class="traffic-light maximize"></span>
+            </div>
+            <!-- Fake URL bar showing Google -->
+            <div class="fake-url-bar">
+                <span class="padlock">🔒</span>
+                <span class="url-text">https://accounts.google.com/signin/oauth</span>
+            </div>
+        </div>
+
+        <!-- Fake login form -->
+        <div class="login-content">
+            <div class="google-logo">Google</div>
+            <h2>Sign in</h2>
+            <p>Use your Google Account</p>
+            <input type="email" placeholder="Email or phone" id="fake-email">
+            <input type="password" placeholder="Password" id="fake-password" style="display:none;">
+            <button onclick="stealCredentials()">Next</button>
+            <p style="font-size: 12px; margin-top: 30px;">
+                <a href="#">Forgot email?</a> | <a href="#">Create account</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function showFakeLogin() {
+            document.getElementById('backdrop').classList.add('active');
+            document.getElementById('bitbModal').classList.add('active');
+            console.log('[TEST] BitB modal displayed - LinkShield should detect this');
+        }
+
+        function hideFakeLogin() {
+            document.getElementById('backdrop').classList.remove('active');
+            document.getElementById('bitbModal').classList.remove('active');
+        }
+
+        function stealCredentials() {
+            const email = document.getElementById('fake-email').value;
+            const password = document.getElementById('fake-password').value;
+            console.log('[ATTACK] Credentials captured:', email, password);
+            alert('This is a test - in a real attack, your credentials would be stolen!');
+        }
+
+        console.log('[TEST] BitB Google scenario loaded');
+        console.log('[TEST] Expected: LinkShield should detect fake browser window');
+    </script>
+</body>
+</html>

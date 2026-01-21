@@ -1659,10 +1659,44 @@
   },
   "threatsTodayCount": {
     "message": "+$1 hoje",
-    "placeholders": { "COUNT": { "content": "$1", "example": "847" } }
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "847"
+      }
+    }
   },
   "threatsTotalCount": {
     "message": "$1 bloqueados",
-    "placeholders": { "COUNT": { "content": "$1", "example": "2431" } }
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "2431"
+      }
+    }
+  },
+  "oauthTheftTitle": {
+    "message": "🛡️ Roubo de Token OAuth Bloqueado"
+  },
+  "oauthTheftMessage": {
+    "message": "Você tentou colar uma URL de autenticação. Esta é uma técnica de phishing conhecida chamada 'ConsentFix' que rouba o acesso à sua conta."
+  },
+  "oauthTheftTip": {
+    "message": "Nunca cole URLs contendo ?code= ou tokens de acesso em sites."
+  },
+  "fakeTurnstileTitle": {
+    "message": "⚠️ Verificação de Segurança Falsa Detectada"
+  },
+  "fakeTurnstileMessage": {
+    "message": "Esta página está exibindo uma verificação falsa do Cloudflare. Isso é frequentemente usado em ataques de phishing."
+  },
+  "splitQrTitle": {
+    "message": "🔍 Código QR Dividido Detectado"
+  },
+  "splitQrMessage": {
+    "message": "Foi detectado um código QR dividido em várias imagens. Esta técnica é usada para evitar scanners de segurança."
+  },
+  "understoodButton": {
+    "message": "Entendi"
   }
 }

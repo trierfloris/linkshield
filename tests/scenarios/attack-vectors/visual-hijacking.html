@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Hijacking Test - LinkShield</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            margin: 0;
+        }
+        .test-info {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: #333;
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            z-index: 1;
+        }
+        .legitimate-content {
+            max-width: 600px;
+            margin: 100px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .legitimate-content h1 {
+            color: #333;
+        }
+        .legitimate-content p {
+            color: #666;
+            line-height: 1.6;
+        }
+        .safe-button {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 4px;
+            text-decoration: none;
+            margin-top: 20px;
+        }
+
+        /* ATTACK: Invisible overlay that intercepts clicks */
+        .invisible-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2147483647; /* Maximum z-index */
+            background: transparent;
+            cursor: pointer;
+        }
+
+        /* ATTACK: Transparent link with extreme z-index */
+        .hijack-link-zindex {
+            position: fixed;
+            top: 200px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2147483646;
+            opacity: 0.01; /* Nearly invisible */
+            padding: 50px 100px;
+            background: red;
+        }
+
+        /* ATTACK: pointer-events manipulation */
+        .pointer-events-overlay {
+            position: fixed;
+            bottom: 100px;
+            right: 100px;
+            width: 200px;
+            height: 60px;
+            background: rgba(255,0,0,0.01);
+            z-index: 9999;
+            pointer-events: all;
+        }
+        .pointer-events-overlay a {
+            display: block;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+        }
+
+        /* ATTACK: Clickjacking frame */
+        .clickjacking-frame {
+            position: fixed;
+            top: 150px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 400px;
+            height: 200px;
+            border: none;
+            z-index: 999999;
+            opacity: 0.001;
+            pointer-events: all;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-info">
+        <strong>TEST:</strong> Visual Hijacking Detection<br>
+        <strong>Expected:</strong> All overlay attacks should be detected<br>
+        <strong>Triggers:</strong> detectVisualHijacking, detectPointerEventsNoneOverlay
+    </div>
+
+    <!-- Legitimate content that user thinks they're clicking -->
+    <div class="legitimate-content">
+        <h1>Welcome to Our Service</h1>
+        <p>Thank you for visiting our website. Click the button below to continue to your dashboard.</p>
+        <a href="https://safe-site.com/dashboard" class="safe-button">
+            Continue to Dashboard
+        </a>
+        <p style="margin-top: 30px; font-size: 12px; color: #999;">
+            This page contains hidden attack overlays for testing purposes.
+        </p>
+    </div>
+
+    <!-- ATTACK 1: Full-page invisible overlay -->
+    <a href="https://evil-phishing-site.xyz/steal" class="invisible-overlay" id="attack1">
+        <!-- This invisible link covers the entire page -->
+    </a>
+
+    <!-- ATTACK 2: High z-index transparent link -->
+    <a href="https://malware-download.top/payload.exe" class="hijack-link-zindex" id="attack2">
+        Click here for free prize!
+    </a>
+
+    <!-- ATTACK 3: pointer-events manipulation overlay -->
+    <div class="pointer-events-overlay" id="attack3">
+        <a href="https://credential-stealer.club/phish">Hidden Link</a>
+    </div>
+
+    <!-- ATTACK 4: Iframe clickjacking attempt -->
+    <iframe src="about:blank" class="clickjacking-frame" id="attack4"></iframe>
+
+    <script>
+        console.log('[TEST] Visual Hijacking scenario loaded');
+        console.log('[TEST] Attack elements present:');
+        console.log('  - Invisible full-page overlay (z-index: max)');
+        console.log('  - Transparent link with extreme z-index');
+        console.log('  - Pointer-events manipulation overlay');
+        console.log('  - Clickjacking iframe');
+        console.log('[TEST] Expected: LinkShield should detect and block all of these');
+
+        // Log when user tries to click
+        document.addEventListener('click', (e) => {
+            const target = e.target;
+            if (target.id && target.id.startsWith('attack')) {
+                console.log(`[ATTACK] User clicked on attack element: ${target.id}`);
+                console.log(`[ATTACK] Would have navigated to: ${target.href || 'unknown'}`);
+            }
+        });
+    </script>
+</body>
+</html>

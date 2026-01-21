@@ -1659,10 +1659,44 @@
   },
   "threatsTodayCount": {
     "message": "+$1 اليوم",
-    "placeholders": { "COUNT": { "content": "$1", "example": "847" } }
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "847"
+      }
+    }
   },
   "threatsTotalCount": {
     "message": "$1 محظور",
-    "placeholders": { "COUNT": { "content": "$1", "example": "2431" } }
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "2431"
+      }
+    }
+  },
+  "oauthTheftTitle": {
+    "message": "🛡️ تم حظر سرقة رمز OAuth"
+  },
+  "oauthTheftMessage": {
+    "message": "حاولت لصق عنوان URL للمصادقة. هذه تقنية تصيد معروفة تسمى 'ConsentFix' تسرق الوصول إلى حسابك."
+  },
+  "oauthTheftTip": {
+    "message": "لا تلصق أبدًا عناوين URL التي تحتوي على ?code= أو رموز الوصول في المواقع."
+  },
+  "fakeTurnstileTitle": {
+    "message": "⚠️ تم اكتشاف فحص أمني مزيف"
+  },
+  "fakeTurnstileMessage": {
+    "message": "هذه الصفحة تعرض تحقق Cloudflare مزيف. يُستخدم هذا غالبًا في هجمات التصيد الاحتيالي."
+  },
+  "splitQrTitle": {
+    "message": "🔍 تم اكتشاف رمز QR مقسم"
+  },
+  "splitQrMessage": {
+    "message": "تم اكتشاف رمز QR مقسم إلى صور متعددة. تُستخدم هذه التقنية للتهرب من ماسحات الأمان."
+  },
+  "understoodButton": {
+    "message": "فهمت"
   }
 }

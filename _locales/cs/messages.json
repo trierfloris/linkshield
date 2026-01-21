@@ -1659,10 +1659,44 @@
   },
   "threatsTodayCount": {
     "message": "+$1 dnes",
-    "placeholders": { "COUNT": { "content": "$1", "example": "847" } }
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "847"
+      }
+    }
   },
   "threatsTotalCount": {
     "message": "$1 zablokováno",
-    "placeholders": { "COUNT": { "content": "$1", "example": "2431" } }
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "2431"
+      }
+    }
+  },
+  "oauthTheftTitle": {
+    "message": "🛡️ Krádež tokenu OAuth zablokována"
+  },
+  "oauthTheftMessage": {
+    "message": "Pokusili jste se vložit ověřovací URL. Jedná se o známou phishingovou techniku 'ConsentFix', která krade přístup k vašemu účtu."
+  },
+  "oauthTheftTip": {
+    "message": "Nikdy nevkládejte URL obsahující ?code= nebo přístupové tokeny na webové stránky."
+  },
+  "fakeTurnstileTitle": {
+    "message": "⚠️ Detekována falešná bezpečnostní kontrola"
+  },
+  "fakeTurnstileMessage": {
+    "message": "Tato stránka zobrazuje falešné ověření Cloudflare. To se často používá při phishingových útocích."
+  },
+  "splitQrTitle": {
+    "message": "🔍 Detekován rozdělený QR kód"
+  },
+  "splitQrMessage": {
+    "message": "Byl detekován QR kód rozdělený do více obrázků. Tato technika se používá k obejití bezpečnostních skenerů."
+  },
+  "understoodButton": {
+    "message": "Rozumím"
   }
 }

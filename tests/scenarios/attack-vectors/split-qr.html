@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Split QR Code Test Page</title>
+    <style>
+        .qr-container { display: flex; gap: 0; }
+        .qr-fragment { width: 100px; height: 100px; }
+    </style>
+</head>
+<body>
+    <h1>Test: Split QR Code Detection</h1>
+
+    <!-- Dit simuleert een gesplitste QR code -->
+    <!-- In productie zou dit 2+ echte QR fragmenten zijn -->
+    <div class="qr-container">
+        <img class="qr-fragment" src="data:image/png;base64,..." alt="QR Fragment 1">
+        <img class="qr-fragment" src="data:image/png;base64,..." alt="QR Fragment 2">
+    </div>
+
+    <h2>Note:</h2>
+    <p>For full testing, create actual QR fragments using a QR generator and image splitter.</p>
+</body>
+</html>

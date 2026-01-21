@@ -1655,5 +1655,29 @@
         "example": "2431"
       }
     }
+  },
+  "oauthTheftTitle": {
+    "message": "🛡️ OAuth Token Theft Blocked"
+  },
+  "oauthTheftMessage": {
+    "message": "You tried to paste an authentication URL. This is a known phishing technique called 'ConsentFix' that steals your account access."
+  },
+  "oauthTheftTip": {
+    "message": "Never paste URLs containing ?code= or access tokens into websites."
+  },
+  "fakeTurnstileTitle": {
+    "message": "⚠️ Fake Security Check Detected"
+  },
+  "fakeTurnstileMessage": {
+    "message": "This page is displaying a fake Cloudflare verification. This is often used in phishing attacks."
+  },
+  "splitQrTitle": {
+    "message": "🔍 Split QR Code Detected"
+  },
+  "splitQrMessage": {
+    "message": "A QR code split into multiple images was detected. This technique is used to evade security scanners."
+  },
+  "understoodButton": {
+    "message": "I Understand"
   }
 }

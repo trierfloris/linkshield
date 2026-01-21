@@ -1659,10 +1659,44 @@
   },
   "threatsTodayCount": {
     "message": "+$1 今日",
-    "placeholders": { "COUNT": { "content": "$1", "example": "847" } }
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "847"
+      }
+    }
   },
   "threatsTotalCount": {
     "message": "$1 已拦截",
-    "placeholders": { "COUNT": { "content": "$1", "example": "2431" } }
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "2431"
+      }
+    }
+  },
+  "oauthTheftTitle": {
+    "message": "🛡️ OAuth令牌盗窃已阻止"
+  },
+  "oauthTheftMessage": {
+    "message": "您尝试粘贴身份验证URL。这是一种名为'ConsentFix'的已知钓鱼技术，会窃取您的帐户访问权限。"
+  },
+  "oauthTheftTip": {
+    "message": "切勿将包含?code=或访问令牌的URL粘贴到网站中。"
+  },
+  "fakeTurnstileTitle": {
+    "message": "⚠️ 检测到虚假安全检查"
+  },
+  "fakeTurnstileMessage": {
+    "message": "此页面正在显示虚假的Cloudflare验证。这通常用于网络钓鱼攻击。"
+  },
+  "splitQrTitle": {
+    "message": "🔍 检测到分割的二维码"
+  },
+  "splitQrMessage": {
+    "message": "检测到分割成多个图像的二维码。此技术用于逃避安全扫描器。"
+  },
+  "understoodButton": {
+    "message": "我明白了"
   }
 }

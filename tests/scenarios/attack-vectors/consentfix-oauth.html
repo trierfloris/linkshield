@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ConsentFix Test Page</title>
+</head>
+<body>
+    <h1>Test: ConsentFix OAuth Token Theft</h1>
+
+    <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; max-width: 400px;">
+        <p>Verify you are human</p>
+        <p>Paste the URL from the popup below:</p>
+        <input type="text" id="oauth-paste" placeholder="Paste URL here..." style="width: 100%; padding: 8px;">
+        <button>Verify</button>
+    </div>
+
+    <h2>Test Instructions:</h2>
+    <ol>
+        <li>Copy this test URL: <code>http://localhost:8080/?code=M.R3_TEST_TOKEN_12345</code></li>
+        <li>Try to paste it in the input field above</li>
+        <li>LinkShield should block the paste and show a warning</li>
+    </ol>
+</body>
+</html>

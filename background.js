@@ -320,6 +320,63 @@ async function resetScanQuota() {
     }
 }
 
+// =============================================================================
+// SECURITY FIX v8.5.0: Advanced Threat Detection Statistics
+// =============================================================================
+
+/**
+ * Increment teller voor geblokkeerde dreigingen (voor popup statistieken)
+ * @param {string} threatType - Type dreiging (oauth_theft, fake_turnstile, split_qr)
+ */
+async function incrementBlockedThreatsCount(threatType) {
+    try {
+        const key = `blocked_${threatType}_count`;
+        const result = await chrome.storage.local.get([key, 'blocked_total_count', 'threats_today']);
+        const current = result[key] || 0;
+        const total = result.blocked_total_count || 0;
+        const threatsToday = result.threats_today || 0;
+
+        await chrome.storage.local.set({
+            [key]: current + 1,
+            blocked_total_count: total + 1,
+            threats_today: threatsToday + 1
+        });
+
+        if (globalThresholds.DEBUG_MODE) {
+            console.log(`[ThreatStats] Incremented ${threatType}: ${current + 1} (total: ${total + 1})`);
+        }
+    } catch (e) {
+        // Ignore storage errors
+    }
+}
+
+/**
+ * Placeholder functie voor URL reputatie check
+ * Kan later geïntegreerd worden met Google Safe Browsing of andere APIs
+ * @param {string} url - De URL om te checken
+ * @returns {Promise<{malicious: boolean, score: number}>}
+ */
+async function checkUrlReputation(url) {
+    // Placeholder - in productie zou dit een echte API call zijn
+    // naar Safe Browsing, VirusTotal, of een eigen reputatie service
+    try {
+        // Basis check: is het een bekende phishing/malware TLD?
+        const urlObj = new URL(url);
+        const hostname = urlObj.hostname.toLowerCase();
+        const tld = hostname.split('.').pop();
+
+        // Snelle check tegen bekende slechte TLDs
+        const dangerousTLDs = ['tk', 'ml', 'ga', 'cf', 'gq', 'xyz', 'top', 'click', 'zip'];
+        if (dangerousTLDs.includes(tld)) {
+            return { malicious: true, score: 8 };
+        }
+
+        return { malicious: false, score: 0 };
+    } catch (e) {
+        return { malicious: false, score: 0 };
+    }
+}
+
 // Overschrijf console-functies voor productieomgeving
 if (IS_PRODUCTION) {
     console.log = function () { };
@@ -2908,6 +2965,63 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             // Log voor debugging
             console.log('[LinkShield] Form hijacking detected:', request.data);
 
+            sendResponse({ success: true });
+            break;
+
+        // =====================================================================
+        // SECURITY FIX v8.5.0: Advanced Threat Detection message handlers
+        // =====================================================================
+
+        case 'oauthTheftAttempt':
+            if (globalThresholds.DEBUG_MODE) {
+                console.log('[LinkShield] OAuth theft attempt blocked:', request);
+            }
+            // Optioneel: sla op voor statistieken
+            incrementBlockedThreatsCount('oauth_theft');
+            // Update icon naar rood voor kritieke bedreiging
+            chrome.action.setIcon({
+                path: {
+                    16: 'icons/red-circle-16.png',
+                    48: 'icons/red-circle-48.png',
+                    128: 'icons/red-circle-128.png'
+                },
+                tabId: sender.tab?.id
+            }).catch(() => {});
+            sendResponse({ success: true });
+            break;
+
+        case 'fakeTurnstileDetected':
+            if (globalThresholds.DEBUG_MODE) {
+                console.log('[LinkShield] Fake Turnstile detected:', request);
+            }
+            incrementBlockedThreatsCount('fake_turnstile');
+            // Update icon naar oranje voor waarschuwing
+            chrome.action.setIcon({
+                path: {
+                    16: 'icons/orange-circle-16.png',
+                    48: 'icons/orange-circle-48.png',
+                    128: 'icons/orange-circle-128.png'
+                },
+                tabId: sender.tab?.id
+            }).catch(() => {});
+            sendResponse({ success: true });
+            break;
+
+        case 'splitQRDetected':
+            if (globalThresholds.DEBUG_MODE) {
+                console.log('[LinkShield] Split QR detected:', request);
+            }
+            incrementBlockedThreatsCount('split_qr');
+            // Optioneel: check de QR URL tegen reputatie API
+            if (request.qrUrl) {
+                checkUrlReputation(request.qrUrl).then(result => {
+                    if (result && result.malicious) {
+                        // Update badge of notificatie
+                        chrome.action.setBadgeText({ text: '!', tabId: sender.tab?.id }).catch(() => {});
+                        chrome.action.setBadgeBackgroundColor({ color: '#dc2626', tabId: sender.tab?.id }).catch(() => {});
+                    }
+                }).catch(() => {});
+            }
             sendResponse({ success: true });
             break;
 

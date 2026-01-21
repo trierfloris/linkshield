@@ -1659,10 +1659,44 @@
   },
   "threatsTodayCount": {
     "message": "+$1 hari ini",
-    "placeholders": { "COUNT": { "content": "$1", "example": "847" } }
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "847"
+      }
+    }
   },
   "threatsTotalCount": {
     "message": "$1 diblokir",
-    "placeholders": { "COUNT": { "content": "$1", "example": "2431" } }
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "2431"
+      }
+    }
+  },
+  "oauthTheftTitle": {
+    "message": "🛡️ Pencurian Token OAuth Diblokir"
+  },
+  "oauthTheftMessage": {
+    "message": "Anda mencoba menempelkan URL autentikasi. Ini adalah teknik phishing yang dikenal bernama 'ConsentFix' yang mencuri akses akun Anda."
+  },
+  "oauthTheftTip": {
+    "message": "Jangan pernah menempelkan URL yang berisi ?code= atau token akses ke situs web."
+  },
+  "fakeTurnstileTitle": {
+    "message": "⚠️ Pemeriksaan Keamanan Palsu Terdeteksi"
+  },
+  "fakeTurnstileMessage": {
+    "message": "Halaman ini menampilkan verifikasi Cloudflare palsu. Ini sering digunakan dalam serangan phishing."
+  },
+  "splitQrTitle": {
+    "message": "🔍 Kode QR Terbagi Terdeteksi"
+  },
+  "splitQrMessage": {
+    "message": "Terdeteksi kode QR yang dibagi menjadi beberapa gambar. Teknik ini digunakan untuk menghindari pemindai keamanan."
+  },
+  "understoodButton": {
+    "message": "Saya Mengerti"
   }
 }

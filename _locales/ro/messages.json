@@ -1659,10 +1659,44 @@
   },
   "threatsTodayCount": {
     "message": "+$1 astăzi",
-    "placeholders": { "COUNT": { "content": "$1", "example": "847" } }
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "847"
+      }
+    }
   },
   "threatsTotalCount": {
     "message": "$1 blocate",
-    "placeholders": { "COUNT": { "content": "$1", "example": "2431" } }
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "2431"
+      }
+    }
+  },
+  "oauthTheftTitle": {
+    "message": "🛡️ Furt de token OAuth blocat"
+  },
+  "oauthTheftMessage": {
+    "message": "Ați încercat să lipiți un URL de autentificare. Aceasta este o tehnică de phishing cunoscută numită 'ConsentFix' care fură accesul la contul dvs."
+  },
+  "oauthTheftTip": {
+    "message": "Nu lipiți niciodată URL-uri care conțin ?code= sau jetoane de acces pe site-uri web."
+  },
+  "fakeTurnstileTitle": {
+    "message": "⚠️ Verificare de securitate falsă detectată"
+  },
+  "fakeTurnstileMessage": {
+    "message": "Această pagină afișează o verificare Cloudflare falsă. Aceasta este adesea folosită în atacuri de phishing."
+  },
+  "splitQrTitle": {
+    "message": "🔍 Cod QR împărțit detectat"
+  },
+  "splitQrMessage": {
+    "message": "A fost detectat un cod QR împărțit în mai multe imagini. Această tehnică este folosită pentru a evita scanerele de securitate."
+  },
+  "understoodButton": {
+    "message": "Am Înțeles"
   }
 }

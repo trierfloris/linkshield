@@ -1659,10 +1659,44 @@
   },
   "threatsTodayCount": {
     "message": "+$1 오늘",
-    "placeholders": { "COUNT": { "content": "$1", "example": "847" } }
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "847"
+      }
+    }
   },
   "threatsTotalCount": {
     "message": "$1 차단됨",
-    "placeholders": { "COUNT": { "content": "$1", "example": "2431" } }
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "2431"
+      }
+    }
+  },
+  "oauthTheftTitle": {
+    "message": "🛡️ OAuth 토큰 도용 차단됨"
+  },
+  "oauthTheftMessage": {
+    "message": "인증 URL을 붙여넣으려고 했습니다. 이것은 계정 액세스를 훔치는 'ConsentFix'라는 알려진 피싱 기술입니다."
+  },
+  "oauthTheftTip": {
+    "message": "?code= 또는 액세스 토큰이 포함된 URL을 웹사이트에 붙여넣지 마세요."
+  },
+  "fakeTurnstileTitle": {
+    "message": "⚠️ 가짜 보안 검사 감지됨"
+  },
+  "fakeTurnstileMessage": {
+    "message": "이 페이지에 가짜 Cloudflare 인증이 표시되고 있습니다. 이것은 피싱 공격에 자주 사용됩니다."
+  },
+  "splitQrTitle": {
+    "message": "🔍 분할 QR 코드 감지됨"
+  },
+  "splitQrMessage": {
+    "message": "여러 이미지로 분할된 QR 코드가 감지되었습니다. 이 기술은 보안 스캐너를 우회하는 데 사용됩니다."
+  },
+  "understoodButton": {
+    "message": "이해했습니다"
   }
 }

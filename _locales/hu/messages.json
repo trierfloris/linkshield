@@ -1659,10 +1659,44 @@
   },
   "threatsTodayCount": {
     "message": "+$1 ma",
-    "placeholders": { "COUNT": { "content": "$1", "example": "847" } }
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "847"
+      }
+    }
   },
   "threatsTotalCount": {
     "message": "$1 blokkolva",
-    "placeholders": { "COUNT": { "content": "$1", "example": "2431" } }
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "2431"
+      }
+    }
+  },
+  "oauthTheftTitle": {
+    "message": "🛡️ OAuth token lopás blokkolva"
+  },
+  "oauthTheftMessage": {
+    "message": "Megpróbált beilleszteni egy hitelesítési URL-t. Ez egy ismert adathalász technika 'ConsentFix' néven, amely ellopja a fiókjához való hozzáférést."
+  },
+  "oauthTheftTip": {
+    "message": "Soha ne illesszen be ?code= vagy hozzáférési tokeneket tartalmazó URL-eket weboldalakra."
+  },
+  "fakeTurnstileTitle": {
+    "message": "⚠️ Hamis biztonsági ellenőrzés észlelve"
+  },
+  "fakeTurnstileMessage": {
+    "message": "Ez az oldal hamis Cloudflare ellenőrzést jelenít meg. Ezt gyakran használják adathalász támadásokban."
+  },
+  "splitQrTitle": {
+    "message": "🔍 Osztott QR-kód észlelve"
+  },
+  "splitQrMessage": {
+    "message": "Több képre osztott QR-kód észlelve. Ezt a technikát a biztonsági szkennerek megkerülésére használják."
+  },
+  "understoodButton": {
+    "message": "Megértettem"
   }
 }

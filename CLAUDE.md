@@ -41,6 +41,85 @@
 
 ## Recent Implementations
 
+### v8.6.1 - Detection Effectiveness Fixes + Performance (2026-01)
+
+**Purpose:** Fix critical phishing URL detection gap (Layer 1: 13%→88%), eliminate data:image false positive, reduce SVG detection race condition, and fix STATUS_BREAKPOINT crash on heavy sites (bol.com).
+
+**Detection Fixes:**
+
+| Fix | Before | After | Location |
+|-----|--------|-------|----------|
+| Synchronous TLD + Brand check | 13% phishing URL detection | 88% detection | `content.js:classifyAndCheckLink()` |
+| data:image/audio/video/font whitelist | False positive on legitimate data URIs | No FP | `content.js:immediateUriSecurityCheck()` + `detectDangerousScheme()` |
+| SVG detection delay | 3000ms (race condition) | 1000ms | `content.js:initSVGPayloadDetection()` |
+
+**Performance Fixes (STATUS_BREAKPOINT crash):**
+
+| Fix | Description | Location |
+|-----|-------------|----------|
+| `all_frames: false` | Content script no longer runs in ad/tracking iframes | `manifest.json` |
+| `_isTopFrame` guard | Early frame detection skips heavy operations in sub-frames | `content.js` (top) |
+| `_isTrustedSiteCache` | Cached trusted domain check for performance-sensitive paths | `content.js` |
+| Early observer top-frame only | MutationObserver buffering limited to main frame | `content.js` |
+| NEVER_BLOCK_DOMAINS | Safety list prevents accidental blocking of major sites | `background.js` |
+| BitB regex narrowing | Removed 'close' from controlClasses (false positive trigger) | `config.js` |
+
+**Files Modified:**
+- `content.js` - Synchronous TLD+Brand detection, data URI whitelist, SVG delay, frame guards
+- `background.js` - NEVER_BLOCK_DOMAINS safety list, Dutch e-commerce trusted domains
+- `config.js` - BitB `controlClasses` regex narrowed
+- `manifest.json` - `all_frames: true` → `false`
+
+**Synchronous TLD + Brand Detection (Key Architecture Decision):**
+
+The async pipeline (`analyzeDomainAndUrl` → `performSuspiciousChecks` → `checkStaticConditions`) was hanging on the SSL Labs check (`chrome.runtime.sendMessage`) for unreachable domains, preventing the TLD check from ever firing. The fix adds a **synchronous** check directly in `classifyAndCheckLink()` that runs BEFORE the async routing:
+
+```javascript
+// In classifyAndCheckLink(), between ASCII lookalike and malicious keyword checks:
+// 1. Extract TLD → check SUSPICIOUS_TLDS_SET (O(1) Set lookup)
+// 2. Check 28 brand patterns against domain (not matching brand's own domain)
+// 3. Check phishing keywords (login, secure, verify, account, etc.)
+// 4. Score: brand+TLD=15(alert), brand+phishword=15(alert),
+//    keyword stuffing=8(caution), TLD alone=5(caution), brand alone=8(caution)
+```
+
+**Link Scanning Pipeline (Updated):**
+```
+scanNodeForLinks()
+  → immediateUriSecurityCheck()     [SYNC: data:, javascript:, vbscript:, blob:]
+  → classifyAndCheckLink()
+      ├─ Dangerous URI scheme        [SYNC]
+      ├─ Trusted domain early exit   [SYNC]
+      ├─ Unicode detection            [SYNC]
+      ├─ ASCII lookalike detection    [SYNC]
+      ├─ TLD + Brand keyword check   [SYNC] ← NEW (v8.6.1)
+      ├─ Malicious domain keywords   [SYNC]
+      ├─ Homoglyph/Punycode          [SYNC]
+      └─ Route:
+           ├─ Ad links → checkForPhishingAds()
+           └─ Regular → analyzeDomainAndUrl()  [ASYNC]
+                          → performSuspiciousChecks()
+                              → checkStaticConditions()
+                              → checkDynamicConditionsPhase2()
+                              → checkDomainAgeDynamic()
+```
+
+**Detection Effectiveness (Tested):**
+
+| Layer | Detection Rate | Notes |
+|-------|---------------|-------|
+| 1. Phishing URLs | 88% (7/8) | Only miss: internal IP (by design) |
+| 2. Unicode lookalikes | 83% (5/6) | paypaI→paypai normalization |
+| 3. BitB | 100% | |
+| 4. ClickFix | 100% | |
+| 5. Overlays | 100% | |
+| 7. Dangerous links | 100%, 0 FP | data:image FP fixed |
+| 10. Shadow DOM | 100% (open) | Closed inaccessible by design |
+| 13. AiTM | 100% | |
+| **False Positives** | **1** | münchen.de IDN only |
+
+---
+
 ### v8.6.0 - AiTM Proxy Detection + SVG Payload Detection + Popup UX (2026-01)
 
 **Purpose:** Detect reverse proxy phishing (Evilginx, Tycoon 2FA) and malicious SVG payloads. Improve popup UX by showing database freshness on badge hover.
@@ -529,8 +608,22 @@ if (tooltipFeature12) {
    - WebSocket data theft
 
 2. **Potential False Positives:**
-   - Some legitimate overlay patterns may trigger warnings
+   - IDN domains (e.g., `münchen.de`) trigger punycode detection (1 remaining FP)
    - Handled by trusted domain checks
+
+3. **Async Pipeline Limitation:**
+   - `performSuspiciousChecks()` SSL Labs check can hang for unreachable domains
+   - Mitigated by synchronous TLD+Brand check in `classifyAndCheckLink()` (v8.6.1)
+   - The async path still provides deeper analysis (domain age, MX, Levenshtein) when it completes
+
+4. **SVG Detection Race Condition:**
+   - Inline SVG scripts with `window.location` redirects execute before detection (1000ms delay)
+   - Mitigation: reduced delay from 3000ms to 1000ms, but immediate redirects still bypass
+
+5. **Headless Test Limitations:**
+   - Clipboard/OAuth guards require real user interaction events (not testable in headless)
+   - QR code scanning requires valid QR images (canvas patterns not decodable by jsQR)
+   - Form hijacking detection requires precise timing (delayed scripts + MutationObserver)
 
 ---
 
@@ -538,6 +631,7 @@ if (tooltipFeature12) {
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 8.6.1 | 2026-01 | Phishing URL detection fix (13%→88%) + data:image FP fix + performance |
 | 8.6.0 | 2026-01 | AiTM Proxy Detection + SVG Payload Detection (14 layers) + Popup UX |
 | 8.5.2 | 2026-01 | Add OAuth protection to tooltip (11 security layers) |
 | 8.5.1 | 2026-01 | Fix false positive for email addresses in URL paths |

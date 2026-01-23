@@ -1416,6 +1416,7 @@ function initClickFixDetection() {
  */
 async function scanForClickFixAttack() {
     if (clickFixDetected) return; // Voorkom herhaalde waarschuwingen
+    if (!(await isProtectionEnabled())) return;
 
     try {
         // Check if current site is a globally trusted domain (TrustedDomains.json)
@@ -1633,6 +1634,7 @@ function isPotentialBitBContainer(element) {
  */
 async function scanForBitBAttack() {
     if (bitbDetected) return;
+    if (!(await isProtectionEnabled())) return;
 
     try {
         const config = globalConfig?.BITB_DETECTION;

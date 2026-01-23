@@ -1072,8 +1072,7 @@
     "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
   },
   "tooltipFooter": {
-    "message": "12 biztonsági réteg aktív",
-    "description": "Footer text for tooltip"
+    "message": "14 biztonsági réteg aktív"
   },
   "tooltipNewBadge": {
     "message": "Új",
@@ -1709,5 +1708,35 @@
   },
   "understoodButton": {
     "message": "Megértettem"
+  },
+  "aitmProxyTitle": {
+    "message": "Adathalász proxy észlelve!"
+  },
+  "aitmProxyMessage": {
+    "message": "Ez az oldal egy adathalász proxy, amely {provider} szolgáltatást utánozza. A bejelentkezési adatai ellopásra kerülnek, ha itt jelentkezik be."
+  },
+  "aitmProxyTip": {
+    "message": "Mindig ellenőrizze az URL-t a címsorban, mielőtt megadná bejelentkezési adatait."
+  },
+  "aitmProxyDetected": {
+    "message": "Adathalász proxy észlelve - bejelentkezési oldal megszemélyesítése (kritikus kockázat)."
+  },
+  "svgPayloadTitle": {
+    "message": "Rosszindulatú SVG észlelve!"
+  },
+  "svgPayloadMessage": {
+    "message": "Ez az oldal beágyazott rosszindulatú kódot tartalmazó SVG-t tartalmaz, amely ellophatja az adatait."
+  },
+  "svgPayloadTip": {
+    "message": "Legyen óvatos az ismeretlen forrásból származó SVG mellékletekkel."
+  },
+  "svgPayloadDetected": {
+    "message": "Beágyazott szkripteket tartalmazó rosszindulatú SVG észlelve (kritikus kockázat)."
+  },
+  "tooltipFeature13": {
+    "message": "Bejelentkezési proxy adathalászat (AiTM)"
+  },
+  "tooltipFeature14": {
+    "message": "Rosszindulatú SVG szkriptek"
   }
 }

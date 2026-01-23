@@ -1072,8 +1072,7 @@
     "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
   },
   "tooltipFooter": {
-    "message": "12 lapisan keamanan aktif",
-    "description": "Footer text for tooltip"
+    "message": "14 lapisan keamanan aktif"
   },
   "tooltipNewBadge": {
     "message": "Baru",
@@ -1709,5 +1708,35 @@
   },
   "understoodButton": {
     "message": "Saya Mengerti"
+  },
+  "aitmProxyTitle": {
+    "message": "Proxy Phishing Terdeteksi!"
+  },
+  "aitmProxyMessage": {
+    "message": "Halaman ini tampaknya merupakan proxy phishing yang meniru {provider}. Kredensial Anda akan dicuri jika Anda login di sini."
+  },
+  "aitmProxyTip": {
+    "message": "Selalu verifikasi URL di bilah alamat sebelum memasukkan kredensial."
+  },
+  "aitmProxyDetected": {
+    "message": "Proxy phishing terdeteksi - peniruan halaman login (risiko kritis)."
+  },
+  "svgPayloadTitle": {
+    "message": "SVG Berbahaya Terdeteksi!"
+  },
+  "svgPayloadMessage": {
+    "message": "Halaman ini berisi SVG dengan kode berbahaya tertanam yang dapat mencuri data Anda."
+  },
+  "svgPayloadTip": {
+    "message": "Berhati-hatilah dengan lampiran SVG dari sumber yang tidak dikenal."
+  },
+  "svgPayloadDetected": {
+    "message": "SVG berbahaya dengan skrip tertanam terdeteksi (risiko kritis)."
+  },
+  "tooltipFeature13": {
+    "message": "Phishing proxy login (AiTM)"
+  },
+  "tooltipFeature14": {
+    "message": "Skrip SVG berbahaya"
   }
 }

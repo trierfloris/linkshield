@@ -1135,8 +1135,7 @@
     "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
   },
   "tooltipFooter": {
-    "message": "12개 보안 레이어 활성화",
-    "description": "Footer text for tooltip"
+    "message": "14개 보안 레이어 활성"
   },
   "tooltipNewBadge": {
     "message": "신규",
@@ -1709,5 +1708,35 @@
   },
   "understoodButton": {
     "message": "이해했습니다"
+  },
+  "aitmProxyTitle": {
+    "message": "피싱 프록시 감지!"
+  },
+  "aitmProxyMessage": {
+    "message": "이 페이지는 {provider}을(를) 사칭하는 피싱 프록시로 보입니다. 여기서 로그인하면 자격 증명이 도난됩니다."
+  },
+  "aitmProxyTip": {
+    "message": "자격 증명을 입력하기 전에 항상 주소 표시줄의 URL을 확인하세요."
+  },
+  "aitmProxyDetected": {
+    "message": "피싱 프록시 감지 - 로그인 페이지 사칭 (심각한 위험)."
+  },
+  "svgPayloadTitle": {
+    "message": "악성 SVG 감지!"
+  },
+  "svgPayloadMessage": {
+    "message": "이 페이지에는 데이터를 훔칠 수 있는 악성 코드가 포함된 SVG가 있습니다."
+  },
+  "svgPayloadTip": {
+    "message": "알 수 없는 출처의 SVG 첨부 파일에 주의하세요."
+  },
+  "svgPayloadDetected": {
+    "message": "내장 스크립트가 있는 악성 SVG 감지 (심각한 위험)."
+  },
+  "tooltipFeature13": {
+    "message": "로그인 프록시 피싱 (AiTM)"
+  },
+  "tooltipFeature14": {
+    "message": "악성 SVG 스크립트"
   }
 }

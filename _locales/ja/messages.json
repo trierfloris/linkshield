@@ -1135,8 +1135,7 @@
     "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
   },
   "tooltipFooter": {
-    "message": "12のセキュリティ層が有効",
-    "description": "Footer text for tooltip"
+    "message": "14のセキュリティレイヤーが有効"
   },
   "tooltipNewBadge": {
     "message": "新機能",
@@ -1709,5 +1708,35 @@
   },
   "understoodButton": {
     "message": "理解しました"
+  },
+  "aitmProxyTitle": {
+    "message": "フィッシングプロキシを検出！"
+  },
+  "aitmProxyMessage": {
+    "message": "このページは{provider}を偽装するフィッシングプロキシです。ここでログインすると認証情報が盗まれます。"
+  },
+  "aitmProxyTip": {
+    "message": "認証情報を入力する前に、必ずアドレスバーのURLを確認してください。"
+  },
+  "aitmProxyDetected": {
+    "message": "フィッシングプロキシ検出 - ログインページの偽装（重大リスク）。"
+  },
+  "svgPayloadTitle": {
+    "message": "悪意のあるSVGを検出！"
+  },
+  "svgPayloadMessage": {
+    "message": "このページにはデータを盗む可能性のある悪意のあるコードが埋め込まれたSVGが含まれています。"
+  },
+  "svgPayloadTip": {
+    "message": "不明なソースからのSVG添付ファイルに注意してください。"
+  },
+  "svgPayloadDetected": {
+    "message": "埋め込みスクリプト付き悪意のあるSVGを検出（重大リスク）。"
+  },
+  "tooltipFeature13": {
+    "message": "ログインプロキシフィッシング（AiTM）"
+  },
+  "tooltipFeature14": {
+    "message": "悪意のあるSVGスクリプト"
   }
 }

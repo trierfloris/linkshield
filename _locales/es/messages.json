@@ -1135,8 +1135,7 @@
     "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
   },
   "tooltipFooter": {
-    "message": "12 capas de seguridad activas",
-    "description": "Footer text for tooltip"
+    "message": "14 capas de seguridad activas"
   },
   "tooltipNewBadge": {
     "message": "Nuevo",
@@ -1709,5 +1708,35 @@
   },
   "understoodButton": {
     "message": "Entendido"
+  },
+  "aitmProxyTitle": {
+    "message": "¡Proxy de phishing detectado!"
+  },
+  "aitmProxyMessage": {
+    "message": "Esta página parece ser un proxy de phishing que suplanta a {provider}. Sus credenciales serán robadas si inicia sesión aquí."
+  },
+  "aitmProxyTip": {
+    "message": "Verifique siempre la URL en la barra de direcciones antes de introducir credenciales."
+  },
+  "aitmProxyDetected": {
+    "message": "Proxy de phishing detectado - suplantación de página de inicio de sesión (riesgo crítico)."
+  },
+  "svgPayloadTitle": {
+    "message": "¡SVG malicioso detectado!"
+  },
+  "svgPayloadMessage": {
+    "message": "Esta página contiene un SVG con código malicioso incrustado que podría robar sus datos."
+  },
+  "svgPayloadTip": {
+    "message": "Tenga cuidado con los archivos SVG adjuntos de fuentes desconocidas."
+  },
+  "svgPayloadDetected": {
+    "message": "SVG malicioso con scripts incrustados detectado (riesgo crítico)."
+  },
+  "tooltipFeature13": {
+    "message": "Phishing de proxy de inicio de sesión (AiTM)"
+  },
+  "tooltipFeature14": {
+    "message": "Scripts SVG maliciosos"
   }
 }

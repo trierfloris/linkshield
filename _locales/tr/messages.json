@@ -1072,8 +1072,7 @@
     "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
   },
   "tooltipFooter": {
-    "message": "12 güvenlik katmanı aktif",
-    "description": "Footer text for tooltip"
+    "message": "14 güvenlik katmanı aktif"
   },
   "tooltipNewBadge": {
     "message": "Yeni",
@@ -1709,5 +1708,35 @@
   },
   "understoodButton": {
     "message": "Anladım"
+  },
+  "aitmProxyTitle": {
+    "message": "Kimlik avı proxy'si tespit edildi!"
+  },
+  "aitmProxyMessage": {
+    "message": "Bu sayfa {provider} kimliğine bürünen bir kimlik avı proxy'si gibi görünüyor. Buradan giriş yaparsanız kimlik bilgileriniz çalınacaktır."
+  },
+  "aitmProxyTip": {
+    "message": "Kimlik bilgilerini girmeden önce adres çubuğundaki URL'yi her zaman doğrulayın."
+  },
+  "aitmProxyDetected": {
+    "message": "Kimlik avı proxy'si tespit edildi - giriş sayfası taklidi (kritik risk)."
+  },
+  "svgPayloadTitle": {
+    "message": "Zararlı SVG tespit edildi!"
+  },
+  "svgPayloadMessage": {
+    "message": "Bu sayfa verilerinizi çalabilecek gömülü zararlı kod içeren bir SVG içeriyor."
+  },
+  "svgPayloadTip": {
+    "message": "Bilinmeyen kaynaklardan gelen SVG ekleriyle dikkatli olun."
+  },
+  "svgPayloadDetected": {
+    "message": "Gömülü komut dosyaları içeren zararlı SVG tespit edildi (kritik risk)."
+  },
+  "tooltipFeature13": {
+    "message": "Giriş proxy'si kimlik avı (AiTM)"
+  },
+  "tooltipFeature14": {
+    "message": "Zararlı SVG komut dosyaları"
   }
 }

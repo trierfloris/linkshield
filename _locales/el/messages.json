@@ -1072,8 +1072,7 @@
     "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
   },
   "tooltipFooter": {
-    "message": "12 επίπεδα ασφαλείας ενεργά",
-    "description": "Footer text for tooltip"
+    "message": "14 επίπεδα ασφαλείας ενεργά"
   },
   "tooltipNewBadge": {
     "message": "Νέο",
@@ -1709,5 +1708,35 @@
   },
   "understoodButton": {
     "message": "Κατάλαβα"
+  },
+  "aitmProxyTitle": {
+    "message": "Εντοπίστηκε proxy phishing!"
+  },
+  "aitmProxyMessage": {
+    "message": "Αυτή η σελίδα φαίνεται να είναι ένα proxy phishing που υποδύεται τον {provider}. Τα διαπιστευτήριά σας θα κλαπούν αν συνδεθείτε εδώ."
+  },
+  "aitmProxyTip": {
+    "message": "Επαληθεύετε πάντα το URL στη γραμμή διευθύνσεων πριν εισάγετε διαπιστευτήρια."
+  },
+  "aitmProxyDetected": {
+    "message": "Εντοπίστηκε proxy phishing - πλαστοπροσωπία σελίδας σύνδεσης (κρίσιμος κίνδυνος)."
+  },
+  "svgPayloadTitle": {
+    "message": "Εντοπίστηκε κακόβουλο SVG!"
+  },
+  "svgPayloadMessage": {
+    "message": "Αυτή η σελίδα περιέχει ένα SVG με ενσωματωμένο κακόβουλο κώδικα που μπορεί να κλέψει τα δεδομένα σας."
+  },
+  "svgPayloadTip": {
+    "message": "Προσέξτε τα συνημμένα SVG από άγνωστες πηγές."
+  },
+  "svgPayloadDetected": {
+    "message": "Εντοπίστηκε κακόβουλο SVG με ενσωματωμένα scripts (κρίσιμος κίνδυνος)."
+  },
+  "tooltipFeature13": {
+    "message": "Phishing proxy σύνδεσης (AiTM)"
+  },
+  "tooltipFeature14": {
+    "message": "Κακόβουλα SVG scripts"
   }
 }

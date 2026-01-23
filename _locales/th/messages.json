@@ -1072,8 +1072,7 @@
     "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
   },
   "tooltipFooter": {
-    "message": "12 ชั้นความปลอดภัยทำงานอยู่",
-    "description": "Footer text for tooltip"
+    "message": "14 ชั้นความปลอดภัยที่ใช้งานอยู่"
   },
   "tooltipNewBadge": {
     "message": "ใหม่",
@@ -1709,5 +1708,35 @@
   },
   "understoodButton": {
     "message": "ฉันเข้าใจ"
+  },
+  "aitmProxyTitle": {
+    "message": "ตรวจพบพร็อกซีฟิชชิ่ง!"
+  },
+  "aitmProxyMessage": {
+    "message": "หน้านี้ดูเหมือนเป็นพร็อกซีฟิชชิ่งที่ปลอมเป็น {provider} ข้อมูลเข้าสู่ระบบของคุณจะถูกขโมยหากคุณล็อกอินที่นี่"
+  },
+  "aitmProxyTip": {
+    "message": "ตรวจสอบ URL ในแถบที่อยู่เสมอก่อนป้อนข้อมูลเข้าสู่ระบบ"
+  },
+  "aitmProxyDetected": {
+    "message": "ตรวจพบพร็อกซีฟิชชิ่ง - การปลอมหน้าเข้าสู่ระบบ (ความเสี่ยงวิกฤต)"
+  },
+  "svgPayloadTitle": {
+    "message": "ตรวจพบ SVG ที่เป็นอันตราย!"
+  },
+  "svgPayloadMessage": {
+    "message": "หน้านี้มี SVG ที่ฝังโค้ดอันตรายที่อาจขโมยข้อมูลของคุณ"
+  },
+  "svgPayloadTip": {
+    "message": "ระวังไฟล์แนบ SVG จากแหล่งที่ไม่รู้จัก"
+  },
+  "svgPayloadDetected": {
+    "message": "ตรวจพบ SVG อันตรายที่มีสคริปต์ฝังอยู่ (ความเสี่ยงวิกฤต)"
+  },
+  "tooltipFeature13": {
+    "message": "ฟิชชิ่งพร็อกซีเข้าสู่ระบบ (AiTM)"
+  },
+  "tooltipFeature14": {
+    "message": "สคริปต์ SVG ที่เป็นอันตราย"
   }
 }

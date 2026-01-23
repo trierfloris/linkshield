@@ -702,6 +702,71 @@ SUSPICIOUS_URL_PATTERNS: [
                 'controleren of de verbinding veilig is',  // NL
                 'überprüfung ihrer verbindung'             // DE
             ]
+        },
+
+        // v8.6.0: AiTM (Adversary-in-the-Middle) Proxy Detection
+        // Detecteert reverse proxy phishing (Evilginx, Tycoon 2FA) door
+        // provider-specifieke DOM elementen te vinden op niet-legitieme domeinen
+        aitmDetection: {
+            enabled: true,
+            // Domeinen die legitimatie Microsoft/Google login UI hosten
+            legitimateProviders: [
+                'login.microsoftonline.com', 'login.microsoft.com', 'login.live.com',
+                'login.windows.net', 'microsoft.com', 'office.com', 'office365.com',
+                'accounts.google.com', 'google.com', 'googleapis.com',
+                'login.okta.com', 'auth0.com', 'login.salesforce.com',
+                'microsoftonline.com', 'live.com', 'windows.net'
+            ],
+            scores: {
+                msSpecificId: 8,       // Microsoft-specifiek element ID (#i0116, #i0118)
+                msContainer: 5,        // Microsoft container (.login-paginated-page, #lightbox)
+                msOAuthPath: 5,        // OAuth pad op verkeerd domein
+                msButton: 6,           // Microsoft submit button (#idSIButton9)
+                googleSpecificId: 8,   // Google-specifiek element ID (#identifierId)
+                googleButton: 6,       // Google buttons (#passwordNext, #identifierNext)
+                googleClass: 5,        // Google interne klassen
+                googleLoginPath: 5,    // /ServiceLogin pad op verkeerd domein
+                passwordField: 2,      // Wachtwoordveld aanwezig
+                suspiciousTLD: 3,      // Verdachte TLD
+                freeHosting: 3         // Gratis hosting domein
+            }
+        },
+
+        // v8.6.0: SVG Payload Detection
+        // Detecteert kwaadaardige JavaScript in SVG elementen
+        // Alleen high-confidence patronen om false positives te minimaliseren
+        svgPayloadDetection: {
+            enabled: true,
+            scoreThreshold: 15,
+            // Gevaarlijke script content patronen (regex)
+            dangerousScriptPatterns: [
+                /\beval\s*\(/i,
+                /document\.cookie/i,
+                /window\.location\s*=/i,
+                /fetch\s*\(\s*['"`]https?:\/\//i,
+                /navigator\.sendBeacon/i,
+                /\batob\s*\(/i,
+                /document\.write\s*\(/i,
+                /\.innerHTML\s*=/i,
+                /new\s+Function\s*\(/i,
+                /XMLHttpRequest/i,
+                /\.src\s*=\s*['"`]data:/i,
+                /fromCharCode/i,
+                /setTimeout\s*\(\s*['"`]/i
+            ],
+            // Gevaarlijke URI patronen
+            dangerousURIPatterns: [
+                /javascript:/i,
+                /data:text\/html/i,
+                /data:application\/x-javascript/i
+            ],
+            scores: {
+                dangerousScript: 10,         // Script tag met gevaarlijke content
+                dangerousURI: 12,            // javascript:/data: URI in href
+                maliciousEventHandler: 5,    // Event handler met gevaarlijk patroon (alleen mee als andere indicators)
+                base64Eval: 8,               // atob + eval combinatie
+                foreignObjectRedirect: 10    // foreignObject met redirect code
+            }
         }
     }
 };

@@ -1135,8 +1135,7 @@
     "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
   },
   "tooltipFooter": {
-    "message": "12 طبقة أمان نشطة",
-    "description": "Footer text for tooltip"
+    "message": "14 طبقة أمان نشطة"
   },
   "tooltipNewBadge": {
     "message": "جديد",
@@ -1709,5 +1708,35 @@
   },
   "understoodButton": {
     "message": "فهمت"
+  },
+  "aitmProxyTitle": {
+    "message": "تم اكتشاف وكيل تصيد!"
+  },
+  "aitmProxyMessage": {
+    "message": "يبدو أن هذه الصفحة وكيل تصيد ينتحل صفة {provider}. سيتم سرقة بيانات اعتمادك إذا قمت بتسجيل الدخول هنا."
+  },
+  "aitmProxyTip": {
+    "message": "تحقق دائمًا من عنوان URL في شريط العناوين قبل إدخال بيانات الاعتماد."
+  },
+  "aitmProxyDetected": {
+    "message": "تم اكتشاف وكيل تصيد - انتحال صفحة تسجيل الدخول (خطر حرج)."
+  },
+  "svgPayloadTitle": {
+    "message": "تم اكتشاف SVG ضار!"
+  },
+  "svgPayloadMessage": {
+    "message": "تحتوي هذه الصفحة على SVG مع كود ضار مضمن يمكنه سرقة بياناتك."
+  },
+  "svgPayloadTip": {
+    "message": "كن حذرًا مع مرفقات SVG من مصادر غير معروفة."
+  },
+  "svgPayloadDetected": {
+    "message": "تم اكتشاف SVG ضار مع نصوص برمجية مضمنة (خطر حرج)."
+  },
+  "tooltipFeature13": {
+    "message": "تصيد وكيل تسجيل الدخول (AiTM)"
+  },
+  "tooltipFeature14": {
+    "message": "نصوص SVG الضارة"
   }
 }

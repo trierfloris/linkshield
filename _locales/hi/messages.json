@@ -1135,8 +1135,7 @@
     "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
   },
   "tooltipFooter": {
-    "message": "12 सुरक्षा परतें सक्रिय",
-    "description": "Footer text for tooltip"
+    "message": "14 सुरक्षा परतें सक्रिय"
   },
   "tooltipNewBadge": {
     "message": "नया",
@@ -1709,5 +1708,35 @@
   },
   "understoodButton": {
     "message": "मैं समझ गया"
+  },
+  "aitmProxyTitle": {
+    "message": "फ़िशिंग प्रॉक्सी का पता चला!"
+  },
+  "aitmProxyMessage": {
+    "message": "यह पृष्ठ {provider} का रूप धारण करने वाला फ़िशिंग प्रॉक्सी प्रतीत होता है। यहां लॉग इन करने पर आपके क्रेडेंशियल चोरी हो जाएंगे।"
+  },
+  "aitmProxyTip": {
+    "message": "क्रेडेंशियल दर्ज करने से पहले हमेशा एड्रेस बार में URL सत्यापित करें।"
+  },
+  "aitmProxyDetected": {
+    "message": "फ़िशिंग प्रॉक्सी का पता चला - लॉगइन पृष्ठ का प्रतिरूपण (गंभीर जोखिम)।"
+  },
+  "svgPayloadTitle": {
+    "message": "दुर्भावनापूर्ण SVG का पता चला!"
+  },
+  "svgPayloadMessage": {
+    "message": "इस पृष्ठ में एम्बेडेड दुर्भावनापूर्ण कोड वाला SVG है जो आपका डेटा चुरा सकता है।"
+  },
+  "svgPayloadTip": {
+    "message": "अज्ञात स्रोतों से SVG अटैचमेंट के साथ सावधान रहें।"
+  },
+  "svgPayloadDetected": {
+    "message": "एम्बेडेड स्क्रिप्ट के साथ दुर्भावनापूर्ण SVG का पता चला (गंभीर जोखिम)।"
+  },
+  "tooltipFeature13": {
+    "message": "लॉगइन प्रॉक्सी फ़िशिंग (AiTM)"
+  },
+  "tooltipFeature14": {
+    "message": "दुर्भावनापूर्ण SVG स्क्रिप्ट"
   }
 }

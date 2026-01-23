@@ -1135,8 +1135,7 @@
     "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
   },
   "tooltipFooter": {
-    "message": "12 уровней защиты активны",
-    "description": "Footer text for tooltip"
+    "message": "14 уровней безопасности активны"
   },
   "tooltipNewBadge": {
     "message": "Новое",
@@ -1709,5 +1708,35 @@
   },
   "understoodButton": {
     "message": "Понятно"
+  },
+  "aitmProxyTitle": {
+    "message": "Обнаружен фишинговый прокси!"
+  },
+  "aitmProxyMessage": {
+    "message": "Эта страница является фишинговым прокси, выдающим себя за {provider}. Ваши учетные данные будут украдены при входе."
+  },
+  "aitmProxyTip": {
+    "message": "Всегда проверяйте URL в адресной строке перед вводом учетных данных."
+  },
+  "aitmProxyDetected": {
+    "message": "Обнаружен фишинговый прокси - имитация страницы входа (критический риск)."
+  },
+  "svgPayloadTitle": {
+    "message": "Обнаружен вредоносный SVG!"
+  },
+  "svgPayloadMessage": {
+    "message": "Эта страница содержит SVG со встроенным вредоносным кодом, который может украсть ваши данные."
+  },
+  "svgPayloadTip": {
+    "message": "Будьте осторожны с SVG-вложениями из неизвестных источников."
+  },
+  "svgPayloadDetected": {
+    "message": "Обнаружен вредоносный SVG со встроенными скриптами (критический риск)."
+  },
+  "tooltipFeature13": {
+    "message": "Фишинг через прокси входа (AiTM)"
+  },
+  "tooltipFeature14": {
+    "message": "Вредоносные SVG-скрипты"
   }
 }

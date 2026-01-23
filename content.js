@@ -6284,6 +6284,407 @@ async function detectFakeTurnstile() {
     }
 }
 
+// =============================================================================
+// v8.6.0: AiTM (Adversary-in-the-Middle) Proxy Detection
+// Detecteert reverse proxy phishing (Evilginx, Tycoon 2FA) door provider-specifieke
+// DOM element IDs te vinden op niet-legitieme domeinen
+// =============================================================================
+async function detectAiTMProxy() {
+    const config = globalConfig?.ADVANCED_THREAT_DETECTION?.aitmDetection;
+    if (!config?.enabled) {
+        return { detected: false, provider: null, score: 0, indicators: [] };
+    }
+
+    // Check integratedProtection enabled
+    if (!(await isProtectionEnabled())) {
+        return { detected: false, provider: null, score: 0, indicators: [] };
+    }
+
+    // Skip trusted domains
+    const hostname = window.location.hostname.toLowerCase();
+    try {
+        if (await isTrustedDomain(hostname)) {
+            return { detected: false, provider: null, score: 0, indicators: [] };
+        }
+    } catch (e) { /* Continue */ }
+
+    // Check if current domain is a legitimate provider
+    for (const provider of config.legitimateProviders) {
+        if (hostname === provider || hostname.endsWith('.' + provider)) {
+            return { detected: false, provider: null, score: 0, indicators: [] };
+        }
+    }
+
+    const indicators = [];
+    let score = 0;
+    let detectedProvider = null;
+
+    try {
+        // === Microsoft Markers ===
+        let msScore = 0;
+        if (document.getElementById('i0116')) {
+            msScore += config.scores.msSpecificId;
+            indicators.push('ms_email_input_i0116');
+        }
+        if (document.getElementById('i0118')) {
+            msScore += config.scores.msSpecificId;
+            indicators.push('ms_password_input_i0118');
+        }
+        if (document.getElementById('idSIButton9')) {
+            msScore += config.scores.msButton;
+            indicators.push('ms_submit_button');
+        }
+        if (document.getElementById('lightbox') || document.querySelector('.login-paginated-page')) {
+            msScore += config.scores.msContainer;
+            indicators.push('ms_login_container');
+        }
+        if (document.querySelector('.ext-sign-in-box')) {
+            msScore += config.scores.msContainer;
+            indicators.push('ms_signin_box');
+        }
+        if (window.location.pathname.includes('/common/oauth2/')) {
+            msScore += config.scores.msOAuthPath;
+            indicators.push('ms_oauth_path');
+        }
+
+        // === Google Markers ===
+        let googleScore = 0;
+        if (document.getElementById('identifierId')) {
+            googleScore += config.scores.googleSpecificId;
+            indicators.push('google_identifier_input');
+        }
+        if (document.getElementById('passwordNext') || document.getElementById('identifierNext')) {
+            googleScore += config.scores.googleButton;
+            indicators.push('google_next_button');
+        }
+        if (document.querySelector('.OLlbdf') || document.querySelector('.U26fgb')) {
+            googleScore += config.scores.googleClass;
+            indicators.push('google_internal_class');
+        }
+        if (window.location.pathname.includes('/ServiceLogin')) {
+            googleScore += config.scores.googleLoginPath;
+            indicators.push('google_servicelogin_path');
+        }
+
+        // Bepaal welke provider gedetecteerd is
+        if (msScore > googleScore && msScore >= 8) {
+            score = msScore;
+            detectedProvider = 'Microsoft';
+        } else if (googleScore >= 8) {
+            score = googleScore;
+            detectedProvider = 'Google';
+        }
+
+        // Universal signals (alleen als provider markers gevonden)
+        if (detectedProvider) {
+            // Wachtwoordveld aanwezig
+            if (document.querySelector('input[type="password"]')) {
+                score += config.scores.passwordField;
+                indicators.push('password_field_present');
+            }
+            // Verdachte TLD
+            const tld = hostname.split('.').pop();
+            if (globalConfig?.isSuspiciousTLD && globalConfig.isSuspiciousTLD(tld)) {
+                score += config.scores.suspiciousTLD;
+                indicators.push('suspicious_tld');
+            }
+            // Free hosting domein
+            if (globalConfig?.FREE_HOSTING_DOMAINS) {
+                for (const freeHost of globalConfig.FREE_HOSTING_DOMAINS) {
+                    if (hostname === freeHost || hostname.endsWith('.' + freeHost)) {
+                        score += config.scores.freeHosting;
+                        indicators.push('free_hosting_domain');
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Threshold check: HIGH_THRESHOLD (15)
+        const detected = score >= (globalConfig?.HIGH_THRESHOLD || 15);
+
+        if (detected) {
+            logDebug(`[AiTM] 🚨 DETECTED - Provider: ${detectedProvider}, Score: ${score}`);
+            logDebug(`[AiTM] Indicators: ${indicators.join(', ')}`);
+
+            // Rapporteer aan background
+            if (typeof chrome !== 'undefined' && chrome.runtime?.sendMessage) {
+                chrome.runtime.sendMessage({
+                    type: 'aitmProxyDetected',
+                    url: window.location.href,
+                    provider: detectedProvider,
+                    indicators: indicators,
+                    score: score,
+                    timestamp: Date.now()
+                }).catch(() => {});
+            }
+
+            // Toon waarschuwing
+            showSecurityWarning({
+                id: 'aitm-proxy',
+                severity: 'critical',
+                title: getTranslatedMessage('aitmProxyTitle') || 'Phishing Proxy Detected!',
+                message: (getTranslatedMessage('aitmProxyMessage') || 'This page appears to be a phishing proxy impersonating {provider}. Your credentials will be stolen if you log in here.').replace('{provider}', detectedProvider),
+                tip: getTranslatedMessage('aitmProxyTip') || 'Always verify the URL in your address bar before entering credentials.',
+                icon: '🎭',
+                showTrust: false
+            });
+        }
+
+        return { detected, provider: detectedProvider, score, indicators };
+
+    } catch (err) {
+        handleError(err, 'AiTMProxyDetection');
+        return { detected: false, provider: null, score: 0, indicators: [] };
+    }
+}
+
+// Initialiseer AiTM detectie met delay en MutationObserver
+function initAiTMDetection() {
+    // Initial scan na 2500ms (staggered na andere scans)
+    setTimeout(async () => {
+        await detectAiTMProxy();
+    }, 2500);
+
+    // MutationObserver voor dynamisch geladen login forms
+    let aitmDebounceTimer = null;
+    const aitmObserver = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+            for (const node of mutation.addedNodes) {
+                if (node.nodeType !== Node.ELEMENT_NODE) continue;
+                // Hercheck als password veld of bekende IDs worden toegevoegd
+                const isRelevant = node.matches?.('input[type="password"]') ||
+                    node.id === 'i0116' || node.id === 'i0118' || node.id === 'identifierId' ||
+                    node.querySelector?.('input[type="password"], #i0116, #i0118, #identifierId');
+                if (isRelevant) {
+                    clearTimeout(aitmDebounceTimer);
+                    aitmDebounceTimer = setTimeout(() => detectAiTMProxy(), 500);
+                    return;
+                }
+            }
+        }
+    });
+
+    if (document.body) {
+        aitmObserver.observe(document.body, { childList: true, subtree: true });
+    }
+}
+
+// =============================================================================
+// v8.6.0: SVG Payload Detection
+// Detecteert kwaadaardige JavaScript in SVG elementen (alleen high-confidence patronen)
+// =============================================================================
+const _scannedSVGs = new WeakSet();
+
+async function detectSVGPayloads() {
+    const config = globalConfig?.ADVANCED_THREAT_DETECTION?.svgPayloadDetection;
+    if (!config?.enabled) {
+        return { detected: false, score: 0, indicators: [] };
+    }
+
+    // Check integratedProtection enabled
+    if (!(await isProtectionEnabled())) {
+        return { detected: false, score: 0, indicators: [] };
+    }
+
+    // Skip trusted domains
+    const hostname = window.location.hostname.toLowerCase();
+    try {
+        if (await isTrustedDomain(hostname)) {
+            return { detected: false, score: 0, indicators: [] };
+        }
+    } catch (e) { /* Continue */ }
+
+    const indicators = [];
+    let totalScore = 0;
+
+    try {
+        // Verzamel alle SVG elementen om te scannen
+        const svgElements = [];
+
+        // 1. Inline <svg> elementen
+        const inlineSVGs = document.querySelectorAll('svg');
+        for (const svg of inlineSVGs) {
+            if (!_scannedSVGs.has(svg)) {
+                svgElements.push({ element: svg, type: 'inline' });
+                _scannedSVGs.add(svg);
+            }
+        }
+
+        // 2. <object> met SVG type (same-origin)
+        const objects = document.querySelectorAll('object[type="image/svg+xml"]');
+        for (const obj of objects) {
+            if (!_scannedSVGs.has(obj)) {
+                _scannedSVGs.add(obj);
+                try {
+                    const svgDoc = obj.contentDocument;
+                    if (svgDoc) {
+                        const svg = svgDoc.querySelector('svg');
+                        if (svg) svgElements.push({ element: svg, type: 'object' });
+                    }
+                } catch (e) { /* cross-origin, skip */ }
+            }
+        }
+
+        // 3. <embed> met SVG type (same-origin)
+        const embeds = document.querySelectorAll('embed[type="image/svg+xml"]');
+        for (const embed of embeds) {
+            if (!_scannedSVGs.has(embed)) {
+                _scannedSVGs.add(embed);
+                try {
+                    const svgDoc = embed.getSVGDocument?.();
+                    if (svgDoc) {
+                        const svg = svgDoc.querySelector('svg');
+                        if (svg) svgElements.push({ element: svg, type: 'embed' });
+                    }
+                } catch (e) { /* cross-origin, skip */ }
+            }
+        }
+
+        // Scan elke SVG
+        for (const { element: svg, type } of svgElements) {
+            let svgScore = 0;
+            const svgIndicators = [];
+
+            // Check 1: <script> tags met gevaarlijke content
+            const scripts = svg.querySelectorAll('script');
+            for (const script of scripts) {
+                const content = script.textContent || '';
+                if (!content.trim()) continue;
+
+                for (const pattern of config.dangerousScriptPatterns) {
+                    if (pattern.test(content)) {
+                        svgScore += config.scores.dangerousScript;
+                        svgIndicators.push('dangerous_script_content');
+                        break; // Eén match per script is genoeg
+                    }
+                }
+
+                // Check atob + eval combinatie
+                if (/\batob\b/i.test(content) && /\beval\b/i.test(content)) {
+                    svgScore += config.scores.base64Eval;
+                    svgIndicators.push('base64_eval_combo');
+                }
+            }
+
+            // Check 2: javascript:/data: URIs in href attributen
+            const hrefElements = svg.querySelectorAll('[href], [xlink\\:href]');
+            for (const el of hrefElements) {
+                const href = el.getAttribute('href') || el.getAttribute('xlink:href') || '';
+                for (const pattern of config.dangerousURIPatterns) {
+                    if (pattern.test(href)) {
+                        svgScore += config.scores.dangerousURI;
+                        svgIndicators.push('dangerous_uri_in_href');
+                        break;
+                    }
+                }
+            }
+
+            // Check 3: foreignObject met redirect code
+            const foreignObjects = svg.querySelectorAll('foreignObject');
+            for (const fo of foreignObjects) {
+                const foContent = fo.innerHTML || '';
+                if (/window\.location/i.test(foContent) ||
+                    /meta\s+http-equiv\s*=\s*["']refresh/i.test(foContent) ||
+                    /document\.location/i.test(foContent)) {
+                    svgScore += config.scores.foreignObjectRedirect;
+                    svgIndicators.push('foreignobject_redirect');
+                }
+            }
+
+            // Check 4: Event handlers met gevaarlijke patronen (alleen als andere indicators gevonden)
+            if (svgIndicators.length > 0) {
+                const allElements = svg.querySelectorAll('*');
+                for (const el of allElements) {
+                    for (const attr of el.attributes) {
+                        if (attr.name.startsWith('on')) {
+                            const val = attr.value || '';
+                            for (const pattern of config.dangerousScriptPatterns) {
+                                if (pattern.test(val)) {
+                                    svgScore += config.scores.maliciousEventHandler;
+                                    svgIndicators.push('malicious_event_handler');
+                                    break;
+                                }
+                            }
+                            break; // Eén event handler check per element
+                        }
+                    }
+                }
+            }
+
+            // Threshold check per SVG
+            if (svgScore >= config.scoreThreshold) {
+                totalScore = Math.max(totalScore, svgScore);
+                indicators.push(...svgIndicators);
+            }
+        }
+
+        const detected = totalScore >= config.scoreThreshold;
+
+        if (detected) {
+            logDebug(`[SVGPayload] 🚨 DETECTED - Score: ${totalScore}`);
+            logDebug(`[SVGPayload] Indicators: ${indicators.join(', ')}`);
+
+            // Rapporteer aan background
+            if (typeof chrome !== 'undefined' && chrome.runtime?.sendMessage) {
+                chrome.runtime.sendMessage({
+                    type: 'svgPayloadDetected',
+                    url: window.location.href,
+                    indicators: indicators,
+                    score: totalScore,
+                    timestamp: Date.now()
+                }).catch(() => {});
+            }
+
+            // Toon waarschuwing
+            showSecurityWarning({
+                id: 'svg-payload',
+                severity: 'critical',
+                title: getTranslatedMessage('svgPayloadTitle') || 'Malicious SVG Detected!',
+                message: getTranslatedMessage('svgPayloadMessage') || 'This page contains an SVG with embedded malicious code that could steal your data.',
+                tip: getTranslatedMessage('svgPayloadTip') || 'Be cautious with SVG attachments from unknown sources.',
+                icon: '🖼️',
+                showTrust: true
+            });
+        }
+
+        return { detected, score: totalScore, indicators };
+
+    } catch (err) {
+        handleError(err, 'SVGPayloadDetection');
+        return { detected: false, score: 0, indicators: [] };
+    }
+}
+
+// Initialiseer SVG Payload detectie met delay en MutationObserver
+function initSVGPayloadDetection() {
+    // Initial scan na 3000ms (staggered na AiTM scan)
+    setTimeout(async () => {
+        await detectSVGPayloads();
+    }, 3000);
+
+    // MutationObserver voor nieuw toegevoegde SVG/object/embed elementen
+    let svgDebounceTimer = null;
+    const svgObserver = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+            for (const node of mutation.addedNodes) {
+                if (node.nodeType !== Node.ELEMENT_NODE) continue;
+                const isRelevant = node.matches?.('svg, object[type="image/svg+xml"], embed[type="image/svg+xml"]') ||
+                    node.querySelector?.('svg, object[type="image/svg+xml"], embed[type="image/svg+xml"]');
+                if (isRelevant) {
+                    clearTimeout(svgDebounceTimer);
+                    svgDebounceTimer = setTimeout(() => detectSVGPayloads(), 500);
+                    return;
+                }
+            }
+        }
+    });
+
+    if (document.body) {
+        svgObserver.observe(document.body, { childList: true, subtree: true });
+    }
+}
+
 // Run proactive scan after page load
 function initProactiveVisualHijackingScan() {
   // Initial scan with delay to let page render
@@ -10705,6 +11106,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       // Initialiseer WebTransport/HTTP3 monitor voor C2/exfiltration detectie
       initWebTransportMonitor();
 
+      // v8.6.0: Initialiseer AiTM Proxy Detection voor reverse proxy phishing
+      initAiTMDetection();
+
+      // v8.6.0: Initialiseer SVG Payload Detection voor kwaadaardige SVG scripts
+      initSVGPayloadDetection();
+
       // Initialiseer Table QR Scanner voor imageless QR-code detectie (AI-phishing kits)
       initTableQRScanner();
       if (tableQRScanner) {
@@ -10773,6 +11180,20 @@ document.addEventListener('DOMContentLoaded', async () => {
       reasonsForPage.add('fakeTurnstileDetected');
       pageRisk += fakeTurnstileResult.score;
       logDebug(`⚠️ Fake Turnstile detected: ${fakeTurnstileResult.indicators.join(', ')}`);
+    }
+    // 1c3. v8.6.0: AiTM Proxy detectie
+    const aitmResult = await detectAiTMProxy();
+    if (aitmResult.detected) {
+      reasonsForPage.add('aitmProxyDetected');
+      pageRisk += aitmResult.score;
+      logDebug(`⚠️ AiTM Proxy detected (${aitmResult.provider}): ${aitmResult.indicators.join(', ')}`);
+    }
+    // 1c4. v8.6.0: SVG Payload detectie
+    const svgPayloadResult = await detectSVGPayloads();
+    if (svgPayloadResult.detected) {
+      reasonsForPage.add('svgPayloadDetected');
+      pageRisk += svgPayloadResult.score;
+      logDebug(`⚠️ SVG Payload detected: ${svgPayloadResult.indicators.join(', ')}`);
     }
     // 1d. Loginpagina-checks
     if (detectLoginPage(currentUrl)) {

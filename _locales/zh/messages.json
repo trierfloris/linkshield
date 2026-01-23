@@ -1135,8 +1135,7 @@
     "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
   },
   "tooltipFooter": {
-    "message": "12层安全防护已激活",
-    "description": "Footer text for tooltip"
+    "message": "14个安全层已激活"
   },
   "tooltipNewBadge": {
     "message": "新功能",
@@ -1709,5 +1708,35 @@
   },
   "understoodButton": {
     "message": "我明白了"
+  },
+  "aitmProxyTitle": {
+    "message": "检测到钓鱼代理！"
+  },
+  "aitmProxyMessage": {
+    "message": "此页面似乎是冒充{provider}的钓鱼代理。如果您在此登录，您的凭据将被窃取。"
+  },
+  "aitmProxyTip": {
+    "message": "在输入凭据之前，请始终验证地址栏中的URL。"
+  },
+  "aitmProxyDetected": {
+    "message": "检测到钓鱼代理 - 登录页面伪装（严重风险）。"
+  },
+  "svgPayloadTitle": {
+    "message": "检测到恶意SVG！"
+  },
+  "svgPayloadMessage": {
+    "message": "此页面包含嵌入恶意代码的SVG，可能窃取您的数据。"
+  },
+  "svgPayloadTip": {
+    "message": "对来自未知来源的SVG附件保持警惕。"
+  },
+  "svgPayloadDetected": {
+    "message": "检测到带有嵌入脚本的恶意SVG（严重风险）。"
+  },
+  "tooltipFeature13": {
+    "message": "登录代理钓鱼（AiTM）"
+  },
+  "tooltipFeature14": {
+    "message": "恶意SVG脚本"
   }
 }

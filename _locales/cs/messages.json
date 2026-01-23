@@ -1072,8 +1072,7 @@
     "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
   },
   "tooltipFooter": {
-    "message": "12 bezpečnostních vrstev aktivních",
-    "description": "Footer text for tooltip"
+    "message": "14 bezpečnostních vrstev aktivních"
   },
   "tooltipNewBadge": {
     "message": "Nové",
@@ -1709,5 +1708,35 @@
   },
   "understoodButton": {
     "message": "Rozumím"
+  },
+  "aitmProxyTitle": {
+    "message": "Detekován phishingový proxy!"
+  },
+  "aitmProxyMessage": {
+    "message": "Tato stránka se jeví jako phishingový proxy vydávající se za {provider}. Vaše přihlašovací údaje budou ukradeny, pokud se zde přihlásíte."
+  },
+  "aitmProxyTip": {
+    "message": "Vždy ověřte URL v adresním řádku před zadáním přihlašovacích údajů."
+  },
+  "aitmProxyDetected": {
+    "message": "Detekován phishingový proxy - napodobení přihlašovací stránky (kritické riziko)."
+  },
+  "svgPayloadTitle": {
+    "message": "Detekován škodlivý SVG!"
+  },
+  "svgPayloadMessage": {
+    "message": "Tato stránka obsahuje SVG s vloženým škodlivým kódem, který může ukrást vaše data."
+  },
+  "svgPayloadTip": {
+    "message": "Buďte opatrní s SVG přílohami z neznámých zdrojů."
+  },
+  "svgPayloadDetected": {
+    "message": "Detekován škodlivý SVG s vloženými skripty (kritické riziko)."
+  },
+  "tooltipFeature13": {
+    "message": "Phishing přihlašovacího proxy (AiTM)"
+  },
+  "tooltipFeature14": {
+    "message": "Škodlivé SVG skripty"
   }
 }

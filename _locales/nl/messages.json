@@ -1138,8 +1138,7 @@
     "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
   },
   "tooltipFooter": {
-    "message": "12 beveiligingslagen actief",
-    "description": "Footer tekst voor tooltip"
+    "message": "14 beveiligingslagen actief"
   },
   "tooltipNewBadge": {
     "message": "Nieuw",
@@ -1690,5 +1689,35 @@
   },
   "understoodButton": {
     "message": "Ik Begrijp Het"
+  },
+  "aitmProxyTitle": {
+    "message": "Phishing-proxy gedetecteerd!"
+  },
+  "aitmProxyMessage": {
+    "message": "Deze pagina lijkt een phishing-proxy te zijn die zich voordoet als {provider}. Uw inloggegevens worden gestolen als u hier inlogt."
+  },
+  "aitmProxyTip": {
+    "message": "Controleer altijd de URL in de adresbalk voordat u inloggegevens invoert."
+  },
+  "aitmProxyDetected": {
+    "message": "Phishing-proxy gedetecteerd - nabootsing van inlogpagina (kritiek risico)."
+  },
+  "svgPayloadTitle": {
+    "message": "Schadelijke SVG gedetecteerd!"
+  },
+  "svgPayloadMessage": {
+    "message": "Deze pagina bevat een SVG met ingesloten schadelijke code die uw gegevens kan stelen."
+  },
+  "svgPayloadTip": {
+    "message": "Wees voorzichtig met SVG-bijlagen van onbekende bronnen."
+  },
+  "svgPayloadDetected": {
+    "message": "Schadelijke SVG met ingesloten scripts gedetecteerd (kritiek risico)."
+  },
+  "tooltipFeature13": {
+    "message": "Login-proxy phishing (AiTM)"
+  },
+  "tooltipFeature14": {
+    "message": "Schadelijke SVG-scripts"
   }
 }

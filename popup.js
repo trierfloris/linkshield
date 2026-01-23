@@ -53,6 +53,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const tooltipFeature10 = document.getElementById('tooltipFeature10');
     const tooltipFeature11 = document.getElementById('tooltipFeature11');
     const tooltipFeature12 = document.getElementById('tooltipFeature12');
+    const tooltipFeature13 = document.getElementById('tooltipFeature13');
+    const tooltipFeature14 = document.getElementById('tooltipFeature14');
     const tooltipFooter = document.getElementById('tooltipFooter');
     const freeTag = document.getElementById('freeTag');
     const proTag = document.getElementById('proTag');
@@ -208,22 +210,24 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         if (tooltipFeature9) tooltipFeature9.textContent = msg('tooltipFeature9');
         if (tooltipFeature10) tooltipFeature10.textContent = msg('tooltipFeature10');
-        if (tooltipFeature11) {
-            const newBadge = tooltipFeature11.querySelector('.new-badge');
+        if (tooltipFeature11) tooltipFeature11.textContent = msg('tooltipFeature11');
+        if (tooltipFeature12) tooltipFeature12.textContent = msg('tooltipFeature12');
+        if (tooltipFeature13) {
+            const newBadge = tooltipFeature13.querySelector('.new-badge');
             if (newBadge) {
                 newBadge.textContent = msg('tooltipNewBadge');
-                tooltipFeature11.firstChild.textContent = msg('tooltipFeature11') + ' ';
+                tooltipFeature13.firstChild.textContent = msg('tooltipFeature13') + ' ';
             } else {
-                tooltipFeature11.textContent = msg('tooltipFeature11');
+                tooltipFeature13.textContent = msg('tooltipFeature13');
             }
         }
-        if (tooltipFeature12) {
-            const newBadge = tooltipFeature12.querySelector('.new-badge');
+        if (tooltipFeature14) {
+            const newBadge = tooltipFeature14.querySelector('.new-badge');
             if (newBadge) {
                 newBadge.textContent = msg('tooltipNewBadge');
-                tooltipFeature12.firstChild.textContent = msg('tooltipFeature12') + ' ';
+                tooltipFeature14.firstChild.textContent = msg('tooltipFeature14') + ' ';
             } else {
-                tooltipFeature12.textContent = msg('tooltipFeature12');
+                tooltipFeature14.textContent = msg('tooltipFeature14');
             }
         }
         if (tooltipFooter) tooltipFooter.textContent = msg('tooltipFooter');

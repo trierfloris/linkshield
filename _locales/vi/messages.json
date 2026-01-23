@@ -1072,8 +1072,7 @@
     "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
   },
   "tooltipFooter": {
-    "message": "12 lớp bảo mật đang hoạt động",
-    "description": "Footer text for tooltip"
+    "message": "14 lớp bảo mật đang hoạt động"
   },
   "tooltipNewBadge": {
     "message": "Moi",
@@ -1709,5 +1708,35 @@
   },
   "understoodButton": {
     "message": "Tôi Hiểu"
+  },
+  "aitmProxyTitle": {
+    "message": "Phát hiện proxy lừa đảo!"
+  },
+  "aitmProxyMessage": {
+    "message": "Trang này có vẻ là proxy lừa đảo giả mạo {provider}. Thông tin đăng nhập của bạn sẽ bị đánh cắp nếu bạn đăng nhập tại đây."
+  },
+  "aitmProxyTip": {
+    "message": "Luôn xác minh URL trong thanh địa chỉ trước khi nhập thông tin đăng nhập."
+  },
+  "aitmProxyDetected": {
+    "message": "Phát hiện proxy lừa đảo - giả mạo trang đăng nhập (rủi ro nghiêm trọng)."
+  },
+  "svgPayloadTitle": {
+    "message": "Phát hiện SVG độc hại!"
+  },
+  "svgPayloadMessage": {
+    "message": "Trang này chứa SVG với mã độc được nhúng có thể đánh cắp dữ liệu của bạn."
+  },
+  "svgPayloadTip": {
+    "message": "Hãy cẩn thận với tệp đính kèm SVG từ nguồn không rõ."
+  },
+  "svgPayloadDetected": {
+    "message": "Phát hiện SVG độc hại có script nhúng (rủi ro nghiêm trọng)."
+  },
+  "tooltipFeature13": {
+    "message": "Lừa đảo proxy đăng nhập (AiTM)"
+  },
+  "tooltipFeature14": {
+    "message": "Script SVG độc hại"
   }
 }

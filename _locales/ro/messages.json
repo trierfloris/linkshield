@@ -1072,8 +1072,7 @@
     "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
   },
   "tooltipFooter": {
-    "message": "12 straturi de securitate active",
-    "description": "Footer text for tooltip"
+    "message": "14 straturi de securitate active"
   },
   "tooltipNewBadge": {
     "message": "Nou",
@@ -1709,5 +1708,35 @@
   },
   "understoodButton": {
     "message": "Am Înțeles"
+  },
+  "aitmProxyTitle": {
+    "message": "Proxy de phishing detectat!"
+  },
+  "aitmProxyMessage": {
+    "message": "Această pagină pare a fi un proxy de phishing care se dă drept {provider}. Datele dvs. de autentificare vor fi furate dacă vă conectați aici."
+  },
+  "aitmProxyTip": {
+    "message": "Verificați întotdeauna URL-ul din bara de adrese înainte de a introduce datele de autentificare."
+  },
+  "aitmProxyDetected": {
+    "message": "Proxy de phishing detectat - imitarea paginii de autentificare (risc critic)."
+  },
+  "svgPayloadTitle": {
+    "message": "SVG malițios detectat!"
+  },
+  "svgPayloadMessage": {
+    "message": "Această pagină conține un SVG cu cod malițios încorporat care vă poate fura datele."
+  },
+  "svgPayloadTip": {
+    "message": "Fiți precaut cu atașamentele SVG din surse necunoscute."
+  },
+  "svgPayloadDetected": {
+    "message": "SVG malițios cu scripturi încorporate detectat (risc critic)."
+  },
+  "tooltipFeature13": {
+    "message": "Phishing prin proxy de autentificare (AiTM)"
+  },
+  "tooltipFeature14": {
+    "message": "Scripturi SVG malițioase"
   }
 }

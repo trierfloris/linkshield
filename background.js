@@ -3025,6 +3025,42 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             sendResponse({ success: true });
             break;
 
+        case 'aitmProxyDetected':
+            if (globalThresholds.DEBUG_MODE) {
+                console.log('[LinkShield] AiTM Proxy detected:', request);
+            }
+            incrementBlockedThreatsCount('aitm_proxy');
+            // Update icon naar rood (critical)
+            chrome.action.setIcon({
+                path: {
+                    16: 'icons/red-circle-16.png',
+                    48: 'icons/red-circle-48.png',
+                    128: 'icons/red-circle-128.png'
+                },
+                tabId: sender.tab?.id
+            }).catch(() => {});
+            chrome.action.setBadgeText({ text: '!', tabId: sender.tab?.id }).catch(() => {});
+            chrome.action.setBadgeBackgroundColor({ color: '#dc2626', tabId: sender.tab?.id }).catch(() => {});
+            sendResponse({ success: true });
+            break;
+
+        case 'svgPayloadDetected':
+            if (globalThresholds.DEBUG_MODE) {
+                console.log('[LinkShield] SVG Payload detected:', request);
+            }
+            incrementBlockedThreatsCount('svg_payload');
+            // Update icon naar rood (critical)
+            chrome.action.setIcon({
+                path: {
+                    16: 'icons/red-circle-16.png',
+                    48: 'icons/red-circle-48.png',
+                    128: 'icons/red-circle-128.png'
+                },
+                tabId: sender.tab?.id
+            }).catch(() => {});
+            sendResponse({ success: true });
+            break;
+
         default:
             console.warn("[onMessage] Onbekend berichttype:", request.type || request.action);
             sendResponse({ success: false, error: "Unknown message type" });

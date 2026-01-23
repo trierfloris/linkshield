@@ -691,51 +691,6 @@
             cursor: not-allowed;
         }
 
-        /* Help tooltip */
-        .toggle-help {
-            display: none;
-            position: relative;
-            margin-left: 4px;
-        }
-
-        .toggle-help svg {
-            width: 14px;
-            height: 14px;
-            color: #9ca3af;
-            cursor: help;
-        }
-
-        .toggle-help:hover svg {
-            color: var(--color-primary);
-        }
-
-        .tooltip {
-            display: none;
-            position: absolute;
-            bottom: 24px;
-            right: -8px;
-            width: 180px;
-            padding: 8px 10px;
-            background: #1f2937;
-            color: white;
-            font-size: 11px;
-            line-height: 1.4;
-            border-radius: 6px;
-            z-index: 100;
-        }
-
-        .tooltip::after {
-            content: "";
-            position: absolute;
-            top: 100%;
-            right: 12px;
-            border: 5px solid transparent;
-            border-top-color: #1f2937;
-        }
-
-        .toggle-help:hover .tooltip {
-            display: block;
-        }
 
         /* Database Update Tooltip (on threats badge hover) */
         .db-tooltip {
@@ -745,7 +700,7 @@
             left: 50%;
             transform: translateX(-50%);
             width: max-content;
-            max-width: 200px;
+            max-width: 220px;
             padding: 6px 10px;
             background: #1f2937;
             color: white;
@@ -756,6 +711,15 @@
             white-space: nowrap;
             z-index: 100;
             pointer-events: none;
+            text-align: center;
+        }
+
+        .db-sources {
+            display: block;
+            margin-top: 3px;
+            font-size: 9px;
+            opacity: 0.7;
+            font-weight: 400;
         }
 
         .db-tooltip::after {
@@ -772,22 +736,43 @@
             display: block;
         }
 
-        /* Protection Features Tooltip */
-        .toggle-help.features {
-            display: inline-flex;
+        /* Protection Features Tooltip (on PRO badge) */
+        .feature-tag.pro {
+            position: relative;
+            cursor: default;
         }
 
-        .toggle-help.features .tooltip {
+        .pro-tooltip {
+            display: none;
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%);
             width: 220px;
             padding: 12px;
-            right: auto;
-            left: -100px;
-            bottom: 28px;
+            background: #1f2937;
+            color: white;
+            border-radius: 6px;
+            z-index: 100;
+            pointer-events: none;
+            white-space: normal;
+            text-transform: none;
+            letter-spacing: normal;
+            font-weight: normal;
         }
 
-        .toggle-help.features .tooltip::after {
-            right: auto;
-            left: 108px;
+        .pro-tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: #1f2937;
+        }
+
+        .feature-tag.pro:hover .pro-tooltip {
+            display: block;
         }
 
         .tooltip-title {
@@ -1119,7 +1104,10 @@
                     <span class="feature-tag free" id="freeTag">FREE</span>
                     <span class="threats-today" id="threatsToday">
                         <span id="threatsTodayLabel"></span>
-                        <span class="db-tooltip" id="dbUpdateTooltip"><span id="dbUpdateText"></span></span>
+                        <span class="db-tooltip" id="dbUpdateTooltip">
+                            <span id="dbUpdateText"></span>
+                            <span class="db-sources">OpenPhish · PhishTank · PhishStats · URLhaus</span>
+                        </span>
                     </span>
                 </div>
                 <div class="toggle-subtitle">
@@ -1136,14 +1124,9 @@
             <div class="toggle-info">
                 <div class="toggle-header">
                     <span class="toggle-title" id="toggle2Title">Smart link scanning</span>
-                    <span class="feature-tag pro" id="proTag">PRO</span>
-                    <div class="toggle-help features" id="toggle2Help">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"/>
-                            <circle cx="12" cy="8" r="1" fill="currentColor" stroke="none"/>
-                            <rect x="11" y="11" width="2" height="6" rx="0.5" fill="currentColor" stroke="none"/>
-                        </svg>
-                        <div class="tooltip" id="toggle2Tooltip">
+                    <span class="feature-tag pro" id="proTag">
+                        <span id="proTagLabel">PRO</span>
+                        <div class="pro-tooltip" id="toggle2Tooltip">
                             <div class="tooltip-title">
                                 <span>🛡️</span>
                                 <span id="tooltipTitle">Protected against:</span>
@@ -1166,7 +1149,7 @@
                             </ul>
                             <div class="tooltip-footer" id="tooltipFooter">14 security layers active</div>
                         </div>
-                    </div>
+                    </span>
                 </div>
                 <div class="toggle-desc" id="toggle2Desc">Warns before you click risky links</div>
             </div>

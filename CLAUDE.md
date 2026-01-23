@@ -4,7 +4,7 @@
 
 **LinkShield** is a Chrome browser extension that protects users from phishing, malicious links, and various web-based attacks. It provides real-time security warnings for suspicious URLs, visual hijacking attempts, form hijacking, and more.
 
-**Current Version:** 8.5.2
+**Current Version:** 8.6.0
 **Manifest Version:** 3
 
 ---
@@ -40,6 +40,63 @@
 ---
 
 ## Recent Implementations
+
+### v8.6.0 - AiTM Proxy Detection + SVG Payload Detection + Popup UX (2026-01)
+
+**Purpose:** Detect reverse proxy phishing (Evilginx, Tycoon 2FA) and malicious SVG payloads. Improve popup UX by showing database freshness on badge hover.
+
+**New Features:**
+
+| Feature | Description | Location |
+|---------|-------------|----------|
+| AiTM Proxy Detection | Detects Microsoft/Google login elements on foreign domains | `content.js:detectAiTMProxy()` |
+| SVG Payload Detection | Detects malicious JavaScript in inline/embedded SVGs | `content.js:detectSVGPayloads()` |
+| Database Update Tooltip | Hover on "+X today" badge shows last database update time | `popup.html` / `popup.js` |
+
+**Files Modified:**
+- `config.js` - Added `aitmDetection` and `svgPayloadDetection` in `ADVANCED_THREAT_DETECTION`
+- `content.js` - Added `detectAiTMProxy()`, `initAiTMDetection()`, `detectSVGPayloads()`, `initSVGPayloadDetection()`
+- `background.js` - Added `aitmProxyDetected` and `svgPayloadDetected` message handlers
+- `popup.html` - Added tooltip features 13+14, database tooltip on threats badge, removed broken liveBadge
+- `popup.js` - Added tooltip translations, replaced liveBadge with dbUpdateText tooltip
+- All 24 locale files - Added 11 new i18n keys
+- `manifest.json` - Version bump to 8.6.0
+
+**Detection Strategy:**
+- Both features use score-based thresholds (>= 15) to minimize false positives
+- AiTM: Identifies provider-specific DOM element IDs (`#i0116`, `#identifierId`, etc.) on non-legitimate domains
+- SVG: Only flags high-confidence patterns (eval+atob, javascript: URIs, foreignObject redirects)
+- Both: Staggered initialization (2500ms/3000ms), debounced MutationObservers
+
+**AiTM Legitimate Provider Whitelist:**
+- `login.microsoftonline.com`, `accounts.google.com`, `login.okta.com`, `auth0.com`, etc.
+
+**SVG Scan Scope:**
+- Inline `<svg>`: Yes (scripts execute)
+- `<object>/<embed>` (same-origin): Yes
+- `<img src="*.svg">`: No (browsers block scripts)
+
+**Popup UX Changes:**
+- Removed broken `liveBadge` element and CSS (was missing from HTML, causing silent errors)
+- Threats badge ("+X today") now shows database update tooltip on hover
+- Footer no longer used for update text (decluttered UI)
+- Badge always visible as marketing trust signal
+
+**New i18n Keys:**
+- `aitmProxyTitle`, `aitmProxyMessage`, `aitmProxyTip`, `aitmProxyDetected`
+- `svgPayloadTitle`, `svgPayloadMessage`, `svgPayloadTip`, `svgPayloadDetected`
+- `tooltipFeature13`, `tooltipFeature14`, `tooltipFooter` (updated to "14")
+
+**Key Functions:**
+- `detectAiTMProxy()` - Score-based AiTM detection with provider identification
+- `initAiTMDetection()` - 2500ms delay + MutationObserver for password fields
+- `detectSVGPayloads()` - WeakSet-deduplicated SVG scanning with pattern matching
+- `initSVGPayloadDetection()` - 3000ms delay + MutationObserver for svg/object/embed
+
+**Tests:**
+- `tests/unit/v860-detection.test.js` - 228 unit tests covering edge cases and false positive prevention
+
+---
 
 ### v8.5.0 - Advanced Threat Detection (2026-01)
 
@@ -112,18 +169,23 @@ ADVANCED_THREAT_DETECTION: {
 5. Invisible overlay attacks
 6. Malicious QR codes
 7. Dangerous link types
-8. Form hijacking (with "NEW" badge)
+8. Form hijacking
 9. Clipboard manipulation
 10. Hidden code (Shadow DOM)
+11. OAuth token theft
+12. Fake security checks
+13. Login proxy phishing (AiTM) (with "NEW" badge)
+14. Malicious SVG scripts (with "NEW" badge)
 
 **i18n Keys Added:**
-- `tooltipTitle`, `tooltipFeature1-10`, `tooltipFooter`, `tooltipNewBadge`
+- `tooltipTitle`, `tooltipFeature1-14`, `tooltipFooter`, `tooltipNewBadge`
 - All keys translated to native language (no English fallbacks)
 
 **Marketing Rationale:**
 - Progressive disclosure: clean UI for casual users, depth for power users
-- "10 security layers active" emphasizes value
-- "NEW" badge on Form Hijacking shows active development
+- "14 security layers active" emphasizes value
+- "NEW" badge on latest features shows active development
+- Threats badge ("+X today") always visible as trust signal
 
 ---
 
@@ -476,6 +538,7 @@ if (tooltipFeature12) {
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 8.6.0 | 2026-01 | AiTM Proxy Detection + SVG Payload Detection (14 layers) + Popup UX |
 | 8.5.2 | 2026-01 | Add OAuth protection to tooltip (11 security layers) |
 | 8.5.1 | 2026-01 | Fix false positive for email addresses in URL paths |
 | 8.5.0 | 2026-01 | Advanced Threat Detection (OAuth Guard, Fake Turnstile, Split QR) |

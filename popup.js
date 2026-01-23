@@ -58,8 +58,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const tooltipFooter = document.getElementById('tooltipFooter');
     const freeTag = document.getElementById('freeTag');
     const proTag = document.getElementById('proTag');
-    const liveBadge = document.getElementById('liveBadge');
-    const footer = document.getElementById('footer');
+    const dbUpdateText = document.getElementById('dbUpdateText');
     const toast = document.getElementById('toast');
 
     // v8.4.0: Quota elements (now in status card)
@@ -71,6 +70,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // v8.4.1: Threats today counter element
     const threatsToday = document.getElementById('threatsToday');
+    const threatsTodayLabel = document.getElementById('threatsTodayLabel');
 
     let trialStatus = null;
     const TRIAL_DAYS = 30;
@@ -164,15 +164,13 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function displayThreatsCount(todayCount, totalCount) {
-        if (!threatsToday) return;
+        if (!threatsToday || !threatsTodayLabel) return;
 
         if (todayCount > 0) {
-            // Show "+X today" with localized text
-            threatsToday.textContent = msg('threatsTodayCount', [todayCount.toLocaleString()], `+${todayCount.toLocaleString()} ${msg('threatsTodayLabel', 'today')}`);
+            threatsTodayLabel.textContent = msg('threatsTodayCount', [todayCount.toLocaleString()], `+${todayCount.toLocaleString()} ${msg('threatsTodayLabel', 'today')}`);
             threatsToday.classList.add('show');
         } else if (totalCount > 0) {
-            // Show total count if nothing added today
-            threatsToday.textContent = msg('threatsTotalCount', [totalCount.toLocaleString()], `${totalCount.toLocaleString()} ${msg('threatsBlockedLabel', 'blocked')}`);
+            threatsTodayLabel.textContent = msg('threatsTotalCount', [totalCount.toLocaleString()], `${totalCount.toLocaleString()} ${msg('threatsBlockedLabel', 'blocked')}`);
             threatsToday.classList.add('show');
         } else {
             threatsToday.classList.remove('show');
@@ -393,31 +391,18 @@ document.addEventListener('DOMContentLoaded', function () {
         } catch (e) {}
     }
 
-    // Last update with dynamic Live badge
+    // Database update tooltip
     async function displayLastUpdate() {
+        if (!dbUpdateText) return;
         try {
             const { lastRuleUpdate } = await chrome.storage.local.get('lastRuleUpdate');
             if (lastRuleUpdate) {
-                const now = Date.now();
-                const updateTime = new Date(lastRuleUpdate).getTime();
-                const minutesAgo = Math.floor((now - updateTime) / 60000);
-
-                // Show "Live" badge if updated within last 60 minutes
-                if (minutesAgo <= 60) {
-                    liveBadge.classList.add('show');
-                    if (minutesAgo < 5) {
-                        liveBadge.textContent = msg('liveNow') || 'Live';
-                    } else {
-                        liveBadge.textContent = msg('updatedMinAgo', [minutesAgo.toString()]) || `${minutesAgo}m ago`;
-                    }
-                } else {
-                    liveBadge.classList.remove('show');
-                }
-
                 const d = new Intl.DateTimeFormat(chrome.i18n.getUILanguage() || 'en', {
                     day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
                 }).format(new Date(lastRuleUpdate));
-                footer.textContent = msg('lastRuleUpdate') + ' ' + d;
+                dbUpdateText.textContent = msg('lastRuleUpdate') + d;
+            } else {
+                dbUpdateText.textContent = msg('lastRuleUpdate') + '–';
             }
         } catch (e) {}
     }

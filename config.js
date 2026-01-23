@@ -551,7 +551,7 @@ SUSPICIOUS_URL_PATTERNS: [
             // Close button characters
             closeButtons: /[×✕✖✗⨉]|&times;/,
             // Window control classes
-            controlClasses: /\b(close|minimize|maximize|window-control|btn-close|modal-close|title-?bar|window-?header|traffic-?light)\b/i
+            controlClasses: /\b(minimize|maximize|window-control|window-?button|traffic-?light)\b/i
         },
 
         // DEPRECATED: domainWhitelist is no longer used here.

@@ -1020,7 +1020,10 @@ async function fetchAndLoadRules() {
         "appleid.apple.com",
         // Note: office.com, office365.com VERWIJDERD - kunnen misbruikt worden
         // Note: mail.google.com, calendar.google.com behouden - legitieme services
-        "mail.google.com", "calendar.google.com"
+        "mail.google.com", "calendar.google.com",
+        // Major Dutch e-commerce/news (prevent accidental blocking)
+        "bol.com", "www.bol.com", "coolblue.nl", "www.coolblue.nl",
+        "marktplaats.nl", "www.marktplaats.nl"
     ]);
 
     /**
@@ -2735,6 +2738,25 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
             (async () => {
                 try {
+                    // SAFETY: Never block trusted domains even if flagged by a race condition
+                    try {
+                        const blockUrlHost = new URL(targetUrl).hostname.toLowerCase();
+                        const NEVER_BLOCK_DOMAINS = [
+                            'google.com', 'youtube.com', 'facebook.com', 'twitter.com', 'x.com',
+                            'instagram.com', 'linkedin.com', 'reddit.com', 'amazon.com', 'microsoft.com',
+                            'apple.com', 'netflix.com', 'spotify.com', 'github.com', 'stackoverflow.com',
+                            'wikipedia.org', 'bol.com', 'coolblue.nl', 'marktplaats.nl', 'tweakers.net',
+                            'nu.nl', 'nos.nl', 'rtl.nl', 'ad.nl', 'telegraaf.nl'
+                        ];
+                        for (const domain of NEVER_BLOCK_DOMAINS) {
+                            if (blockUrlHost === domain || blockUrlHost.endsWith('.' + domain)) {
+                                pendingBlockUrls.delete(targetUrl);
+                                sendResponse({ blocked: false, reason: 'trusted_domain' });
+                                return;
+                            }
+                        }
+                    } catch (e) { /* URL parse error, continue with blocking */ }
+
                     // v8.8.14: In-memory lock to prevent race conditions
                     if (pendingBlockUrls.has(targetUrl)) {
                         sendResponse({ blocked: true, alreadyPending: true });

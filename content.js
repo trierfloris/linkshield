@@ -8,6 +8,10 @@ function logDebug(message, ...optionalParams) {
     console.log(message, ...optionalParams);
   }
 }
+// PERFORMANCE FIX: Detect sub-frames early to skip heavy operations
+// Sub-frames (ads, tracking pixels, embeds) don't need full security scanning
+const _isTopFrame = (window.self === window.top);
+
 function isHiddenInput(el) {
   return el.tagName === 'INPUT' && el.type === 'hidden';
 }
@@ -113,6 +117,7 @@ const CHECK_INTERVAL_MS = 5000; // 5 seconds between checks
 const CACHE_DURATION_MS = 3600 * 1000; // 1 hour cache expiration
 const MAX_CACHE_SIZE = 1000;
 const MUTATION_DEBOUNCE_MS = 500; // Increased from 250ms for heavy SPA sites
+let _isTrustedSiteCache = null; // Cached trusted domain check for performance-sensitive paths
 const warnedDomainsInline = new Set()
 
 // =============================================================================
@@ -171,7 +176,8 @@ const earlyObserver = new MutationObserver((mutations) => {
 
 // Start DIRECT - zelfs voordat document.body bestaat
 // We observeren documentElement wat altijd bestaat bij document_start
-if (document.documentElement) {
+// PERFORMANCE FIX: Only run in top frame - sub-frames don't need early mutation buffering
+if (document.documentElement && _isTopFrame) {
   earlyObserver.observe(document.documentElement, {
     childList: true,
     subtree: true
@@ -224,10 +230,11 @@ function immediateUriSecurityCheck(link) {
   for (const href of hrefsToCheck) {
     // IMMEDIATE CHECK 1: Data URI (simple fast check)
     if (href.trim().toLowerCase().startsWith('data:')) {
-      // Skip safe text/plain without base64
       const lowerHref = href.toLowerCase();
-      if (lowerHref.startsWith('data:text/plain,') && !lowerHref.includes('base64')) {
-        continue; // Safe plain text data URI, check next href source
+      // Skip safe MIME types: images, audio, video, fonts, plain text
+      if (/^data:(image|audio|video|font)\//i.test(lowerHref) ||
+          (lowerHref.startsWith('data:text/plain,') && !lowerHref.includes('base64'))) {
+        continue; // Safe non-executable data URI, check next href source
       }
       logDebug(`[SecurityFix v8.4.0] 🛑 IMMEDIATE BLOCK: data: URI detected`);
       warnLinkByLevel(link, {
@@ -389,6 +396,7 @@ async function onConfigReady() {
 
   // Stop early observer (wordt vervangen door hoofdobserver)
   earlyObserverActive = false;
+  earlyObserver.disconnect(); // Actually disconnect to prevent observer overhead
 
   // v8.4.1: Only process buffered mutations and schedule scan if Smart Link Scanning is enabled
   if (smartLinkScanningEnabled) {
@@ -424,6 +432,11 @@ async function onConfigReady() {
 const scannedLinksSet = new WeakSet();
 
 function scheduleFullPageScan() {
+  // PERFORMANCE FIX: Skip on trusted domains
+  if (_isTrustedSiteCache) {
+    logDebug('[ProgressiveScan] Skipped - trusted domain');
+    return;
+  }
   // v8.4.1: Skip if Smart Link Scanning is disabled (PRO feature)
   if (!smartLinkScanningEnabled) {
     logDebug('[ProgressiveScan] Skipped - Smart Link Scanning disabled');
@@ -500,6 +513,8 @@ function scheduleFullPageScan() {
   };
 
   const performScan = () => {
+    // PERFORMANCE FIX: Skip if trusted domain was determined after scheduling
+    if (_isTrustedSiteCache) return;
     try {
       const allLinks = Array.from(document.querySelectorAll('a[href]'));
       const totalLinks = allLinks.length;
@@ -524,12 +539,17 @@ function scheduleFullPageScan() {
           logDebug(`[ProgressiveScan] ✅ Total: ${viewportScanned + offscreenScanned}/${totalLinks} links in ${totalTime.toFixed(1)}ms`);
 
           // Phase 3: Shadow DOM scan (after main links done)
-          scanAllShadowDOMs(document.body, 0);
+          // Skip on trusted domains - querySelectorAll('*') is too expensive on complex SPAs
+          if (!_isTrustedSiteCache) {
+            scanAllShadowDOMs(document.body, 0);
+          }
         });
       } else {
         const totalTime = performance.now() - startTime;
         logDebug(`[ProgressiveScan] ✅ Complete: ${viewportScanned}/${totalLinks} links in ${totalTime.toFixed(1)}ms`);
-        scanAllShadowDOMs(document.body, 0);
+        if (!_isTrustedSiteCache) {
+          scanAllShadowDOMs(document.body, 0);
+        }
       }
     } catch (e) {
       logError('[ProgressiveScan] Error:', e);
@@ -1384,9 +1404,16 @@ let clickFixDetected = false;
  * Initialiseert ClickFix Attack detectie
  * Scant de pagina voor verdachte PowerShell/CMD commando's en nep UI patronen
  */
-function initClickFixDetection() {
+async function initClickFixDetection() {
     if (clickFixDetectionInitialized) return;
     clickFixDetectionInitialized = true;
+
+    // Skip observers on trusted domains to prevent performance issues on complex SPAs
+    const hostname = window.location.hostname.toLowerCase();
+    if (await isTrustedDomain(hostname)) {
+        logDebug('[ClickFix] Skipping observer for trusted domain:', hostname);
+        return;
+    }
 
     // Initiële scan
     setTimeout(() => scanForClickFixAttack(), 1000);
@@ -1447,10 +1474,13 @@ async function scanForClickFixAttack() {
         let totalScore = 0;
 
         // Check PowerShell patterns
+        // Patterns common in tutorials get lower score to avoid false positives on docs sites
+        const tutorialCommonPS = /Invoke-WebRequest|Invoke-RestMethod|Start-Process|DownloadString|DownloadFile|\[System\.Net\.WebClient\]/i;
         for (const pattern of patterns.powershell || []) {
             if (pattern.test(allContent)) {
+                const isTutorialCommon = tutorialCommonPS.test(pattern.source);
                 detectedPatterns.push({ type: 'powershell', pattern: pattern.toString() });
-                totalScore += 10; // PowerShell is zeer verdacht
+                totalScore += isTutorialCommon ? 5 : 10; // Tutorial-common patterns score lower
             }
         }
 
@@ -1477,13 +1507,22 @@ async function scanForClickFixAttack() {
             const nearbyCode = btn.closest('div, section, article')?.querySelector('pre, code, textarea');
             if ((btnText.includes('copy') || btnText.includes('kopieer')) && nearbyCode) {
                 const codeText = nearbyCode.textContent || '';
-                // Check of nearby code PowerShell/CMD bevat
+                // Count suspicious pattern matches in this code block
+                // A single common cmdlet in a tutorial is normal; require 2+ matches
+                // or a high-risk pattern (encoded command, policy bypass, etc.)
+                let codeMatchCount = 0;
+                let hasHighRisk = false;
                 for (const pattern of [...(patterns.powershell || []), ...(patterns.cmd || [])]) {
                     if (pattern.test(codeText)) {
-                        detectedPatterns.push({ type: 'copyButtonNearMaliciousCode', pattern: pattern.toString() });
-                        totalScore += 8;
-                        break;
+                        codeMatchCount++;
+                        if (!tutorialCommonPS.test(pattern.source)) {
+                            hasHighRisk = true;
+                        }
                     }
+                }
+                if (hasHighRisk || codeMatchCount >= 2) {
+                    detectedPatterns.push({ type: 'copyButtonNearMaliciousCode', pattern: `${codeMatchCount} patterns` });
+                    totalScore += 8;
                 }
             }
         });
@@ -1564,9 +1603,16 @@ let bitbDetected = false;
 /**
  * Initialiseert BitB Attack detectie
  */
-function initBitBDetection() {
+async function initBitBDetection() {
     if (bitbDetectionInitialized) return;
     bitbDetectionInitialized = true;
+
+    // Skip observers on trusted domains to prevent performance issues on complex SPAs
+    const hostname = window.location.hostname.toLowerCase();
+    if (await isTrustedDomain(hostname)) {
+        logDebug('[BitB] Skipping observer for trusted domain:', hostname);
+        return;
+    }
 
     // Initiële scan na page load (wacht op dynamische content)
     setTimeout(() => scanForBitBAttack(), 2000);
@@ -1825,7 +1871,10 @@ function analyzeOverlayForBitB(overlay, config) {
             const formAction = form?.getAttribute('action');
             let isSameDomainLogin = false;
 
-            if (formAction) {
+            if (!formAction || formAction === '' || formAction === '#') {
+                // Empty/missing action defaults to current page (same-domain)
+                isSameDomainLogin = true;
+            } else {
                 try {
                     const actionHost = new URL(formAction, window.location.href).hostname;
                     isSameDomainLogin = actionHost === window.location.hostname;
@@ -1967,7 +2016,11 @@ function findWindowControls(container, config) {
         handleError(e, '[BitB] findWindowControls');
     }
 
-    return { found: details.length > 0, details };
+    // A single closeButton (×) is too common in legitimate modals.
+    // Require either a strong indicator (trafficLights, controlClasses, roundButtons)
+    // or multiple details to indicate fake OS window controls.
+    const hasStrongIndicator = details.some(d => d !== 'closeButton');
+    return { found: details.length >= 2 || hasStrongIndicator, details };
 }
 
 /**
@@ -2023,9 +2076,9 @@ function hasWindowChromeStyle(element) {
         // Window-achtige border radius (8-12px typisch voor OS windows)
         const hasWindowRadius = borderRadius >= 8 && borderRadius <= 16;
 
-        // Heeft een "title bar" achtig kind element
+        // Heeft een "title bar" achtig kind element (specifiek voor OS window chrome)
         const hasHeader = element.querySelector(
-            '[class*="header"], [class*="title"], [class*="toolbar"], [class*="top-bar"]'
+            '[class*="titlebar"], [class*="title-bar"], [class*="window-title"], [class*="toolbar"], [class*="top-bar"]'
         );
 
         // Combinatie van factoren
@@ -4165,10 +4218,11 @@ async function checkForPhishingAds(link) {
     { func: () => /^(crypto|coins|wallet|exchange|ico|airdrop)/i.test(domain), score: 5, messageKey: "cryptoPhishingAd" },
     { func: () => /adclick|gclid|utm_source/i.test(urlObj.search), score: 2, messageKey: "suspiciousAdStructure" },
     // Zorg ervoor dat SUSPICIOUS_TLDS een RegExp is voordat je test
-    { func: () => (globalConfig.SUSPICIOUS_TLDS instanceof RegExp) && globalConfig.SUSPICIOUS_TLDS.test(domain), score: 3, messageKey: "suspiciousAdTLD" },
+    { func: () => (globalConfig.SUSPICIOUS_TLDS instanceof RegExp) && globalConfig.SUSPICIOUS_TLDS.test(domain), score: 5, messageKey: "suspiciousAdTLD" },
     // isHomoglyphAttack voegt al redenen toe aan een Set, dus hier return we alleen true/false
     { func: async () => await isHomoglyphAttack(domain, homoglyphMap, knownBrands, extractTld(domain), new Set()), score: 4, messageKey: "homoglyphAdAttack" },
-    { func: () => /^(amazon|google|microsoft|paypal)/i.test(domain) && !knownBrands.includes(domain), score: 5, messageKey: "brandMisuse" } // Controleer op misuse, niet legitiem gebruik
+    { func: () => /^(amazon|google|microsoft|paypal)/i.test(domain) && !knownBrands.includes(domain), score: 5, messageKey: "brandMisuse" },
+    { func: () => /(^|[.\-])(microsoft|paypal|apple|google|amazon|netflix|facebook|instagram|whatsapp|bank|coinbase|binance|metamask)([.\-])/i.test(domain) && !knownBrands.includes(domain), score: 5, messageKey: "brandKeywordInDomain" }
   ];
   try {
     const specificReasons = new Set(); // Gebruik een Set om unieke redenen te verzamelen
@@ -4286,10 +4340,10 @@ function detectDangerousScheme(href) {
           return { isDangerous: false, scheme: '', reason: '', risk: 0 };
         }
       }
-      // Data URIs: alleen text/plain zonder base64 zijn relatief veilig
+      // Data URIs: image/audio/video/font en text/plain zijn veilig
       if (scheme === 'data:') {
-        // data:text/plain,Hello is veilig, maar data:text/html of data:application/* zijn gevaarlijk
-        if (/^data:text\/plain[,;]/.test(normalized) && !normalized.includes('base64')) {
+        if (/^data:(image|audio|video|font)\//i.test(normalized) ||
+            (/^data:text\/plain[,;]/.test(normalized) && !normalized.includes('base64'))) {
           return { isDangerous: false, scheme: '', reason: '', risk: 0 };
         }
       }
@@ -4981,6 +5035,96 @@ function classifyAndCheckLink(link) {
         });
         break;
       }
+    }
+  } catch (e) {
+    // URL parsing error - skip
+  }
+
+  // =============================================================================
+  // SECURITY FIX v8.6.1: SUSPICIOUS TLD + BRAND KEYWORD DETECTION (SYNCHRONOUS)
+  // =============================================================================
+  // Detects phishing domains using suspicious TLDs and/or brand impersonation keywords
+  // This runs SYNCHRONOUSLY to avoid dependency on async SSL/domain checks
+  try {
+    const urlObj = new URL(href);
+    const hostname = urlObj.hostname.toLowerCase();
+    const parts = hostname.split('.');
+    const tld = parts.length >= 2 ? parts[parts.length - 1] : '';
+
+    // Check suspicious TLD
+    const hasSuspiciousTLD = globalConfig?.SUSPICIOUS_TLDS_SET?.has(tld) ||
+      (globalConfig?.SUSPICIOUS_TLDS instanceof RegExp && globalConfig.SUSPICIOUS_TLDS.test(hostname));
+
+    // Known brands that are commonly impersonated
+    const brandPatterns = ['microsoft', 'paypal', 'apple', 'google', 'amazon', 'netflix',
+      'facebook', 'instagram', 'whatsapp', 'coinbase', 'binance', 'metamask', 'chase',
+      'wellsfargo', 'bankofamerica', 'citibank', 'hsbc', 'barclays', 'ing', 'rabobank',
+      'abnamro', 'linkedin', 'twitter', 'dropbox', 'adobe', 'zoom', 'slack', 'spotify'];
+
+    // Extract base domain (without TLD) for brand checking
+    const baseDomain = parts.length >= 2 ? parts.slice(0, -1).join('.') : hostname;
+    // Check if a brand keyword appears in the domain but domain is NOT the brand itself
+    let detectedBrand = null;
+    for (const brand of brandPatterns) {
+      if (baseDomain.includes(brand)) {
+        // Verify it's not the actual brand domain (e.g., microsoft.com is legit)
+        const brandDomain = brand + '.' + tld;
+        const brandWithWww = 'www.' + brand + '.' + tld;
+        if (hostname !== brandDomain && hostname !== brandWithWww &&
+            !hostname.endsWith('.' + brand + '.' + tld)) {
+          detectedBrand = brand;
+          break;
+        }
+      }
+    }
+
+    // Phishing keywords that indicate credential theft when combined with brand
+    const phishKeywords = ['login', 'signin', 'secure', 'verify', 'account', 'auth',
+      'update', 'confirm', 'recover', 'reset', 'unlock', 'suspended', 'alert'];
+    const hasPhishKeyword = phishKeywords.some(kw => baseDomain.includes(kw));
+
+    // Keyword stuffing: multiple phishing keywords in domain
+    const phishKeywordCount = phishKeywords.filter(kw => baseDomain.includes(kw)).length;
+    const isKeywordStuffing = phishKeywordCount >= 2;
+
+    // Scoring
+    let tldRisk = 0;
+    let tldReasons = [];
+
+    if (hasSuspiciousTLD && detectedBrand) {
+      // Brand on suspicious TLD = HIGH RISK (e.g., netflix-login.top)
+      tldRisk = 15;
+      tldReasons = ['suspiciousTLD', `brandImpersonation:${detectedBrand}`];
+    } else if (detectedBrand && hasPhishKeyword) {
+      // Brand + phishing keyword = HIGH RISK (e.g., login-microsoft-verify.com)
+      tldRisk = 15;
+      tldReasons = [`brandImpersonation:${detectedBrand}`, 'phishingKeywordInDomain'];
+    } else if (isKeywordStuffing) {
+      // Multiple phishing keywords = MEDIUM RISK (e.g., secure-bank-login-verify-account.com)
+      tldRisk = 8;
+      tldReasons = ['keywordStuffing'];
+    } else if (hasSuspiciousTLD) {
+      // Suspicious TLD alone = CAUTION (e.g., free-iphone-winner.buzz)
+      tldRisk = 5;
+      tldReasons = ['suspiciousTLD'];
+    } else if (detectedBrand) {
+      // Brand keyword alone on normal TLD = CAUTION (e.g., paypal-something.com)
+      tldRisk = 8;
+      tldReasons = [`brandImpersonation:${detectedBrand}`];
+    }
+
+    if (tldRisk > 0) {
+      const level = tldRisk >= 15 ? 'alert' : 'caution';
+      logDebug(`[SecurityFix v8.6.1] ⚠️ TLD/BRAND: ${hostname} → risk=${tldRisk}, reasons=${tldReasons.join(',')}`);
+      link.dataset.linkshieldWarned = 'true';
+      link.dataset.linkshieldLevel = level;
+      link.dataset.linkshieldReasons = (link.dataset.linkshieldReasons || '') +
+        (link.dataset.linkshieldReasons ? ',' : '') + tldReasons.join(',');
+      warnLinkByLevel(link, {
+        level: level,
+        risk: tldRisk,
+        reasons: tldReasons
+      });
     }
   } catch (e) {
     // URL parsing error - skip
@@ -6224,7 +6368,6 @@ async function detectFakeTurnstile() {
         // Stap 3: Check voor Turnstile branding/styling zonder legitieme iframe
         const hasTurnstileBranding =
             bodyHtml.includes('cf-turnstile') ||
-            bodyHtml.includes('cloudflare') ||
             bodyHtml.includes('turnstile-widget') ||
             !!document.querySelector('[class*="turnstile"]') ||
             !!document.querySelector('[id*="turnstile"]');
@@ -6240,7 +6383,7 @@ async function detectFakeTurnstile() {
             const labelText = document.querySelector(`label[for="${cb.id}"]`)?.innerText?.toLowerCase() || '';
             const combinedText = parentText + ' ' + labelText;
 
-            if (combinedText.match(/human|robot|not a robot|i('| a)?m human|verify/)) {
+            if (combinedText.match(/human|robot|not a robot|i('| a)?m human|verify.{0,5}(human|identity|yourself)/)) {
                 indicators.push('fake_human_checkbox');
                 break;
             }
@@ -6250,14 +6393,17 @@ async function detectFakeTurnstile() {
         const spinners = document.querySelectorAll('[class*="spinner"], [class*="loading"], [class*="loader"]');
         for (const spinner of spinners) {
             const nearbyText = spinner.parentElement?.innerText?.toLowerCase() || '';
-            if (nearbyText.match(/verify|check|secure|human/)) {
+            if (nearbyText.match(/verify.{0,10}human|checking.{0,15}(connection|secure|browser)|human.{0,10}verif|captcha|turnstile/)) {
                 indicators.push('fake_verification_spinner');
                 break;
             }
         }
 
         // Bepaal of het fake is
-        const isFake = (hasTurnstileText || hasTurnstileBranding || indicators.length > 0) &&
+        // Require Turnstile-specific context (text or branding), or multiple supporting indicators
+        const hasTurnstileContext = hasTurnstileText || hasTurnstileBranding;
+        const hasMultipleSupportingIndicators = indicators.filter(i => !i.startsWith('turnstile_')).length >= 2;
+        const isFake = (hasTurnstileContext || hasMultipleSupportingIndicators) &&
                        !hasLegitimateTurnstile;
 
         if (isFake) {
@@ -6442,7 +6588,14 @@ async function detectAiTMProxy() {
 }
 
 // Initialiseer AiTM detectie met delay en MutationObserver
-function initAiTMDetection() {
+async function initAiTMDetection() {
+    // Skip observers on trusted domains to prevent performance issues on complex SPAs
+    const hostname = window.location.hostname.toLowerCase();
+    if (await isTrustedDomain(hostname)) {
+        logDebug('[AiTM] Skipping observer for trusted domain:', hostname);
+        return;
+    }
+
     // Initial scan na 2500ms (staggered na andere scans)
     setTimeout(async () => {
         await detectAiTMProxy();
@@ -6659,11 +6812,18 @@ async function detectSVGPayloads() {
 }
 
 // Initialiseer SVG Payload detectie met delay en MutationObserver
-function initSVGPayloadDetection() {
-    // Initial scan na 3000ms (staggered na AiTM scan)
+async function initSVGPayloadDetection() {
+    // Skip observers on trusted domains to prevent performance issues on complex SPAs
+    const hostname = window.location.hostname.toLowerCase();
+    if (await isTrustedDomain(hostname)) {
+        logDebug('[SVG] Skipping observer for trusted domain:', hostname);
+        return;
+    }
+
+    // Initial scan na 1000ms (versneld voor race condition preventie)
     setTimeout(async () => {
         await detectSVGPayloads();
-    }, 3000);
+    }, 1000);
 
     // MutationObserver voor nieuw toegevoegde SVG/object/embed elementen
     let svgDebounceTimer = null;
@@ -6688,7 +6848,14 @@ function initSVGPayloadDetection() {
 }
 
 // Run proactive scan after page load
-function initProactiveVisualHijackingScan() {
+async function initProactiveVisualHijackingScan() {
+  // Skip observers on trusted domains to prevent performance issues on complex SPAs
+  const hostname = window.location.hostname.toLowerCase();
+  if (await isTrustedDomain(hostname)) {
+    logDebug('[Vector3-Proactive] Skipping observer for trusted domain:', hostname);
+    return;
+  }
+
   // Initial scan with delay to let page render
   setTimeout(proactiveVisualHijackingScan, 1000);
 
@@ -6714,10 +6881,13 @@ function initProactiveVisualHijackingScan() {
 
 // SECURITY FIX v8.1.8: Re-enabled proactive scanner with improved CMP/ad filtering
 // The scanner now properly skips cookie consent banners, ad overlays, and trusted domains
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initProactiveVisualHijackingScan);
-} else {
-  initProactiveVisualHijackingScan();
+// PERFORMANCE FIX: Only run in top frame - visual hijacking only targets main page
+if (_isTopFrame) {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initProactiveVisualHijackingScan);
+  } else {
+    initProactiveVisualHijackingScan();
+  }
 }
 
 function injectWarningIconStyles() {
@@ -8213,12 +8383,21 @@ function detectHiddenIframes() {
         // Whitelist check voor bekende tracking pixels
         const trustedPixels = [
           'facebook.com/tr',
+          'connect.facebook.net',
           'google-analytics.com',
+          'analytics.google.com',
           'googletagmanager.com',
+          'googlesyndication.com',
           'doubleclick.net',
           'bing.com/action',
+          'bat.bing.com',
+          'clarity.ms',
           'linkedin.com/px',
-          'twitter.com/i/adsct'
+          'snap.licdn.com',
+          'twitter.com/i/adsct',
+          'ct.pinterest.com',
+          'hotjar.com',
+          'hs-analytics.net'
         ];
 
         const isTrustedPixel = trustedPixels.some(pixel => src.includes(pixel));
@@ -10583,7 +10762,9 @@ async function isFreeHostingDomain(url) {
       return true;
     }
     // 4) Meer dan één opeenvolgend koppelteken (soms duidt op auto-genereerde subdomeinen)
-    if (/[-]{2,}/.test(domain)) {
+    // Skip Punycode labels (xn--) die legitiem dubbele koppeltekens bevatten
+    const domainWithoutPunycode = domain.replace(/\bxn--[a-z0-9-]+/g, '');
+    if (/[-]{2,}/.test(domainWithoutPunycode)) {
       logDebug(`Meerdere opeenvolgende koppeltekens in ${domain}`);
       return true;
     }
@@ -10647,8 +10828,17 @@ function detectBrandSubdomainPhishing(url) {
         const subdomainStr = subdomainParts.join('.');
 
         for (const brand of brandKeywords) {
-            // Check of brand voorkomt als substring in subdomeinen
-            if (subdomainStr.includes(brand)) {
+            // For short brands (<=3 chars), require word boundaries (-, ., start, end)
+            // to avoid matching substrings like "shopping" → "ing" or "startups" → "ups"
+            let matched = false;
+            if (brand.length <= 3) {
+                const regex = new RegExp(`(^|[.\\-])${brand}($|[.\\-])`);
+                matched = regex.test(subdomainStr);
+            } else {
+                matched = subdomainStr.includes(brand);
+            }
+
+            if (matched) {
                 logDebug(`[BrandSubdomain] Detected: ${brand} in ${hostname}`);
                 return {
                     detected: true,
@@ -10699,7 +10889,16 @@ function detectHostnameBrandKeywordPhishing(url) {
 
         for (const brand of brandKeywords) {
             const brandLower = brand.toLowerCase();
-            if (domainName.includes(brandLower)) {
+            // For short brands (<=3 chars), require word boundaries to avoid
+            // substring matches like "shopping" → "ing" or "groups" → "ups"
+            let brandMatched = false;
+            if (brandLower.length <= 3) {
+                const regex = new RegExp(`(^|[.\\-])${brandLower}($|[.\\-])`);
+                brandMatched = regex.test(domainName);
+            } else {
+                brandMatched = domainName.includes(brandLower);
+            }
+            if (brandMatched) {
                 // Zoek phishing keywords (die niet het merk zelf zijn)
                 const foundKeywords = phishingKeywords.filter(k =>
                     k !== brandLower && domainName.includes(k));
@@ -11063,6 +11262,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.body.dataset.linkshieldProtected = 'true';
   }
   try {
+    // PERFORMANCE FIX: Skip all heavy initialization in sub-frames
+    // Sub-frames (ads, tracking pixels, embeds) don't need security scanning
+    if (!_isTopFrame) {
+      logDebug('[Content] Sub-frame detected, skipping heavy initialization');
+      return;
+    }
+
     logDebug("🚀 Initializing content script...");
     await initContentScript(); // Wacht op configuratie en veilige domeinen
 
@@ -11090,6 +11296,34 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     if (protectionEnabled) {
+      // Cache trusted domain status for performance-sensitive paths (main observer, etc.)
+      _isTrustedSiteCache = await isTrustedDomain(window.location.hostname.toLowerCase());
+
+      // PERFORMANCE FIX: On trusted domains, skip ALL heavy checks and just show safe badge
+      // This prevents renderer crashes on complex SPAs like bol.com, React apps, etc.
+      if (_isTrustedSiteCache) {
+        logDebug(`[Content] Trusted domain (TrustedDomains.json), skipping all security scans`);
+        // Disconnect main observer to prevent any mutation processing overhead
+        if (typeof observer !== 'undefined') {
+          try { observer.disconnect(); } catch(e) {}
+        }
+        chrome.runtime.sendMessage({
+          action: 'checkResult',
+          url: window.location.href,
+          level: 'safe',
+          isSafe: true,
+          risk: 0,
+          reasons: ['trustedDomainSkipped']
+        });
+        showSiteSafeBadge();
+        return; // Skip ALL security checks on trusted domains
+      }
+
+      // Start main observer now that we know domain is not trusted
+      if (_isTopFrame) {
+        startMainObserver();
+      }
+
       // Initialiseer Clipboard Guard voor crypto hijacking detectie
       initClipboardGuard();
 
@@ -11238,13 +11472,17 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     }
     // 1e. Interactieve controls (visueel, geen berichten)
-    const initialControls = detectInteractiveControls();
-    logDebug(`[UI] ${initialControls.length} interactieve elementen gevonden`);
-    startDynamicDetection(controls => {
-      controls.forEach(el => {
-        if (el.tagName === 'A' && el.href) classifyAndCheckLink(el);
+    // Skip on trusted domains - detectInteractiveControls uses getComputedStyle on every element
+    // and startDynamicDetection has no debounce, causing renderer crashes on complex SPAs
+    if (!_isTrustedSiteCache) {
+      const initialControls = detectInteractiveControls();
+      logDebug(`[UI] ${initialControls.length} interactieve elementen gevonden`);
+      startDynamicDetection(controls => {
+        controls.forEach(el => {
+          if (el.tagName === 'A' && el.href) classifyAndCheckLink(el);
+        });
       });
-    });
+    }
     // --- 2. URL-specifieke checks ---
     // v8.4.1: countQuota: true - this is the CURRENT PAGE URL check, should count towards quota
     const urlResult = await performSuspiciousChecks(currentUrl, { countQuota: true });
@@ -11540,6 +11778,8 @@ function injectWarningStyles() {
 // SECURITY FIX v8.8.2: Use accumulating debounce to prevent losing mutations
 const observer = new MutationObserver(debounceMutations(async (mutations) => {
   if (!(await isProtectionEnabled())) return; // Stop als bescherming uitstaat
+  // PERFORMANCE FIX: Skip ALL mutation processing on trusted domains
+  if (_isTrustedSiteCache) return;
   let scriptsAdded = false;
   let iframesAdded = false;
   let linksAdded = false;
@@ -11599,15 +11839,18 @@ const observer = new MutationObserver(debounceMutations(async (mutations) => {
 
         // SECURITY FIX v8.0.0 (Vector 2): Scan ook Shadow DOM in nieuw toegevoegde elementen
         // Dit vangt links in Shadow DOM die door aanvallers worden geïnjecteerd
-        try {
-          scanNodeForLinks(node, 0);
-        } catch (e) {
-          // Ignore Shadow DOM scan errors
+        // Skip on trusted domains to prevent performance issues on complex SPAs
+        if (!_isTrustedSiteCache) {
+          try {
+            scanNodeForLinks(node, 0);
+          } catch (e) {
+            // Ignore Shadow DOM scan errors
+          }
         }
       }
 
       // SECURITY FIX v8.0.0 (Vector 2): Check of nieuw element een shadowRoot heeft
-      if (node.shadowRoot) {
+      if (!_isTrustedSiteCache && node.shadowRoot) {
         try {
           scanNodeForLinks(node.shadowRoot, 0);
         } catch (e) {
@@ -11617,7 +11860,8 @@ const observer = new MutationObserver(debounceMutations(async (mutations) => {
     });
   });
   // Als er een password veld is toegevoegd, invalideer de login cache en hercontroleer
-  if (passwordFieldAdded) {
+  // Skip on trusted domains to prevent performance issues on complex SPAs
+  if (passwordFieldAdded && !_isTrustedSiteCache) {
     const currentUrl = window.location.href;
     logDebug("🔐 Password veld dynamisch gedetecteerd. Cache invalideren en hercontrole starten.");
     // Invalideer de login page cache voor deze URL
@@ -11646,8 +11890,8 @@ const observer = new MutationObserver(debounceMutations(async (mutations) => {
     }
   }
   // Als er scripts of iframes zijn toegevoegd, hercontroleer de paginabrede status.
-  // We roepen de paginabrede logica die al in DOMContentLoaded staat opnieuw aan.
-  if (scriptsAdded || iframesAdded) {
+  // Skip on trusted domains to prevent performance issues on complex SPAs
+  if ((scriptsAdded || iframesAdded) && !_isTrustedSiteCache) {
     logDebug("Dynamische content gedetecteerd (scripts/iframes). Hercontroleer paginabrede risico's.");
     // Roep de paginabrede controleroutine aan die nu in DOMContentLoaded staat.
     // Dit is een simpele aanroep; de details van het verzamelen en verzenden liggen daar.
@@ -11721,24 +11965,31 @@ const observer = new MutationObserver(debounceMutations(async (mutations) => {
 // =============================================================================
 // SECURITY FIX v8.2.0: Enhanced MutationObserver configuration
 // =============================================================================
-// Voeg `attributes: true` toe om href-wijzigingen te detecteren
-// Voeg `attributeFilter: ['href']` toe om alleen relevante attributen te observeren
-observer.observe(document.documentElement, {
-  childList: true,
-  subtree: true,
-  attributes: true,
-  attributeFilter: ['href'] // Alleen href wijzigingen monitoren voor performance
-});
-document.addEventListener('mouseover', debounce((event) => {
-  if (event.target.tagName === 'A') {
-    unifiedCheckLinkSafety(event.target, 'mouseover', event);
-  }
-}, 250));
-document.addEventListener('click', debounce((event) => {
-  if (event.target.tagName === 'A') {
-    unifiedCheckLinkSafety(event.target, 'click', event);
-  }
-}, 250));
+// PERFORMANCE FIX: Main observer and event listeners are started from DOMContentLoaded
+// after trusted domain status is determined. This prevents heavy processing during initial
+// page load on trusted domains. See startMainObserver() call in DOMContentLoaded handler.
+if (_isTopFrame) {
+  document.addEventListener('mouseover', debounce((event) => {
+    if (event.target.tagName === 'A') {
+      unifiedCheckLinkSafety(event.target, 'mouseover', event);
+    }
+  }, 250));
+  document.addEventListener('click', debounce((event) => {
+    if (event.target.tagName === 'A') {
+      unifiedCheckLinkSafety(event.target, 'click', event);
+    }
+  }, 250));
+}
+
+// Function to start the main observer - called from DOMContentLoaded after trusted check
+function startMainObserver() {
+  observer.observe(document.documentElement, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ['href']
+  });
+}
 
 // =============================================================================
 // SECURITY FIX v8.3.0: SCROLL EVENT LISTENER FOR LAZY-LOADED LINKS
@@ -11757,6 +12008,8 @@ const SCROLL_SCAN_THROTTLE_MS = 300; // SECURITY FIX v8.6.0: Reduced from 1000ms
  * - Handles scroll-triggered evasion attempts
  */
 function scanViewportAfterScroll() {
+  // PERFORMANCE FIX: Skip on trusted domains
+  if (_isTrustedSiteCache) return;
   const now = Date.now();
   if (now - lastScrollScanTime < SCROLL_SCAN_THROTTLE_MS) {
     return; // Throttled
@@ -11800,32 +12053,35 @@ function scanViewportAfterScroll() {
   });
 
   // SECURITY FIX v8.6.0: Also scan Shadow DOM for scroll-injected links
-  const elementsWithShadow = document.querySelectorAll('*');
-  elementsWithShadow.forEach(el => {
-    if (el.shadowRoot) {
-      const shadowLinks = el.shadowRoot.querySelectorAll('a[href]');
-      shadowLinks.forEach(link => {
-        if (link.dataset.linkshieldScanned) return;
-        const rect = link.getBoundingClientRect();
-        const isInViewport = (
-          rect.top < (viewportHeight + VIEWPORT_BUFFER) &&
-          rect.bottom > -VIEWPORT_BUFFER
-        );
-        if (isInViewport) {
-          if (typeof immediateUriSecurityCheck === 'function') {
-            if (immediateUriSecurityCheck(link)) {
-              link.dataset.linkshieldScanned = 'true';
-              scannedCount++;
-              return;
+  // Skip on trusted domains - querySelectorAll('*') is extremely expensive on complex SPAs
+  if (!_isTrustedSiteCache) {
+    const elementsWithShadow = document.querySelectorAll('*');
+    elementsWithShadow.forEach(el => {
+      if (el.shadowRoot) {
+        const shadowLinks = el.shadowRoot.querySelectorAll('a[href]');
+        shadowLinks.forEach(link => {
+          if (link.dataset.linkshieldScanned) return;
+          const rect = link.getBoundingClientRect();
+          const isInViewport = (
+            rect.top < (viewportHeight + VIEWPORT_BUFFER) &&
+            rect.bottom > -VIEWPORT_BUFFER
+          );
+          if (isInViewport) {
+            if (typeof immediateUriSecurityCheck === 'function') {
+              if (immediateUriSecurityCheck(link)) {
+                link.dataset.linkshieldScanned = 'true';
+                scannedCount++;
+                return;
+              }
             }
+            classifyAndCheckLink(link);
+            link.dataset.linkshieldScanned = 'true';
+            scannedCount++;
           }
-          classifyAndCheckLink(link);
-          link.dataset.linkshieldScanned = 'true';
-          scannedCount++;
-        }
-      });
-    }
-  });
+        });
+      }
+    });
+  }
 
   if (scannedCount > 0) {
     logDebug(`[SecurityFix v8.6.0] 📜 Scroll scan: ${scannedCount} new links in/near viewport`);
@@ -11869,29 +12125,37 @@ function initScrollScanObserver() {
   });
 }
 
-// Initialize observer after DOM ready
-if (document.readyState === 'complete') {
-  initScrollScanObserver();
-} else {
-  window.addEventListener('load', initScrollScanObserver);
+// Initialize observer after DOM ready - only in top frame
+if (_isTopFrame) {
+  if (document.readyState === 'complete') {
+    initScrollScanObserver();
+  } else {
+    window.addEventListener('load', initScrollScanObserver);
+  }
 }
 
-// Add throttled scroll listener with shorter debounce
-document.addEventListener('scroll', debounce(scanViewportAfterScroll, 300), { passive: true });
+// PERFORMANCE FIX: Only run scroll/resize listeners in top frame
+if (_isTopFrame) {
+  // Add throttled scroll listener with shorter debounce
+  document.addEventListener('scroll', debounce(scanViewportAfterScroll, 300), { passive: true });
 
-// Also scan on resize (viewport changes)
-window.addEventListener('resize', debounce(scanViewportAfterScroll, 300), { passive: true });
+  // Also scan on resize (viewport changes)
+  window.addEventListener('resize', debounce(scanViewportAfterScroll, 300), { passive: true });
 
-// SECURITY FIX v8.6.0: Also listen for scrollend event (modern browsers)
-if ('onscrollend' in window) {
-  document.addEventListener('scrollend', scanViewportAfterScroll, { passive: true });
+  // SECURITY FIX v8.6.0: Also listen for scrollend event (modern browsers)
+  if ('onscrollend' in window) {
+    document.addEventListener('scrollend', scanViewportAfterScroll, { passive: true });
+  }
 }
 
 // =============================================================================
 // SECURITY FIX v8.3.0: SPA NAVIGATION DETECTION
 // =============================================================================
 // AUDIT FIX: Catches soft navigations in Single Page Applications
-// Patches pushState, replaceState and listens for popstate
+// PERFORMANCE FIX: Only run in top frame
+if (!_isTopFrame) {
+  // Skip SPA navigation detection in sub-frames
+} else {
 
 let lastNavigationUrl = window.location.href;
 
@@ -11964,6 +12228,8 @@ window.addEventListener('hashchange', () => {
 
 logDebug('[SecurityFix v8.3.0] ✅ Scroll listener and SPA navigation handlers installed');
 
+} // End _isTopFrame check for SPA navigation detection
+
 const processedLinks = new Set();
 /**
  * Extraheert de top-level domein (TLD) uit een hostname, inclusief samengestelde TLD's (bijv. .co.uk).
@@ -12022,19 +12288,22 @@ function checkGoogleSearchResults() {
     }
   });
 }
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.action === 'testURL') {
-    performSuspiciousChecks(message.url)
-      .then((result) => {
-        sendResponse({ isSafe: result.isSafe, reasons: result.reasons, risk: result.risk });
-      })
-      .catch((error) => {
-        handleError(error, `chrome.runtime.onMessage: Fout bij testen van URL ${message.url}`);
-        sendResponse({ isSafe: false, reasons: ["An error occurred."], risk: 0 });
-      });
-    return true;
-  }
-});
+// PERFORMANCE FIX: Only handle messages in top frame to prevent duplicate processing
+if (_isTopFrame) {
+  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.action === 'testURL') {
+      performSuspiciousChecks(message.url)
+        .then((result) => {
+          sendResponse({ isSafe: result.isSafe, reasons: result.reasons, risk: result.risk });
+        })
+        .catch((error) => {
+          handleError(error, `chrome.runtime.onMessage: Fout bij testen van URL ${message.url}`);
+          sendResponse({ isSafe: false, reasons: ["An error occurred."], risk: 0 });
+        });
+      return true;
+    }
+  });
+}
 
 
 // =============================================================================

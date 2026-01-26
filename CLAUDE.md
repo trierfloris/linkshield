@@ -4,7 +4,7 @@
 
 **LinkShield** is a Chrome browser extension that protects users from phishing, malicious links, and various web-based attacks. It provides real-time security warnings for suspicious URLs, visual hijacking attempts, form hijacking, and more.
 
-**Current Version:** 8.6.0
+**Current Version:** 8.7.2
 **Manifest Version:** 3
 
 ---
@@ -31,6 +31,7 @@
 | `TrustedDomains.json` | Regex patterns for trusted domains |
 | `trustedIframes.json` | Trusted iframe sources |
 | `trustedScripts.json` | Trusted script sources |
+| `hostileTrackers.json` | Tracking domains associated with phishing/malware |
 | `rules.json` | DeclarativeNetRequest rules |
 
 ### Internationalization
@@ -40,6 +41,206 @@
 ---
 
 ## Recent Implementations
+
+### v8.7.2 - Security Audit Fixes (2026-01)
+
+**Purpose:** Fix three critical vulnerabilities identified in security audit: ASCII I/l lookalike bypass, ClickFix split-tag bypass, and SVG race condition.
+
+**Fixes:**
+
+| Fix | Layer | Issue | Solution |
+|-----|-------|-------|----------|
+| ASCII I/l Lookalike | 2 | `paypaI.com` (capital I) not detected | Extended regex to `/paypa[1lI]/i` |
+| ClickFix Split-Tag | 4 | `<span>Invoke-</span><span>Expression</span>` bypasses detection | Text normalization before pattern matching |
+| SVG Race Condition | 14 | 1000ms delay allows malicious SVG onload to execute | Immediate scan + 50ms debounce MutationObserver |
+
+**Files Modified:**
+- `content.js` - All three security fixes
+- `manifest.json` - Version bump to 8.7.2
+
+**Fix 1: ASCII Lookalike Detection (Layer 2)**
+
+Added comprehensive I/l/1 confusion patterns for major brands:
+
+```javascript
+// Before: /paypa1/ - only catches digit 1
+// After: /paypa[1lI]/i - catches 1, l, and capital I (case-insensitive)
+
+const asciiLookalikes = [
+  { pattern: /paypa[1I]/i, brand: 'paypal' },      // paypa1, paypaI
+  { pattern: /netf[1lI][1lI]x/i, brand: 'netflix' }, // netflix with l/1/I
+  { pattern: /[1lI]inkedin/i, brand: 'linkedin' },  // 1inkedin, Iinkedin
+  // ... expanded for all major brands
+];
+```
+
+**Fix 2: ClickFix Split-Tag Bypass (Layer 4)**
+
+Added text normalization function to detect split keywords:
+
+```javascript
+// Normalize text before pattern matching
+const normalizeForScan = (text) => {
+  return text
+    // Remove zero-width characters
+    .replace(/[\u200B-\u200D\uFEFF\u00AD]/g, '')
+    // Normalize Unicode whitespace
+    .replace(/[\u00A0\u2000-\u200A\u202F\u205F\u3000]/g, ' ')
+    // Collapse multiple spaces
+    .replace(/\s+/g, ' ');
+};
+```
+
+**Fix 3: SVG Race Condition (Layer 14)**
+
+Changed from delayed scan to immediate detection:
+
+```javascript
+// Before: setTimeout(() => detectSVGPayloads(), 1000);
+// After: Immediate + MutationObserver with onload interception
+
+queueMicrotask(async () => await detectSVGPayloads()); // Immediate
+
+// MutationObserver with immediate onload check
+if (node.tagName === 'svg') {
+  const onload = node.getAttribute('onload');
+  if (onload && /location|cookie|eval|fetch/.test(onload)) {
+    node.removeAttribute('onload'); // Prevent execution
+    detectSVGPayloads(); // Scan immediately
+  }
+}
+```
+
+**Key Architecture Decision:**
+
+The SVG fix includes a **preemptive onload removal** mechanism. When a new SVG is added to the DOM with a dangerous `onload` attribute, the MutationObserver:
+1. Detects the attribute synchronously (before script execution)
+2. Removes the `onload` attribute to prevent execution
+3. Triggers a full SVG payload scan
+
+This is necessary because `queueMicrotask` runs after the current script but before browser-scheduled callbacks like `onload`.
+
+---
+
+### v8.7.1 - Landing Page Update + Price Change (2026-01)
+
+**Purpose:** Detect tracking domains associated with phishing campaigns, malware C2 infrastructure, and data exfiltration. Strategically positioned as a security feature (not a privacy score) to extend the security moat.
+
+**New Feature:**
+
+| Feature | Description | Location |
+|---------|-------------|----------|
+| Tracking Infrastructure Risk | Detects hostile tracking domains via webRequest API | `background.js` |
+| Risk Indicator | Non-intrusive floating indicator on elevated/high risk | `content.js` |
+| Hostile Trackers Data | JSON database of known hostile tracking domains | `hostileTrackers.json` |
+
+**Architecture:**
+
+```
+webRequest.onCompleted (background.js)
+  → processThirdPartyRequest()
+      → Skip first-party requests
+      → Check against hostileTrackers.json
+          ├─ trustedTrackers (whitelist) → score 0
+          ├─ hostileDomains (known bad) → score 20
+          ├─ hostilePatterns (regex match) → score 15
+          ├─ suspiciousCharacteristics (random subdomain) → score 10
+          ├─ dangerousTLDs + tracking prefix → score 8
+          └─ unknown tracker → score 3
+      → Update tab risk cache
+      → Send trackingRiskUpdate to content.js
+      → Update badge if elevated/high
+
+webNavigation.onCommitted (background.js)
+  → Clear tab risk cache on navigation
+
+content.js
+  → Listen for trackingRiskUpdate
+  → Show/hide floating indicator
+```
+
+**Risk Levels:**
+
+| Level | Score | Visual |
+|-------|-------|--------|
+| none | 0-4 | No indicator |
+| low | 5-14 | No indicator |
+| elevated | 15-24 | Orange indicator (auto-hide 10s) |
+| high | 25+ | Red indicator (persistent) |
+
+**Files Modified:**
+- `hostileTrackers.json` - NEW: Hostile tracking domains database
+- `config.js` - Added `trackingInfrastructureRisk` config section
+- `background.js` - webRequest listener, tab cache, risk calculation
+- `content.js` - trackingRiskUpdate listener, floating indicator
+- `popup.html` - Added tooltipFeature15, updated footer to "15 layers"
+- `popup.js` - Added tooltipFeature15 translation
+- `manifest.json` - Added `webRequest`, `webNavigation` permissions, v8.7.0
+- All 24 locale files - Added 5 new i18n keys
+
+**New i18n Keys:**
+- `tooltipFeature15` - "Hostile tracking infrastructure"
+- `trackingRiskTitle` - "Hostile Tracking Detected"
+- `trackingRiskHostile` - "hostile tracker(s)"
+- `trackingRiskThirdParty` - "third-party domains"
+- `trackingRiskDetected` - Alert reason text
+
+**hostileTrackers.json Structure:**
+```json
+{
+  "hostileDomains": {
+    "phishingInfra": [...],
+    "malwareC2": [...],
+    "cryptoTheft": [...],
+    "dataExfil": [...],
+    "fingerprintAbuse": [...]
+  },
+  "hostilePatterns": ["^track[0-9]*\\.", ...],
+  "suspiciousCharacteristics": {...},
+  "trustedTrackers": ["google-analytics.com", ...],
+  "dangerousTLDs": ["xyz", "top", ...]
+}
+```
+
+**Key Functions:**
+- `loadHostileTrackersData()` - Lazy-load hostile trackers JSON
+- `checkHostileTracker(domain)` - Check if domain is hostile
+- `processThirdPartyRequest(details)` - Process webRequest events
+- `getTabTrackingRisk(tabId)` - Get/create tab risk cache
+- `calculateTrackingRiskLevel(score)` - Calculate risk level from score
+- `handleTrackingRiskUpdate(data)` - Content script handler
+- `showTrackingRiskIndicator()` - Display floating indicator
+
+**Strategic Positioning:**
+- Framed as "hostile tracking infrastructure" (security), not "privacy score" (commodity)
+- Extends existing 14-layer security moat to 15 layers
+- Differentiates from Ghostery/Privacy Badger by focusing on phishing-associated trackers
+- Uses same score-based architecture as other threat detections
+
+---
+
+### v8.7.1 - Landing Page Update + Price Change (2026-01)
+
+**Purpose:** Add tracker detection feature to landing page and update premium pricing.
+
+**Changes:**
+
+| Change | Description | Location |
+|--------|-------------|----------|
+| Feature 8 added | "Verdachte Tracker Detectie" / "Suspicious Tracker Detection" | `index.html` |
+| Security layers updated | 14 → 15 in all references | `index.html` |
+| Premium price updated | €1,99 → €4,99 | `index.html`, `popup.html`, 24 locale files |
+
+**Files Modified:**
+- `index.html` - Added Feature 8 HTML block with "NIEUW" badge, updated "14" to "15" references, added feature8Title/feature8Text translations (NL + EN), updated price €1,99 → €4,99
+- `popup.html` - Updated ctaPrice €1.99 → €4.99
+- All 24 locale files - Updated `licenseUpgradeLink` and `ctaUpgradePrice` with new price
+
+**New i18n Keys (index.html only):**
+- `feature8Title` - "Verdachte Tracker Detectie" / "Suspicious Tracker Detection"
+- `feature8Text` - Feature description text
+
+---
 
 ### v8.6.1 - Detection Effectiveness Fixes + Performance (2026-01)
 
@@ -598,6 +799,46 @@ if (tooltipFeature12) {
 }
 ```
 
+### Promo Video Update Requirements (Remotion)
+
+**Location:** `linkshield-promo/` (Remotion project, 1280x720, 30fps)
+
+**CRITICAL:** Every new Smart Link Scanning feature MUST be added to the promo video:
+
+1. **Add to `src/constants/features.ts`:**
+   - Add new entry to `FEATURES` array with `isNew: true`
+   - Set previous "new" features to `isNew: false`
+
+2. **Add visual example to `src/components/FeatureExample.tsx`:**
+   - Add new entry in the `examples` record keyed by feature ID
+   - Create a mini visual showing the attack pattern being detected
+   - Use existing helpers: `MiniBrowser`, `BlockBadge`, `DangerStrike`
+
+3. **Update `src/constants/timing.ts`:**
+   - `TOTAL_FRAMES` = `SCENES.CTA.start + SCENES.CTA.duration`
+   - `SCENES.FEATURES.duration` = `N_features × FEATURE_FRAME_DURATION` (90 frames = 3s each)
+   - Shift all subsequent scene start times accordingly
+
+4. **Regenerate audio:**
+   - Update `DURATION` in `generate-audio.js` to match new total seconds
+   - Update `sceneChanges` array with new scene transition timestamps
+   - Run `node generate-audio.js`
+
+5. **Render:**
+   ```bash
+   cd linkshield-promo
+   npm run render
+   ```
+
+6. **Key files:**
+   - `src/constants/features.ts` - Feature list + batches
+   - `src/constants/timing.ts` - Scene durations (auto-extends)
+   - `src/components/FeatureExample.tsx` - Visual examples per feature
+   - `src/scenes/Scene4_Features.tsx` - Features carousel scene
+   - `src/compositions/LinkShieldPromo.tsx` - Master composition with audio
+   - `generate-audio.js` - Synthesized background music generator
+   - `public/background-music.wav` - Generated audio file
+
 ---
 
 ## Known Issues / Future Work
@@ -631,6 +872,9 @@ if (tooltipFeature12) {
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 8.7.2 | 2026-01 | Security audit fixes: ASCII I/l bypass, ClickFix split-tag, SVG race condition |
+| 8.7.1 | 2026-01 | Landing page Feature 8 (tracker detection) + price €1,99 → €4,99 |
+| 8.7.0 | 2026-01 | Tracking Infrastructure Risk Detection (Layer 15) |
 | 8.6.1 | 2026-01 | Phishing URL detection fix (13%→88%) + data:image FP fix + performance |
 | 8.6.0 | 2026-01 | AiTM Proxy Detection + SVG Payload Detection (14 layers) + Popup UX |
 | 8.5.2 | 2026-01 | Add OAuth protection to tooltip (11 security layers) |

@@ -1469,7 +1469,28 @@ async function scanForClickFixAttack() {
             codeContent += ' ' + (el.textContent || '');
         });
 
-        const allContent = textContent + ' ' + codeContent;
+        // SECURITY FIX v8.7.2: Normalize text to prevent split-tag bypass attacks
+        // Attackers can split "Invoke-Expression" across multiple tags: <span>Invoke-</span><span>Expression</span>
+        // This normalization:
+        // 1. Removes Unicode whitespace variations (non-breaking spaces, zero-width chars)
+        // 2. Collapses multiple whitespaces into single space
+        // 3. Uses innerText (already strips HTML) but also handles hidden text tricks
+        const normalizeForScan = (text) => {
+            return text
+                // Remove zero-width characters that could split keywords
+                .replace(/[\u200B-\u200D\uFEFF\u00AD]/g, '')
+                // Normalize Unicode whitespace to regular space
+                .replace(/[\u00A0\u2000-\u200A\u202F\u205F\u3000]/g, ' ')
+                // Collapse multiple spaces into one
+                .replace(/\s+/g, ' ')
+                // Remove invisible characters between visible chars
+                .replace(/([a-zA-Z])\s+([a-zA-Z])/g, (_, a, b) => {
+                    // Only collapse if it looks like split word (e.g., "Invoke - Expression")
+                    return a + b;
+                });
+        };
+
+        const allContent = normalizeForScan(textContent + ' ' + codeContent);
         const detectedPatterns = [];
         let totalScore = 0;
 
@@ -5005,20 +5026,46 @@ function classifyAndCheckLink(link) {
     const hostname = urlObj.hostname.toLowerCase();
 
     // Known brand patterns with common ASCII substitutions
-    // Patterns match against hostname (e.g., "paypa1.com")
+    // Patterns match against hostname (e.g., "paypa1.com", "paypaI.com")
+    // SECURITY FIX v8.7.2: Added I/l confusion patterns (capital I looks like lowercase l)
     const asciiLookalikes = [
-      { pattern: /paypa1/, brand: 'paypal', reason: 'asciiLookalikePaypal' },
-      { pattern: /arnazon/, brand: 'amazon', reason: 'asciiLookalikeAmazon' },
-      { pattern: /arnezon/, brand: 'amazon', reason: 'asciiLookalikeAmazon' },
-      { pattern: /arnaz0n/, brand: 'amazon', reason: 'asciiLookalikeAmazon' },
-      { pattern: /micr0soft/, brand: 'microsoft', reason: 'asciiLookalikeMicrosoft' },
-      { pattern: /rnicrosoft/, brand: 'microsoft', reason: 'asciiLookalikeMicrosoft' },
-      { pattern: /g00gle/, brand: 'google', reason: 'asciiLookalikeGoogle' },
-      { pattern: /go0gle/, brand: 'google', reason: 'asciiLookalikeGoogle' },
-      { pattern: /twltter/, brand: 'twitter', reason: 'asciiLookalikeTwitter' },
-      { pattern: /faceb00k/, brand: 'facebook', reason: 'asciiLookalikeFacebook' },
-      { pattern: /app1e/, brand: 'apple', reason: 'asciiLookalikeApple' },
-      { pattern: /^vvv+w\./, brand: 'www', reason: 'asciiLookalikeWww' },
+      // PayPal: 1/l/I confusion (paypa1, paypal with wrong char, paypaI)
+      { pattern: /paypa[1I]/i, brand: 'paypal', reason: 'asciiLookalikePaypal' },
+      { pattern: /paypa[l1I]{2}/i, brand: 'paypal', reason: 'asciiLookalikePaypal' }, // paypall, paypa11, etc.
+      // Amazon: rn/m confusion + 0/o confusion
+      { pattern: /arnazon/i, brand: 'amazon', reason: 'asciiLookalikeAmazon' },
+      { pattern: /arnezon/i, brand: 'amazon', reason: 'asciiLookalikeAmazon' },
+      { pattern: /arnaz0n/i, brand: 'amazon', reason: 'asciiLookalikeAmazon' },
+      { pattern: /amaz[0o]n/i, brand: 'amazon', reason: 'asciiLookalikeAmazon' }, // amaz0n
+      // Microsoft: 0/o confusion + rn/m confusion
+      { pattern: /micr[0o]s[0o]ft/i, brand: 'microsoft', reason: 'asciiLookalikeMicrosoft' },
+      { pattern: /rnicrosoft/i, brand: 'microsoft', reason: 'asciiLookalikeMicrosoft' },
+      { pattern: /mlcrosoft/i, brand: 'microsoft', reason: 'asciiLookalikeMicrosoft' }, // l for i
+      // Google: 0/o confusion
+      { pattern: /g[0o]{2}gle/i, brand: 'google', reason: 'asciiLookalikeGoogle' },
+      { pattern: /go[0o]gle/i, brand: 'google', reason: 'asciiLookalikeGoogle' },
+      { pattern: /goog[1lI]e/i, brand: 'google', reason: 'asciiLookalikeGoogle' }, // l/1/I for l
+      // Twitter/X: l/I confusion
+      { pattern: /tw[1lI]tter/i, brand: 'twitter', reason: 'asciiLookalikeTwitter' },
+      { pattern: /tw[1lI]tt[3e]r/i, brand: 'twitter', reason: 'asciiLookalikeTwitter' },
+      // Facebook: 0/o confusion
+      { pattern: /faceb[0o]{2}k/i, brand: 'facebook', reason: 'asciiLookalikeFacebook' },
+      { pattern: /faceb[0o]ok/i, brand: 'facebook', reason: 'asciiLookalikeFacebook' },
+      // Apple: 1/l/I confusion
+      { pattern: /app[1lI]e/i, brand: 'apple', reason: 'asciiLookalikeApple' },
+      { pattern: /[a4]pp[1lI]e/i, brand: 'apple', reason: 'asciiLookalikeApple' }, // 4pple
+      // Netflix: 1/l/I confusion
+      { pattern: /netf[1lI][1lI]x/i, brand: 'netflix', reason: 'asciiLookalikeNetflix' },
+      { pattern: /netfl[1I]x/i, brand: 'netflix', reason: 'asciiLookalikeNetflix' },
+      // LinkedIn: 1/l/I confusion
+      { pattern: /[1lI]inkedin/i, brand: 'linkedin', reason: 'asciiLookalikeLinkedin' },
+      { pattern: /linked[1lI]n/i, brand: 'linkedin', reason: 'asciiLookalikeLinkedin' },
+      // Instagram: 1/l/I confusion
+      { pattern: /[1lI]nstagram/i, brand: 'instagram', reason: 'asciiLookalikeInstagram' },
+      { pattern: /instag[rn]am/i, brand: 'instagram', reason: 'asciiLookalikeInstagram' }, // rn for m
+      // WWW: vv confusion
+      { pattern: /^vvv+w\./i, brand: 'www', reason: 'asciiLookalikeWww' },
+      { pattern: /^wvvw\./i, brand: 'www', reason: 'asciiLookalikeWww' },
     ];
 
     for (const lookalike of asciiLookalikes) {
@@ -6811,7 +6858,9 @@ async function detectSVGPayloads() {
     }
 }
 
-// Initialiseer SVG Payload detectie met delay en MutationObserver
+// Initialiseer SVG Payload detectie met MutationObserver
+// SECURITY FIX v8.7.2: Removed delay to prevent race condition where malicious
+// SVG onload scripts execute before detection runs
 async function initSVGPayloadDetection() {
     // Skip observers on trusted domains to prevent performance issues on complex SPAs
     const hostname = window.location.hostname.toLowerCase();
@@ -6820,31 +6869,77 @@ async function initSVGPayloadDetection() {
         return;
     }
 
-    // Initial scan na 1000ms (versneld voor race condition preventie)
+    // SECURITY FIX v8.7.2: Scan existing SVGs IMMEDIATELY (no delay)
+    // This catches inline SVGs that exist at page load
+    // Use queueMicrotask to run after current script execution but before onload events
+    queueMicrotask(async () => {
+        await detectSVGPayloads();
+    });
+
+    // Also scan after a short delay to catch SVGs loaded via defer/async scripts
     setTimeout(async () => {
         await detectSVGPayloads();
-    }, 1000);
+    }, 100);
 
-    // MutationObserver voor nieuw toegevoegde SVG/object/embed elementen
+    // SECURITY FIX v8.7.2: MutationObserver with IMMEDIATE scanning for new SVGs
+    // Reduced debounce from 500ms to 50ms to catch fast-loading SVGs
     let svgDebounceTimer = null;
     const svgObserver = new MutationObserver((mutations) => {
+        let foundSVG = false;
         for (const mutation of mutations) {
             for (const node of mutation.addedNodes) {
                 if (node.nodeType !== Node.ELEMENT_NODE) continue;
-                const isRelevant = node.matches?.('svg, object[type="image/svg+xml"], embed[type="image/svg+xml"]') ||
-                    node.querySelector?.('svg, object[type="image/svg+xml"], embed[type="image/svg+xml"]');
-                if (isRelevant) {
-                    clearTimeout(svgDebounceTimer);
-                    svgDebounceTimer = setTimeout(() => detectSVGPayloads(), 500);
-                    return;
+
+                // Check if this node IS an SVG or CONTAINS an SVG
+                const isSVG = node.matches?.('svg, object[type="image/svg+xml"], embed[type="image/svg+xml"]');
+                const containsSVG = node.querySelector?.('svg, object[type="image/svg+xml"], embed[type="image/svg+xml"]');
+
+                if (isSVG || containsSVG) {
+                    foundSVG = true;
+
+                    // SECURITY FIX v8.7.2: Check for immediate threats in inline SVG
+                    // This catches <svg onload="..."> before the script can execute much
+                    if (isSVG && node.tagName === 'svg') {
+                        // Check for dangerous onload attribute immediately (synchronous)
+                        const onload = node.getAttribute('onload');
+                        if (onload) {
+                            const dangerPatterns = [
+                                /location\s*[=.]/i,
+                                /document\.cookie/i,
+                                /eval\s*\(/i,
+                                /fetch\s*\(/i,
+                                /XMLHttpRequest/i
+                            ];
+                            for (const pattern of dangerPatterns) {
+                                if (pattern.test(onload)) {
+                                    logDebug('[SVG] IMMEDIATE THREAT: Dangerous onload detected');
+                                    // Remove the onload to prevent execution
+                                    node.removeAttribute('onload');
+                                    // Trigger full scan immediately
+                                    detectSVGPayloads();
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                    break;
                 }
             }
+            if (foundSVG) break;
+        }
+
+        if (foundSVG) {
+            // Minimal debounce (50ms) to batch rapid DOM changes
+            clearTimeout(svgDebounceTimer);
+            svgDebounceTimer = setTimeout(() => detectSVGPayloads(), 50);
         }
     });
 
     if (document.body) {
         svgObserver.observe(document.body, { childList: true, subtree: true });
     }
+
+    logDebug('[SVG] Payload detection initialized with immediate scanning');
 }
 
 // Run proactive scan after page load
@@ -12303,6 +12398,462 @@ if (_isTopFrame) {
       return true;
     }
   });
+}
+
+// =============================================================================
+// TRACKING INFRASTRUCTURE RISK DETECTION (v8.7.1 - Layer 15 - DOM-based)
+// Scans DOM for third-party resources and calculates risk score
+// No extra permissions required (webRequest/webNavigation removed)
+// =============================================================================
+
+let _trackingRiskIndicator = null;
+let _trackingRiskData = null; // Loaded from hostileTrackers.json
+let _trackingRiskState = {
+    score: 0,
+    domains: new Set(),
+    unknownTrackers: [],
+    reasons: []
+};
+let _trackingRiskInitialized = false;
+
+// Risk scoring thresholds
+const TRACKING_RISK_THRESHOLDS = {
+    none: 0,
+    low: 5,
+    elevated: 15,
+    high: 25
+};
+
+// Common 3-part TLDs for registrable domain extraction
+const THREE_PART_TLDS = new Set([
+    'co.uk', 'org.uk', 'me.uk', 'ac.uk', 'gov.uk', 'ltd.uk', 'plc.uk',
+    'com.au', 'net.au', 'org.au', 'edu.au', 'gov.au',
+    'co.nz', 'org.nz', 'net.nz', 'govt.nz',
+    'co.za', 'org.za', 'gov.za',
+    'com.br', 'org.br', 'gov.br', 'net.br',
+    'co.in', 'org.in', 'gov.in', 'net.in',
+    'co.jp', 'or.jp', 'ne.jp', 'ac.jp', 'go.jp'
+]);
+
+/**
+ * Loads hostile trackers data from hostileTrackers.json
+ * @returns {Promise<Object>} Hostile trackers data with Sets for O(1) lookup
+ */
+async function loadTrackingRiskData() {
+    if (_trackingRiskData) return _trackingRiskData;
+
+    try {
+        const response = await fetch(chrome.runtime.getURL('hostileTrackers.json'));
+        if (!response.ok) {
+            throw new Error(`Failed to load hostileTrackers.json: ${response.status}`);
+        }
+        const rawData = await response.json();
+
+        _trackingRiskData = {
+            trustedSet: new Set((rawData.trustedTrackers || []).map(d => d.toLowerCase())),
+            dangerousTLDsSet: new Set(rawData.dangerousTLDs || []),
+            riskScoring: rawData.riskScoring || {
+                thirdPartyDomain: 1,
+                dangerousTLD: 3,
+                unknownDomain: 2,
+                levels: { none: 0, low: 5, elevated: 15, high: 25 }
+            }
+        };
+        return _trackingRiskData;
+    } catch (error) {
+        console.error('[LinkShield] Error loading tracking risk data:', error);
+        return {
+            trustedSet: new Set(),
+            dangerousTLDsSet: new Set(),
+            riskScoring: { thirdPartyDomain: 1, dangerousTLD: 3, unknownDomain: 2, levels: { none: 0, low: 5, elevated: 15, high: 25 } }
+        };
+    }
+}
+
+/**
+ * Extracts registrable domain from hostname (handles 3-part TLDs)
+ * @param {string} hostname - Full hostname
+ * @returns {string} Registrable domain
+ */
+function getRegistrableDomainForTracking(hostname) {
+    const parts = hostname.toLowerCase().split('.');
+    if (parts.length <= 2) return hostname.toLowerCase();
+
+    const twoPartTLD = parts.slice(-2).join('.');
+    const is3PartTLD = THREE_PART_TLDS.has(twoPartTLD);
+    const sliceCount = is3PartTLD ? -3 : -2;
+    return parts.slice(sliceCount).join('.');
+}
+
+/**
+ * Checks if a domain is trusted (first-party or whitelisted)
+ * @param {string} domain - Domain to check
+ * @param {string} pageDomain - Current page's registrable domain
+ * @returns {Promise<{isTrusted: boolean, score: number, reason: string|null}>}
+ */
+async function checkTrackingDomain(domain, pageDomain) {
+    const data = await loadTrackingRiskData();
+    const lowerDomain = domain.toLowerCase();
+    const scoring = data.riskScoring;
+
+    // 1. First-party check (same registrable domain as page)
+    const domainRegistrable = getRegistrableDomainForTracking(lowerDomain);
+    if (domainRegistrable === pageDomain) {
+        return { isTrusted: true, score: 0, reason: null };
+    }
+
+    // 2. Same-brand check (e.g., vinted.nl and vinted.de are same brand)
+    // Extract brand name (first part before TLD)
+    const pageParts = pageDomain.split('.');
+    const domainParts = domainRegistrable.split('.');
+    const pageBrand = pageParts[0];
+    const domainBrand = domainParts[0];
+    // If brand names match and are at least 4 chars (avoid false matches like "a.nl" and "a.de")
+    if (pageBrand === domainBrand && pageBrand.length >= 4) {
+        return { isTrusted: true, score: 0, reason: null };
+    }
+
+    // 3. Trusted whitelist check (O(1) Set lookup)
+    if (data.trustedSet.has(lowerDomain) || data.trustedSet.has(domainRegistrable)) {
+        return { isTrusted: true, score: 0, reason: null };
+    }
+
+    // 4. Check root domain for subdomains (e.g., cdn.example.com → example.com)
+    const parts = lowerDomain.split('.');
+    if (parts.length > 2) {
+        const rootDomain = parts.slice(-2).join('.');
+        if (data.trustedSet.has(rootDomain)) {
+            return { isTrusted: true, score: 0, reason: null };
+        }
+    }
+
+    // 5. Unknown domain - check TLD risk
+    const tld = parts[parts.length - 1];
+    if (data.dangerousTLDsSet.has(tld)) {
+        return { isTrusted: false, score: scoring.dangerousTLD || 3, reason: 'dangerous_tld' };
+    }
+
+    // 6. Unknown third-party domain
+    return { isTrusted: false, score: scoring.unknownDomain || 2, reason: 'unknown_third_party' };
+}
+
+/**
+ * Calculates tracking risk level from score
+ * @param {number} score - Total risk score
+ * @returns {string} Risk level: 'none', 'low', 'elevated', 'high'
+ */
+function calculateTrackingRiskLevel(score) {
+    if (score >= TRACKING_RISK_THRESHOLDS.high) return 'high';
+    if (score >= TRACKING_RISK_THRESHOLDS.elevated) return 'elevated';
+    if (score >= TRACKING_RISK_THRESHOLDS.low) return 'low';
+    return 'none';
+}
+
+/**
+ * Extracts hostname from a URL string
+ * @param {string} url - URL to parse
+ * @returns {string|null} Hostname or null if invalid
+ */
+function extractHostnameFromUrl(url) {
+    if (!url || typeof url !== 'string') return null;
+    // Skip data:, javascript:, blob:, about:, chrome-extension: URLs
+    if (/^(data:|javascript:|blob:|about:|chrome-extension:|moz-extension:)/i.test(url)) return null;
+
+    try {
+        // Handle protocol-relative URLs
+        if (url.startsWith('//')) {
+            url = 'https:' + url;
+        }
+        // Handle relative URLs (skip them)
+        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+            return null;
+        }
+        const urlObj = new URL(url);
+        return urlObj.hostname.toLowerCase();
+    } catch (e) {
+        return null;
+    }
+}
+
+/**
+ * Scans a DOM element for third-party resources
+ * @param {Element} element - Element to scan
+ * @param {string} pageDomain - Current page's registrable domain
+ */
+async function scanElementForTracking(element, pageDomain) {
+    let url = null;
+
+    // Get URL based on element type
+    if (element.tagName === 'SCRIPT' && element.src) {
+        url = element.src;
+    } else if (element.tagName === 'IMG' && element.src) {
+        url = element.src;
+    } else if (element.tagName === 'LINK' && element.href) {
+        url = element.href;
+    } else if (element.tagName === 'IFRAME' && element.src) {
+        url = element.src;
+    }
+
+    if (!url) return;
+
+    const hostname = extractHostnameFromUrl(url);
+    if (!hostname) return;
+
+    // Skip if already processed
+    if (_trackingRiskState.domains.has(hostname)) return;
+    _trackingRiskState.domains.add(hostname);
+
+    // Check domain
+    const result = await checkTrackingDomain(hostname, pageDomain);
+
+    if (result.score > 0) {
+        _trackingRiskState.score += result.score;
+        _trackingRiskState.unknownTrackers.push({
+            domain: hostname,
+            score: result.score,
+            reason: result.reason
+        });
+        if (result.reason) {
+            _trackingRiskState.reasons.push(result.reason);
+        }
+    }
+}
+
+/**
+ * Scans the DOM for third-party resources and updates risk state
+ */
+async function scanDOMForTracking() {
+    if (!_isTopFrame) return;
+
+    // Get current page's registrable domain
+    const pageDomain = getRegistrableDomainForTracking(window.location.hostname);
+
+    // Scan existing elements
+    const selectors = 'script[src], img[src], link[href], iframe[src]';
+    const elements = document.querySelectorAll(selectors);
+
+    for (const element of elements) {
+        await scanElementForTracking(element, pageDomain);
+    }
+
+    // Update UI if risk is elevated or high
+    updateTrackingRiskUI();
+}
+
+/**
+ * Updates the tracking risk indicator UI
+ */
+function updateTrackingRiskUI() {
+    const level = calculateTrackingRiskLevel(_trackingRiskState.score);
+
+    // Only show floating indicator for HIGH risk
+    if (level !== 'high') {
+        removeTrackingRiskIndicator();
+        return;
+    }
+
+    showTrackingRiskIndicator(
+        level,
+        _trackingRiskState.unknownTrackers.length,
+        _trackingRiskState.domains.size,
+        _trackingRiskState.reasons
+    );
+
+    // Notify background for statistics (fire and forget)
+    try {
+        chrome.runtime.sendMessage({
+            action: 'trackingRiskDetected',
+            level: level,
+            score: _trackingRiskState.score,
+            unknownCount: _trackingRiskState.unknownTrackers.length
+        }).catch(() => {});
+    } catch (e) {
+        // Extension context may be invalidated - silently ignore
+    }
+}
+
+/**
+ * Shows the tracking risk indicator
+ */
+function showTrackingRiskIndicator(level, unknownCount, thirdPartyCount, reasons) {
+    removeTrackingRiskIndicator();
+
+    _trackingRiskIndicator = document.createElement('div');
+    _trackingRiskIndicator.id = 'linkshield-tracking-risk-indicator';
+
+    _trackingRiskIndicator.innerHTML = `
+        <style>
+            #linkshield-tracking-risk-indicator {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: #dc2626;
+                color: white;
+                padding: 12px 16px;
+                border-radius: 8px;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                font-size: 13px;
+                z-index: 2147483646;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                max-width: 320px;
+                cursor: pointer;
+                transition: opacity 0.3s, transform 0.3s;
+                display: flex;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            #linkshield-tracking-risk-indicator:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+            }
+            #linkshield-tracking-risk-indicator .tir-icon {
+                font-size: 20px;
+                flex-shrink: 0;
+            }
+            #linkshield-tracking-risk-indicator .tir-content {
+                flex: 1;
+            }
+            #linkshield-tracking-risk-indicator .tir-title {
+                font-weight: 600;
+                margin-bottom: 4px;
+            }
+            #linkshield-tracking-risk-indicator .tir-detail {
+                font-size: 11px;
+                opacity: 0.9;
+            }
+            #linkshield-tracking-risk-indicator .tir-close {
+                position: absolute;
+                top: 6px;
+                right: 8px;
+                background: none;
+                border: none;
+                color: white;
+                font-size: 16px;
+                cursor: pointer;
+                opacity: 0.7;
+                padding: 0;
+                line-height: 1;
+            }
+            #linkshield-tracking-risk-indicator .tir-close:hover {
+                opacity: 1;
+            }
+        </style>
+        <span class="tir-icon">⚠️</span>
+        <div class="tir-content">
+            <div class="tir-title">${getTranslatedMessage('trackingRiskTitle') || 'Infrastructure Risk'}</div>
+            <div class="tir-detail">
+                ${thirdPartyCount} ${getTranslatedMessage('trackingRiskThirdParty') || 'external connections'}
+                ${unknownCount > 0 ? ` · ${unknownCount} ${getTranslatedMessage('trackingRiskHostile') || 'unknown'}` : ''}
+            </div>
+        </div>
+        <button class="tir-close" aria-label="Close">×</button>
+    `;
+
+    _trackingRiskIndicator.querySelector('.tir-close').addEventListener('click', (e) => {
+        e.stopPropagation();
+        removeTrackingRiskIndicator();
+    });
+
+    _trackingRiskIndicator.addEventListener('click', () => {
+        removeTrackingRiskIndicator();
+    });
+
+    document.body.appendChild(_trackingRiskIndicator);
+}
+
+/**
+ * Removes the tracking risk indicator
+ */
+function removeTrackingRiskIndicator() {
+    if (_trackingRiskIndicator && _trackingRiskIndicator.parentNode) {
+        _trackingRiskIndicator.parentNode.removeChild(_trackingRiskIndicator);
+    }
+    _trackingRiskIndicator = null;
+}
+
+/**
+ * Initializes DOM-based tracking risk detection
+ */
+async function initTrackingRiskDetection() {
+    if (_trackingRiskInitialized || !_isTopFrame) return;
+    _trackingRiskInitialized = true;
+
+    try {
+        // Check if protection is enabled
+        if (!(await isProtectionEnabled())) {
+            return;
+        }
+
+        // Skip trusted domains
+        if (await isTrustedDomain(window.location.hostname)) {
+            return;
+        }
+
+        // Initial scan after DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                setTimeout(scanDOMForTracking, 1000);
+            });
+        } else {
+            setTimeout(scanDOMForTracking, 1000);
+        }
+
+        // Watch for dynamically added elements
+        let _trackingObserverProcessing = false;
+        const observer = new MutationObserver(async (mutations) => {
+            // Prevent re-entrant calls (indicator element triggers observer)
+            if (_trackingObserverProcessing) return;
+            _trackingObserverProcessing = true;
+
+            try {
+                const pageDomain = getRegistrableDomainForTracking(window.location.hostname);
+                let elementsProcessed = 0;
+
+                for (const mutation of mutations) {
+                    for (const node of mutation.addedNodes) {
+                        if (node.nodeType !== Node.ELEMENT_NODE) continue;
+
+                        // Skip our own indicator element
+                        if (node.id === 'linkshield-tracking-risk-indicator') continue;
+
+                        // Check the node itself
+                        if (['SCRIPT', 'IMG', 'LINK', 'IFRAME'].includes(node.tagName)) {
+                            await scanElementForTracking(node, pageDomain);
+                            elementsProcessed++;
+                        }
+
+                        // Check descendants
+                        if (node.querySelectorAll) {
+                            const descendants = node.querySelectorAll('script[src], img[src], link[href], iframe[src]');
+                            for (const desc of descendants) {
+                                await scanElementForTracking(desc, pageDomain);
+                                elementsProcessed++;
+                            }
+                        }
+                    }
+                }
+
+                // Only update UI if we actually processed tracking elements
+                if (elementsProcessed > 0) {
+                    updateTrackingRiskUI();
+                }
+            } finally {
+                _trackingObserverProcessing = false;
+            }
+        });
+
+        observer.observe(document.documentElement, {
+            childList: true,
+            subtree: true
+        });
+    } catch (e) {
+        console.error('[LinkShield TrackingRisk] Init error:', e);
+    }
+}
+
+// Initialize tracking risk detection
+if (_isTopFrame) {
+    initTrackingRiskDetection();
 }
 
 

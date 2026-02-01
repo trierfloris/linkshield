@@ -1075,7 +1075,7 @@
     "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
   },
   "tooltipFooter": {
-    "message": "15 lapisan keamanan aktif"
+    "message": "16 lapisan keamanan aktif"
   },
   "tooltipNewBadge": {
     "message": "Baru",
@@ -1744,6 +1744,24 @@
   },
   "tooltipFeature15": {
     "message": "Deteksi pelacak mencurigakan"
+  },
+  "tooltipFeature16": {
+    "message": "Penipuan layanan pemerintah"
+  },
+  "unofficialGovServiceTitle": {
+    "message": "Situs web pemerintah tidak resmi"
+  },
+  "unofficialGovServiceMessage": {
+    "message": "Situs web ini menawarkan pengajuan {service} tetapi bukan situs web resmi pemerintah. Situs pihak ketiga sering mengenakan biaya yang jauh lebih tinggi dari harga resmi."
+  },
+  "unofficialGovServiceTip": {
+    "message": "Situs web resmi: {url} — Harga resmi: {price}"
+  },
+  "unofficialGovServiceDetected": {
+    "message": "Situs web layanan pemerintah tidak resmi terdeteksi (risiko tinggi). Situs ini mungkin mengenakan biaya berlebihan untuk layanan yang tersedia lebih murah di situs web resmi pemerintah."
+  },
+  "goToOfficialSite": {
+    "message": "Pergi ke situs resmi"
   },
   "trackingRiskTitle": {
     "message": "Peringatan Pelacak"

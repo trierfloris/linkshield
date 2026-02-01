@@ -1075,7 +1075,7 @@
     "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
   },
   "tooltipFooter": {
-    "message": "15 lớp bảo mật đang hoạt động"
+    "message": "16 lớp bảo mật đang hoạt động"
   },
   "tooltipNewBadge": {
     "message": "Moi",
@@ -1744,6 +1744,24 @@
   },
   "tooltipFeature15": {
     "message": "Phát hiện trình theo dõi đáng ngờ"
+  },
+  "tooltipFeature16": {
+    "message": "Lừa đảo dịch vụ chính phủ"
+  },
+  "unofficialGovServiceTitle": {
+    "message": "Trang web chính phủ không chính thức"
+  },
+  "unofficialGovServiceMessage": {
+    "message": "Trang web này cung cấp đơn xin {service} nhưng không phải là trang web chính phủ chính thức. Các trang bên thứ ba thường tính phí cao hơn nhiều so với giá chính thức."
+  },
+  "unofficialGovServiceTip": {
+    "message": "Trang web chính thức: {url} — Giá chính thức: {price}"
+  },
+  "unofficialGovServiceDetected": {
+    "message": "Phát hiện trang web dịch vụ chính phủ không chính thức (rủi ro cao). Trang web này có thể tính phí quá cao cho các dịch vụ có sẵn rẻ hơn trên các trang web chính phủ chính thức."
+  },
+  "goToOfficialSite": {
+    "message": "Đi đến trang web chính thức"
   },
   "trackingRiskTitle": {
     "message": "Cảnh báo Trình theo dõi"

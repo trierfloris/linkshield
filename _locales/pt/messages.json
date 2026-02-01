@@ -1138,7 +1138,7 @@
     "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
   },
   "tooltipFooter": {
-    "message": "15 camadas de segurança ativas"
+    "message": "16 camadas de segurança ativas"
   },
   "tooltipNewBadge": {
     "message": "Novo",
@@ -1744,6 +1744,24 @@
   },
   "tooltipFeature15": {
     "message": "Deteção de rastreadores suspeitos"
+  },
+  "tooltipFeature16": {
+    "message": "Fraudes de serviços governamentais"
+  },
+  "unofficialGovServiceTitle": {
+    "message": "Website governamental não oficial"
+  },
+  "unofficialGovServiceMessage": {
+    "message": "Este website oferece pedidos de {service} mas não é o website oficial do governo. Sites de terceiros frequentemente cobram taxas muito mais altas que o preço oficial."
+  },
+  "unofficialGovServiceTip": {
+    "message": "Website oficial: {url} — Preço oficial: {price}"
+  },
+  "unofficialGovServiceDetected": {
+    "message": "Website de serviço governamental não oficial detectado (alto risco). Este site pode cobrar taxas excessivas por serviços disponíveis mais baratos em websites governamentais oficiais."
+  },
+  "goToOfficialSite": {
+    "message": "Ir para site oficial"
   },
   "trackingRiskTitle": {
     "message": "Aviso de Rastreadores"

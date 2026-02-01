@@ -1138,7 +1138,7 @@
     "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
   },
   "tooltipFooter": {
-    "message": "15개 보안 레이어 활성화"
+    "message": "16개 보안 레이어 활성화"
   },
   "tooltipNewBadge": {
     "message": "신규",
@@ -1744,6 +1744,24 @@
   },
   "tooltipFeature15": {
     "message": "의심스러운 트래커 탐지"
+  },
+  "tooltipFeature16": {
+    "message": "정부 서비스 사기"
+  },
+  "unofficialGovServiceTitle": {
+    "message": "비공식 정부 웹사이트"
+  },
+  "unofficialGovServiceMessage": {
+    "message": "이 웹사이트는 {service} 신청을 제공하지만 공식 정부 웹사이트가 아닙니다. 제3자 사이트는 종종 공식 가격보다 훨씬 높은 수수료를 청구합니다."
+  },
+  "unofficialGovServiceTip": {
+    "message": "공식 웹사이트: {url} — 공식 가격: {price}"
+  },
+  "unofficialGovServiceDetected": {
+    "message": "비공식 정부 서비스 웹사이트가 감지되었습니다 (높은 위험). 이 사이트는 공식 정부 웹사이트에서 더 저렴하게 이용할 수 있는 서비스에 대해 과도한 수수료를 청구할 수 있습니다."
+  },
+  "goToOfficialSite": {
+    "message": "공식 사이트로 이동"
   },
   "trackingRiskTitle": {
     "message": "트래커 경고"

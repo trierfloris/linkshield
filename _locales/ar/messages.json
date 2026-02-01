@@ -1138,7 +1138,7 @@
     "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
   },
   "tooltipFooter": {
-    "message": "15 طبقة أمان نشطة"
+    "message": "16 طبقة أمان نشطة"
   },
   "tooltipNewBadge": {
     "message": "جديد",
@@ -1744,6 +1744,24 @@
   },
   "tooltipFeature15": {
     "message": "كشف المتتبعات المشبوهة"
+  },
+  "tooltipFeature16": {
+    "message": "احتيال الخدمات الحكومية"
+  },
+  "unofficialGovServiceTitle": {
+    "message": "موقع حكومي غير رسمي"
+  },
+  "unofficialGovServiceMessage": {
+    "message": "يقدم هذا الموقع طلبات {service} ولكنه ليس الموقع الحكومي الرسمي. غالبًا ما تفرض مواقع الطرف الثالث رسومًا أعلى بكثير من السعر الرسمي."
+  },
+  "unofficialGovServiceTip": {
+    "message": "الموقع الرسمي: {url} — السعر الرسمي: {price}"
+  },
+  "unofficialGovServiceDetected": {
+    "message": "تم اكتشاف موقع خدمات حكومية غير رسمي (مخاطر عالية). قد يفرض هذا الموقع رسومًا باهظة على خدمات متاحة بأسعار أرخص على المواقع الحكومية الرسمية."
+  },
+  "goToOfficialSite": {
+    "message": "انتقل إلى الموقع الرسمي"
   },
   "trackingRiskTitle": {
     "message": "تحذير من المتتبعات"

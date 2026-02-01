@@ -795,6 +795,161 @@ SUSPICIOUS_URL_PATTERNS: [
                 elevated: 15,
                 high: 25
             }
+        },
+
+        // v8.8.0: Unofficial Government Service Detection (Layer 16)
+        // Detects websites that offer official government services but are not the official site
+        // This catches visa scam sites like uk-eta.visasyst.com that charge €99 for a £10 service
+        unofficialGovernmentService: {
+            enabled: true,
+            scoreThreshold: 10,
+
+            // Known official government services with their legitimate domains
+            // Format: service ID → { matchPhrases, officialDomains, officialUrl, officialPrice }
+            services: {
+                'uk-eta': {
+                    matchPhrases: [
+                        'uk eta', 'uk eta application', 'apply for uk eta', 'apply uk eta',
+                        'united kingdom eta', 'british eta', 'eta for uk', 'uk electronic travel',
+                        'uk travel authorisation', 'uk travel authorization'
+                    ],
+                    officialDomains: ['gov.uk'],
+                    officialUrl: 'https://www.gov.uk/guidance/apply-for-an-electronic-travel-authorisation-eta',
+                    officialPrice: '£10',
+                    country: 'UK'
+                },
+                'us-esta': {
+                    matchPhrases: [
+                        'esta', 'esta application', 'apply for esta', 'esta usa', 'us esta',
+                        'esta united states', 'american esta', 'usa travel authorization',
+                        'electronic system for travel authorization', 'esta online'
+                    ],
+                    officialDomains: ['cbp.dhs.gov'],
+                    officialUrl: 'https://esta.cbp.dhs.gov/',
+                    officialPrice: '$21',
+                    country: 'USA'
+                },
+                'australia-eta': {
+                    matchPhrases: [
+                        'australia eta', 'australian eta', 'eta australia', 'australia electronic travel',
+                        'australian travel authority', 'australia visitor visa', 'eta subclass 601'
+                    ],
+                    officialDomains: ['homeaffairs.gov.au', 'immi.gov.au'],
+                    officialUrl: 'https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-listing/electronic-travel-authority-601',
+                    officialPrice: 'AUD $20',
+                    country: 'Australia'
+                },
+                'canada-eta': {
+                    matchPhrases: [
+                        'canada eta', 'canadian eta', 'eta canada', 'canada electronic travel',
+                        'canada travel authorization', 'canada eta application'
+                    ],
+                    officialDomains: ['canada.ca', 'gc.ca'],
+                    officialUrl: 'https://www.canada.ca/en/immigration-refugees-citizenship/services/visit-canada/eta.html',
+                    officialPrice: 'CAD $7',
+                    country: 'Canada'
+                },
+                'eu-etias': {
+                    matchPhrases: [
+                        'etias', 'eu etias', 'etias application', 'european etias',
+                        'etias europe', 'schengen etias', 'etias travel authorization',
+                        'european travel information and authorisation'
+                    ],
+                    officialDomains: ['europa.eu', 'travel-europe.europa.eu'],
+                    officialUrl: 'https://travel-europe.europa.eu/etias_en',
+                    officialPrice: '€7',
+                    country: 'EU'
+                },
+                'india-evisa': {
+                    matchPhrases: [
+                        'india evisa', 'indian evisa', 'india e-visa', 'india visa online',
+                        'indian tourist visa online', 'india visa application', 'evisa india'
+                    ],
+                    officialDomains: ['indianvisaonline.gov.in'],
+                    officialUrl: 'https://indianvisaonline.gov.in/',
+                    officialPrice: 'From $25',
+                    country: 'India'
+                },
+                'turkey-evisa': {
+                    matchPhrases: [
+                        'turkey evisa', 'turkish evisa', 'turkey e-visa', 'turkey visa online',
+                        'turkish visa online', 'evisa turkey', 'turkey electronic visa'
+                    ],
+                    officialDomains: ['evisa.gov.tr'],
+                    officialUrl: 'https://www.evisa.gov.tr/',
+                    officialPrice: 'From $50',
+                    country: 'Turkey'
+                },
+                'new-zealand-eta': {
+                    matchPhrases: [
+                        'new zealand eta', 'nz eta', 'nzeta', 'new zealand electronic travel',
+                        'new zealand travel authority', 'nz visitor visa'
+                    ],
+                    officialDomains: ['immigration.govt.nz'],
+                    officialUrl: 'https://www.immigration.govt.nz/new-zealand-visas/apply-for-a-visa/about-visa/nzeta',
+                    officialPrice: 'NZD $23',
+                    country: 'New Zealand'
+                },
+                'sri-lanka-eta': {
+                    matchPhrases: [
+                        'sri lanka eta', 'sri lankan eta', 'eta sri lanka', 'sri lanka evisa',
+                        'sri lanka electronic travel', 'sri lanka visa online'
+                    ],
+                    officialDomains: ['eta.gov.lk'],
+                    officialUrl: 'https://www.eta.gov.lk/',
+                    officialPrice: '$50',
+                    country: 'Sri Lanka'
+                },
+                'egypt-evisa': {
+                    matchPhrases: [
+                        'egypt evisa', 'egyptian evisa', 'egypt e-visa', 'egypt visa online',
+                        'egyptian visa online', 'evisa egypt'
+                    ],
+                    officialDomains: ['visa2egypt.gov.eg'],
+                    officialUrl: 'https://visa2egypt.gov.eg/',
+                    officialPrice: '$25',
+                    country: 'Egypt'
+                },
+                'kenya-eta': {
+                    matchPhrases: [
+                        'kenya eta', 'kenyan eta', 'kenya evisa', 'kenya e-visa',
+                        'kenya electronic travel', 'kenya visa online'
+                    ],
+                    officialDomains: ['evisa.go.ke', 'etakenya.go.ke'],
+                    officialUrl: 'https://www.etakenya.go.ke/',
+                    officialPrice: '$30',
+                    country: 'Kenya'
+                },
+                'vietnam-evisa': {
+                    matchPhrases: [
+                        'vietnam evisa', 'vietnamese evisa', 'vietnam e-visa', 'vietnam visa online',
+                        'evisa vietnam', 'vietnam electronic visa'
+                    ],
+                    officialDomains: ['evisa.xuatnhapcanh.gov.vn'],
+                    officialUrl: 'https://evisa.xuatnhapcanh.gov.vn/',
+                    officialPrice: '$25',
+                    country: 'Vietnam'
+                }
+            },
+
+            // Known legitimate third-party visa services (whitelist)
+            // These will still show a soft warning but not be flagged as scams
+            legitimateThirdParties: [
+                'ivisa.com',
+                'visahq.com',
+                'cibtvisas.com',
+                'travisa.com',
+                'visacentral.com',
+                'visasexpress.com',
+                'expeditedvisa.com'
+            ],
+
+            scores: {
+                unofficialDomain: 12,        // Site offers gov service but is not .gov
+                legitimateThirdParty: 5,     // Known third-party (soft warning)
+                paymentFormPresent: 3,       // Has payment indicators
+                urgencyTactics: 2            // Uses urgency language
+            }
         }
     }
 };

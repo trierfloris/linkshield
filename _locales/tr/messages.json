@@ -1075,7 +1075,7 @@
     "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
   },
   "tooltipFooter": {
-    "message": "15 güvenlik katmanı aktif"
+    "message": "16 güvenlik katmanı aktif"
   },
   "tooltipNewBadge": {
     "message": "Yeni",
@@ -1744,6 +1744,24 @@
   },
   "tooltipFeature15": {
     "message": "Şüpheli izleyici tespiti"
+  },
+  "tooltipFeature16": {
+    "message": "Devlet hizmeti dolandırıcılıkları"
+  },
+  "unofficialGovServiceTitle": {
+    "message": "Resmi olmayan devlet web sitesi"
+  },
+  "unofficialGovServiceMessage": {
+    "message": "Bu web sitesi {service} başvuruları sunuyor ancak resmi devlet web sitesi değil. Üçüncü taraf siteler genellikle resmi fiyattan çok daha yüksek ücretler alır."
+  },
+  "unofficialGovServiceTip": {
+    "message": "Resmi web sitesi: {url} — Resmi fiyat: {price}"
+  },
+  "unofficialGovServiceDetected": {
+    "message": "Resmi olmayan devlet hizmeti web sitesi tespit edildi (yüksek risk). Bu site, resmi devlet web sitelerinde daha ucuza sunulan hizmetler için aşırı ücret talep edebilir."
+  },
+  "goToOfficialSite": {
+    "message": "Resmi siteye git"
   },
   "trackingRiskTitle": {
     "message": "İzleyici Uyarısı"

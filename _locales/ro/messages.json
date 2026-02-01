@@ -1075,7 +1075,7 @@
     "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
   },
   "tooltipFooter": {
-    "message": "15 straturi de securitate active"
+    "message": "16 straturi de securitate active"
   },
   "tooltipNewBadge": {
     "message": "Nou",
@@ -1744,6 +1744,24 @@
   },
   "tooltipFeature15": {
     "message": "Detectarea trackerelor suspecte"
+  },
+  "tooltipFeature16": {
+    "message": "Fraude cu servicii guvernamentale"
+  },
+  "unofficialGovServiceTitle": {
+    "message": "Site guvernamental neoficial"
+  },
+  "unofficialGovServiceMessage": {
+    "message": "Acest site oferă cereri pentru {service} dar nu este site-ul oficial al guvernului. Site-urile terțe percep adesea taxe mult mai mari decât prețul oficial."
+  },
+  "unofficialGovServiceTip": {
+    "message": "Site oficial: {url} — Preț oficial: {price}"
+  },
+  "unofficialGovServiceDetected": {
+    "message": "Site de servicii guvernamentale neoficial detectat (risc ridicat). Acest site poate percepe taxe excesive pentru servicii disponibile mai ieftin pe site-urile guvernamentale oficiale."
+  },
+  "goToOfficialSite": {
+    "message": "Mergi la site-ul oficial"
   },
   "trackingRiskTitle": {
     "message": "Avertisment Trackere"

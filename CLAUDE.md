@@ -4,7 +4,7 @@
 
 **LinkShield** is a Chrome browser extension that protects users from phishing, malicious links, and various web-based attacks. It provides real-time security warnings for suspicious URLs, visual hijacking attempts, form hijacking, and more.
 
-**Current Version:** 8.7.3
+**Current Version:** 8.8.0
 **Manifest Version:** 3
 
 ---
@@ -41,6 +41,129 @@
 ---
 
 ## Recent Implementations
+
+### v8.8.0 - Government Service Scam Detection (2026-02)
+
+**Purpose:** Detect websites that offer official government services (visas, ETAs, travel authorizations) but are not the official government site. These scam sites charge €50-€100+ for services that cost £10 or less on official government websites.
+
+**New Feature:**
+
+| Feature | Description | Location |
+|---------|-------------|----------|
+| Government Service Detection | Detects unofficial sites offering ETA/ESTA/visa services | `content.js:detectUnofficialGovernmentService()` |
+| Official Services Database | 12 known government services with official URLs/prices | `config.js:OFFICIAL_GOVERNMENT_SERVICES` |
+| Informative Warning | Shows official URL and price, not just blocking | Security warning modal |
+
+**Architecture:**
+
+```
+Page Load (3000ms delay)
+  → detectUnofficialGovernmentService()
+      → Get page title + H1/H2 headers
+      → For each service in OFFICIAL_GOVERNMENT_SERVICES:
+          → Check if page mentions service (exact phrase match)
+          → Check if domain is official (.gov.uk, .cbp.dhs.gov, etc.)
+              → YES: Skip (legitimate)
+              → NO: Check whitelist (iVisa, VisaHQ, etc.)
+                  → Whitelisted: Soft warning (5 pts)
+                  → Not whitelisted: Critical warning (12+ pts)
+      → Score >= 10: Show warning with official URL + price
+```
+
+**Supported Government Services:**
+
+| Service | Countries | Official Domains | Official Price |
+|---------|-----------|------------------|----------------|
+| UK ETA | UK | gov.uk | £10 |
+| US ESTA | USA | cbp.dhs.gov | $21 |
+| Australia ETA | Australia | homeaffairs.gov.au, immi.gov.au | AUD $20 |
+| Canada eTA | Canada | canada.ca, gc.ca | CAD $7 |
+| EU ETIAS | EU/Schengen | europa.eu | €7 |
+| India eVisa | India | indianvisaonline.gov.in | From $25 |
+| Turkey eVisa | Turkey | evisa.gov.tr | From $50 |
+| New Zealand ETA | NZ | immigration.govt.nz | NZD $23 |
+| Sri Lanka ETA | Sri Lanka | eta.gov.lk | $50 |
+| Egypt eVisa | Egypt | visa2egypt.gov.eg | $25 |
+| Kenya ETA | Kenya | evisa.go.ke, etakenya.go.ke | $30 |
+| Vietnam eVisa | Vietnam | evisa.xuatnhapcanh.gov.vn | $25 |
+
+**Files Modified:**
+- `config.js` - Added `OFFICIAL_GOVERNMENT_SERVICES` database in `ADVANCED_THREAT_DETECTION`
+- `content.js` - Added `detectUnofficialGovernmentService()`, `initUnofficialGovernmentServiceDetection()`
+- `background.js` - Added `unofficialGovernmentService` message handler
+- `popup.html` - Added tooltipFeature16, updated footer to "16 layers"
+- `popup.js` - Added tooltipFeature16 translation logic
+- All 24 locale files - Added 6 new i18n keys, updated tooltipFooter
+- `manifest.json` - Version bump to 8.8.0
+
+**New i18n Keys:**
+- `tooltipFeature16` - "Government service scams"
+- `unofficialGovServiceTitle` - Warning dialog title
+- `unofficialGovServiceMessage` - Warning message with {service} placeholder
+- `unofficialGovServiceTip` - Official URL and price with {url}, {price} placeholders
+- `unofficialGovServiceDetected` - Alert page reason text
+- `goToOfficialSite` - Button text to navigate to official site
+
+**Detection Flow:**
+```javascript
+// In detectUnofficialGovernmentService():
+1. Check if integratedProtection is enabled
+2. Skip trusted domains (TrustedDomains.json)
+3. Extract page title + H1/H2 headers
+4. For each service in config.services:
+   a. Check exact phrase match (e.g., "uk eta application")
+   b. If match found:
+      - Check if domain is official → Skip
+      - Check if domain is legitimate third-party → Soft warning
+      - Otherwise → Critical warning with official URL/price
+```
+
+**Score Calculation:**
+
+| Indicator | Score |
+|-----------|-------|
+| Unofficial domain offering gov service | 12 |
+| Legitimate third-party (iVisa, VisaHQ) | 5 |
+| Payment indicators on page | +3 |
+| Urgency tactics ("act now", "limited time") | +2 |
+| **Threshold** | **10** |
+
+**Warning UI:**
+
+The warning is **informative, not blocking**:
+- Shows which service was detected
+- Displays official government URL
+- Shows official price for comparison
+- Offers "Go to official site" button
+- Allows user to dismiss and continue
+
+**Key Design Decisions:**
+
+1. **Exact phrase matching** - Prevents false positives on news/blog sites mentioning visas
+2. **Header-only scanning** - Only checks title + H1/H2, not full body text
+3. **Whitelist for legitimate services** - iVisa, VisaHQ, etc. get soft warning only
+4. **Informative, not blocking** - Users can still proceed if they choose
+5. **Delayed initialization** - 3000ms delay to allow page render
+
+**Example Detection:**
+
+For `uk-eta.visasyst.com` (known scam site):
+```
+Page title: "UK ETA Application - Apply Online"
+H1: "Apply for UK ETA"
+Domain: visasyst.com
+
+Match: "uk eta" phrase found in title
+Official check: visasyst.com ≠ gov.uk → NOT official
+Whitelist check: visasyst.com not in legitimateThirdParties
+Score: 12 (unofficialDomain)
+
+→ Show warning with:
+  - Official URL: gov.uk/guidance/apply-for-an-electronic-travel-authorisation-eta
+  - Official price: £10
+```
+
+---
 
 ### v8.7.3 - False Positive Reduction (2026-02)
 
@@ -916,6 +1039,7 @@ if (tooltipFeature12) {
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 8.8.0 | 2026-02 | Government Service Scam Detection (Layer 16) - detects unofficial visa/ETA sites |
 | 8.7.3 | 2026-02 | False positive reduction: TLD optimization, disable freeHosting/suspiciousKeywords standalone, private network detection |
 | 8.7.2 | 2026-01 | Security audit fixes: ASCII I/l bypass, ClickFix split-tag, SVG race condition |
 | 8.7.1 | 2026-01 | Landing page Feature 8 (tracker detection) + price €1,99 → €4,99 |

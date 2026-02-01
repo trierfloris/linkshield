@@ -1138,7 +1138,7 @@
     "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
   },
   "tooltipFooter": {
-    "message": "15个安全层已激活"
+    "message": "16个安全层已激活"
   },
   "tooltipNewBadge": {
     "message": "新功能",
@@ -1744,6 +1744,24 @@
   },
   "tooltipFeature15": {
     "message": "可疑追踪器检测"
+  },
+  "tooltipFeature16": {
+    "message": "政府服务诈骗"
+  },
+  "unofficialGovServiceTitle": {
+    "message": "非官方政府网站"
+  },
+  "unofficialGovServiceMessage": {
+    "message": "此网站提供{service}申请，但不是官方政府网站。第三方网站通常收取比官方价格高得多的费用。"
+  },
+  "unofficialGovServiceTip": {
+    "message": "官方网站：{url} — 官方价格：{price}"
+  },
+  "unofficialGovServiceDetected": {
+    "message": "检测到非官方政府服务网站（高风险）。该网站可能会对官方政府网站上价格更低的服务收取过高费用。"
+  },
+  "goToOfficialSite": {
+    "message": "前往官方网站"
   },
   "trackingRiskTitle": {
     "message": "追踪器警告"

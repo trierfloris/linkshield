@@ -3104,6 +3104,29 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             sendResponse({ success: true });
             break;
 
+        // v8.8.0: Unofficial Government Service Detection (Layer 16)
+        case 'unofficialGovernmentService':
+            if (globalThresholds.DEBUG_MODE) {
+                console.log('[LinkShield] Unofficial government service detected:', request);
+            }
+            incrementBlockedThreatsCount('unofficial_gov_service');
+            // Update icon based on severity (yellow for warning, red for critical)
+            const govServiceIconColor = request.isLegitimateThirdParty ? 'yellow' : 'red';
+            chrome.action.setIcon({
+                path: {
+                    16: `icons/${govServiceIconColor}-circle-16.png`,
+                    48: `icons/${govServiceIconColor}-circle-48.png`,
+                    128: `icons/${govServiceIconColor}-circle-128.png`
+                },
+                tabId: sender.tab?.id
+            }).catch(() => {});
+            if (!request.isLegitimateThirdParty) {
+                chrome.action.setBadgeText({ text: '!', tabId: sender.tab?.id }).catch(() => {});
+                chrome.action.setBadgeBackgroundColor({ color: '#dc2626', tabId: sender.tab?.id }).catch(() => {});
+            }
+            sendResponse({ success: true });
+            break;
+
         // v8.7.1: Tracking Infrastructure Risk Detection (Layer 15 - DOM-based)
         case 'trackingRiskDetected':
             // Content script meldt dat er hostile tracking infrastructure is gedetecteerd

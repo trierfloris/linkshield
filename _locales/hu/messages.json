@@ -1075,7 +1075,7 @@
     "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
   },
   "tooltipFooter": {
-    "message": "15 biztonsági réteg aktív"
+    "message": "16 biztonsági réteg aktív"
   },
   "tooltipNewBadge": {
     "message": "Új",
@@ -1744,6 +1744,24 @@
   },
   "tooltipFeature15": {
     "message": "Gyanús nyomkövetők észlelése"
+  },
+  "tooltipFeature16": {
+    "message": "Kormányzati szolgáltatási csalások"
+  },
+  "unofficialGovServiceTitle": {
+    "message": "Nem hivatalos kormányzati weboldal"
+  },
+  "unofficialGovServiceMessage": {
+    "message": "Ez a weboldal {service} kérelmeket kínál, de nem a hivatalos kormányzati weboldal. A harmadik fél oldalak gyakran sokkal magasabb díjakat számítanak fel a hivatalos árnál."
+  },
+  "unofficialGovServiceTip": {
+    "message": "Hivatalos weboldal: {url} — Hivatalos ár: {price}"
+  },
+  "unofficialGovServiceDetected": {
+    "message": "Nem hivatalos kormányzati szolgáltatási weboldal észlelve (magas kockázat). Ez az oldal túlzott díjakat számíthat fel olyan szolgáltatásokért, amelyek hivatalos kormányzati weboldalakon olcsóbban elérhetők."
+  },
+  "goToOfficialSite": {
+    "message": "Tovább a hivatalos oldalra"
   },
   "trackingRiskTitle": {
     "message": "Nyomkövető figyelmeztetés"

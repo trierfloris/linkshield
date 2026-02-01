@@ -56,6 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const tooltipFeature13 = document.getElementById('tooltipFeature13');
     const tooltipFeature14 = document.getElementById('tooltipFeature14');
     const tooltipFeature15 = document.getElementById('tooltipFeature15');
+    const tooltipFeature16 = document.getElementById('tooltipFeature16');
     const tooltipFooter = document.getElementById('tooltipFooter');
     const freeTag = document.getElementById('freeTag');
     const proTag = document.getElementById('proTag');
@@ -224,12 +225,15 @@ document.addEventListener('DOMContentLoaded', function () {
             tooltipFeature14.textContent = msg('tooltipFeature14');
         }
         if (tooltipFeature15) {
-            const newBadge = tooltipFeature15.querySelector('.new-badge');
+            tooltipFeature15.textContent = msg('tooltipFeature15');
+        }
+        if (tooltipFeature16) {
+            const newBadge = tooltipFeature16.querySelector('.new-badge');
             if (newBadge) {
                 newBadge.textContent = msg('tooltipNewBadge');
-                tooltipFeature15.firstChild.textContent = msg('tooltipFeature15') + ' ';
+                tooltipFeature16.firstChild.textContent = msg('tooltipFeature16') + ' ';
             } else {
-                tooltipFeature15.textContent = msg('tooltipFeature15');
+                tooltipFeature16.textContent = msg('tooltipFeature16');
             }
         }
         if (tooltipFooter) tooltipFooter.textContent = msg('tooltipFooter');

@@ -6942,6 +6942,184 @@ async function initSVGPayloadDetection() {
     logDebug('[SVG] Payload detection initialized with immediate scanning');
 }
 
+// =============================================================================
+// v8.8.0: Unofficial Government Service Detection (Layer 16)
+// Detecteert websites die officiële overheidsdiensten aanbieden maar niet de officiële site zijn
+// Beschermt tegen visa scam sites zoals uk-eta.visasyst.com
+// =============================================================================
+async function detectUnofficialGovernmentService() {
+    const config = globalConfig?.ADVANCED_THREAT_DETECTION?.unofficialGovernmentService;
+    if (!config?.enabled) {
+        return { detected: false, serviceId: null, score: 0, isLegitimateThirdParty: false };
+    }
+
+    // Check integratedProtection enabled
+    if (!(await isProtectionEnabled())) {
+        return { detected: false, serviceId: null, score: 0, isLegitimateThirdParty: false };
+    }
+
+    // Skip trusted domains
+    const hostname = window.location.hostname.toLowerCase();
+    try {
+        if (await isTrustedDomain(hostname)) {
+            return { detected: false, serviceId: null, score: 0, isLegitimateThirdParty: false };
+        }
+    } catch (e) { /* Continue */ }
+
+    // Get page title and headers for matching
+    const pageTitle = (document.title || '').toLowerCase();
+    const headers = Array.from(document.querySelectorAll('h1, h2')).map(h => (h.textContent || '').toLowerCase());
+    const allSearchText = [pageTitle, ...headers].join(' ');
+
+    let detectedService = null;
+    let matchedServiceConfig = null;
+    let score = 0;
+    let isLegitimateThirdParty = false;
+
+    try {
+        // Check each known government service
+        for (const [serviceId, service] of Object.entries(config.services)) {
+            // Check if page mentions this service (exact phrase match)
+            const hasMatch = service.matchPhrases.some(phrase =>
+                allSearchText.includes(phrase.toLowerCase())
+            );
+
+            if (!hasMatch) continue;
+
+            // Check if current domain is official
+            const isOfficial = service.officialDomains.some(officialDomain =>
+                hostname === officialDomain ||
+                hostname.endsWith('.' + officialDomain)
+            );
+
+            if (isOfficial) {
+                // This is the official site, no warning needed
+                logDebug(`[GovService] ${serviceId} - Official domain: ${hostname}`);
+                continue;
+            }
+
+            // Detected unofficial site offering government service
+            detectedService = serviceId;
+            matchedServiceConfig = service;
+            score = config.scores.unofficialDomain;
+
+            // Check if it's a known legitimate third-party
+            isLegitimateThirdParty = config.legitimateThirdParties.some(legit =>
+                hostname === legit || hostname.endsWith('.' + legit)
+            );
+
+            if (isLegitimateThirdParty) {
+                score = config.scores.legitimateThirdParty;
+                logDebug(`[GovService] ${serviceId} - Legitimate third-party: ${hostname}`);
+            }
+
+            // Check for payment indicators (increases score for non-legitimate sites)
+            if (!isLegitimateThirdParty) {
+                const pageText = (document.body?.innerText || '').toLowerCase();
+                const paymentKeywords = ['payment', 'pay now', 'checkout', 'credit card', 'debit card',
+                    '€', '$', '£', 'price', 'fee', 'cost', 'total', 'amount'];
+                const hasPayment = paymentKeywords.some(kw => pageText.includes(kw));
+                if (hasPayment) {
+                    score += config.scores.paymentFormPresent;
+                }
+
+                // Check for urgency tactics
+                const urgencyKeywords = ['limited time', 'act now', 'don\'t miss', 'expires soon',
+                    'urgent', 'immediately', 'fast processing', 'quick approval'];
+                const hasUrgency = urgencyKeywords.some(kw => pageText.includes(kw));
+                if (hasUrgency) {
+                    score += config.scores.urgencyTactics;
+                }
+            }
+
+            break; // Found a match, stop searching
+        }
+
+        // Threshold check
+        const detected = score >= config.scoreThreshold;
+
+        if (detected && matchedServiceConfig) {
+            logDebug(`[GovService] 🚨 DETECTED - Service: ${detectedService}, Score: ${score}, Legitimate: ${isLegitimateThirdParty}`);
+
+            // Report to background
+            if (typeof chrome !== 'undefined' && chrome.runtime?.sendMessage) {
+                chrome.runtime.sendMessage({
+                    type: 'unofficialGovernmentService',
+                    url: window.location.href,
+                    serviceId: detectedService,
+                    country: matchedServiceConfig.country,
+                    officialUrl: matchedServiceConfig.officialUrl,
+                    officialPrice: matchedServiceConfig.officialPrice,
+                    isLegitimateThirdParty: isLegitimateThirdParty,
+                    score: score,
+                    timestamp: Date.now()
+                }).catch(() => {});
+            }
+
+            // Show appropriate warning
+            const severity = isLegitimateThirdParty ? 'warning' : 'critical';
+            const serviceName = detectedService.replace(/-/g, ' ').toUpperCase();
+
+            showSecurityWarning({
+                id: 'unofficial-gov-service',
+                severity: severity,
+                title: getTranslatedMessage('unofficialGovServiceTitle') || 'Unofficial Government Service Website',
+                message: (getTranslatedMessage('unofficialGovServiceMessage') ||
+                    'This website offers {service} applications but is not the official government website. Third-party sites often charge higher fees.')
+                    .replace('{service}', serviceName)
+                    .replace('{country}', matchedServiceConfig.country),
+                tip: (getTranslatedMessage('unofficialGovServiceTip') ||
+                    'Official website: {url} (Official price: {price})')
+                    .replace('{url}', matchedServiceConfig.officialUrl)
+                    .replace('{price}', matchedServiceConfig.officialPrice),
+                icon: '🏛️',
+                showTrust: true,
+                buttons: [
+                    {
+                        text: getTranslatedMessage('goToOfficialSite') || 'Go to official site',
+                        action: () => window.open(matchedServiceConfig.officialUrl, '_blank'),
+                        primary: true
+                    },
+                    {
+                        text: getTranslatedMessage('understandRisk') || 'I understand the risk',
+                        action: 'dismiss'
+                    }
+                ]
+            });
+        }
+
+        return {
+            detected,
+            serviceId: detectedService,
+            score,
+            isLegitimateThirdParty,
+            officialUrl: matchedServiceConfig?.officialUrl,
+            officialPrice: matchedServiceConfig?.officialPrice
+        };
+
+    } catch (err) {
+        handleError(err, 'UnofficialGovernmentServiceDetection');
+        return { detected: false, serviceId: null, score: 0, isLegitimateThirdParty: false };
+    }
+}
+
+// Initialize Unofficial Government Service Detection
+async function initUnofficialGovernmentServiceDetection() {
+    // Skip on trusted domains
+    const hostname = window.location.hostname.toLowerCase();
+    if (await isTrustedDomain(hostname)) {
+        logDebug('[GovService] Skipping for trusted domain:', hostname);
+        return;
+    }
+
+    // Initial scan after page has loaded (3000ms to allow full render)
+    setTimeout(async () => {
+        await detectUnofficialGovernmentService();
+    }, 3000);
+
+    logDebug('[GovService] Unofficial government service detection initialized');
+}
+
 // Run proactive scan after page load
 async function initProactiveVisualHijackingScan() {
   // Skip observers on trusted domains to prevent performance issues on complex SPAs
@@ -11493,6 +11671,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       // v8.6.0: Initialiseer SVG Payload Detection voor kwaadaardige SVG scripts
       initSVGPayloadDetection();
+
+      // v8.8.0: Initialiseer Unofficial Government Service Detection voor visa scam sites
+      initUnofficialGovernmentServiceDetection();
 
       // Initialiseer Table QR Scanner voor imageless QR-code detectie (AI-phishing kits)
       initTableQRScanner();

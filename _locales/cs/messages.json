@@ -1075,7 +1075,7 @@
     "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
   },
   "tooltipFooter": {
-    "message": "15 bezpečnostních vrstev aktivních"
+    "message": "16 bezpečnostních vrstev aktivních"
   },
   "tooltipNewBadge": {
     "message": "Nové",
@@ -1744,6 +1744,24 @@
   },
   "tooltipFeature15": {
     "message": "Detekce podezřelých sledovačů"
+  },
+  "tooltipFeature16": {
+    "message": "Podvody s vládními službami"
+  },
+  "unofficialGovServiceTitle": {
+    "message": "Neoficiální vládní web"
+  },
+  "unofficialGovServiceMessage": {
+    "message": "Tento web nabízí žádosti o {service}, ale není to oficiální vládní web. Weby třetích stran často účtují mnohem vyšší poplatky než je oficiální cena."
+  },
+  "unofficialGovServiceTip": {
+    "message": "Oficiální web: {url} — Oficiální cena: {price}"
+  },
+  "unofficialGovServiceDetected": {
+    "message": "Zjištěn neoficiální web vládních služeb (vysoké riziko). Tento web může účtovat nadměrné poplatky za služby dostupné levněji na oficiálních vládních webech."
+  },
+  "goToOfficialSite": {
+    "message": "Přejít na oficiální web"
   },
   "trackingRiskTitle": {
     "message": "Upozornění na sledovače"

@@ -1075,7 +1075,7 @@
     "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
   },
   "tooltipFooter": {
-    "message": "15 επίπεδα ασφαλείας ενεργά"
+    "message": "16 επίπεδα ασφαλείας ενεργά"
   },
   "tooltipNewBadge": {
     "message": "Νέο",
@@ -1744,6 +1744,24 @@
   },
   "tooltipFeature15": {
     "message": "Ανίχνευση ύποπτων trackers"
+  },
+  "tooltipFeature16": {
+    "message": "Απάτες κρατικών υπηρεσιών"
+  },
+  "unofficialGovServiceTitle": {
+    "message": "Ανεπίσημη κρατική ιστοσελίδα"
+  },
+  "unofficialGovServiceMessage": {
+    "message": "Αυτή η ιστοσελίδα προσφέρει αιτήσεις {service} αλλά δεν είναι η επίσημη κρατική ιστοσελίδα. Οι ιστότοποι τρίτων συχνά χρεώνουν πολύ υψηλότερες τιμές από την επίσημη τιμή."
+  },
+  "unofficialGovServiceTip": {
+    "message": "Επίσημη ιστοσελίδα: {url} — Επίσημη τιμή: {price}"
+  },
+  "unofficialGovServiceDetected": {
+    "message": "Εντοπίστηκε ανεπίσημη ιστοσελίδα κρατικών υπηρεσιών (υψηλός κίνδυνος). Αυτός ο ιστότοπος μπορεί να χρεώνει υπερβολικές τιμές για υπηρεσίες διαθέσιμες φθηνότερα σε επίσημες κρατικές ιστοσελίδες."
+  },
+  "goToOfficialSite": {
+    "message": "Μετάβαση στην επίσημη ιστοσελίδα"
   },
   "trackingRiskTitle": {
     "message": "Προειδοποίηση Tracker"

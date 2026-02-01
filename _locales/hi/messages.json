@@ -1138,7 +1138,7 @@
     "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
   },
   "tooltipFooter": {
-    "message": "15 सुरक्षा परतें सक्रिय"
+    "message": "16 सुरक्षा परतें सक्रिय"
   },
   "tooltipNewBadge": {
     "message": "नया",
@@ -1744,6 +1744,24 @@
   },
   "tooltipFeature15": {
     "message": "संदिग्ध ट्रैकर पहचान"
+  },
+  "tooltipFeature16": {
+    "message": "सरकारी सेवा धोखाधड़ी"
+  },
+  "unofficialGovServiceTitle": {
+    "message": "अनौपचारिक सरकारी वेबसाइट"
+  },
+  "unofficialGovServiceMessage": {
+    "message": "यह वेबसाइट {service} आवेदन प्रदान करती है लेकिन यह आधिकारिक सरकारी वेबसाइट नहीं है। तृतीय-पक्ष साइटें अक्सर आधिकारिक मूल्य से बहुत अधिक शुल्क लेती हैं।"
+  },
+  "unofficialGovServiceTip": {
+    "message": "आधिकारिक वेबसाइट: {url} — आधिकारिक मूल्य: {price}"
+  },
+  "unofficialGovServiceDetected": {
+    "message": "अनौपचारिक सरकारी सेवा वेबसाइट का पता चला (उच्च जोखिम)। यह साइट आधिकारिक सरकारी वेबसाइटों पर सस्ती उपलब्ध सेवाओं के लिए अत्यधिक शुल्क ले सकती है।"
+  },
+  "goToOfficialSite": {
+    "message": "आधिकारिक साइट पर जाएं"
   },
   "trackingRiskTitle": {
     "message": "ट्रैकर चेतावनी"

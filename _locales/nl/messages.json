@@ -1141,7 +1141,7 @@
     "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
   },
   "tooltipFooter": {
-    "message": "15 beveiligingslagen actief"
+    "message": "16 beveiligingslagen actief"
   },
   "tooltipNewBadge": {
     "message": "Nieuw",
@@ -1725,6 +1725,24 @@
   },
   "tooltipFeature15": {
     "message": "Verdachte tracker-detectie"
+  },
+  "tooltipFeature16": {
+    "message": "Overheidsservice-scams"
+  },
+  "unofficialGovServiceTitle": {
+    "message": "Onofficiële Overheidswebsite"
+  },
+  "unofficialGovServiceMessage": {
+    "message": "Deze website biedt {service} aanvragen aan, maar is niet de officiële overheidswebsite. Third-party sites rekenen vaak veel hogere tarieven dan de officiële prijs."
+  },
+  "unofficialGovServiceTip": {
+    "message": "Officiële website: {url} — Officiële prijs: {price}"
+  },
+  "unofficialGovServiceDetected": {
+    "message": "Onofficiële overheidsservice-website gedetecteerd (hoog risico). Deze site kan buitensporige kosten rekenen voor diensten die goedkoper beschikbaar zijn op officiële overheidswebsites."
+  },
+  "goToOfficialSite": {
+    "message": "Ga naar officiële site"
   },
   "trackingRiskTitle": {
     "message": "Tracker Waarschuwing"

@@ -1075,7 +1075,7 @@
     "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
   },
   "tooltipFooter": {
-    "message": "15 рівнів безпеки активно"
+    "message": "16 рівнів безпеки активно"
   },
   "tooltipNewBadge": {
     "message": "Нове",
@@ -1744,6 +1744,24 @@
   },
   "tooltipFeature15": {
     "message": "Виявлення підозрілих трекерів"
+  },
+  "tooltipFeature16": {
+    "message": "Шахрайство з державними послугами"
+  },
+  "unofficialGovServiceTitle": {
+    "message": "Неофіційний державний сайт"
+  },
+  "unofficialGovServiceMessage": {
+    "message": "Цей сайт пропонує заявки на {service}, але не є офіційним державним сайтом. Сторонні сайти часто стягують набагато вищу плату, ніж офіційна ціна."
+  },
+  "unofficialGovServiceTip": {
+    "message": "Офіційний сайт: {url} — Офіційна ціна: {price}"
+  },
+  "unofficialGovServiceDetected": {
+    "message": "Виявлено неофіційний сайт державних послуг (високий ризик). Цей сайт може стягувати надмірну плату за послуги, доступні дешевше на офіційних державних сайтах."
+  },
+  "goToOfficialSite": {
+    "message": "Перейти на офіційний сайт"
   },
   "trackingRiskTitle": {
     "message": "Попередження про трекери"

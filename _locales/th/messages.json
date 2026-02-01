@@ -1075,7 +1075,7 @@
     "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
   },
   "tooltipFooter": {
-    "message": "15 ชั้นความปลอดภัยทำงานอยู่"
+    "message": "16 ชั้นความปลอดภัยทำงานอยู่"
   },
   "tooltipNewBadge": {
     "message": "ใหม่",
@@ -1744,6 +1744,24 @@
   },
   "tooltipFeature15": {
     "message": "ตรวจจับตัวติดตามที่น่าสงสัย"
+  },
+  "tooltipFeature16": {
+    "message": "การหลอกลวงบริการภาครัฐ"
+  },
+  "unofficialGovServiceTitle": {
+    "message": "เว็บไซต์ภาครัฐที่ไม่เป็นทางการ"
+  },
+  "unofficialGovServiceMessage": {
+    "message": "เว็บไซต์นี้เสนอการยื่นคำขอ {service} แต่ไม่ใช่เว็บไซต์ภาครัฐอย่างเป็นทางการ เว็บไซต์บุคคลที่สามมักเรียกเก็บค่าธรรมเนียมสูงกว่าราคาทางการมาก"
+  },
+  "unofficialGovServiceTip": {
+    "message": "เว็บไซต์ทางการ: {url} — ราคาทางการ: {price}"
+  },
+  "unofficialGovServiceDetected": {
+    "message": "ตรวจพบเว็บไซต์บริการภาครัฐที่ไม่เป็นทางการ (ความเสี่ยงสูง) เว็บไซต์นี้อาจเรียกเก็บค่าธรรมเนียมสูงเกินไปสำหรับบริการที่มีราคาถูกกว่าบนเว็บไซต์ภาครัฐอย่างเป็นทางการ"
+  },
+  "goToOfficialSite": {
+    "message": "ไปยังเว็บไซต์ทางการ"
   },
   "trackingRiskTitle": {
     "message": "คำเตือนตัวติดตาม"

@@ -155,6 +155,9 @@
   "lastRuleUpdate": {
     "message": "Pembaruan database terakhir: "
   },
+  "rulesLoaded": {
+    "message": "situs phishing diblokir"
+  },
   "licenseStatus": {
     "message": "Status Lisensi:"
   },
@@ -483,7 +486,7 @@
     "message": "Anda terlindungi sepenuhnya. Semua fitur aktif."
   },
   "licenseUpgradeLink": {
-    "message": "Tingkatkan ke Premium — €1.99/bulan (3 perangkat) →"
+    "message": "Tingkatkan ke Premium — €4.99/bulan (3 perangkat) →"
   },
   "licenseAlreadyHaveCode": {
     "message": "Sudah punya kode lisensi?"
@@ -932,6 +935,12 @@
   "reason_brandSubdomainPhishing": {
     "message": "Kata kunci merek terdeteksi pada platform hosting gratis (risiko tinggi). Perusahaan yang sah tidak menggunakan hosting gratis untuk layanan resmi."
   },
+  "hostnameBrandKeywordPhishing": {
+    "message": "Domain mencurigakan: nama merek dikombinasikan dengan kata kunci phishing (risiko tinggi). Contoh: login-microsoft-verify.com BUKAN situs Microsoft."
+  },
+  "reason_hostnameBrandKeywordPhishing": {
+    "message": "Domain mencurigakan: nama merek dikombinasikan dengan kata kunci phishing (risiko tinggi). Contoh: login-microsoft-verify.com BUKAN situs Microsoft."
+  },
   "nrdTelCombo": {
     "message": "Nomor telepon pada domain yang baru terdaftar dengan kata kunci phishing (risiko sedang). Ini mungkin upaya vishing (phishing suara)."
   },
@@ -974,7 +983,7 @@
   "reason_bitbPadlockIcon": {
     "message": "Ikon gembok keamanan palsu terdeteksi (risiko sedang). Gembok asli muncul di bilah alamat browser, bukan di konten halaman."
   },
-  "reason_bitbWindowChrome": {
+  "reason_bitbWindowStyling": {
     "message": "Gaya jendela browser simulasi terdeteksi (risiko sedang). Overlay diberi gaya agar terlihat seperti jendela sistem operasi."
   },
   "reason_bitbIframeInModal": {
@@ -1003,6 +1012,74 @@
   },
   "bitbAttackTip": {
     "message": "Selalu periksa bilah alamat browser untuk URL asli, bukan teks yang ditampilkan dalam halaman."
+  },
+  "formHijackingTitle": {
+    "message": "Pembajakan formulir terdeteksi!"
+  },
+  "formHijackingMessage": {
+    "message": "Halaman ini mencoba mengalihkan kredensial Anda ke server eksternal. Data Anda TIDAK dikirim."
+  },
+  "formHijackingTip": {
+    "message": "Formulir diam-diam dimodifikasi untuk mengirim data Anda ke: "
+  },
+  "tooltipTitle": {
+    "message": "Dilindungi dari:",
+    "description": "Title for smart link scanning tooltip"
+  },
+  "tooltipFeature1": {
+    "message": "URL phishing & TLD mencurigakan",
+    "description": "Tooltip feature 1"
+  },
+  "tooltipFeature2": {
+    "message": "Domain Unicode yang mirip",
+    "description": "Tooltip feature 2"
+  },
+  "tooltipFeature3": {
+    "message": "Jendela browser palsu (BitB)",
+    "description": "Tooltip feature 3"
+  },
+  "tooltipFeature4": {
+    "message": "Pemicu PowerShell/malware",
+    "description": "Tooltip feature 4"
+  },
+  "tooltipFeature5": {
+    "message": "Serangan overlay tak terlihat",
+    "description": "Tooltip feature 5"
+  },
+  "tooltipFeature6": {
+    "message": "Kode QR berbahaya",
+    "description": "Tooltip feature 6"
+  },
+  "tooltipFeature7": {
+    "message": "Jenis tautan berbahaya",
+    "description": "Tooltip feature 7"
+  },
+  "tooltipFeature8": {
+    "message": "Pembajakan formulir",
+    "description": "Tooltip feature 8"
+  },
+  "tooltipFeature9": {
+    "message": "Manipulasi clipboard",
+    "description": "Tooltip feature 9"
+  },
+  "tooltipFeature10": {
+    "message": "Kode tersembunyi (Shadow DOM)",
+    "description": "Tooltip feature 10"
+  },
+  "tooltipFeature11": {
+    "message": "Pencurian token OAuth",
+    "description": "Tooltip feature 11 - OAuth token theft protection"
+  },
+  "tooltipFeature12": {
+    "message": "Pemeriksaan keamanan palsu",
+    "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
+  },
+  "tooltipFooter": {
+    "message": "15 lapisan keamanan aktif"
+  },
+  "tooltipNewBadge": {
+    "message": "Baru",
+    "description": "Badge text for new features"
   },
   "shadowDomLoginForm": {
     "message": "Formulir login tersembunyi di Shadow DOM terdeteksi (risiko tinggi). Teknik ini digunakan untuk menghindari pemindai keamanan."
@@ -1547,5 +1624,146 @@
   "brandImpersonation": {
     "message": "Possible brand impersonation attempt",
     "description": ""
+  },
+  "dangerousUriBlocked": {
+    "message": "Jenis tautan berbahaya (seperti javascript:) telah diblokir demi keamanan Anda."
+  },
+  "TEST_MODE_ENABLED": {
+    "message": "Mode uji aktif - ini hanya untuk tujuan pengembangan."
+  },
+  "webTransportSuspiciousPattern": {
+    "message": "Pola koneksi jaringan mencurigakan terdeteksi (kemungkinan eksfiltrasi data)."
+  },
+  "webTransportHighStreamCount": {
+    "message": "Jumlah aliran jaringan yang tidak biasa terdeteksi (kemungkinan aktivitas C2)."
+  },
+  "imagelessQR": {
+    "message": "Kode QR tersembunyi terdeteksi (dibangun dari elemen HTML bukan gambar - teknik penghindaran)."
+  },
+  "imagelessQrDangerTitle": {
+    "message": "BAHAYA: Kode QR Tersembunyi Terdeteksi!"
+  },
+  "imagelessQrCautionTitle": {
+    "message": "Peringatan: Kode QR Tersembunyi Terdeteksi"
+  },
+  "quotaDailyScans": {
+    "message": "Pemindaian harian"
+  },
+  "quotaResetsAt": {
+    "message": "Reset pada $TIME$ UTC",
+    "placeholders": {
+      "TIME": {
+        "content": "$1",
+        "example": "00:00"
+      }
+    }
+  },
+  "quotaUpgrade": {
+    "message": "Tingkatkan"
+  },
+  "quotaExceededDesc": {
+    "message": "Batas harian tercapai - direset tengah malam UTC"
+  },
+  "licenseHaveKey": {
+    "message": "Sudah punya kunci?"
+  },
+  "threatsTodayCount": {
+    "message": "+$1 hari ini",
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "847"
+      }
+    }
+  },
+  "threatsTotalCount": {
+    "message": "$1 diblokir",
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "2431"
+      }
+    }
+  },
+  "oauthTheftTitle": {
+    "message": "🛡️ Pencurian Token OAuth Diblokir"
+  },
+  "oauthTheftMessage": {
+    "message": "Anda mencoba menempelkan URL autentikasi. Ini adalah teknik phishing yang dikenal bernama 'ConsentFix' yang mencuri akses akun Anda."
+  },
+  "oauthTheftTip": {
+    "message": "Jangan pernah menempelkan URL yang berisi ?code= atau token akses ke situs web."
+  },
+  "fakeTurnstileTitle": {
+    "message": "⚠️ Pemeriksaan Keamanan Palsu Terdeteksi"
+  },
+  "fakeTurnstileMessage": {
+    "message": "Halaman ini menampilkan verifikasi Cloudflare palsu. Ini sering digunakan dalam serangan phishing."
+  },
+  "fakeTurnstileDetected": {
+    "message": "Verifikasi keamanan palsu terdeteksi (risiko tinggi). Halaman ini meniru Cloudflare/CAPTCHA untuk menipu Anda."
+  },
+  "splitQrTitle": {
+    "message": "🔍 Kode QR Terbagi Terdeteksi"
+  },
+  "splitQrMessage": {
+    "message": "Terdeteksi kode QR yang dibagi menjadi beberapa gambar. Teknik ini digunakan untuk menghindari pemindai keamanan."
+  },
+  "understoodButton": {
+    "message": "Saya Mengerti"
+  },
+  "aitmProxyTitle": {
+    "message": "Proxy Phishing Terdeteksi!"
+  },
+  "aitmProxyMessage": {
+    "message": "Halaman ini tampaknya merupakan proxy phishing yang meniru {provider}. Kredensial Anda akan dicuri jika Anda login di sini."
+  },
+  "aitmProxyTip": {
+    "message": "Selalu verifikasi URL di bilah alamat sebelum memasukkan kredensial."
+  },
+  "aitmProxyDetected": {
+    "message": "Proxy phishing terdeteksi - peniruan halaman login (risiko kritis)."
+  },
+  "svgPayloadTitle": {
+    "message": "SVG Berbahaya Terdeteksi!"
+  },
+  "svgPayloadMessage": {
+    "message": "Halaman ini berisi SVG dengan kode berbahaya tertanam yang dapat mencuri data Anda."
+  },
+  "svgPayloadTip": {
+    "message": "Berhati-hatilah dengan lampiran SVG dari sumber yang tidak dikenal."
+  },
+  "svgPayloadDetected": {
+    "message": "SVG berbahaya dengan skrip tertanam terdeteksi (risiko kritis)."
+  },
+  "tooltipFeature13": {
+    "message": "Phishing proxy login (AiTM)"
+  },
+  "tooltipFeature14": {
+    "message": "Skrip SVG berbahaya"
+  },
+  "tooltipFeature15": {
+    "message": "Deteksi pelacak mencurigakan"
+  },
+  "trackingRiskTitle": {
+    "message": "Peringatan Pelacak"
+  },
+  "trackingRiskHostile": {
+    "message": "pelacak mencurigakan"
+  },
+  "trackingRiskThirdParty": {
+    "message": "sumber eksternal"
+  },
+  "trackingRiskDetected": {
+    "message": "Halaman ini memuat pelacak yang umum digunakan dalam serangan phishing."
+  },
+  "trackingRiskLow": {
+    "message": "Normal"
+  },
+  "trackingRiskElevated": {
+    "message": "Tinggi"
+  },
+  "trackingRiskHigh": {
+    "message": "Sangat Tinggi"
   }
 }

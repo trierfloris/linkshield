@@ -155,6 +155,9 @@
   "lastRuleUpdate": {
     "message": "Son veritabanı güncellemesi: "
   },
+  "rulesLoaded": {
+    "message": "kimlik avı sitesi engellendi"
+  },
   "licenseStatus": {
     "message": "Lisans Durumu:"
   },
@@ -483,7 +486,7 @@
     "message": "Tamamen korunuyorsunuz. Tüm özellikler aktif."
   },
   "licenseUpgradeLink": {
-    "message": "Premium'a Yükselt (1,99 €/ay, 3 cihaz) →"
+    "message": "Premium'a Yükselt (4,99 €/ay, 3 cihaz) →"
   },
   "licenseAlreadyHaveCode": {
     "message": "Zaten bir lisans kodunuz var mı?"
@@ -932,6 +935,12 @@
   "reason_brandSubdomainPhishing": {
     "message": "Ücretsiz barındırma platformunda marka anahtar kelimesi tespit edildi (yüksek risk). Meşru şirketler resmi hizmetler için ücretsiz barındırma kullanmaz."
   },
+  "hostnameBrandKeywordPhishing": {
+    "message": "Şüpheli alan adı: marka adı kimlik avı anahtar kelimeleriyle birleştirilmiş (yüksek risk). Örnek: login-microsoft-verify.com Microsoft sitesi DEĞİLDİR."
+  },
+  "reason_hostnameBrandKeywordPhishing": {
+    "message": "Şüpheli alan adı: marka adı kimlik avı anahtar kelimeleriyle birleştirilmiş (yüksek risk). Örnek: login-microsoft-verify.com Microsoft sitesi DEĞİLDİR."
+  },
   "nrdTelCombo": {
     "message": "Kimlik avı anahtar kelimeleri ile yeni kayıtlı alan adında telefon numarası (orta risk). Bu bir sesli kimlik avı (vishing) girişimi olabilir."
   },
@@ -974,7 +983,7 @@
   "reason_bitbPadlockIcon": {
     "message": "Sahte güvenlik asma kilit simgesi tespit edildi (orta risk). Gerçek asma kilitler sayfa içeriğinde değil, tarayıcı adres çubuğunda görünür."
   },
-  "reason_bitbWindowChrome": {
+  "reason_bitbWindowStyling": {
     "message": "Simüle edilmiş tarayıcı penceresi stili tespit edildi (orta risk). Overlay bir işletim sistemi penceresi gibi görünmek üzere stillendirilmiş."
   },
   "reason_bitbIframeInModal": {
@@ -1003,6 +1012,74 @@
   },
   "bitbAttackTip": {
     "message": "Her zaman gerçek URL için tarayıcı adres çubuğunu kontrol edin, sayfa içinde görüntülenen metni değil."
+  },
+  "formHijackingTitle": {
+    "message": "Form ele geçirme tespit edildi!"
+  },
+  "formHijackingMessage": {
+    "message": "Bu sayfa kimlik bilgilerinizi harici bir sunucuya yönlendirmeye çalıştı. Verileriniz GÖNDERİLMEDİ."
+  },
+  "formHijackingTip": {
+    "message": "Form gizlice verilerinizi şuraya göndermek için değiştirildi: "
+  },
+  "tooltipTitle": {
+    "message": "Korunan tehditler:",
+    "description": "Title for smart link scanning tooltip"
+  },
+  "tooltipFeature1": {
+    "message": "Kimlik avi URL'leri ve supheliyeli TLD'ler",
+    "description": "Tooltip feature 1"
+  },
+  "tooltipFeature2": {
+    "message": "Unicode benzer alan adlari",
+    "description": "Tooltip feature 2"
+  },
+  "tooltipFeature3": {
+    "message": "Sahte tarayici pencereleri (BitB)",
+    "description": "Tooltip feature 3"
+  },
+  "tooltipFeature4": {
+    "message": "PowerShell/zararli yazilim tetikleyicileri",
+    "description": "Tooltip feature 4"
+  },
+  "tooltipFeature5": {
+    "message": "Gorunmez kaplama saldirilari",
+    "description": "Tooltip feature 5"
+  },
+  "tooltipFeature6": {
+    "message": "Zararli QR kodlari",
+    "description": "Tooltip feature 6"
+  },
+  "tooltipFeature7": {
+    "message": "Tehlikeli baglanti turleri",
+    "description": "Tooltip feature 7"
+  },
+  "tooltipFeature8": {
+    "message": "Form ele gecirme",
+    "description": "Tooltip feature 8"
+  },
+  "tooltipFeature9": {
+    "message": "Pano manipulasyonu",
+    "description": "Tooltip feature 9"
+  },
+  "tooltipFeature10": {
+    "message": "Gizli kod (Shadow DOM)",
+    "description": "Tooltip feature 10"
+  },
+  "tooltipFeature11": {
+    "message": "OAuth token hırsızlığı",
+    "description": "Tooltip feature 11 - OAuth token theft protection"
+  },
+  "tooltipFeature12": {
+    "message": "Sahte güvenlik kontrolleri",
+    "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
+  },
+  "tooltipFooter": {
+    "message": "15 güvenlik katmanı aktif"
+  },
+  "tooltipNewBadge": {
+    "message": "Yeni",
+    "description": "Badge text for new features"
   },
   "shadowDomLoginForm": {
     "message": "Shadow DOM'da gizlenmiş giriş formu tespit edildi (yüksek risk). Bu teknik güvenlik tarayıcılarından kaçmak için kullanılır."
@@ -1547,5 +1624,146 @@
   "brandImpersonation": {
     "message": "Possible brand impersonation attempt",
     "description": ""
+  },
+  "dangerousUriBlocked": {
+    "message": "Güvenliğiniz için tehlikeli bir bağlantı türü (javascript: gibi) engellendi."
+  },
+  "TEST_MODE_ENABLED": {
+    "message": "Test modu aktif - bu yalnızca geliştirme amaçlıdır."
+  },
+  "webTransportSuspiciousPattern": {
+    "message": "Şüpheli ağ bağlantı kalıbı tespit edildi (olası veri sızıntısı)."
+  },
+  "webTransportHighStreamCount": {
+    "message": "Olağandışı sayıda ağ akışı tespit edildi (olası komuta ve kontrol aktivitesi)."
+  },
+  "imagelessQR": {
+    "message": "Gizli QR kodu tespit edildi (resim yerine HTML öğelerinden oluşturulmuş - kaçınma tekniği)."
+  },
+  "imagelessQrDangerTitle": {
+    "message": "TEHLİKE: Gizli QR Kodu Tespit Edildi!"
+  },
+  "imagelessQrCautionTitle": {
+    "message": "Dikkat: Gizli QR Kodu Tespit Edildi"
+  },
+  "quotaDailyScans": {
+    "message": "Günlük taramalar"
+  },
+  "quotaResetsAt": {
+    "message": "$TIME$ UTC'de sıfırlanır",
+    "placeholders": {
+      "TIME": {
+        "content": "$1",
+        "example": "00:00"
+      }
+    }
+  },
+  "quotaUpgrade": {
+    "message": "Yükselt"
+  },
+  "quotaExceededDesc": {
+    "message": "Günlük limite ulaşıldı - gece yarısı UTC'de sıfırlanır"
+  },
+  "licenseHaveKey": {
+    "message": "Zaten bir anahtarınız var mı?"
+  },
+  "threatsTodayCount": {
+    "message": "+$1 bugün",
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "847"
+      }
+    }
+  },
+  "threatsTotalCount": {
+    "message": "$1 engellendi",
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "2431"
+      }
+    }
+  },
+  "oauthTheftTitle": {
+    "message": "🛡️ OAuth Token Hırsızlığı Engellendi"
+  },
+  "oauthTheftMessage": {
+    "message": "Bir kimlik doğrulama URL'si yapıştırmaya çalıştınız. Bu, hesap erişiminizi çalan 'ConsentFix' adlı bilinen bir kimlik avı tekniğidir."
+  },
+  "oauthTheftTip": {
+    "message": "?code= veya erişim belirteçleri içeren URL'leri asla web sitelerine yapıştırmayın."
+  },
+  "fakeTurnstileTitle": {
+    "message": "⚠️ Sahte Güvenlik Kontrolü Tespit Edildi"
+  },
+  "fakeTurnstileMessage": {
+    "message": "Bu sayfa sahte bir Cloudflare doğrulaması gösteriyor. Bu genellikle kimlik avı saldırılarında kullanılır."
+  },
+  "fakeTurnstileDetected": {
+    "message": "Sahte güvenlik doğrulaması tespit edildi (yüksek risk). Bu sayfa sizi kandırmak için Cloudflare/CAPTCHA'yı taklit ediyor."
+  },
+  "splitQrTitle": {
+    "message": "🔍 Bölünmüş QR Kodu Tespit Edildi"
+  },
+  "splitQrMessage": {
+    "message": "Birden fazla görüntüye bölünmüş bir QR kodu tespit edildi. Bu teknik güvenlik tarayıcılarını atlatmak için kullanılır."
+  },
+  "understoodButton": {
+    "message": "Anladım"
+  },
+  "aitmProxyTitle": {
+    "message": "Kimlik avı proxy'si tespit edildi!"
+  },
+  "aitmProxyMessage": {
+    "message": "Bu sayfa {provider} kimliğine bürünen bir kimlik avı proxy'si gibi görünüyor. Buradan giriş yaparsanız kimlik bilgileriniz çalınacaktır."
+  },
+  "aitmProxyTip": {
+    "message": "Kimlik bilgilerini girmeden önce adres çubuğundaki URL'yi her zaman doğrulayın."
+  },
+  "aitmProxyDetected": {
+    "message": "Kimlik avı proxy'si tespit edildi - giriş sayfası taklidi (kritik risk)."
+  },
+  "svgPayloadTitle": {
+    "message": "Zararlı SVG tespit edildi!"
+  },
+  "svgPayloadMessage": {
+    "message": "Bu sayfa verilerinizi çalabilecek gömülü zararlı kod içeren bir SVG içeriyor."
+  },
+  "svgPayloadTip": {
+    "message": "Bilinmeyen kaynaklardan gelen SVG ekleriyle dikkatli olun."
+  },
+  "svgPayloadDetected": {
+    "message": "Gömülü komut dosyaları içeren zararlı SVG tespit edildi (kritik risk)."
+  },
+  "tooltipFeature13": {
+    "message": "Giriş proxy'si kimlik avı (AiTM)"
+  },
+  "tooltipFeature14": {
+    "message": "Zararlı SVG komut dosyaları"
+  },
+  "tooltipFeature15": {
+    "message": "Şüpheli izleyici tespiti"
+  },
+  "trackingRiskTitle": {
+    "message": "İzleyici Uyarısı"
+  },
+  "trackingRiskHostile": {
+    "message": "şüpheli izleyiciler"
+  },
+  "trackingRiskThirdParty": {
+    "message": "harici kaynaklar"
+  },
+  "trackingRiskDetected": {
+    "message": "Bu sayfa, kimlik avı saldırılarında yaygın olarak kullanılan izleyicileri yüklüyor."
+  },
+  "trackingRiskLow": {
+    "message": "Normal"
+  },
+  "trackingRiskElevated": {
+    "message": "Yüksek"
+  },
+  "trackingRiskHigh": {
+    "message": "Çok Yüksek"
   }
 }

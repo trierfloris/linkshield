@@ -155,6 +155,9 @@
   "lastRuleUpdate": {
     "message": "Poslední aktualizace databáze: "
   },
+  "rulesLoaded": {
+    "message": "phishingových stránek blokováno"
+  },
   "licenseStatus": {
     "message": "Stav licence:"
   },
@@ -483,7 +486,7 @@
     "message": "Jste plně chráněni. Všechny funkce jsou aktivní."
   },
   "licenseUpgradeLink": {
-    "message": "Upgradovat na Premium za 1,99 €/měs. (3 zařízení) →"
+    "message": "Upgradovat na Premium za 4,99 €/měs. (3 zařízení) →"
   },
   "licenseAlreadyHaveCode": {
     "message": "Již máte licenční kód?"
@@ -932,6 +935,12 @@
   "reason_brandSubdomainPhishing": {
     "message": "Detekováno klíčové slovo značky na bezplatné hostingové platformě (vysoké riziko)."
   },
+  "hostnameBrandKeywordPhishing": {
+    "message": "Podezřelá doména: název značky kombinovaný s phishingovými klíčovými slovy (vysoké riziko). Příklad: login-microsoft-verify.com NENÍ stránka Microsoftu."
+  },
+  "reason_hostnameBrandKeywordPhishing": {
+    "message": "Podezřelá doména: název značky kombinovaný s phishingovými klíčovými slovy (vysoké riziko). Příklad: login-microsoft-verify.com NENÍ stránka Microsoftu."
+  },
   "nrdTelCombo": {
     "message": "Telefonní číslo na nově registrované doméně s phishingovými klíčovými slovy (střední riziko)."
   },
@@ -974,7 +983,7 @@
   "reason_bitbPadlockIcon": {
     "message": "Detekována falešná ikona bezpečnostního zámku (střední riziko)."
   },
-  "reason_bitbWindowChrome": {
+  "reason_bitbWindowStyling": {
     "message": "Detekován simulovaný styl okna prohlížeče (střední riziko)."
   },
   "reason_bitbIframeInModal": {
@@ -1003,6 +1012,74 @@
   },
   "bitbAttackTip": {
     "message": "Vždy zkontrolujte adresní řádek prohlížeče pro skutečnou URL."
+  },
+  "formHijackingTitle": {
+    "message": "Detekován únos formuláře!"
+  },
+  "formHijackingMessage": {
+    "message": "Tato stránka se pokusila přesměrovat vaše přihlašovací údaje na externí server. Vaše data NEBYLA odeslána."
+  },
+  "formHijackingTip": {
+    "message": "Formulář byl tajně upraven pro odeslání vašich dat na: "
+  },
+  "tooltipTitle": {
+    "message": "Ochrana proti:",
+    "description": "Title for smart link scanning tooltip"
+  },
+  "tooltipFeature1": {
+    "message": "Phishingovým URL a podezřelým TLD",
+    "description": "Tooltip feature 1"
+  },
+  "tooltipFeature2": {
+    "message": "Unicode podobným doménám",
+    "description": "Tooltip feature 2"
+  },
+  "tooltipFeature3": {
+    "message": "Falešným oknům prohlížeče (BitB)",
+    "description": "Tooltip feature 3"
+  },
+  "tooltipFeature4": {
+    "message": "Spouštěčům PowerShell/malwaru",
+    "description": "Tooltip feature 4"
+  },
+  "tooltipFeature5": {
+    "message": "Neviditelným překryvným útokům",
+    "description": "Tooltip feature 5"
+  },
+  "tooltipFeature6": {
+    "message": "Škodlivým QR kódům",
+    "description": "Tooltip feature 6"
+  },
+  "tooltipFeature7": {
+    "message": "Nebezpečným typům odkazů",
+    "description": "Tooltip feature 7"
+  },
+  "tooltipFeature8": {
+    "message": "Únosu formulářů",
+    "description": "Tooltip feature 8"
+  },
+  "tooltipFeature9": {
+    "message": "Manipulaci se schránkou",
+    "description": "Tooltip feature 9"
+  },
+  "tooltipFeature10": {
+    "message": "Skrytému kódu (Shadow DOM)",
+    "description": "Tooltip feature 10"
+  },
+  "tooltipFeature11": {
+    "message": "Krádež OAuth tokenů",
+    "description": "Tooltip feature 11 - OAuth token theft protection"
+  },
+  "tooltipFeature12": {
+    "message": "Falešné bezpečnostní kontroly",
+    "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
+  },
+  "tooltipFooter": {
+    "message": "15 bezpečnostních vrstev aktivních"
+  },
+  "tooltipNewBadge": {
+    "message": "Nové",
+    "description": "Badge text for new features"
   },
   "shadowDomLoginForm": {
     "message": "Detekován přihlašovací formulář skrytý v Shadow DOM (vysoké riziko)."
@@ -1221,7 +1298,7 @@
     "message": "Upgradovat na Premium"
   },
   "ctaUpgradePrice": {
-    "message": "€1,99/měsíc · 3 zařízení"
+    "message": "€4,99/měsíc · 3 zařízení"
   },
   "ctaRenewText": {
     "message": "Obnovit ochranu"
@@ -1547,5 +1624,146 @@
   "brandImpersonation": {
     "message": "Possible brand impersonation attempt",
     "description": ""
+  },
+  "dangerousUriBlocked": {
+    "message": "Nebezpečný typ odkazu (jako javascript:) byl zablokován pro vaši bezpečnost."
+  },
+  "TEST_MODE_ENABLED": {
+    "message": "Testovací režim je aktivní - toto je pouze pro vývojové účely."
+  },
+  "webTransportSuspiciousPattern": {
+    "message": "Zjištěn podezřelý vzor síťového připojení (možná exfiltrace dat)."
+  },
+  "webTransportHighStreamCount": {
+    "message": "Zjištěn neobvyklý počet síťových proudů (možná aktivita C2)."
+  },
+  "imagelessQR": {
+    "message": "Zjištěn skrytý QR kód (vytvořen z HTML prvků místo obrázku - úniková technika)."
+  },
+  "imagelessQrDangerTitle": {
+    "message": "NEBEZPEČÍ: Zjištěn skrytý QR kód!"
+  },
+  "imagelessQrCautionTitle": {
+    "message": "Pozor: Zjištěn skrytý QR kód"
+  },
+  "quotaDailyScans": {
+    "message": "Denní skenování"
+  },
+  "quotaResetsAt": {
+    "message": "Reset v $TIME$ UTC",
+    "placeholders": {
+      "TIME": {
+        "content": "$1",
+        "example": "00:00"
+      }
+    }
+  },
+  "quotaUpgrade": {
+    "message": "Upgradovat"
+  },
+  "quotaExceededDesc": {
+    "message": "Denní limit dosažen - resetuje se o půlnoci UTC"
+  },
+  "licenseHaveKey": {
+    "message": "Už máte klíč?"
+  },
+  "threatsTodayCount": {
+    "message": "+$1 dnes",
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "847"
+      }
+    }
+  },
+  "threatsTotalCount": {
+    "message": "$1 zablokováno",
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "2431"
+      }
+    }
+  },
+  "oauthTheftTitle": {
+    "message": "🛡️ Krádež tokenu OAuth zablokována"
+  },
+  "oauthTheftMessage": {
+    "message": "Pokusili jste se vložit ověřovací URL. Jedná se o známou phishingovou techniku 'ConsentFix', která krade přístup k vašemu účtu."
+  },
+  "oauthTheftTip": {
+    "message": "Nikdy nevkládejte URL obsahující ?code= nebo přístupové tokeny na webové stránky."
+  },
+  "fakeTurnstileTitle": {
+    "message": "⚠️ Detekována falešná bezpečnostní kontrola"
+  },
+  "fakeTurnstileMessage": {
+    "message": "Tato stránka zobrazuje falešné ověření Cloudflare. To se často používá při phishingových útocích."
+  },
+  "fakeTurnstileDetected": {
+    "message": "Detekováno falešné bezpečnostní ověření (vysoké riziko). Tato stránka napodobuje Cloudflare/CAPTCHA, aby vás oklamala."
+  },
+  "splitQrTitle": {
+    "message": "🔍 Detekován rozdělený QR kód"
+  },
+  "splitQrMessage": {
+    "message": "Byl detekován QR kód rozdělený do více obrázků. Tato technika se používá k obejití bezpečnostních skenerů."
+  },
+  "understoodButton": {
+    "message": "Rozumím"
+  },
+  "aitmProxyTitle": {
+    "message": "Detekován phishingový proxy!"
+  },
+  "aitmProxyMessage": {
+    "message": "Tato stránka se jeví jako phishingový proxy vydávající se za {provider}. Vaše přihlašovací údaje budou ukradeny, pokud se zde přihlásíte."
+  },
+  "aitmProxyTip": {
+    "message": "Vždy ověřte URL v adresním řádku před zadáním přihlašovacích údajů."
+  },
+  "aitmProxyDetected": {
+    "message": "Detekován phishingový proxy - napodobení přihlašovací stránky (kritické riziko)."
+  },
+  "svgPayloadTitle": {
+    "message": "Detekován škodlivý SVG!"
+  },
+  "svgPayloadMessage": {
+    "message": "Tato stránka obsahuje SVG s vloženým škodlivým kódem, který může ukrást vaše data."
+  },
+  "svgPayloadTip": {
+    "message": "Buďte opatrní s SVG přílohami z neznámých zdrojů."
+  },
+  "svgPayloadDetected": {
+    "message": "Detekován škodlivý SVG s vloženými skripty (kritické riziko)."
+  },
+  "tooltipFeature13": {
+    "message": "Phishing přihlašovacího proxy (AiTM)"
+  },
+  "tooltipFeature14": {
+    "message": "Škodlivé SVG skripty"
+  },
+  "tooltipFeature15": {
+    "message": "Detekce podezřelých sledovačů"
+  },
+  "trackingRiskTitle": {
+    "message": "Upozornění na sledovače"
+  },
+  "trackingRiskHostile": {
+    "message": "podezřelé sledovače"
+  },
+  "trackingRiskThirdParty": {
+    "message": "externí zdroje"
+  },
+  "trackingRiskDetected": {
+    "message": "Tato stránka načítá sledovače běžně používané při phishingu."
+  },
+  "trackingRiskLow": {
+    "message": "Normální"
+  },
+  "trackingRiskElevated": {
+    "message": "Zvýšené"
+  },
+  "trackingRiskHigh": {
+    "message": "Vysoké"
   }
 }

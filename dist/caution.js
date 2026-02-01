@@ -1,6 +1,24 @@
 // caution.js
 // Mirror van alert.js met gele styling en dynamische i18n voor risiconiveau
 
+/**
+ * Veilige i18n wrapper met null checks
+ * @param {string} key - De i18n message key
+ * @param {string} [fallback] - Optionele fallback waarde
+ * @returns {string}
+ */
+function safeGetMessage(key, fallback) {
+  try {
+    if (typeof chrome !== 'undefined' && chrome.i18n && typeof chrome.i18n.getMessage === 'function') {
+      const msg = chrome.i18n.getMessage(key);
+      return msg || fallback || key;
+    }
+  } catch (e) {
+    // Ignore - extension context might be invalidated
+  }
+  return fallback || key;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const maxRetries = 5;
     let retryCount = 0;
@@ -22,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Vul statische i18n teksten
     document.querySelectorAll('[data-i18n]').forEach(node => {
         const key = node.getAttribute('data-i18n');
-        node.textContent = chrome.i18n.getMessage(key) || '';
+        node.textContent = safeGetMessage(key) || '';
     });
 
     // Hulpfunctie voor delay
@@ -56,20 +74,20 @@ document.addEventListener('DOMContentLoaded', () => {
             default:
                 riskKey = 'lowRisk';
         }
-        el.severity.textContent = chrome.i18n.getMessage(riskKey) || risk;
+        el.severity.textContent = safeGetMessage(riskKey) || risk;
 
         // Redenenlijst met vertaling
         el.reasons.innerHTML = '';
         if (Array.isArray(reasons) && reasons.length) {
             reasons.forEach(key => {
-                const msg = chrome.i18n.getMessage(key);
+                const msg = safeGetMessage(key);
                 const li = document.createElement('li');
                 li.textContent = msg || key;
                 el.reasons.appendChild(li);
             });
         } else {
             const li = document.createElement('li');
-            li.textContent = chrome.i18n.getMessage('noSuspiciousFeatures') || '';
+            li.textContent = safeGetMessage('noSuspiciousFeatures') || '';
             el.reasons.appendChild(li);
         }
     }
@@ -136,6 +154,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Close Button
-    el.closeBtn?.addEventListener('click', () => window.close());
+    // Close Button - sluit de huidige tab (niet alleen het venster)
+    el.closeBtn?.addEventListener('click', async () => {
+        try {
+            // Gebruik chrome.tabs API om de huidige tab te sluiten
+            const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+            if (tabs[0]?.id) {
+                await chrome.tabs.remove(tabs[0].id);
+            }
+        } catch (error) {
+            // Fallback naar window.close() als tabs API niet beschikbaar is
+            console.error('[Caution] Fout bij sluiten tab:', error);
+            window.close();
+        }
+    });
 });

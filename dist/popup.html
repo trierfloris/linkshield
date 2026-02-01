@@ -287,21 +287,27 @@
             letter-spacing: 0.2px;
         }
 
-        /* License Key Toggle Link */
-        .license-toggle-link {
-            display: block;
+        /* License Section (inside status card) */
+        .license-inline {
+            margin-top: 12px;
             text-align: center;
-            margin-top: 10px;
+        }
+
+        .license-inline.hidden {
+            display: none;
+        }
+
+        .license-toggle-link {
+            display: inline-block;
             font-size: 11px;
-            color: #92400e;
+            color: rgba(0, 0, 0, 0.5);
             text-decoration: none;
             cursor: pointer;
-            opacity: 0.8;
-            transition: opacity 0.2s;
+            transition: color 0.2s;
         }
 
         .license-toggle-link:hover {
-            opacity: 1;
+            color: rgba(0, 0, 0, 0.7);
             text-decoration: underline;
         }
 
@@ -309,12 +315,12 @@
             display: none;
         }
 
-        /* License Input (inline in card) */
-        .license-section {
+        .license-input-wrapper {
             display: none;
+            margin-top: 8px;
         }
 
-        .license-section.show {
+        .license-input-wrapper.show {
             display: block;
         }
 
@@ -551,29 +557,6 @@
             color: #1f2937;
         }
 
-        .live-badge {
-            display: none;
-            font-size: 8px;
-            font-weight: 600;
-            padding: 2px 5px;
-            margin-left: 4px;
-            background: #10b981;
-            color: white;
-            border-radius: 3px;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            animation: livePulse 2s ease-in-out infinite;
-        }
-
-        .live-badge.show {
-            display: inline-block;
-        }
-
-        @keyframes livePulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-
         .toggle-subtitle {
             display: flex;
             align-items: center;
@@ -581,16 +564,43 @@
             margin-bottom: 2px;
         }
 
-        .premium-tag {
-            display: inline-block;
+        /* Feature Tags - Professional Labels */
+        .feature-tag {
+            display: inline-flex;
+            align-items: center;
             font-size: 8px;
             font-weight: 700;
-            padding: 2px 4px;
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
+            padding: 2px 6px;
             border-radius: 3px;
             text-transform: uppercase;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.5px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .feature-tag.free {
+            background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+            color: white;
+        }
+
+        .feature-tag.pro {
+            background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+            color: white;
+            position: relative;
+        }
+
+        .feature-tag.pro::before {
+            content: "★";
+            margin-right: 3px;
+            font-size: 7px;
+        }
+
+        .feature-tag.hidden {
+            display: none;
+        }
+
+        /* Legacy support */
+        .premium-tag {
+            display: none;
         }
 
         .premium-tag.hidden {
@@ -601,6 +611,32 @@
             font-size: 11px;
             color: #6b7280;
             line-height: 1.4;
+        }
+
+        .threats-today {
+            display: none;
+            position: relative;
+            font-size: 8px;
+            font-weight: 700;
+            color: #047857;
+            margin-left: 4px;
+            padding: 2px 6px;
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border-radius: 3px;
+            white-space: nowrap;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            cursor: default;
+        }
+
+        .threats-today.show {
+            display: inline-flex;
+        }
+
+        .toggle-subtitle {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2px;
         }
 
         /* Toggle Switch */
@@ -655,50 +691,142 @@
             cursor: not-allowed;
         }
 
-        /* Help tooltip */
-        .toggle-help {
-            display: none;
-            position: relative;
-            margin-left: 4px;
-        }
 
-        .toggle-help svg {
-            width: 14px;
-            height: 14px;
-            color: #9ca3af;
-            cursor: help;
-        }
-
-        .toggle-help:hover svg {
-            color: var(--color-primary);
-        }
-
-        .tooltip {
+        /* Database Update Tooltip (on threats badge hover) */
+        .db-tooltip {
             display: none;
             position: absolute;
-            bottom: 24px;
-            right: -8px;
-            width: 180px;
-            padding: 8px 10px;
+            bottom: calc(100% + 6px);
+            left: 50%;
+            transform: translateX(-50%);
+            width: max-content;
+            max-width: 220px;
+            padding: 6px 10px;
             background: #1f2937;
             color: white;
-            font-size: 11px;
+            font-size: 10px;
+            font-weight: 500;
             line-height: 1.4;
-            border-radius: 6px;
+            border-radius: 5px;
+            white-space: nowrap;
             z-index: 100;
+            pointer-events: none;
+            text-align: center;
         }
 
-        .tooltip::after {
+        .db-sources {
+            display: block;
+            margin-top: 3px;
+            font-size: 9px;
+            opacity: 0.7;
+            font-weight: 400;
+        }
+
+        .db-tooltip::after {
             content: "";
             position: absolute;
             top: 100%;
-            right: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 4px solid transparent;
+            border-top-color: #1f2937;
+        }
+
+        .threats-today:hover .db-tooltip {
+            display: block;
+        }
+
+        /* Protection Features Tooltip (on PRO badge) */
+        .feature-tag.pro {
+            position: relative;
+            cursor: default;
+        }
+
+        .pro-tooltip {
+            display: none;
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%);
+            width: 220px;
+            padding: 12px;
+            background: #1f2937;
+            color: white;
+            border-radius: 6px;
+            z-index: 100;
+            pointer-events: none;
+            white-space: normal;
+            text-transform: none;
+            letter-spacing: normal;
+            font-weight: normal;
+        }
+
+        .pro-tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
             border: 5px solid transparent;
             border-top-color: #1f2937;
         }
 
-        .toggle-help:hover .tooltip {
+        .feature-tag.pro:hover .pro-tooltip {
             display: block;
+        }
+
+        .tooltip-title {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+            font-size: 11px;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+        }
+
+        .tooltip-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .tooltip-list li {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 10px;
+            padding: 3px 0;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .tooltip-list li::before {
+            content: "✓";
+            color: #10b981;
+            font-weight: bold;
+            font-size: 9px;
+        }
+
+        .tooltip-list .new-badge {
+            font-size: 7px;
+            font-weight: 700;
+            padding: 1px 4px;
+            background: #f59e0b;
+            color: #000;
+            border-radius: 2px;
+            text-transform: uppercase;
+            margin-left: auto;
+        }
+
+        .tooltip-footer {
+            margin-top: 10px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(255,255,255,0.15);
+            font-size: 10px;
+            color: #10b981;
+            font-weight: 600;
+            text-align: center;
         }
 
         /* ================================
@@ -779,6 +907,92 @@
             0%, 100% { opacity: 1; }
             50% { opacity: 0.5; }
         }
+
+        /* ================================
+           STATUS CARD QUOTA INDICATOR
+           ================================ */
+        .status-quota {
+            margin: 12px 0;
+            padding: 10px 12px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 8px;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+        }
+
+        .status-quota.hidden {
+            display: none;
+        }
+
+        .status-quota-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .status-quota-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .status-quota-count {
+            font-size: 13px;
+            font-weight: 700;
+            color: #374151;
+        }
+
+        .status-quota.warning .status-quota-count {
+            color: #d97706;
+        }
+
+        .status-quota.critical .status-quota-count {
+            color: #dc2626;
+        }
+
+        .status-quota-bar {
+            height: 6px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 6px;
+        }
+
+        .status-quota-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981 0%, #34d399 100%);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .status-quota.warning .status-quota-bar-fill {
+            background: linear-gradient(90deg, #f59e0b 0%, #fbbf24 100%);
+        }
+
+        .status-quota.critical .status-quota-bar-fill {
+            background: linear-gradient(90deg, #ef4444 0%, #f87171 100%);
+        }
+
+        .status-quota-footer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .status-quota-reset {
+            font-size: 10px;
+            color: #6b7280;
+        }
+
+        .status-card.expired .status-quota {
+            background: rgba(255, 255, 255, 0.6);
+            border-color: rgba(239, 68, 68, 0.2);
+        }
+
+        .status-card.expired .status-quota-title {
+            color: #991b1b;
+        }
+
     </style>
 </head>
 <body>
@@ -814,28 +1028,39 @@
             <!-- Subtitle -->
             <div class="status-sub" id="statusSub"><span class="dot"></span><span id="statusSubText">Trial · 30 days left</span></div>
 
+            <!-- Quota Indicator (shown for expired/free users) -->
+            <div class="status-quota hidden" id="quotaCard">
+                <div class="status-quota-header">
+                    <span class="status-quota-title" id="quotaTitle">Daily scans</span>
+                    <span class="status-quota-count" id="quotaCount">0/20</span>
+                </div>
+                <div class="status-quota-bar">
+                    <div class="status-quota-bar-fill" id="quotaBarFill" style="width: 0%"></div>
+                </div>
+                <div class="status-quota-footer">
+                    <span class="status-quota-reset" id="quotaReset">Resets at 00:00 UTC</span>
+                </div>
+            </div>
+
             <!-- CTA Button (Trial/Expired) -->
             <a href="https://linkshield.lemonsqueezy.com/checkout/buy/98bd4872-bebd-470b-bb6e-508a7a1bbae2" target="_blank" class="cta-button" id="ctaButton">
                 <span id="ctaText">Upgrade to Premium</span>
-                <span class="price" id="ctaPrice">€1.99/month · 3 devices</span>
+                <span class="price" id="ctaPrice">€4.99/month · 3 devices</span>
             </a>
 
-            <!-- License Toggle Link (shown in trial, hidden when license section is open) -->
-            <span class="license-toggle-link" id="licenseToggleLink">Use license key</span>
-
-            <!-- Divider (hidden by default, shown in expired or when license section is open) -->
-            <div class="divider hidden" id="divider"><span id="dividerText">or</span></div>
-
-            <!-- License Input (hidden by default) -->
-            <div class="license-section" id="licenseSection">
-                <div class="license-input-row">
-                    <input type="text" id="licenseInput" placeholder="XXXX-XXXX-XXXX">
-                    <button id="activateBtn">
-                        <span class="spinner" id="spinner"></span>
-                        <span id="activateBtnText">Activate</span>
-                    </button>
+            <!-- License Section (inside status card) -->
+            <div class="license-inline hidden" id="licenseSectionWrapper">
+                <a href="#" class="license-toggle-link" id="licenseToggleLink">Already have a key?</a>
+                <div class="license-input-wrapper" id="licenseSection">
+                    <div class="license-input-row">
+                        <input type="text" id="licenseInput" placeholder="Enter license key" aria-label="License key">
+                        <button id="activateBtn">
+                            <span class="spinner" id="spinner"></span>
+                            <span id="activateBtnText">Activate</span>
+                        </button>
+                    </div>
+                    <div class="license-error" id="licenseError"></div>
                 </div>
-                <div class="license-error" id="licenseError"></div>
             </div>
 
             <!-- Premium Management -->
@@ -877,19 +1102,17 @@
             <div class="toggle-info">
                 <div class="toggle-header">
                     <span class="toggle-title" id="toggle1Title">Automatic protection</span>
-                    <span class="live-badge" id="liveBadge">Live</span>
-                    <div class="toggle-help" id="toggle1Help">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"/>
-                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
-                            <line x1="12" y1="17" x2="12.01" y2="17"/>
-                        </svg>
-                        <div class="tooltip" id="toggle1Tooltip">Requires Premium to enable this feature.</div>
-                    </div>
+                    <span class="feature-tag free" id="freeTag">FREE</span>
+                    <span class="threats-today" id="threatsToday">
+                        <span id="threatsTodayLabel"></span>
+                        <span class="db-tooltip" id="dbUpdateTooltip">
+                            <span id="dbUpdateText"></span>
+                            <span class="db-sources">OpenPhish · PhishTank · PhishStats · URLhaus</span>
+                        </span>
+                    </span>
                 </div>
                 <div class="toggle-subtitle">
-                    <span class="premium-tag" id="premiumTag">PRO</span>
-                    <span class="toggle-desc" id="toggle1Desc">Stops even the newest threats hourly</span>
+                    <span class="toggle-desc" id="toggle1Desc">Blocks known phishing & malware sites</span>
                 </div>
             </div>
             <label class="toggle-switch">
@@ -898,18 +1121,47 @@
             </label>
         </div>
 
-        <div class="toggle-card">
+        <div class="toggle-card" id="smartLinkCard">
             <div class="toggle-info">
-                <div class="toggle-title" id="toggle2Title">Smart link scanning</div>
+                <div class="toggle-header">
+                    <span class="toggle-title" id="toggle2Title">Smart link scanning</span>
+                    <span class="feature-tag pro" id="proTag">
+                        <span id="proTagLabel">PRO</span>
+                        <div class="pro-tooltip" id="toggle2Tooltip">
+                            <div class="tooltip-title">
+                                <span>🛡️</span>
+                                <span id="tooltipTitle">Protected against:</span>
+                            </div>
+                            <ul class="tooltip-list">
+                                <li id="tooltipFeature1">Phishing URLs & suspicious TLDs</li>
+                                <li id="tooltipFeature2">Unicode lookalike domains</li>
+                                <li id="tooltipFeature3">Fake browser windows (BitB)</li>
+                                <li id="tooltipFeature4">PowerShell/malware triggers</li>
+                                <li id="tooltipFeature5">Invisible overlay attacks</li>
+                                <li id="tooltipFeature6">Malicious QR codes</li>
+                                <li id="tooltipFeature7">Dangerous link types</li>
+                                <li id="tooltipFeature8">Form hijacking</li>
+                                <li id="tooltipFeature9">Clipboard manipulation</li>
+                                <li id="tooltipFeature10">Hidden code (Shadow DOM)</li>
+                                <li id="tooltipFeature11">OAuth token theft</li>
+                                <li id="tooltipFeature12">Fake security checks</li>
+                                <li id="tooltipFeature13">Login proxy phishing (AiTM)</li>
+                                <li id="tooltipFeature14">Malicious SVG scripts</li>
+                                <li id="tooltipFeature15">Hostile tracking infrastructure <span class="new-badge">New</span></li>
+                            </ul>
+                            <div class="tooltip-footer" id="tooltipFooter">15 security layers active</div>
+                        </div>
+                    </span>
+                </div>
                 <div class="toggle-desc" id="toggle2Desc">Warns before you click risky links</div>
             </div>
             <label class="toggle-switch">
-                <input type="checkbox" id="integratedProtection">
+                <input type="checkbox" id="integratedProtection" aria-label="Enable smart link scanning">
                 <span class="toggle-slider"></span>
             </label>
         </div>
 
-        <!-- Footer -->
+        <!-- Footer (reserved) -->
         <div class="footer" id="footer"></div>
     </div>
 

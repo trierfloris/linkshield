@@ -1,6 +1,23 @@
 // alert.js
 // Bijgewerkt om risiconiveau te kiezen op basis van 'level' ipv numerieke thresholds
 
+/**
+ * Veilige i18n wrapper met null checks
+ * @param {string} key - De i18n message key
+ * @param {string} [fallback] - Optionele fallback waarde
+ * @returns {string}
+ */
+function safeGetMessage(key, fallback) {
+  try {
+    if (typeof chrome !== 'undefined' && chrome.i18n && typeof chrome.i18n.getMessage === 'function') {
+      const msg = chrome.i18n.getMessage(key);
+      return msg || fallback || key;
+    }
+  } catch (e) {
+    // Ignore - extension context might be invalidated
+  }
+  return fallback || key;
+}
 
 document.addEventListener('DOMContentLoaded', async () => {
     const maxRetries = 5;
@@ -24,13 +41,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     // i18n statische labels
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
-        el.textContent = chrome.i18n.getMessage(key) || '';
+        el.textContent = safeGetMessage(key) || '';
     });
 
     // Update UI met status
     function updateSiteStatus(status) {
         if (!status || typeof status !== 'object' || !('level' in status)) {
-            elements.severityText.textContent = chrome.i18n.getMessage('siteStatusNotAvailable');
+            elements.severityText.textContent = safeGetMessage('siteStatusNotAvailable');
             return;
         }
         const { level, reasons, url } = status;
@@ -44,7 +61,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             elements.urlLink.textContent = url;
         } catch {
             currentDomain = null;
-            elements.siteName.textContent = chrome.i18n.getMessage('invalidUrl');
+            elements.siteName.textContent = safeGetMessage('invalidUrl');
             elements.urlLink.textContent = url;
             elements.urlLink.href = url;
         }
@@ -61,25 +78,25 @@ document.addEventListener('DOMContentLoaded', async () => {
             default:
                 riskKey = 'lowRisk';
         }
-        elements.severityText.textContent = chrome.i18n.getMessage(riskKey);
+        elements.severityText.textContent = safeGetMessage(riskKey);
 
         // Redenenlijst
         elements.reasonList.innerHTML = '';
         if (Array.isArray(reasons) && reasons.length) {
             reasons.forEach(reasonKey => {
-                const msg = chrome.i18n.getMessage(reasonKey);
+                const msg = safeGetMessage(reasonKey);
                 const li = document.createElement('li');
                 li.textContent = msg || reasonKey;
                 elements.reasonList.appendChild(li);
             });
         } else {
             const li = document.createElement('li');
-            li.textContent = chrome.i18n.getMessage('noSuspiciousFeatures');
+            li.textContent = safeGetMessage('noSuspiciousFeatures');
             elements.reasonList.appendChild(li);
         }
 
         // Advies tonen (altijd adviceCheckUrl)
-        elements.adviceCheckUrl.textContent = chrome.i18n.getMessage('adviceCheckUrl');
+        elements.adviceCheckUrl.textContent = safeGetMessage('adviceCheckUrl');
     }
 
     // Status ophalen met retry
@@ -136,6 +153,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    // Close Button
-    elements.closeBtn?.addEventListener('click', () => window.close());
+    // Close Button - sluit de huidige tab (niet alleen het venster)
+    elements.closeBtn?.addEventListener('click', async () => {
+        try {
+            // Gebruik chrome.tabs API om de huidige tab te sluiten
+            const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+            if (tabs[0]?.id) {
+                await chrome.tabs.remove(tabs[0].id);
+            }
+        } catch (error) {
+            // Fallback naar window.close() als tabs API niet beschikbaar is
+            console.error('[Alert] Fout bij sluiten tab:', error);
+            window.close();
+        }
+    });
 });

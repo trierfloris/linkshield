@@ -155,6 +155,9 @@
   "lastRuleUpdate": {
     "message": "Laatste database-update: "
   },
+  "rulesLoaded": {
+    "message": "phishing sites geblokkeerd"
+  },
   "licenseStatus": {
     "message": "Licentiestatus:"
   },
@@ -597,7 +600,7 @@
     "message": "Je bent volledig beschermd. Alle functies zijn actief."
   },
   "licenseUpgradeLink": {
-    "message": "Upgrade naar Premium · €1,99/mnd →"
+    "message": "Upgrade naar Premium · €4,99/mnd →"
   },
   "licenseAlreadyHaveCode": {
     "message": "Al een licentiecode?"
@@ -995,6 +998,12 @@
   "reason_brandSubdomainPhishing": {
     "message": "Merknaam gedetecteerd op gratis hostingplatform (hoog risico). Legitieme bedrijven gebruiken geen gratis hosting voor officiële diensten."
   },
+  "hostnameBrandKeywordPhishing": {
+    "message": "Verdacht domein: merknaam gecombineerd met phishing-trefwoorden (hoog risico). Voorbeeld: login-microsoft-verify.com is GEEN Microsoft-site."
+  },
+  "reason_hostnameBrandKeywordPhishing": {
+    "message": "Verdacht domein: merknaam gecombineerd met phishing-trefwoorden (hoog risico). Voorbeeld: login-microsoft-verify.com is GEEN Microsoft-site."
+  },
   "nrdTelCombo": {
     "message": "Telefoonnummer op nieuw geregistreerd domein met phishing-zoekwoorden (gemiddeld risico). Dit kan een vishing (voice phishing) poging zijn."
   },
@@ -1037,7 +1046,7 @@
   "reason_bitbPadlockIcon": {
     "message": "Nep beveiligings-hangslot icoon gedetecteerd (gemiddeld risico). Echte hangsloten verschijnen in de browser adresbalk, niet in pagina-inhoud."
   },
-  "reason_bitbWindowChrome": {
+  "reason_bitbWindowStyling": {
     "message": "Gesimuleerde browservenster styling gedetecteerd (gemiddeld risico). De overlay is gestyled om op een besturingssysteem venster te lijken."
   },
   "reason_bitbIframeInModal": {
@@ -1066,6 +1075,77 @@
   },
   "bitbAttackTip": {
     "message": "Controleer altijd de browser adresbalk voor de echte URL, niet tekst die in de pagina wordt weergegeven."
+  },
+  "formHijackingTitle": {
+    "message": "Formulier Hijacking Gedetecteerd!",
+    "description": "Titel voor formulier hijacking waarschuwing"
+  },
+  "formHijackingMessage": {
+    "message": "Deze pagina probeerde uw inloggegevens door te sturen naar een externe server. Uw gegevens zijn NIET verzonden.",
+    "description": "Bericht dat formulier hijacking is geblokkeerd"
+  },
+  "formHijackingTip": {
+    "message": "Het formulier werd stiekem aangepast om uw gegevens te sturen naar: ",
+    "description": "Tip met het kwaadaardige doeldomein"
+  },
+  "tooltipTitle": {
+    "message": "Beschermd tegen:",
+    "description": "Titel voor smart link scanning tooltip"
+  },
+  "tooltipFeature1": {
+    "message": "Phishing URLs & verdachte TLDs",
+    "description": "Tooltip feature 1"
+  },
+  "tooltipFeature2": {
+    "message": "Unicode lookalike domeinen",
+    "description": "Tooltip feature 2"
+  },
+  "tooltipFeature3": {
+    "message": "Nep browservensters (BitB)",
+    "description": "Tooltip feature 3"
+  },
+  "tooltipFeature4": {
+    "message": "PowerShell/malware triggers",
+    "description": "Tooltip feature 4"
+  },
+  "tooltipFeature5": {
+    "message": "Onzichtbare overlay-aanvallen",
+    "description": "Tooltip feature 5"
+  },
+  "tooltipFeature6": {
+    "message": "Kwaadaardige QR codes",
+    "description": "Tooltip feature 6"
+  },
+  "tooltipFeature7": {
+    "message": "Gevaarlijke linktypes",
+    "description": "Tooltip feature 7"
+  },
+  "tooltipFeature8": {
+    "message": "Formulier hijacking",
+    "description": "Tooltip feature 8"
+  },
+  "tooltipFeature9": {
+    "message": "Klembord manipulatie",
+    "description": "Tooltip feature 9"
+  },
+  "tooltipFeature10": {
+    "message": "Verborgen code (Shadow DOM)",
+    "description": "Tooltip feature 10"
+  },
+  "tooltipFeature11": {
+    "message": "OAuth-tokendiefstal",
+    "description": "Tooltip feature 11 - OAuth token theft protection"
+  },
+  "tooltipFeature12": {
+    "message": "Nep beveiligingscontroles",
+    "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
+  },
+  "tooltipFooter": {
+    "message": "15 beveiligingslagen actief"
+  },
+  "tooltipNewBadge": {
+    "message": "Nieuw",
+    "description": "Badge tekst voor nieuwe features"
   },
   "shadowDomLoginForm": {
     "message": "Loginformulier verborgen in Shadow DOM gedetecteerd (hoog risico). Deze techniek wordt gebruikt om beveiligingsscanners te omzeilen."
@@ -1221,7 +1301,7 @@
     "message": "Upgrade naar Premium"
   },
   "ctaUpgradePrice": {
-    "message": "€1,99/maand · 3 apparaten"
+    "message": "€4,99/maand · 3 apparaten"
   },
   "ctaRenewText": {
     "message": "Herstel bescherming"
@@ -1525,5 +1605,146 @@
   "brandImpersonation": {
     "message": "Mogelijke merkimitatie-poging",
     "description": ""
+  },
+  "dangerousUriBlocked": {
+    "message": "Een gevaarlijk linktype (zoals javascript:) is geblokkeerd voor uw veiligheid."
+  },
+  "TEST_MODE_ENABLED": {
+    "message": "Testmodus is actief - dit is alleen voor ontwikkelingsdoeleinden."
+  },
+  "webTransportSuspiciousPattern": {
+    "message": "Verdacht netwerkverbindingspatroon gedetecteerd (mogelijke data-exfiltratie)."
+  },
+  "webTransportHighStreamCount": {
+    "message": "Ongebruikelijk aantal netwerkstromen gedetecteerd (mogelijke command & control activiteit)."
+  },
+  "imagelessQR": {
+    "message": "Verborgen QR-code gedetecteerd (opgebouwd uit HTML-elementen in plaats van een afbeelding - ontwijkingstechniek)."
+  },
+  "imagelessQrDangerTitle": {
+    "message": "GEVAAR: Verborgen QR-code gedetecteerd!"
+  },
+  "imagelessQrCautionTitle": {
+    "message": "Let op: Verborgen QR-code gedetecteerd"
+  },
+  "quotaDailyScans": {
+    "message": "Dagelijkse scans"
+  },
+  "quotaResetsAt": {
+    "message": "Reset om $TIME$ UTC",
+    "placeholders": {
+      "TIME": {
+        "content": "$1",
+        "example": "00:00"
+      }
+    }
+  },
+  "quotaUpgrade": {
+    "message": "Upgraden"
+  },
+  "quotaExceededDesc": {
+    "message": "Dagelijkse limiet bereikt - reset om middernacht UTC"
+  },
+  "licenseHaveKey": {
+    "message": "Heb je al een licentie?"
+  },
+  "threatsTodayCount": {
+    "message": "+$1 vandaag",
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "847"
+      }
+    }
+  },
+  "threatsTotalCount": {
+    "message": "$1 geblokkeerd",
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "2431"
+      }
+    }
+  },
+  "oauthTheftTitle": {
+    "message": "🛡️ OAuth Token Diefstal Geblokkeerd"
+  },
+  "oauthTheftMessage": {
+    "message": "U probeerde een authenticatie-URL te plakken. Dit is een bekende phishing-techniek genaamd 'ConsentFix' die uw accounttoegang steelt."
+  },
+  "oauthTheftTip": {
+    "message": "Plak nooit URLs met ?code= of access tokens in websites."
+  },
+  "fakeTurnstileTitle": {
+    "message": "⚠️ Nep Beveiligingscontrole Gedetecteerd"
+  },
+  "fakeTurnstileMessage": {
+    "message": "Deze pagina toont een nep Cloudflare-verificatie. Dit wordt vaak gebruikt bij phishing-aanvallen."
+  },
+  "fakeTurnstileDetected": {
+    "message": "Nep beveiligingsverificatie gedetecteerd (hoog risico). Deze pagina bootst Cloudflare/CAPTCHA na om u te misleiden."
+  },
+  "splitQrTitle": {
+    "message": "🔍 Gesplitste QR Code Gedetecteerd"
+  },
+  "splitQrMessage": {
+    "message": "Een QR-code opgesplitst in meerdere afbeeldingen is gedetecteerd. Deze techniek wordt gebruikt om beveiligingsscanners te omzeilen."
+  },
+  "understoodButton": {
+    "message": "Ik Begrijp Het"
+  },
+  "aitmProxyTitle": {
+    "message": "Phishing-proxy gedetecteerd!"
+  },
+  "aitmProxyMessage": {
+    "message": "Deze pagina lijkt een phishing-proxy te zijn die zich voordoet als {provider}. Uw inloggegevens worden gestolen als u hier inlogt."
+  },
+  "aitmProxyTip": {
+    "message": "Controleer altijd de URL in de adresbalk voordat u inloggegevens invoert."
+  },
+  "aitmProxyDetected": {
+    "message": "Phishing-proxy gedetecteerd - nabootsing van inlogpagina (kritiek risico)."
+  },
+  "svgPayloadTitle": {
+    "message": "Schadelijke SVG gedetecteerd!"
+  },
+  "svgPayloadMessage": {
+    "message": "Deze pagina bevat een SVG met ingesloten schadelijke code die uw gegevens kan stelen."
+  },
+  "svgPayloadTip": {
+    "message": "Wees voorzichtig met SVG-bijlagen van onbekende bronnen."
+  },
+  "svgPayloadDetected": {
+    "message": "Schadelijke SVG met ingesloten scripts gedetecteerd (kritiek risico)."
+  },
+  "tooltipFeature13": {
+    "message": "Login-proxy phishing (AiTM)"
+  },
+  "tooltipFeature14": {
+    "message": "Schadelijke SVG-scripts"
+  },
+  "tooltipFeature15": {
+    "message": "Verdachte tracker-detectie"
+  },
+  "trackingRiskTitle": {
+    "message": "Tracker Waarschuwing"
+  },
+  "trackingRiskHostile": {
+    "message": "verdachte trackers"
+  },
+  "trackingRiskThirdParty": {
+    "message": "externe bronnen"
+  },
+  "trackingRiskDetected": {
+    "message": "Deze pagina laadt trackers die vaak bij phishing worden gebruikt."
+  },
+  "trackingRiskLow": {
+    "message": "Normaal"
+  },
+  "trackingRiskElevated": {
+    "message": "Verhoogd"
+  },
+  "trackingRiskHigh": {
+    "message": "Hoog"
   }
 }

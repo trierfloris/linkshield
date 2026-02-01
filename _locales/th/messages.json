@@ -155,6 +155,9 @@
   "lastRuleUpdate": {
     "message": "อัปเดตฐานข้อมูลล่าสุด: "
   },
+  "rulesLoaded": {
+    "message": "เว็บไซต์ฟิชชิ่งถูกบล็อก"
+  },
   "licenseStatus": {
     "message": "สถานะใบอนุญาต:"
   },
@@ -483,7 +486,7 @@
     "message": "คุณได้รับการป้องกันอย่างเต็มที่ ทุกคุณสมบัติเปิดใช้งานแล้ว"
   },
   "licenseUpgradeLink": {
-    "message": "อัปเกรดเป็นพรีเมียม — €1.99/เดือน (3 อุปกรณ์) →"
+    "message": "อัปเกรดเป็นพรีเมียม — €4.99/เดือน (3 อุปกรณ์) →"
   },
   "licenseAlreadyHaveCode": {
     "message": "มีรหัสใบอนุญาตอยู่แล้ว?"
@@ -980,7 +983,7 @@
   "reason_bitbPadlockIcon": {
     "message": "ตรวจพบไอคอนแม่กุญแจความปลอดภัยปลอม (ความเสี่ยงปานกลาง) แม่กุญแจจริงปรากฏในแถบที่อยู่เบราว์เซอร์ ไม่ใช่ในเนื้อหาหน้า"
   },
-  "reason_bitbWindowChrome": {
+  "reason_bitbWindowStyling": {
     "message": "ตรวจพบการจำลองสไตล์หน้าต่างเบราว์เซอร์ (ความเสี่ยงปานกลาง) โอเวอร์เลย์ถูกจัดสไตล์ให้ดูเหมือนหน้าต่างระบบปฏิบัติการ"
   },
   "reason_bitbIframeInModal": {
@@ -1072,7 +1075,7 @@
     "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
   },
   "tooltipFooter": {
-    "message": "14 ชั้นความปลอดภัยที่ใช้งานอยู่"
+    "message": "15 ชั้นความปลอดภัยทำงานอยู่"
   },
   "tooltipNewBadge": {
     "message": "ใหม่",
@@ -1738,5 +1741,29 @@
   },
   "tooltipFeature14": {
     "message": "สคริปต์ SVG ที่เป็นอันตราย"
+  },
+  "tooltipFeature15": {
+    "message": "ตรวจจับตัวติดตามที่น่าสงสัย"
+  },
+  "trackingRiskTitle": {
+    "message": "คำเตือนตัวติดตาม"
+  },
+  "trackingRiskHostile": {
+    "message": "ตัวติดตามที่น่าสงสัย"
+  },
+  "trackingRiskThirdParty": {
+    "message": "แหล่งภายนอก"
+  },
+  "trackingRiskDetected": {
+    "message": "หน้านี้โหลดตัวติดตามที่มักใช้ในการโจมตีฟิชชิ่ง"
+  },
+  "trackingRiskLow": {
+    "message": "ปกติ"
+  },
+  "trackingRiskElevated": {
+    "message": "ปานกลาง"
+  },
+  "trackingRiskHigh": {
+    "message": "สูง"
   }
 }

@@ -87,7 +87,7 @@ const REASON_KEYS = [
   'reason_bitbLoginFormInOverlay',
   'reason_bitbOAuthBranding',
   'reason_bitbPadlockIcon',
-  'reason_bitbWindowChrome',
+  'reason_bitbWindowStyling',
   'reason_bitbIframeInModal',
 
   // Redirect chain reasons

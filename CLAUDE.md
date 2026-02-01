@@ -4,7 +4,7 @@
 
 **LinkShield** is a Chrome browser extension that protects users from phishing, malicious links, and various web-based attacks. It provides real-time security warnings for suspicious URLs, visual hijacking attempts, form hijacking, and more.
 
-**Current Version:** 8.7.2
+**Current Version:** 8.7.3
 **Manifest Version:** 3
 
 ---
@@ -41,6 +41,50 @@
 ---
 
 ## Recent Implementations
+
+### v8.7.3 - False Positive Reduction (2026-02)
+
+**Purpose:** Reduce false positives for legitimate websites by optimizing TLD detection and disabling standalone checks that caused too many false positives.
+
+**Changes:**
+
+| Change | Before | After | Impact |
+|--------|--------|-------|--------|
+| Remove legitimate TLDs from suspicious list | .ai, .cloud, .tech, .digital, .link, .space, .es flagged | Not flagged | claude.ai, character.ai, etc. no FP |
+| Reduce standalone TLD score | 7 points (almost CAUTION) | 4 points | TLD alone = minor indicator |
+| Disable `freeHosting` standalone | 4-5 points per check | 0 (disabled) | github.io, vercel.app, netlify.app no FP |
+| Disable `suspiciousKeywords` standalone | Variable points | 0 (disabled) | "login", "verify" alone no longer triggers |
+| Add private network detection | Ports on localhost triggered | Excluded | Sysadmins: localhost:3000 no warning |
+
+**Files Modified:**
+- `config.js` - Removed TLDs from SUSPICIOUS_TLDS_SET and SUSPICIOUS_TLDS regex
+- `content.js` - Reduced TLD scores (7→4), disabled freeHosting/suspiciousKeywords standalone, added `isPrivateNetwork()`
+- `manifest.json` - Version bump to 8.7.3
+
+**TLDs Removed from Suspicious List:**
+```javascript
+// These are now considered legitimate (too many real businesses use them)
+'ai',      // claude.ai, character.ai, perplexity.ai
+'cloud',   // jetbrains.cloud, adobe.cloud
+'tech',    // legitimate tech companies
+'digital', // digital agencies
+'link',    // bio.link, link-in-bio services
+'space',   // startups, space industry
+'es'       // Spain's country TLD
+```
+
+**Detection Strategy Change:**
+- **Before:** TLD alone = 7 points (near CAUTION threshold of 8)
+- **After:** TLD alone = 4 points (needs additional indicators)
+- **Combination checks preserved:** Brand + suspicious TLD = 15 points (DANGER)
+
+**Test Results (50 URLs):**
+- 47/50 passed (94%)
+- All phishing URLs correctly detected
+- All legitimate .ai/.cloud/.tech sites no longer flagged
+- Edge Store Chrome reference issues resolved
+
+---
 
 ### v8.7.2 - Security Audit Fixes (2026-01)
 
@@ -872,6 +916,7 @@ if (tooltipFeature12) {
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 8.7.3 | 2026-02 | False positive reduction: TLD optimization, disable freeHosting/suspiciousKeywords standalone, private network detection |
 | 8.7.2 | 2026-01 | Security audit fixes: ASCII I/l bypass, ClickFix split-tag, SVG race condition |
 | 8.7.1 | 2026-01 | Landing page Feature 8 (tracker detection) + price €1,99 → €4,99 |
 | 8.7.0 | 2026-01 | Tracking Infrastructure Risk Detection (Layer 15) |

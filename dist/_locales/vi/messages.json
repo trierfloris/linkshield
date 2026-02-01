@@ -155,6 +155,9 @@
   "lastRuleUpdate": {
     "message": "Cập nhật cơ sở dữ liệu cuối: "
   },
+  "rulesLoaded": {
+    "message": "trang web lừa đảo đã bị chặn"
+  },
   "licenseStatus": {
     "message": "Trạng Thái Giấy Phép:"
   },
@@ -483,7 +486,7 @@
     "message": "Bạn được bảo vệ đầy đủ. Tất cả tính năng đang hoạt động."
   },
   "licenseUpgradeLink": {
-    "message": "Nâng cấp lên Cao cấp — €1.99/tháng (3 thiết bị) →"
+    "message": "Nâng cấp lên Cao cấp — €4.99/tháng (3 thiết bị) →"
   },
   "licenseAlreadyHaveCode": {
     "message": "Đã có mã giấy phép?"
@@ -932,6 +935,12 @@
   "reason_brandSubdomainPhishing": {
     "message": "Phát hiện từ khóa thương hiệu trên nền tảng lưu trữ miễn phí (rủi ro cao). Các công ty hợp pháp không sử dụng lưu trữ miễn phí cho dịch vụ chính thức."
   },
+  "hostnameBrandKeywordPhishing": {
+    "message": "Tên miền đáng ngờ: tên thương hiệu kết hợp với từ khóa lừa đảo (rủi ro cao). Ví dụ: login-microsoft-verify.com KHÔNG phải trang web Microsoft."
+  },
+  "reason_hostnameBrandKeywordPhishing": {
+    "message": "Tên miền đáng ngờ: tên thương hiệu kết hợp với từ khóa lừa đảo (rủi ro cao). Ví dụ: login-microsoft-verify.com KHÔNG phải trang web Microsoft."
+  },
   "nrdTelCombo": {
     "message": "Số điện thoại trên tên miền mới đăng ký với từ khóa lừa đảo (rủi ro trung bình). Đây có thể là nỗ lực vishing (lừa đảo qua điện thoại)."
   },
@@ -974,7 +983,7 @@
   "reason_bitbPadlockIcon": {
     "message": "Phát hiện biểu tượng ổ khóa bảo mật giả (rủi ro trung bình). Ổ khóa thực xuất hiện trong thanh địa chỉ trình duyệt, không phải trong nội dung trang."
   },
-  "reason_bitbWindowChrome": {
+  "reason_bitbWindowStyling": {
     "message": "Phát hiện kiểu dáng cửa sổ trình duyệt mô phỏng (rủi ro trung bình). Overlay được tạo kiểu để trông giống cửa sổ hệ điều hành."
   },
   "reason_bitbIframeInModal": {
@@ -1003,6 +1012,74 @@
   },
   "bitbAttackTip": {
     "message": "Luôn kiểm tra thanh địa chỉ trình duyệt để biết URL thực, không phải văn bản hiển thị trong trang."
+  },
+  "formHijackingTitle": {
+    "message": "Phát hiện chiếm quyền biểu mẫu!"
+  },
+  "formHijackingMessage": {
+    "message": "Trang này đã cố chuyển hướng thông tin xác thực của bạn đến máy chủ bên ngoài. Dữ liệu của bạn KHÔNG được gửi."
+  },
+  "formHijackingTip": {
+    "message": "Biểu mẫu đã bị sửa đổi bí mật để gửi dữ liệu của bạn đến: "
+  },
+  "tooltipTitle": {
+    "message": "Bao ve chong lai:",
+    "description": "Title for smart link scanning tooltip"
+  },
+  "tooltipFeature1": {
+    "message": "URL lua dao va TLD dang ngo",
+    "description": "Tooltip feature 1"
+  },
+  "tooltipFeature2": {
+    "message": "Ten mien Unicode tuong tu",
+    "description": "Tooltip feature 2"
+  },
+  "tooltipFeature3": {
+    "message": "Cua so trinh duyet gia (BitB)",
+    "description": "Tooltip feature 3"
+  },
+  "tooltipFeature4": {
+    "message": "Kich hoat PowerShell/ma doc",
+    "description": "Tooltip feature 4"
+  },
+  "tooltipFeature5": {
+    "message": "Tan cong lop phu vo hinh",
+    "description": "Tooltip feature 5"
+  },
+  "tooltipFeature6": {
+    "message": "Ma QR doc hai",
+    "description": "Tooltip feature 6"
+  },
+  "tooltipFeature7": {
+    "message": "Loai lien ket nguy hiem",
+    "description": "Tooltip feature 7"
+  },
+  "tooltipFeature8": {
+    "message": "Chiem doat bieu mau",
+    "description": "Tooltip feature 8"
+  },
+  "tooltipFeature9": {
+    "message": "Thao tung clipboard",
+    "description": "Tooltip feature 9"
+  },
+  "tooltipFeature10": {
+    "message": "Ma an (Shadow DOM)",
+    "description": "Tooltip feature 10"
+  },
+  "tooltipFeature11": {
+    "message": "Đánh cắp token OAuth",
+    "description": "Tooltip feature 11 - OAuth token theft protection"
+  },
+  "tooltipFeature12": {
+    "message": "Kiểm tra bảo mật giả",
+    "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
+  },
+  "tooltipFooter": {
+    "message": "15 lớp bảo mật đang hoạt động"
+  },
+  "tooltipNewBadge": {
+    "message": "Moi",
+    "description": "Badge text for new features"
   },
   "shadowDomLoginForm": {
     "message": "Phát hiện form đăng nhập ẩn trong Shadow DOM (rủi ro cao). Kỹ thuật này được sử dụng để né tránh trình quét bảo mật."
@@ -1547,5 +1624,146 @@
   "brandImpersonation": {
     "message": "Possible brand impersonation attempt",
     "description": ""
+  },
+  "dangerousUriBlocked": {
+    "message": "Một loại liên kết nguy hiểm (như javascript:) đã bị chặn vì sự an toàn của bạn."
+  },
+  "TEST_MODE_ENABLED": {
+    "message": "Chế độ thử nghiệm đang hoạt động - đây chỉ dành cho mục đích phát triển."
+  },
+  "webTransportSuspiciousPattern": {
+    "message": "Phát hiện mẫu kết nối mạng đáng ngờ (có thể rò rỉ dữ liệu)."
+  },
+  "webTransportHighStreamCount": {
+    "message": "Phát hiện số lượng luồng mạng bất thường (có thể có hoạt động C2)."
+  },
+  "imagelessQR": {
+    "message": "Phát hiện mã QR ẩn (được xây dựng từ các phần tử HTML thay vì hình ảnh - kỹ thuật né tránh)."
+  },
+  "imagelessQrDangerTitle": {
+    "message": "NGUY HIỂM: Phát hiện mã QR ẩn!"
+  },
+  "imagelessQrCautionTitle": {
+    "message": "Cảnh báo: Phát hiện mã QR ẩn"
+  },
+  "quotaDailyScans": {
+    "message": "Quét hàng ngày"
+  },
+  "quotaResetsAt": {
+    "message": "Đặt lại lúc $TIME$ UTC",
+    "placeholders": {
+      "TIME": {
+        "content": "$1",
+        "example": "00:00"
+      }
+    }
+  },
+  "quotaUpgrade": {
+    "message": "Nâng cấp"
+  },
+  "quotaExceededDesc": {
+    "message": "Đã đạt giới hạn hàng ngày - đặt lại lúc nửa đêm UTC"
+  },
+  "licenseHaveKey": {
+    "message": "Đã có khóa?"
+  },
+  "threatsTodayCount": {
+    "message": "+$1 hôm nay",
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "847"
+      }
+    }
+  },
+  "threatsTotalCount": {
+    "message": "$1 đã chặn",
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "2431"
+      }
+    }
+  },
+  "oauthTheftTitle": {
+    "message": "🛡️ Đã chặn đánh cắp mã OAuth"
+  },
+  "oauthTheftMessage": {
+    "message": "Bạn đã cố dán URL xác thực. Đây là kỹ thuật lừa đảo được biết đến với tên 'ConsentFix' đánh cắp quyền truy cập tài khoản của bạn."
+  },
+  "oauthTheftTip": {
+    "message": "Không bao giờ dán URL chứa ?code= hoặc mã truy cập vào các trang web."
+  },
+  "fakeTurnstileTitle": {
+    "message": "⚠️ Phát hiện kiểm tra bảo mật giả"
+  },
+  "fakeTurnstileMessage": {
+    "message": "Trang này đang hiển thị xác minh Cloudflare giả. Điều này thường được sử dụng trong các cuộc tấn công lừa đảo."
+  },
+  "fakeTurnstileDetected": {
+    "message": "Phát hiện xác minh bảo mật giả (rủi ro cao). Trang này mô phỏng Cloudflare/CAPTCHA để lừa bạn."
+  },
+  "splitQrTitle": {
+    "message": "🔍 Phát hiện mã QR bị chia tách"
+  },
+  "splitQrMessage": {
+    "message": "Đã phát hiện mã QR bị chia thành nhiều hình ảnh. Kỹ thuật này được sử dụng để tránh các trình quét bảo mật."
+  },
+  "understoodButton": {
+    "message": "Tôi Hiểu"
+  },
+  "aitmProxyTitle": {
+    "message": "Phát hiện proxy lừa đảo!"
+  },
+  "aitmProxyMessage": {
+    "message": "Trang này có vẻ là proxy lừa đảo giả mạo {provider}. Thông tin đăng nhập của bạn sẽ bị đánh cắp nếu bạn đăng nhập tại đây."
+  },
+  "aitmProxyTip": {
+    "message": "Luôn xác minh URL trong thanh địa chỉ trước khi nhập thông tin đăng nhập."
+  },
+  "aitmProxyDetected": {
+    "message": "Phát hiện proxy lừa đảo - giả mạo trang đăng nhập (rủi ro nghiêm trọng)."
+  },
+  "svgPayloadTitle": {
+    "message": "Phát hiện SVG độc hại!"
+  },
+  "svgPayloadMessage": {
+    "message": "Trang này chứa SVG với mã độc được nhúng có thể đánh cắp dữ liệu của bạn."
+  },
+  "svgPayloadTip": {
+    "message": "Hãy cẩn thận với tệp đính kèm SVG từ nguồn không rõ."
+  },
+  "svgPayloadDetected": {
+    "message": "Phát hiện SVG độc hại có script nhúng (rủi ro nghiêm trọng)."
+  },
+  "tooltipFeature13": {
+    "message": "Lừa đảo proxy đăng nhập (AiTM)"
+  },
+  "tooltipFeature14": {
+    "message": "Script SVG độc hại"
+  },
+  "tooltipFeature15": {
+    "message": "Phát hiện trình theo dõi đáng ngờ"
+  },
+  "trackingRiskTitle": {
+    "message": "Cảnh báo Trình theo dõi"
+  },
+  "trackingRiskHostile": {
+    "message": "trình theo dõi đáng ngờ"
+  },
+  "trackingRiskThirdParty": {
+    "message": "nguồn bên ngoài"
+  },
+  "trackingRiskDetected": {
+    "message": "Trang này tải các trình theo dõi thường được sử dụng trong các cuộc tấn công lừa đảo."
+  },
+  "trackingRiskLow": {
+    "message": "Bình thường"
+  },
+  "trackingRiskElevated": {
+    "message": "Cao"
+  },
+  "trackingRiskHigh": {
+    "message": "Rất cao"
   }
 }

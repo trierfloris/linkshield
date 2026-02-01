@@ -155,6 +155,9 @@
   "lastRuleUpdate": {
     "message": "最終データベース更新日： "
   },
+  "rulesLoaded": {
+    "message": "フィッシングサイトをブロック"
+  },
   "licenseStatus": {
     "message": "ライセンスステータス："
   },
@@ -597,7 +600,7 @@
     "message": "完全に保護されています。すべての機能が有効です。"
   },
   "licenseUpgradeLink": {
-    "message": "プレミアムにアップグレード — €1.99/月（3台まで）→"
+    "message": "プレミアムにアップグレード — €4.99/月（3台まで）→"
   },
   "licenseAlreadyHaveCode": {
     "message": "ライセンスコードをお持ちですか？"
@@ -1043,7 +1046,7 @@
   "reason_bitbPadlockIcon": {
     "message": "偽のセキュリティ南京錠アイコンを検出（中リスク）。本物の南京錠はページコンテンツではなくブラウザのアドレスバーに表示されます。"
   },
-  "reason_bitbWindowChrome": {
+  "reason_bitbWindowStyling": {
     "message": "シミュレートされたブラウザウィンドウスタイリングを検出（中リスク）。オーバーレイはオペレーティングシステムウィンドウのようにスタイル設定されています。"
   },
   "reason_bitbIframeInModal": {
@@ -1135,7 +1138,7 @@
     "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
   },
   "tooltipFooter": {
-    "message": "14のセキュリティレイヤーが有効"
+    "message": "15のセキュリティレイヤーがアクティブ"
   },
   "tooltipNewBadge": {
     "message": "新機能",
@@ -1738,5 +1741,29 @@
   },
   "tooltipFeature14": {
     "message": "悪意のあるSVGスクリプト"
+  },
+  "tooltipFeature15": {
+    "message": "不審なトラッカー検出"
+  },
+  "trackingRiskTitle": {
+    "message": "トラッカー警告"
+  },
+  "trackingRiskHostile": {
+    "message": "不審なトラッカー"
+  },
+  "trackingRiskThirdParty": {
+    "message": "外部ソース"
+  },
+  "trackingRiskDetected": {
+    "message": "このページはフィッシング攻撃でよく使用されるトラッカーを読み込んでいます。"
+  },
+  "trackingRiskLow": {
+    "message": "通常"
+  },
+  "trackingRiskElevated": {
+    "message": "中"
+  },
+  "trackingRiskHigh": {
+    "message": "高"
   }
 }

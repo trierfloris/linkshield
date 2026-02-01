@@ -155,6 +155,9 @@
   "lastRuleUpdate": {
     "message": "Ostatnia aktualizacja bazy danych: "
   },
+  "rulesLoaded": {
+    "message": "stron phishingowych zablokowanych"
+  },
   "licenseStatus": {
     "message": "Status Licencji:"
   },
@@ -483,7 +486,7 @@
     "message": "Jesteś w pełni chroniony. Wszystkie funkcje są aktywne."
   },
   "licenseUpgradeLink": {
-    "message": "Ulepsz do Premium za 1,99 €/mies. (3 urządzenia) →"
+    "message": "Ulepsz do Premium za 4,99 €/mies. (3 urządzenia) →"
   },
   "licenseAlreadyHaveCode": {
     "message": "Masz już kod licencyjny?"
@@ -980,7 +983,7 @@
   "reason_bitbPadlockIcon": {
     "message": "Wykryto fałszywą ikonę kłódki bezpieczeństwa (średnie ryzyko). Prawdziwe kłódki pojawiają się w pasku adresu przeglądarki, nie w zawartości strony."
   },
-  "reason_bitbWindowChrome": {
+  "reason_bitbWindowStyling": {
     "message": "Wykryto symulowany styl okna przeglądarki (średnie ryzyko). Nakładka jest stylizowana, aby wyglądać jak okno systemu operacyjnego."
   },
   "reason_bitbIframeInModal": {
@@ -1072,7 +1075,7 @@
     "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
   },
   "tooltipFooter": {
-    "message": "14 warstw bezpieczeństwa aktywnych"
+    "message": "15 warstw bezpieczeństwa aktywnych"
   },
   "tooltipNewBadge": {
     "message": "Nowe",
@@ -1738,5 +1741,29 @@
   },
   "tooltipFeature14": {
     "message": "Złośliwe skrypty SVG"
+  },
+  "tooltipFeature15": {
+    "message": "Wykrywanie podejrzanych trackerów"
+  },
+  "trackingRiskTitle": {
+    "message": "Ostrzeżenie o trackerach"
+  },
+  "trackingRiskHostile": {
+    "message": "podejrzane trackery"
+  },
+  "trackingRiskThirdParty": {
+    "message": "źródła zewnętrzne"
+  },
+  "trackingRiskDetected": {
+    "message": "Ta strona ładuje trackery często używane w atakach phishingowych."
+  },
+  "trackingRiskLow": {
+    "message": "Normalny"
+  },
+  "trackingRiskElevated": {
+    "message": "Podwyższone"
+  },
+  "trackingRiskHigh": {
+    "message": "Wysokie"
   }
 }

@@ -155,6 +155,9 @@
   "lastRuleUpdate": {
     "message": "Останнє оновлення бази даних: "
   },
+  "rulesLoaded": {
+    "message": "фішингових сайтів заблоковано"
+  },
   "licenseStatus": {
     "message": "Статус ліцензії:"
   },
@@ -483,7 +486,7 @@
     "message": "Ви повністю захищені. Усі функції активні."
   },
   "licenseUpgradeLink": {
-    "message": "Оновити до Преміум за 1,99 €/міс. (3 пристрої) →"
+    "message": "Оновити до Преміум за 4,99 €/міс. (3 пристрої) →"
   },
   "licenseAlreadyHaveCode": {
     "message": "Вже маєте код ліцензії?"
@@ -980,7 +983,7 @@
   "reason_bitbPadlockIcon": {
     "message": "Виявлено фальшиву іконку замка безпеки (середній ризик). Справжні замки з'являються в адресному рядку браузера, а не у вмісті сторінки."
   },
-  "reason_bitbWindowChrome": {
+  "reason_bitbWindowStyling": {
     "message": "Виявлено симульований стиль вікна браузера (середній ризик). Накладення стилізоване для вигляду вікна операційної системи."
   },
   "reason_bitbIframeInModal": {
@@ -1072,7 +1075,7 @@
     "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
   },
   "tooltipFooter": {
-    "message": "14 рівнів безпеки активні"
+    "message": "15 рівнів безпеки активно"
   },
   "tooltipNewBadge": {
     "message": "Нове",
@@ -1738,5 +1741,29 @@
   },
   "tooltipFeature14": {
     "message": "Шкідливі SVG-скрипти"
+  },
+  "tooltipFeature15": {
+    "message": "Виявлення підозрілих трекерів"
+  },
+  "trackingRiskTitle": {
+    "message": "Попередження про трекери"
+  },
+  "trackingRiskHostile": {
+    "message": "підозрілі трекери"
+  },
+  "trackingRiskThirdParty": {
+    "message": "зовнішні джерела"
+  },
+  "trackingRiskDetected": {
+    "message": "Ця сторінка завантажує трекери, які часто використовуються у фішингових атаках."
+  },
+  "trackingRiskLow": {
+    "message": "Звичайний"
+  },
+  "trackingRiskElevated": {
+    "message": "Підвищений"
+  },
+  "trackingRiskHigh": {
+    "message": "Високий"
   }
 }

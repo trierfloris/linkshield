@@ -155,6 +155,9 @@
   "lastRuleUpdate": {
     "message": "Dernière mise à jour de la base de données : "
   },
+  "rulesLoaded": {
+    "message": "sites de phishing bloqués"
+  },
   "licenseStatus": {
     "message": "État de la licence :"
   },
@@ -597,7 +600,7 @@
     "message": "Vous êtes entièrement protégé. Toutes les fonctionnalités sont actives."
   },
   "licenseUpgradeLink": {
-    "message": "Restez protégé pour 1,99€/mois (3 appareils) →"
+    "message": "Restez protégé pour 4,99€/mois (3 appareils) →"
   },
   "licenseAlreadyHaveCode": {
     "message": "Vous avez déjà un code de licence ?"
@@ -995,6 +998,12 @@
   "reason_brandSubdomainPhishing": {
     "message": "Nom de marque détecté sur une plateforme d'hébergement gratuit (risque élevé). Les entreprises légitimes n'utilisent pas l'hébergement gratuit pour les services officiels."
   },
+  "hostnameBrandKeywordPhishing": {
+    "message": "Domaine suspect : nom de marque combiné avec des mots-clés de phishing (risque élevé). Exemple : login-microsoft-verify.com n'est PAS un site Microsoft."
+  },
+  "reason_hostnameBrandKeywordPhishing": {
+    "message": "Domaine suspect : nom de marque combiné avec des mots-clés de phishing (risque élevé). Exemple : login-microsoft-verify.com n'est PAS un site Microsoft."
+  },
   "nrdTelCombo": {
     "message": "Numéro de téléphone sur un domaine nouvellement enregistré avec des mots-clés de phishing (risque moyen). Cela peut être une tentative de vishing (hameçonnage vocal)."
   },
@@ -1037,7 +1046,7 @@
   "reason_bitbPadlockIcon": {
     "message": "Fausse icône de cadenas de sécurité détectée (risque moyen). Les vrais cadenas apparaissent dans la barre d'adresse, pas dans le contenu de la page."
   },
-  "reason_bitbWindowChrome": {
+  "reason_bitbWindowStyling": {
     "message": "Style de fenêtre de navigateur simulé détecté (risque moyen). L'overlay est stylisé pour ressembler à une fenêtre du système d'exploitation."
   },
   "reason_bitbIframeInModal": {
@@ -1066,6 +1075,74 @@
   },
   "bitbAttackTip": {
     "message": "Vérifiez toujours la barre d'adresse du navigateur pour l'URL réelle, pas le texte affiché dans la page."
+  },
+  "formHijackingTitle": {
+    "message": "Détournement de formulaire détecté !"
+  },
+  "formHijackingMessage": {
+    "message": "Cette page a tenté de rediriger vos identifiants vers un serveur externe. Vos données n'ont PAS été envoyées."
+  },
+  "formHijackingTip": {
+    "message": "Le formulaire a été secrètement modifié pour envoyer vos données à : "
+  },
+  "tooltipTitle": {
+    "message": "Protection contre :",
+    "description": "Title for smart link scanning tooltip"
+  },
+  "tooltipFeature1": {
+    "message": "URL de phishing et TLD suspects",
+    "description": "Tooltip feature 1"
+  },
+  "tooltipFeature2": {
+    "message": "Domaines similaires Unicode",
+    "description": "Tooltip feature 2"
+  },
+  "tooltipFeature3": {
+    "message": "Fausses fenêtres de navigateur (BitB)",
+    "description": "Tooltip feature 3"
+  },
+  "tooltipFeature4": {
+    "message": "Déclencheurs PowerShell/malware",
+    "description": "Tooltip feature 4"
+  },
+  "tooltipFeature5": {
+    "message": "Attaques par superposition invisible",
+    "description": "Tooltip feature 5"
+  },
+  "tooltipFeature6": {
+    "message": "Codes QR malveillants",
+    "description": "Tooltip feature 6"
+  },
+  "tooltipFeature7": {
+    "message": "Types de liens dangereux",
+    "description": "Tooltip feature 7"
+  },
+  "tooltipFeature8": {
+    "message": "Détournement de formulaires",
+    "description": "Tooltip feature 8"
+  },
+  "tooltipFeature9": {
+    "message": "Manipulation du presse-papiers",
+    "description": "Tooltip feature 9"
+  },
+  "tooltipFeature10": {
+    "message": "Code caché (Shadow DOM)",
+    "description": "Tooltip feature 10"
+  },
+  "tooltipFeature11": {
+    "message": "Vol de jetons OAuth",
+    "description": "Tooltip feature 11 - OAuth token theft protection"
+  },
+  "tooltipFeature12": {
+    "message": "Fausses vérifications de sécurité",
+    "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
+  },
+  "tooltipFooter": {
+    "message": "15 couches de sécurité actives"
+  },
+  "tooltipNewBadge": {
+    "message": "Nouveau",
+    "description": "Badge text for new features"
   },
   "shadowDomLoginForm": {
     "message": "Formulaire de connexion caché dans Shadow DOM détecté (risque élevé). Cette technique est utilisée pour contourner les scanners de sécurité."
@@ -1221,7 +1298,7 @@
     "message": "Passer à Premium"
   },
   "ctaUpgradePrice": {
-    "message": "1,99€/mois · 3 appareils"
+    "message": "4,99€/mois · 3 appareils"
   },
   "ctaRenewText": {
     "message": "Restaurer la protection"
@@ -1547,5 +1624,146 @@
   "brandImpersonation": {
     "message": "Tentative possible d'usurpation de marque",
     "description": ""
+  },
+  "dangerousUriBlocked": {
+    "message": "Un type de lien dangereux (comme javascript:) a été bloqué pour votre sécurité."
+  },
+  "TEST_MODE_ENABLED": {
+    "message": "Le mode test est actif - ceci est uniquement à des fins de développement."
+  },
+  "webTransportSuspiciousPattern": {
+    "message": "Modèle de connexion réseau suspect détecté (possible exfiltration de données)."
+  },
+  "webTransportHighStreamCount": {
+    "message": "Nombre inhabituel de flux réseau détecté (possible activité de commande et contrôle)."
+  },
+  "imagelessQR": {
+    "message": "Code QR caché détecté (construit à partir d'éléments HTML au lieu d'une image - technique d'évasion)."
+  },
+  "imagelessQrDangerTitle": {
+    "message": "DANGER: Code QR caché détecté!"
+  },
+  "imagelessQrCautionTitle": {
+    "message": "Attention: Code QR caché détecté"
+  },
+  "quotaDailyScans": {
+    "message": "Scans quotidiens"
+  },
+  "quotaResetsAt": {
+    "message": "Réinitialisation à $TIME$ UTC",
+    "placeholders": {
+      "TIME": {
+        "content": "$1",
+        "example": "00:00"
+      }
+    }
+  },
+  "quotaUpgrade": {
+    "message": "Passer à Premium"
+  },
+  "quotaExceededDesc": {
+    "message": "Limite quotidienne atteinte - réinitialisation à minuit UTC"
+  },
+  "licenseHaveKey": {
+    "message": "Vous avez déjà une clé ?"
+  },
+  "threatsTodayCount": {
+    "message": "+$1 aujourd'hui",
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "847"
+      }
+    }
+  },
+  "threatsTotalCount": {
+    "message": "$1 bloquées",
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "2431"
+      }
+    }
+  },
+  "oauthTheftTitle": {
+    "message": "🛡️ Vol de Jeton OAuth Bloqué"
+  },
+  "oauthTheftMessage": {
+    "message": "Vous avez essayé de coller une URL d'authentification. C'est une technique de phishing connue appelée 'ConsentFix'."
+  },
+  "oauthTheftTip": {
+    "message": "Ne collez jamais d'URLs contenant ?code= ou des jetons d'accès dans des sites web."
+  },
+  "fakeTurnstileTitle": {
+    "message": "⚠️ Fausse Vérification de Sécurité Détectée"
+  },
+  "fakeTurnstileMessage": {
+    "message": "Cette page affiche une fausse vérification Cloudflare. Ceci est souvent utilisé dans les attaques de phishing."
+  },
+  "fakeTurnstileDetected": {
+    "message": "Fausse vérification de sécurité détectée (risque élevé). Cette page imite Cloudflare/CAPTCHA pour vous tromper."
+  },
+  "splitQrTitle": {
+    "message": "🔍 Code QR Divisé Détecté"
+  },
+  "splitQrMessage": {
+    "message": "Un code QR divisé en plusieurs images a été détecté. Cette technique est utilisée pour contourner les scanners de sécurité."
+  },
+  "understoodButton": {
+    "message": "Je Comprends"
+  },
+  "aitmProxyTitle": {
+    "message": "Proxy de phishing détecté !"
+  },
+  "aitmProxyMessage": {
+    "message": "Cette page semble être un proxy de phishing usurpant {provider}. Vos identifiants seront volés si vous vous connectez ici."
+  },
+  "aitmProxyTip": {
+    "message": "Vérifiez toujours l'URL dans la barre d'adresse avant de saisir vos identifiants."
+  },
+  "aitmProxyDetected": {
+    "message": "Proxy de phishing détecté - usurpation de page de connexion (risque critique)."
+  },
+  "svgPayloadTitle": {
+    "message": "SVG malveillant détecté !"
+  },
+  "svgPayloadMessage": {
+    "message": "Cette page contient un SVG avec du code malveillant intégré qui pourrait voler vos données."
+  },
+  "svgPayloadTip": {
+    "message": "Soyez prudent avec les pièces jointes SVG provenant de sources inconnues."
+  },
+  "svgPayloadDetected": {
+    "message": "SVG malveillant avec scripts intégrés détecté (risque critique)."
+  },
+  "tooltipFeature13": {
+    "message": "Phishing par proxy de connexion (AiTM)"
+  },
+  "tooltipFeature14": {
+    "message": "Scripts SVG malveillants"
+  },
+  "tooltipFeature15": {
+    "message": "Détection de traceurs suspects"
+  },
+  "trackingRiskTitle": {
+    "message": "Avertissement traceurs"
+  },
+  "trackingRiskHostile": {
+    "message": "traceurs suspects"
+  },
+  "trackingRiskThirdParty": {
+    "message": "sources externes"
+  },
+  "trackingRiskDetected": {
+    "message": "Cette page charge des traceurs souvent utilisés dans les attaques de phishing."
+  },
+  "trackingRiskLow": {
+    "message": "Normal"
+  },
+  "trackingRiskElevated": {
+    "message": "Élevé"
+  },
+  "trackingRiskHigh": {
+    "message": "Haut"
   }
 }

@@ -1,26 +1,35 @@
 window.CONFIG = {
     // =============================================================================
     // LINKSHIELD CONFIG - Geüpdatet voor 2026
-    // Laatste update: 2026-01-01
+    // Laatste update: 2026-01-18
     // =============================================================================
+
+    // =============================================================================
+    // SCAN QUOTA SETTINGS (v8.4.0)
+    // Gratis gebruikers: max 20 unieke domeinen per dag
+    // Premium/Trial gebruikers: unlimited
+    // =============================================================================
+    DAILY_SCAN_QUOTA: 20,           // Max unieke domeinen per dag voor gratis users
+    QUOTA_RESET_HOUR_UTC: 0,        // Reset om middernacht UTC
 
     // Verdachte Top-Level Domeinen (TLD's)
     // Uitgebreid met nieuwe TLD's die in 2025-2026 veel voor phishing worden gebruikt
     // NOTE: .dev, .app, .io VERWIJDERD - dit zijn legitieme Google TLDs gebruikt door developers
     // SECURITY FIX v8.1.1: Vervangen door Set voor O(1) lookup en ReDoS preventie
+    // FIX v8.7.3: Verwijderd: 'ai', 'cloud', 'tech', 'digital', 'link', 'space' - te veel legitiem gebruik
     SUSPICIOUS_TLDS_SET: new Set([
-        // Originele verdachte TLD's
-        'beauty', 'bond', 'buzz', 'cc', 'cf', 'club', 'cn', 'es', 'ga', 'gq',
+        // Originele verdachte TLD's (hoog risico, weinig legitiem gebruik)
+        'beauty', 'bond', 'buzz', 'cc', 'cf', 'club', 'cn', 'ga', 'gq',
         'hair', 'li', 'live', 'ml', 'mov', 'pro', 'rest', 'ru', 'sbs', 'shop', 'tk',
         'top', 'uno', 'win', 'xin', 'xyz', 'zip',
         // Nieuwe TLD's 2025-2026 (veel misbruikt voor phishing)
-        'autos', 'boats', 'cam', 'casa', 'cfd', 'click', 'cloud', 'cyou', 'desi',
-        'digital', 'fit', 'fun', 'gdn', 'gives', 'icu', 'lat', 'lol', 'mom', 'monster',
+        'autos', 'boats', 'cam', 'casa', 'cfd', 'click', 'cyou', 'desi',
+        'fit', 'fun', 'gdn', 'gives', 'icu', 'lat', 'lol', 'mom', 'monster',
         'nexus', 'observer', 'online', 'ooo', 'pics', 'quest', 'racing', 'realty',
-        'rodeo', 'site', 'skin', 'space', 'store', 'stream', 'surf', 'tech',
+        'rodeo', 'site', 'skin', 'store', 'stream', 'surf',
         'today', 'vip', 'wang', 'webcam', 'website', 'work', 'world', 'wtf', 'yachts',
-        // AI/Tech gerelateerde TLD's (hoog risico in 2026)
-        'ai', 'bot', 'chat', 'crypto', 'dao', 'data', 'dex', 'eth', 'gpt', 'link', 'llm',
+        // Crypto/Web3 TLD's (hoog risico)
+        'bot', 'chat', 'crypto', 'dao', 'data', 'dex', 'eth', 'gpt', 'llm',
         'metaverse', 'nft', 'sol', 'token', 'wallet', 'web3'
     ]),
 
@@ -37,7 +46,8 @@ window.CONFIG = {
 
     // Legacy regex voor backwards compatibility (statisch, geen dynamische constructie)
     // Kan verwijderd worden na volledige migratie naar isSuspiciousTLD()
-    SUSPICIOUS_TLDS: /\.(beauty|bond|buzz|cc|cf|club|cn|es|ga|gq|hair|li|live|ml|mov|pro|rest|ru|sbs|shop|tk|top|uno|win|xin|xyz|zip|autos|boats|cam|casa|cfd|click|cloud|cyou|desi|digital|fit|fun|gdn|gives|icu|lat|lol|mom|monster|nexus|observer|online|ooo|pics|quest|racing|realty|rodeo|site|skin|space|store|stream|surf|tech|today|vip|wang|webcam|website|work|world|wtf|yachts|ai|bot|chat|crypto|dao|data|dex|eth|gpt|link|llm|metaverse|nft|sol|token|wallet|web3)$/i,
+    // FIX v8.7.3: Verwijderd: ai, cloud, tech, digital, link, space, es (legitiem gebruik)
+    SUSPICIOUS_TLDS: /\.(beauty|bond|buzz|cc|cf|club|cn|ga|gq|hair|li|live|ml|mov|pro|rest|ru|sbs|shop|tk|top|uno|win|xin|xyz|zip|autos|boats|cam|casa|cfd|click|cyou|desi|fit|fun|gdn|gives|icu|lat|lol|mom|monster|nexus|observer|online|ooo|pics|quest|racing|realty|rodeo|site|skin|store|stream|surf|today|vip|wang|webcam|website|work|world|wtf|yachts|bot|chat|crypto|dao|data|dex|eth|gpt|llm|metaverse|nft|sol|token|wallet|web3)$/i,
 
     // ==== Risicodrempels voor gefaseerde analyse en UI-feedback ====
     LOW_THRESHOLD: 4,      //  risico < 4 → safe
@@ -543,7 +553,7 @@ SUSPICIOUS_URL_PATTERNS: [
             // Close button characters
             closeButtons: /[×✕✖✗⨉]|&times;/,
             // Window control classes
-            controlClasses: /\b(close|minimize|maximize|window-control|btn-close|modal-close|title-?bar|window-?header|traffic-?light)\b/i
+            controlClasses: /\b(minimize|maximize|window-control|window-?button|traffic-?light)\b/i
         },
 
         // DEPRECATED: domainWhitelist is no longer used here.
@@ -625,6 +635,166 @@ SUSPICIOUS_URL_PATTERNS: [
             highDatagramRate: 6,   // Bulk data transfer
             obfuscatedUrl: 7,      // Base64/encoded URL components
             invalidUrl: 5,         // Malformed URL
+        }
+    },
+
+    // SECURITY FIX v8.5.0: Advanced Threat Detection
+    // Detecteert nieuwe aanvalstechnieken: OAuth token theft, fake Turnstile, split QR codes
+    ADVANCED_THREAT_DETECTION: {
+        enabled: true,
+
+        // Risk scores per detectie type
+        scores: {
+            FAKE_TURNSTILE_INDICATOR: 15,      // Nep Cloudflare verificatie
+            OAUTH_TOKEN_PASTE_ATTEMPT: 20,     // KRITIEK - OAuth token theft
+            SPLIT_QR_DETECTED: 12,             // Gesplitste QR code
+            NESTED_QR_DETECTED: 14,            // Geneste QR code
+            CONSENTFIX_PATTERN: 18             // ConsentFix aanvalspatroon
+        },
+
+        // Split QR configuratie
+        splitQR: {
+            enabled: true,
+            adjacencyTolerance: 5,        // pixels tussen fragmenten
+            minFragments: 2,
+            maxFragments: 6,
+            minFragmentSize: 20,          // minimum px
+            maxFragmentSize: 300          // maximum px
+        },
+
+        // OAuth/Localhost protection
+        oauthProtection: {
+            enabled: true,
+            // Patronen voor OAuth codes in localhost URLs
+            patterns: [
+                'localhost.*\\?code=',
+                '127\\.0\\.0\\.1.*\\?code=',
+                'localhost.*authorization_code',
+                'localhost.*access_token',
+                'localhost.*id_token',
+                '\\?code=M\\.R3_',           // Microsoft specifiek
+                '\\?code=4/'                  // Google specifiek
+            ],
+            // Domeinen waar paste WEL is toegestaan (legitieme dev omgevingen)
+            allowedPasteDomains: [
+                'localhost',
+                '127.0.0.1',
+                'github.com',
+                'stackoverflow.com',
+                'learn.microsoft.com',
+                'portal.azure.com'
+            ]
+        },
+
+        // Fake Turnstile detectie
+        fakeTurnstile: {
+            enabled: true,
+            // Legitieme Turnstile iframe origins
+            legitimateOrigins: [
+                'challenges.cloudflare.com',
+                'cdn-cgi.cloudflare.com'
+            ],
+            // Tekst patronen die wijzen op Turnstile UI
+            textPatterns: [
+                'verify you are human',
+                'checking if the site connection is secure',
+                'verifying you are human',
+                'please wait while we verify',
+                'human verification',
+                'controleren of de verbinding veilig is',  // NL
+                'überprüfung ihrer verbindung'             // DE
+            ]
+        },
+
+        // v8.6.0: AiTM (Adversary-in-the-Middle) Proxy Detection
+        // Detecteert reverse proxy phishing (Evilginx, Tycoon 2FA) door
+        // provider-specifieke DOM elementen te vinden op niet-legitieme domeinen
+        aitmDetection: {
+            enabled: true,
+            // Domeinen die legitimatie Microsoft/Google login UI hosten
+            legitimateProviders: [
+                'login.microsoftonline.com', 'login.microsoft.com', 'login.live.com',
+                'login.windows.net', 'microsoft.com', 'office.com', 'office365.com',
+                'accounts.google.com', 'google.com', 'googleapis.com',
+                'login.okta.com', 'auth0.com', 'login.salesforce.com',
+                'microsoftonline.com', 'live.com', 'windows.net'
+            ],
+            scores: {
+                msSpecificId: 8,       // Microsoft-specifiek element ID (#i0116, #i0118)
+                msContainer: 5,        // Microsoft container (.login-paginated-page, #lightbox)
+                msOAuthPath: 5,        // OAuth pad op verkeerd domein
+                msButton: 6,           // Microsoft submit button (#idSIButton9)
+                googleSpecificId: 8,   // Google-specifiek element ID (#identifierId)
+                googleButton: 6,       // Google buttons (#passwordNext, #identifierNext)
+                googleClass: 5,        // Google interne klassen
+                googleLoginPath: 5,    // /ServiceLogin pad op verkeerd domein
+                passwordField: 2,      // Wachtwoordveld aanwezig
+                suspiciousTLD: 3,      // Verdachte TLD
+                freeHosting: 3         // Gratis hosting domein
+            }
+        },
+
+        // v8.6.0: SVG Payload Detection
+        // Detecteert kwaadaardige JavaScript in SVG elementen
+        // Alleen high-confidence patronen om false positives te minimaliseren
+        svgPayloadDetection: {
+            enabled: true,
+            scoreThreshold: 15,
+            // Gevaarlijke script content patronen (regex)
+            dangerousScriptPatterns: [
+                /\beval\s*\(/i,
+                /document\.cookie/i,
+                /window\.location\s*=/i,
+                /fetch\s*\(\s*['"`]https?:\/\//i,
+                /navigator\.sendBeacon/i,
+                /\batob\s*\(/i,
+                /document\.write\s*\(/i,
+                /\.innerHTML\s*=/i,
+                /new\s+Function\s*\(/i,
+                /XMLHttpRequest/i,
+                /\.src\s*=\s*['"`]data:/i,
+                /fromCharCode/i,
+                /setTimeout\s*\(\s*['"`]/i
+            ],
+            // Gevaarlijke URI patronen
+            dangerousURIPatterns: [
+                /javascript:/i,
+                /data:text\/html/i,
+                /data:application\/x-javascript/i
+            ],
+            scores: {
+                dangerousScript: 10,         // Script tag met gevaarlijke content
+                dangerousURI: 12,            // javascript:/data: URI in href
+                maliciousEventHandler: 5,    // Event handler met gevaarlijk patroon (alleen mee als andere indicators)
+                base64Eval: 8,               // atob + eval combinatie
+                foreignObjectRedirect: 10    // foreignObject met redirect code
+            }
+        },
+
+        // v8.7.0: Tracking Infrastructure Risk Detection (Layer 15)
+        // Detecteert tracking domeinen geassocieerd met phishing/malware infrastructuur
+        // Strategisch gepositioneerd als security feature, niet als privacy score
+        trackingInfrastructureRisk: {
+            enabled: true,
+            scoreThreshold: 15,           // Minimum score om waarschuwing te tonen
+            maxThirdPartyDomains: 20,     // Meer dan dit = excessive tracking
+
+            scores: {
+                KNOWN_HOSTILE_TRACKER: 20,    // Domein in hostileTrackers.json
+                HOSTILE_PATTERN_MATCH: 15,    // Match op hostile pattern
+                SUSPICIOUS_SUBDOMAIN: 10,     // Random/hex/base64 subdomain
+                DANGEROUS_TLD_TRACKER: 8,     // Tracker op verdachte TLD
+                FINGERPRINTING_SCRIPT: 6,     // Known fingerprinting library
+                EXCESSIVE_THIRD_PARTIES: 5,   // >20 tracking domeinen
+                UNKNOWN_TRACKER: 3            // Onbekend tracking domein (niet trusted)
+            },
+
+            thresholds: {
+                none: 0,
+                low: 5,
+                elevated: 15,
+                high: 25
+            }
         }
     }
 };

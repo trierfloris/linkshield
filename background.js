@@ -20,7 +20,7 @@ let globalThresholds = {
     DOMAIN_AGE_MIN_RISK: 5,
     YOUNG_DOMAIN_RISK: 5,
     YOUNG_DOMAIN_THRESHOLD_DAYS: 7,
-    DEBUG_MODE: false // Wordt overschreven door opgeslagen config
+    DEBUG_MODE: false
 };
 
 /**
@@ -96,7 +96,7 @@ async function loadSslLabsRateLimitState() {
             }
         }
     } catch (error) {
-        // storage.session niet beschikbaar (oudere Chrome versie) - gebruik alleen in-memory
+        // storage.session niet beschikbaar (oudere browser versie) - gebruik alleen in-memory
         console.error('[SSL Labs] Kon rate limit state niet laden:', error);
     }
 }
@@ -1145,11 +1145,31 @@ async function fetchAndLoadRules() {
         }
 
         await chrome.storage.local.set({ lastCounter: counter });
+
+        // v8.7.1: Store rule statistics for verification
+        const ruleStats = {
+            lastUpdate: new Date().toISOString(),
+            fetchedFromServer: newRules.length,
+            loadedAfterFiltering: validDynamicRules.length,
+            whitelistFiltered: newRules.length - validDynamicRules.length
+        };
+        await chrome.storage.local.set({ ruleStats });
+        console.log(`[Rules] Loaded ${validDynamicRules.length}/${newRules.length} rules (${ruleStats.whitelistFiltered} filtered)`);
+
         await updateLastRuleUpdate();
         if (globalThresholds.DEBUG_MODE) console.log("Dynamic rules loaded successfully.");
 
     } catch (error) {
         console.error("[ERROR] fetchAndLoadRules:", error.message);
+        // v8.7.1: Store error for debugging
+        await chrome.storage.local.set({
+            ruleStats: {
+                lastUpdate: new Date().toISOString(),
+                error: error.message,
+                fetchedFromServer: 0,
+                loadedAfterFiltering: 0
+            }
+        });
     } finally {
         isUpdatingRules = false;
     }
@@ -2198,6 +2218,7 @@ chrome.runtime.onInstalled.addListener(async (details) => {
         await fetchAndLoadRules();
         await manageDNRules(); // Activeer/deactiveer regels op basis van initiële instellingen
 
+
         // v8.8.14: Clean up all existing alarms to prevent buildup (max 500 limit)
         // Then recreate only the necessary recurring alarms
         try {
@@ -3080,6 +3101,16 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 },
                 tabId: sender.tab?.id
             }).catch(() => {});
+            sendResponse({ success: true });
+            break;
+
+        // v8.7.1: Tracking Infrastructure Risk Detection (Layer 15 - DOM-based)
+        case 'trackingRiskDetected':
+            // Content script meldt dat er hostile tracking infrastructure is gedetecteerd
+            if (globalThresholds.DEBUG_MODE) {
+                console.log('[LinkShield] Tracking risk alert from content:', request);
+            }
+            incrementBlockedThreatsCount('hostile_tracking');
             sendResponse({ success: true });
             break;
 

@@ -155,6 +155,9 @@
   "lastRuleUpdate": {
     "message": "Utolsó adatbázis-frissítés: "
   },
+  "rulesLoaded": {
+    "message": "adathalász oldal blokkolva"
+  },
   "licenseStatus": {
     "message": "Licenc állapota:"
   },
@@ -483,7 +486,7 @@
     "message": "Teljes mértékben védve vagy. Minden funkció aktív."
   },
   "licenseUpgradeLink": {
-    "message": "Váltás Prémiumra 1,99 €/hó (3 eszköz) →"
+    "message": "Váltás Prémiumra 4,99 €/hó (3 eszköz) →"
   },
   "licenseAlreadyHaveCode": {
     "message": "Már van licenckódod?"
@@ -932,6 +935,12 @@
   "reason_brandSubdomainPhishing": {
     "message": "Márka kulcsszó észlelve ingyenes tárhelyen (magas kockázat). A legitim cégek nem használnak ingyenes tárhelyet hivatalos szolgáltatásokhoz."
   },
+  "hostnameBrandKeywordPhishing": {
+    "message": "Gyanús domain: márkanév adathalász kulcsszavakkal kombinálva (magas kockázat). Példa: login-microsoft-verify.com NEM Microsoft oldal."
+  },
+  "reason_hostnameBrandKeywordPhishing": {
+    "message": "Gyanús domain: márkanév adathalász kulcsszavakkal kombinálva (magas kockázat). Példa: login-microsoft-verify.com NEM Microsoft oldal."
+  },
   "nrdTelCombo": {
     "message": "Telefonszám újonnan regisztrált domainen adathalász kulcsszavakkal (közepes kockázat). Ez vishing (hangalapú adathalász) kísérlet lehet."
   },
@@ -974,7 +983,7 @@
   "reason_bitbPadlockIcon": {
     "message": "Hamis biztonsági lakat ikon észlelve (közepes kockázat). A valódi lakatok a böngésző címsorában jelennek meg, nem az oldal tartalmában."
   },
-  "reason_bitbWindowChrome": {
+  "reason_bitbWindowStyling": {
     "message": "Szimulált böngészőablak stílus észlelve (közepes kockázat). Az átfedés úgy van stílusozva, hogy operációs rendszer ablaknak tűnjön."
   },
   "reason_bitbIframeInModal": {
@@ -1003,6 +1012,74 @@
   },
   "bitbAttackTip": {
     "message": "Mindig ellenőrizd a böngésző címsorát a valódi URL-ért, ne az oldalon megjelenített szöveget."
+  },
+  "formHijackingTitle": {
+    "message": "Űrlap eltérítés észlelve!"
+  },
+  "formHijackingMessage": {
+    "message": "Ez az oldal megpróbálta átirányítani a bejelentkezési adataidat egy külső szerverre. Az adataid NEM lettek elküldve."
+  },
+  "formHijackingTip": {
+    "message": "Az űrlapot titokban módosították, hogy az adataidat ide küldje: "
+  },
+  "tooltipTitle": {
+    "message": "Védelem a következők ellen:",
+    "description": "Title for smart link scanning tooltip"
+  },
+  "tooltipFeature1": {
+    "message": "Adathalász URL-ek és gyanús TLD-k",
+    "description": "Tooltip feature 1"
+  },
+  "tooltipFeature2": {
+    "message": "Unicode hasonmás domainek",
+    "description": "Tooltip feature 2"
+  },
+  "tooltipFeature3": {
+    "message": "Hamis böngészőablakok (BitB)",
+    "description": "Tooltip feature 3"
+  },
+  "tooltipFeature4": {
+    "message": "PowerShell/malware triggerek",
+    "description": "Tooltip feature 4"
+  },
+  "tooltipFeature5": {
+    "message": "Láthatatlan overlay támadások",
+    "description": "Tooltip feature 5"
+  },
+  "tooltipFeature6": {
+    "message": "Rosszindulatú QR kódok",
+    "description": "Tooltip feature 6"
+  },
+  "tooltipFeature7": {
+    "message": "Veszélyes linktípusok",
+    "description": "Tooltip feature 7"
+  },
+  "tooltipFeature8": {
+    "message": "Űrlap eltérítés",
+    "description": "Tooltip feature 8"
+  },
+  "tooltipFeature9": {
+    "message": "Vágólap manipuláció",
+    "description": "Tooltip feature 9"
+  },
+  "tooltipFeature10": {
+    "message": "Rejtett kód (Shadow DOM)",
+    "description": "Tooltip feature 10"
+  },
+  "tooltipFeature11": {
+    "message": "OAuth token lopás",
+    "description": "Tooltip feature 11 - OAuth token theft protection"
+  },
+  "tooltipFeature12": {
+    "message": "Hamis biztonsági ellenőrzések",
+    "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
+  },
+  "tooltipFooter": {
+    "message": "15 biztonsági réteg aktív"
+  },
+  "tooltipNewBadge": {
+    "message": "Új",
+    "description": "Badge text for new features"
   },
   "shadowDomLoginForm": {
     "message": "Shadow DOM-ban rejtett bejelentkezési űrlap észlelve (magas kockázat). Ezt a technikát biztonsági szkennerek kijátszására használják."
@@ -1547,5 +1624,146 @@
   "brandImpersonation": {
     "message": "Possible brand impersonation attempt",
     "description": ""
+  },
+  "dangerousUriBlocked": {
+    "message": "Egy veszélyes hivatkozástípus (mint a javascript:) blokkolva lett az Ön biztonsága érdekében."
+  },
+  "TEST_MODE_ENABLED": {
+    "message": "A tesztmód aktív - ez csak fejlesztési célokra szolgál."
+  },
+  "webTransportSuspiciousPattern": {
+    "message": "Gyanús hálózati kapcsolati minta észlelve (lehetséges adatszivárgás)."
+  },
+  "webTransportHighStreamCount": {
+    "message": "Szokatlan számú hálózati adatfolyam észlelve (lehetséges C2 tevékenység)."
+  },
+  "imagelessQR": {
+    "message": "Rejtett QR-kód észlelve (HTML elemekből építve kép helyett - elkerülési technika)."
+  },
+  "imagelessQrDangerTitle": {
+    "message": "VESZÉLY: Rejtett QR-kód észlelve!"
+  },
+  "imagelessQrCautionTitle": {
+    "message": "Figyelem: Rejtett QR-kód észlelve"
+  },
+  "quotaDailyScans": {
+    "message": "Napi vizsgálatok"
+  },
+  "quotaResetsAt": {
+    "message": "Visszaáll: $TIME$ UTC",
+    "placeholders": {
+      "TIME": {
+        "content": "$1",
+        "example": "00:00"
+      }
+    }
+  },
+  "quotaUpgrade": {
+    "message": "Frissítés"
+  },
+  "quotaExceededDesc": {
+    "message": "Napi limit elérve - éjfélkor UTC visszaáll"
+  },
+  "licenseHaveKey": {
+    "message": "Már van kulcsod?"
+  },
+  "threatsTodayCount": {
+    "message": "+$1 ma",
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "847"
+      }
+    }
+  },
+  "threatsTotalCount": {
+    "message": "$1 blokkolva",
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "2431"
+      }
+    }
+  },
+  "oauthTheftTitle": {
+    "message": "🛡️ OAuth token lopás blokkolva"
+  },
+  "oauthTheftMessage": {
+    "message": "Megpróbált beilleszteni egy hitelesítési URL-t. Ez egy ismert adathalász technika 'ConsentFix' néven, amely ellopja a fiókjához való hozzáférést."
+  },
+  "oauthTheftTip": {
+    "message": "Soha ne illesszen be ?code= vagy hozzáférési tokeneket tartalmazó URL-eket weboldalakra."
+  },
+  "fakeTurnstileTitle": {
+    "message": "⚠️ Hamis biztonsági ellenőrzés észlelve"
+  },
+  "fakeTurnstileMessage": {
+    "message": "Ez az oldal hamis Cloudflare ellenőrzést jelenít meg. Ezt gyakran használják adathalász támadásokban."
+  },
+  "fakeTurnstileDetected": {
+    "message": "Hamis biztonsági ellenőrzés észlelve (magas kockázat). Ez az oldal a Cloudflare/CAPTCHA-t utánozza, hogy megtévesszen."
+  },
+  "splitQrTitle": {
+    "message": "🔍 Osztott QR-kód észlelve"
+  },
+  "splitQrMessage": {
+    "message": "Több képre osztott QR-kód észlelve. Ezt a technikát a biztonsági szkennerek megkerülésére használják."
+  },
+  "understoodButton": {
+    "message": "Megértettem"
+  },
+  "aitmProxyTitle": {
+    "message": "Adathalász proxy észlelve!"
+  },
+  "aitmProxyMessage": {
+    "message": "Ez az oldal egy adathalász proxy, amely {provider} szolgáltatást utánozza. A bejelentkezési adatai ellopásra kerülnek, ha itt jelentkezik be."
+  },
+  "aitmProxyTip": {
+    "message": "Mindig ellenőrizze az URL-t a címsorban, mielőtt megadná bejelentkezési adatait."
+  },
+  "aitmProxyDetected": {
+    "message": "Adathalász proxy észlelve - bejelentkezési oldal megszemélyesítése (kritikus kockázat)."
+  },
+  "svgPayloadTitle": {
+    "message": "Rosszindulatú SVG észlelve!"
+  },
+  "svgPayloadMessage": {
+    "message": "Ez az oldal beágyazott rosszindulatú kódot tartalmazó SVG-t tartalmaz, amely ellophatja az adatait."
+  },
+  "svgPayloadTip": {
+    "message": "Legyen óvatos az ismeretlen forrásból származó SVG mellékletekkel."
+  },
+  "svgPayloadDetected": {
+    "message": "Beágyazott szkripteket tartalmazó rosszindulatú SVG észlelve (kritikus kockázat)."
+  },
+  "tooltipFeature13": {
+    "message": "Bejelentkezési proxy adathalászat (AiTM)"
+  },
+  "tooltipFeature14": {
+    "message": "Rosszindulatú SVG szkriptek"
+  },
+  "tooltipFeature15": {
+    "message": "Gyanús nyomkövetők észlelése"
+  },
+  "trackingRiskTitle": {
+    "message": "Nyomkövető figyelmeztetés"
+  },
+  "trackingRiskHostile": {
+    "message": "gyanús nyomkövetők"
+  },
+  "trackingRiskThirdParty": {
+    "message": "külső források"
+  },
+  "trackingRiskDetected": {
+    "message": "Ez az oldal adathalász támadásokban gyakran használt nyomkövetőket tölt be."
+  },
+  "trackingRiskLow": {
+    "message": "Normál"
+  },
+  "trackingRiskElevated": {
+    "message": "Emelt"
+  },
+  "trackingRiskHigh": {
+    "message": "Magas"
   }
 }

@@ -13,13 +13,14 @@ document.addEventListener('DOMContentLoaded', function () {
     const ctaButton = document.getElementById('ctaButton');
     const ctaText = document.getElementById('ctaText');
     const ctaPrice = document.getElementById('ctaPrice');
-    const divider = document.getElementById('divider');
+    const licenseSectionWrapper = document.getElementById('licenseSectionWrapper');
     const licenseSection = document.getElementById('licenseSection');
     const licenseInput = document.getElementById('licenseInput');
     const activateBtn = document.getElementById('activateBtn');
     const activateBtnText = document.getElementById('activateBtnText');
     const spinner = document.getElementById('spinner');
     const licenseError = document.getElementById('licenseError');
+    const licenseToggleLink = document.getElementById('licenseToggleLink');
     const premiumManagement = document.getElementById('premiumManagement');
     const premiumEmail = document.getElementById('premiumEmail');
     const manageBtn = document.getElementById('manageBtn');
@@ -39,22 +40,40 @@ document.addEventListener('DOMContentLoaded', function () {
     const integratedProtection = document.getElementById('integratedProtection');
     const toggle1Help = document.getElementById('toggle1Help');
     const toggle1Tooltip = document.getElementById('toggle1Tooltip');
-    const premiumTag = document.getElementById('premiumTag');
-    const liveBadge = document.getElementById('liveBadge');
-    const footer = document.getElementById('footer');
+    const tooltipTitle = document.getElementById('tooltipTitle');
+    const tooltipFeature1 = document.getElementById('tooltipFeature1');
+    const tooltipFeature2 = document.getElementById('tooltipFeature2');
+    const tooltipFeature3 = document.getElementById('tooltipFeature3');
+    const tooltipFeature4 = document.getElementById('tooltipFeature4');
+    const tooltipFeature5 = document.getElementById('tooltipFeature5');
+    const tooltipFeature6 = document.getElementById('tooltipFeature6');
+    const tooltipFeature7 = document.getElementById('tooltipFeature7');
+    const tooltipFeature8 = document.getElementById('tooltipFeature8');
+    const tooltipFeature9 = document.getElementById('tooltipFeature9');
+    const tooltipFeature10 = document.getElementById('tooltipFeature10');
+    const tooltipFeature11 = document.getElementById('tooltipFeature11');
+    const tooltipFeature12 = document.getElementById('tooltipFeature12');
+    const tooltipFeature13 = document.getElementById('tooltipFeature13');
+    const tooltipFeature14 = document.getElementById('tooltipFeature14');
+    const tooltipFeature15 = document.getElementById('tooltipFeature15');
+    const tooltipFooter = document.getElementById('tooltipFooter');
+    const freeTag = document.getElementById('freeTag');
+    const proTag = document.getElementById('proTag');
+    const dbUpdateText = document.getElementById('dbUpdateText');
     const toast = document.getElementById('toast');
-    const licenseToggleLink = document.getElementById('licenseToggleLink');
 
-    // v8.4.0: Quota elements
+    // v8.4.0: Quota elements (now in status card)
     const quotaCard = document.getElementById('quotaCard');
     const quotaTitle = document.getElementById('quotaTitle');
     const quotaCount = document.getElementById('quotaCount');
     const quotaBarFill = document.getElementById('quotaBarFill');
     const quotaReset = document.getElementById('quotaReset');
-    const quotaUpgrade = document.getElementById('quotaUpgrade');
+
+    // v8.4.1: Threats today counter element
+    const threatsToday = document.getElementById('threatsToday');
+    const threatsTodayLabel = document.getElementById('threatsTodayLabel');
 
     let trialStatus = null;
-    let licenseExpanded = false;
     const TRIAL_DAYS = 30;
 
     // Icons
@@ -63,9 +82,27 @@ document.addEventListener('DOMContentLoaded', function () {
         warning: '<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>'
     };
 
-    // i18n
-    function msg(key, subs = []) {
-        return chrome.i18n.getMessage(key, subs) || key;
+    /**
+     * Veilige i18n wrapper met null checks
+     * @param {string} key - De i18n message key
+     * @param {string} [fallback] - Optionele fallback waarde
+     * @returns {string}
+     */
+    function msg(key, substitutions, fallback) {
+        // Handle legacy calls: msg(key, fallback)
+        if (typeof substitutions === 'string') {
+            fallback = substitutions;
+            substitutions = undefined;
+        }
+        try {
+            if (typeof chrome !== 'undefined' && chrome.i18n && typeof chrome.i18n.getMessage === 'function') {
+                const message = chrome.i18n.getMessage(key, substitutions);
+                return message || fallback || key;
+            }
+        } catch (e) {
+            // Ignore - extension context might be invalidated
+        }
+        return fallback || key;
     }
 
     // Toast
@@ -75,6 +112,72 @@ document.addEventListener('DOMContentLoaded', function () {
         setTimeout(() => toast.classList.remove('show'), duration);
     }
 
+    // v8.4.1: Fetch and display threats added today
+    async function loadThreatsToday() {
+        if (!threatsToday) return;
+
+        try {
+            // Check sessionStorage cache first
+            const cached = sessionStorage.getItem('linkshield_threats_today');
+            if (cached) {
+                const data = JSON.parse(cached);
+                // Cache valid for 1 hour
+                if (Date.now() - data.timestamp < 3600000) {
+                    displayThreatsCount(data.today, data.total);
+                    return;
+                }
+            }
+
+            // Fetch the URL list
+            const response = await fetch('https://linkshield.nl/files/proces/all_urls.txt', {
+                cache: 'no-cache'
+            });
+            if (!response.ok) throw new Error('Failed to fetch');
+
+            const text = await response.text();
+            const lines = text.trim().split('\n').filter(line => line.includes(','));
+
+            // Get today's date in YYYY-MM-DD format
+            const today = new Date().toISOString().split('T')[0];
+
+            // Count URLs added today
+            let todayCount = 0;
+            for (const line of lines) {
+                if (line.endsWith(today)) {
+                    todayCount++;
+                }
+            }
+
+            const totalCount = lines.length;
+
+            // Cache the result
+            sessionStorage.setItem('linkshield_threats_today', JSON.stringify({
+                today: todayCount,
+                total: totalCount,
+                timestamp: Date.now()
+            }));
+
+            displayThreatsCount(todayCount, totalCount);
+        } catch (e) {
+            // On error, hide the counter silently
+            threatsToday.classList.remove('show');
+        }
+    }
+
+    function displayThreatsCount(todayCount, totalCount) {
+        if (!threatsToday || !threatsTodayLabel) return;
+
+        if (todayCount > 0) {
+            threatsTodayLabel.textContent = msg('threatsTodayCount', [todayCount.toLocaleString()], `+${todayCount.toLocaleString()} ${msg('threatsTodayLabel', 'today')}`);
+            threatsToday.classList.add('show');
+        } else if (totalCount > 0) {
+            threatsTodayLabel.textContent = msg('threatsTotalCount', [totalCount.toLocaleString()], `${totalCount.toLocaleString()} ${msg('threatsBlockedLabel', 'blocked')}`);
+            threatsToday.classList.add('show');
+        } else {
+            threatsToday.classList.remove('show');
+        }
+    }
+
     // Load translations
     function loadTranslations() {
         sectionLabel.textContent = msg('sectionProtection');
@@ -82,9 +185,57 @@ document.addEventListener('DOMContentLoaded', function () {
         toggle1Desc.textContent = msg('backgroundAnalysisDescription');
         toggle2Title.textContent = msg('integratedProtectionFeature');
         toggle2Desc.textContent = msg('integratedProtectionDescription');
-        toggle1Tooltip.textContent = msg('backgroundSecurityHelp');
+        // v8.4.0: toggle1Tooltip removed from HTML (Automatic Protection is now FREE)
+        if (toggle1Tooltip) toggle1Tooltip.textContent = msg('backgroundSecurityHelp');
+
+        // Tooltip translations
+        if (tooltipTitle) tooltipTitle.textContent = msg('tooltipTitle');
+        if (tooltipFeature1) tooltipFeature1.childNodes[0].textContent = msg('tooltipFeature1');
+        if (tooltipFeature2) tooltipFeature2.textContent = msg('tooltipFeature2');
+        if (tooltipFeature3) tooltipFeature3.textContent = msg('tooltipFeature3');
+        if (tooltipFeature4) tooltipFeature4.textContent = msg('tooltipFeature4');
+        if (tooltipFeature5) tooltipFeature5.textContent = msg('tooltipFeature5');
+        if (tooltipFeature6) tooltipFeature6.textContent = msg('tooltipFeature6');
+        if (tooltipFeature7) tooltipFeature7.textContent = msg('tooltipFeature7');
+        if (tooltipFeature8) {
+            // Keep the NEW badge, only replace the text
+            const newBadge = tooltipFeature8.querySelector('.new-badge');
+            if (newBadge) {
+                newBadge.textContent = msg('tooltipNewBadge');
+                tooltipFeature8.firstChild.textContent = msg('tooltipFeature8') + ' ';
+            } else {
+                tooltipFeature8.textContent = msg('tooltipFeature8');
+            }
+        }
+        if (tooltipFeature9) tooltipFeature9.textContent = msg('tooltipFeature9');
+        if (tooltipFeature10) tooltipFeature10.textContent = msg('tooltipFeature10');
+        if (tooltipFeature11) tooltipFeature11.textContent = msg('tooltipFeature11');
+        if (tooltipFeature12) tooltipFeature12.textContent = msg('tooltipFeature12');
+        if (tooltipFeature13) {
+            const newBadge = tooltipFeature13.querySelector('.new-badge');
+            if (newBadge) {
+                newBadge.textContent = msg('tooltipNewBadge');
+                tooltipFeature13.firstChild.textContent = msg('tooltipFeature13') + ' ';
+            } else {
+                tooltipFeature13.textContent = msg('tooltipFeature13');
+            }
+        }
+        if (tooltipFeature14) {
+            tooltipFeature14.textContent = msg('tooltipFeature14');
+        }
+        if (tooltipFeature15) {
+            const newBadge = tooltipFeature15.querySelector('.new-badge');
+            if (newBadge) {
+                newBadge.textContent = msg('tooltipNewBadge');
+                tooltipFeature15.firstChild.textContent = msg('tooltipFeature15') + ' ';
+            } else {
+                tooltipFeature15.textContent = msg('tooltipFeature15');
+            }
+        }
+        if (tooltipFooter) tooltipFooter.textContent = msg('tooltipFooter');
 
         licenseInput.placeholder = msg('licenseKeyPlaceholder');
+        if (licenseToggleLink) licenseToggleLink.textContent = msg('licenseHaveKey', 'Already have a key?');
         activateBtnText.textContent = msg('licenseActivateShort');
         manageBtnText.textContent = msg('manageBtnText');
         transferBtnText.textContent = msg('transferBtnText');
@@ -137,10 +288,13 @@ document.addEventListener('DOMContentLoaded', function () {
     // Update UI
     async function updateUI() {
         const status = await getTrialStatus();
-        const hasAccess = status.hasLicense || status.isActive;
 
-        // Toggle states
-        backgroundSecurity.disabled = !hasAccess;
+        // v8.4.0: Automatic Protection is ALWAYS FREE - never disable this toggle
+        backgroundSecurity.disabled = false;
+
+        // v8.4.0: Smart Link Scanning (integratedProtection) is now the PRO feature
+        // It stays enabled during trial, and after trial it's limited by quota
+        // The toggle itself remains enabled - quota handling is done in displayScanQuota()
 
         if (status.hasLicense) {
             // === PREMIUM ===
@@ -149,14 +303,12 @@ document.addEventListener('DOMContentLoaded', function () {
             statusTitle.textContent = msg('statusProtected');
             statusSubText.textContent = msg('statusPremiumSub');
 
-            // Hide help icon and PRO tag for premium users (they already have it)
-            toggle1Help.style.display = 'none';
-            premiumTag.classList.add('hidden');
+            // Hide PRO tag for premium users (they already have unlimited access)
+            if (proTag) proTag.classList.add('hidden');
 
             ctaButton.style.display = 'none';
-            licenseToggleLink.classList.add('hidden');
-            divider.classList.add('hidden');
-            licenseSection.classList.remove('show');
+            // Hide license section for premium users
+            if (licenseSectionWrapper) licenseSectionWrapper.classList.add('hidden');
             premiumManagement.classList.add('show');
 
             const data = await chrome.storage.sync.get(['licenseEmail']);
@@ -187,24 +339,15 @@ document.addEventListener('DOMContentLoaded', function () {
             ctaText.textContent = msg('ctaUpgradeText');
             ctaPrice.textContent = msg('ctaUpgradePrice');
 
-            // Trial: compact view - hide license section by default, show toggle link
-            licenseToggleLink.classList.remove('hidden');
-            licenseToggleLink.textContent = msg('useLicenseKey') || 'Use license key';
-            if (!licenseExpanded) {
-                divider.classList.add('hidden');
-                licenseSection.classList.remove('show');
-            } else {
-                divider.classList.remove('hidden');
-                licenseSection.classList.add('show');
-            }
+            // Trial: show license section
+            if (licenseSectionWrapper) licenseSectionWrapper.classList.remove('hidden');
             premiumManagement.classList.remove('show');
 
-            // Show help icon and PRO tag for trial users to understand premium value
-            toggle1Help.style.display = 'block';
-            premiumTag.classList.remove('hidden');
+            // Show PRO tag for trial users (they have unlimited but it's a preview)
+            if (proTag) proTag.classList.remove('hidden');
 
         } else {
-            // === EXPIRED ===
+            // === EXPIRED (Free tier) ===
             statusCard.className = 'status-card expired';
             statusIcon.innerHTML = ICONS.warning;
             statusTitle.textContent = msg('statusExpired');
@@ -217,28 +360,22 @@ document.addEventListener('DOMContentLoaded', function () {
             ctaText.textContent = msg('ctaRenewText');
             ctaPrice.textContent = msg('ctaUpgradePrice');
 
-            // Expired: show license section directly (more urgent to activate)
-            licenseToggleLink.classList.add('hidden');
-            divider.classList.remove('hidden');
-            licenseSection.classList.add('show');
+            // Expired: show license section
+            if (licenseSectionWrapper) licenseSectionWrapper.classList.remove('hidden');
             premiumManagement.classList.remove('show');
 
-            // Show help icon and PRO tag for expired users
-            toggle1Help.style.display = 'block';
-            premiumTag.classList.remove('hidden');
+            // Show PRO tag for expired users (Smart Link Scanning has quota limits)
+            if (proTag) proTag.classList.remove('hidden');
 
-            backgroundSecurity.checked = false;
-            await chrome.storage.sync.set({ backgroundSecurity: false });
+            // v8.4.0: Automatic Protection is FREE - keep it enabled!
+            // Do NOT disable backgroundSecurity here
         }
     }
 
     // Auto-save
     async function autoSave(key, value) {
-        const status = await getTrialStatus();
-        if (key === 'backgroundSecurity' && value && !(status.hasLicense || status.isActive)) {
-            backgroundSecurity.checked = false;
-            return;
-        }
+        // v8.4.0: backgroundSecurity (Automatic Protection) is always FREE - no restrictions
+        // integratedProtection (Smart Link Scanning) can always be toggled by user
         try {
             await chrome.storage.sync.set({ [key]: value });
             showToast(msg('settingsSaved'));
@@ -258,36 +395,28 @@ document.addEventListener('DOMContentLoaded', function () {
         } catch (e) {}
     }
 
-    // Last update with dynamic Live badge
+    // Database update tooltip
     async function displayLastUpdate() {
+        if (!dbUpdateText) return;
         try {
-            const { lastRuleUpdate } = await chrome.storage.local.get('lastRuleUpdate');
+            const { lastRuleUpdate, ruleStats } = await chrome.storage.local.get(['lastRuleUpdate', 'ruleStats']);
             if (lastRuleUpdate) {
-                const now = Date.now();
-                const updateTime = new Date(lastRuleUpdate).getTime();
-                const minutesAgo = Math.floor((now - updateTime) / 60000);
-
-                // Show "Live" badge if updated within last 60 minutes
-                if (minutesAgo <= 60) {
-                    liveBadge.classList.add('show');
-                    if (minutesAgo < 5) {
-                        liveBadge.textContent = msg('liveNow') || 'Live';
-                    } else {
-                        liveBadge.textContent = msg('updatedMinAgo', [minutesAgo.toString()]) || `${minutesAgo}m ago`;
-                    }
-                } else {
-                    liveBadge.classList.remove('show');
-                }
-
                 const d = new Intl.DateTimeFormat(chrome.i18n.getUILanguage() || 'en', {
                     day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
                 }).format(new Date(lastRuleUpdate));
-                footer.textContent = msg('lastRuleUpdate') + ' ' + d;
+
+                // v8.7.1: Show rule count on new line
+                dbUpdateText.innerHTML = msg('lastRuleUpdate') + d;
+                if (ruleStats && ruleStats.loadedAfterFiltering) {
+                    dbUpdateText.innerHTML += `<br>${ruleStats.loadedAfterFiltering.toLocaleString()} ${msg('rulesLoaded', 'phishing sites blocked')}`;
+                }
+            } else {
+                dbUpdateText.textContent = msg('lastRuleUpdate') + '–';
             }
         } catch (e) {}
     }
 
-    // v8.4.0: Display scan quota for free users
+    // v8.4.0: Display scan quota in status card for free users
     async function displayScanQuota() {
         try {
             const response = await new Promise((resolve) => {
@@ -301,31 +430,49 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             if (!response || response.isUnlimited) {
-                // Premium or trial user - hide quota card
-                quotaCard.classList.add('hidden');
+                // Premium or trial user - hide quota indicator
+                if (quotaCard) quotaCard.classList.add('hidden');
+                integratedProtection.disabled = false;
                 return;
             }
 
-            // Show quota card for free users
-            quotaCard.classList.remove('hidden');
+            // Show quota indicator for free users
+            if (quotaCard) quotaCard.classList.remove('hidden');
 
             // Update count
-            quotaCount.textContent = `${response.count}/${response.limit}`;
+            if (quotaCount) quotaCount.textContent = `${response.count}/${response.limit}`;
 
             // Update progress bar
             const percentage = Math.min((response.count / response.limit) * 100, 100);
-            quotaBarFill.style.width = `${percentage}%`;
+            if (quotaBarFill) quotaBarFill.style.width = `${percentage}%`;
 
             // Update styling based on usage
-            quotaCard.classList.remove('warning', 'critical');
-            if (response.count >= response.limit) {
-                quotaCard.classList.add('critical');
-            } else if (percentage >= 75) {
-                quotaCard.classList.add('warning');
+            if (quotaCard) {
+                quotaCard.classList.remove('warning', 'critical');
+                if (response.count >= response.limit) {
+                    quotaCard.classList.add('critical');
+                    // Disable Smart Link Scanning toggle when quota exceeded
+                    integratedProtection.disabled = true;
+                    integratedProtection.checked = false;
+                    // v8.4.1: Also save to storage so content.js stops scanning
+                    await chrome.storage.sync.set({ integratedProtection: false });
+                } else {
+                    if (percentage >= 75) {
+                        quotaCard.classList.add('warning');
+                    }
+                    // Enable toggle
+                    integratedProtection.disabled = false;
+                    // Auto-enable Smart Link Scanning if it was disabled due to quota
+                    const settings = await chrome.storage.sync.get('integratedProtection');
+                    if (settings.integratedProtection === false) {
+                        await chrome.storage.sync.set({ integratedProtection: true });
+                        integratedProtection.checked = true;
+                    }
+                }
             }
 
             // Update reset time
-            if (response.resetAt) {
+            if (response.resetAt && quotaReset) {
                 const resetDate = new Date(response.resetAt);
                 const resetTime = resetDate.toLocaleTimeString(chrome.i18n.getUILanguage() || 'en', {
                     hour: '2-digit',
@@ -337,14 +484,12 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             // Update title
-            quotaTitle.textContent = msg('quotaDailyScans', 'Daily scans');
-
-            // Update upgrade link text
-            quotaUpgrade.textContent = msg('quotaUpgrade', 'Upgrade');
+            if (quotaTitle) quotaTitle.textContent = msg('quotaDailyScans', 'Daily scans');
 
         } catch (e) {
-            // On error, hide quota card (fail-safe)
-            quotaCard.classList.add('hidden');
+            // On error, hide quota (fail-safe)
+            if (quotaCard) quotaCard.classList.add('hidden');
+            integratedProtection.disabled = false;
         }
     }
 
@@ -367,20 +512,17 @@ document.addEventListener('DOMContentLoaded', function () {
     backgroundSecurity.addEventListener('change', () => autoSave('backgroundSecurity', backgroundSecurity.checked));
     integratedProtection.addEventListener('change', () => autoSave('integratedProtection', integratedProtection.checked));
 
-    // License toggle link (expand/collapse license input in trial mode)
-    licenseToggleLink.addEventListener('click', () => {
-        licenseExpanded = !licenseExpanded;
-        if (licenseExpanded) {
-            divider.classList.remove('hidden');
-            licenseSection.classList.add('show');
+    // License toggle link (expand input)
+    if (licenseToggleLink) {
+        licenseToggleLink.addEventListener('click', (e) => {
+            e.preventDefault();
             licenseToggleLink.classList.add('hidden');
-            licenseInput.focus();
-        } else {
-            divider.classList.add('hidden');
-            licenseSection.classList.remove('show');
-            licenseToggleLink.classList.remove('hidden');
-        }
-    });
+            if (licenseSection) {
+                licenseSection.classList.add('show');
+                licenseInput.focus();
+            }
+        });
+    }
 
     // License activation
     activateBtn.addEventListener('click', async () => {
@@ -415,8 +557,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 licenseError.classList.add('show');
             } else {
                 trialStatus = null;
+                // v8.4.0: Enable both protection features when license is activated
+                await chrome.storage.sync.set({
+                    backgroundSecurity: true,
+                    integratedProtection: true
+                });
+                backgroundSecurity.checked = true;
+                integratedProtection.checked = true;
                 showToast(msg('licenseActivatedSuccess'), 3000);
                 await updateUI();
+                await displayScanQuota(); // Refresh quota display (will hide for premium)
                 // Trigger success glow animation
                 statusCard.classList.add('success-glow');
                 setTimeout(() => statusCard.classList.remove('success-glow'), 1500);
@@ -493,11 +643,13 @@ document.addEventListener('DOMContentLoaded', function () {
         await updateUI();
         await displayLastUpdate();
         await displayScanQuota(); // v8.4.0: Show quota for free users
+        loadThreatsToday(); // v8.4.1: Show threats added today (async, no await - non-blocking)
     })();
 
-    // v8.4.0: Real-time quota updates when storage changes
-    chrome.storage.onChanged.addListener((changes, area) => {
-        if (area === 'sync' && changes.scanQuota) {
+    // v8.4.0: Real-time quota updates via message from background.js
+    // (storage.local.onChanged doesn't propagate from service worker to popup in MV3)
+    chrome.runtime.onMessage.addListener((message) => {
+        if (message.type === 'quotaUpdated' || message.type === 'quotaReset') {
             displayScanQuota();
         }
     });

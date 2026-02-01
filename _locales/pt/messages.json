@@ -155,6 +155,9 @@
   "lastRuleUpdate": {
     "message": "Última atualização do banco de dados: "
   },
+  "rulesLoaded": {
+    "message": "sites de phishing bloqueados"
+  },
   "licenseStatus": {
     "message": "Status da Licença:"
   },
@@ -597,7 +600,7 @@
     "message": "Você está totalmente protegido. Todas as funções estão ativas."
   },
   "licenseUpgradeLink": {
-    "message": "Fique protegido por €1,99/mês (3 dispositivos) →"
+    "message": "Fique protegido por €4,99/mês (3 dispositivos) →"
   },
   "licenseAlreadyHaveCode": {
     "message": "Já tem um código de licença?"
@@ -1043,7 +1046,7 @@
   "reason_bitbPadlockIcon": {
     "message": "Ícone de cadeado de segurança falso detectado (risco médio). Cadeados reais aparecem na barra de endereços, não no conteúdo da página."
   },
-  "reason_bitbWindowChrome": {
+  "reason_bitbWindowStyling": {
     "message": "Estilo de janela de navegador simulado detectado (risco médio). O overlay é estilizado para parecer uma janela do sistema operacional."
   },
   "reason_bitbIframeInModal": {
@@ -1135,7 +1138,7 @@
     "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
   },
   "tooltipFooter": {
-    "message": "14 camadas de segurança ativas"
+    "message": "15 camadas de segurança ativas"
   },
   "tooltipNewBadge": {
     "message": "Novo",
@@ -1295,7 +1298,7 @@
     "message": "Atualizar para Premium"
   },
   "ctaUpgradePrice": {
-    "message": "€1,99/mês · 3 dispositivos"
+    "message": "€4,99/mês · 3 dispositivos"
   },
   "ctaRenewText": {
     "message": "Restaurar proteção"
@@ -1738,5 +1741,29 @@
   },
   "tooltipFeature14": {
     "message": "Scripts SVG maliciosos"
+  },
+  "tooltipFeature15": {
+    "message": "Deteção de rastreadores suspeitos"
+  },
+  "trackingRiskTitle": {
+    "message": "Aviso de Rastreadores"
+  },
+  "trackingRiskHostile": {
+    "message": "rastreadores suspeitos"
+  },
+  "trackingRiskThirdParty": {
+    "message": "fontes externas"
+  },
+  "trackingRiskDetected": {
+    "message": "Esta página carrega rastreadores comumente usados em ataques de phishing."
+  },
+  "trackingRiskLow": {
+    "message": "Normal"
+  },
+  "trackingRiskElevated": {
+    "message": "Elevado"
+  },
+  "trackingRiskHigh": {
+    "message": "Alto"
   }
 }

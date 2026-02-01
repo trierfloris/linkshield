@@ -155,6 +155,9 @@
   "lastRuleUpdate": {
     "message": "Τελευταία ενημέρωση βάσης δεδομένων: "
   },
+  "rulesLoaded": {
+    "message": "ιστότοποι phishing αποκλεισμένοι"
+  },
   "licenseStatus": {
     "message": "Κατάσταση άδειας:"
   },
@@ -483,7 +486,7 @@
     "message": "Είστε πλήρως προστατευμένοι. Όλες οι λειτουργίες είναι ενεργές."
   },
   "licenseUpgradeLink": {
-    "message": "Αναβάθμιση σε Premium με 1,99 €/μήνα (3 συσκευές) →"
+    "message": "Αναβάθμιση σε Premium με 4,99 €/μήνα (3 συσκευές) →"
   },
   "licenseAlreadyHaveCode": {
     "message": "Έχετε ήδη κωδικό άδειας;"
@@ -932,6 +935,12 @@
   "reason_brandSubdomainPhishing": {
     "message": "Εντοπίστηκε λέξη-κλειδί μάρκας σε δωρεάν πλατφόρμα φιλοξενίας (υψηλός κίνδυνος). Οι νόμιμες εταιρείες δεν χρησιμοποιούν δωρεάν φιλοξενία για επίσημες υπηρεσίες."
   },
+  "hostnameBrandKeywordPhishing": {
+    "message": "Ύποπτος τομέας: όνομα μάρκας σε συνδυασμό με λέξεις-κλειδιά phishing (υψηλός κίνδυνος). Παράδειγμα: login-microsoft-verify.com ΔΕΝ είναι ιστοσελίδα της Microsoft."
+  },
+  "reason_hostnameBrandKeywordPhishing": {
+    "message": "Ύποπτος τομέας: όνομα μάρκας σε συνδυασμό με λέξεις-κλειδιά phishing (υψηλός κίνδυνος). Παράδειγμα: login-microsoft-verify.com ΔΕΝ είναι ιστοσελίδα της Microsoft."
+  },
   "nrdTelCombo": {
     "message": "Αριθμός τηλεφώνου σε νεοκαταχωρημένο τομέα με λέξεις-κλειδιά phishing (μέτριος κίνδυνος). Αυτή μπορεί να είναι απόπειρα vishing (φωνητικού phishing)."
   },
@@ -974,7 +983,7 @@
   "reason_bitbPadlockIcon": {
     "message": "Εντοπίστηκε ψεύτικο εικονίδιο λουκέτου ασφαλείας (μέτριος κίνδυνος). Τα πραγματικά λουκέτα εμφανίζονται στη γραμμή διευθύνσεων του περιηγητή, όχι στο περιεχόμενο της σελίδας."
   },
-  "reason_bitbWindowChrome": {
+  "reason_bitbWindowStyling": {
     "message": "Εντοπίστηκε προσομοιωμένο στυλ παραθύρου περιηγητή (μέτριος κίνδυνος). Η επικάλυψη έχει στυλιστεί για να μοιάζει με παράθυρο λειτουργικού συστήματος."
   },
   "reason_bitbIframeInModal": {
@@ -1003,6 +1012,74 @@
   },
   "bitbAttackTip": {
     "message": "Πάντα ελέγχετε τη γραμμή διευθύνσεων του περιηγητή για το πραγματικό URL, όχι κείμενο που εμφανίζεται μέσα στη σελίδα."
+  },
+  "formHijackingTitle": {
+    "message": "Εντοπίστηκε πειρατεία φόρμας!"
+  },
+  "formHijackingMessage": {
+    "message": "Αυτή η σελίδα προσπάθησε να ανακατευθύνει τα διαπιστευτήριά σας σε εξωτερικό διακομιστή. Τα δεδομένα σας ΔΕΝ στάλθηκαν."
+  },
+  "formHijackingTip": {
+    "message": "Η φόρμα τροποποιήθηκε κρυφά για να στείλει τα δεδομένα σας σε: "
+  },
+  "tooltipTitle": {
+    "message": "Προστασία από:",
+    "description": "Title for smart link scanning tooltip"
+  },
+  "tooltipFeature1": {
+    "message": "URL phishing και ύποπτα TLD",
+    "description": "Tooltip feature 1"
+  },
+  "tooltipFeature2": {
+    "message": "Παρόμοιους τομείς Unicode",
+    "description": "Tooltip feature 2"
+  },
+  "tooltipFeature3": {
+    "message": "Ψεύτικα παράθυρα προγράμματος περιήγησης (BitB)",
+    "description": "Tooltip feature 3"
+  },
+  "tooltipFeature4": {
+    "message": "Ενεργοποιητές PowerShell/κακόβουλου λογισμικού",
+    "description": "Tooltip feature 4"
+  },
+  "tooltipFeature5": {
+    "message": "Αόρατες επιθέσεις επικάλυψης",
+    "description": "Tooltip feature 5"
+  },
+  "tooltipFeature6": {
+    "message": "Κακόβουλους κωδικούς QR",
+    "description": "Tooltip feature 6"
+  },
+  "tooltipFeature7": {
+    "message": "Επικίνδυνους τύπους συνδέσμων",
+    "description": "Tooltip feature 7"
+  },
+  "tooltipFeature8": {
+    "message": "Υποκλοπή φορμών",
+    "description": "Tooltip feature 8"
+  },
+  "tooltipFeature9": {
+    "message": "Χειραγώγηση πρόχειρου",
+    "description": "Tooltip feature 9"
+  },
+  "tooltipFeature10": {
+    "message": "Κρυφό κώδικα (Shadow DOM)",
+    "description": "Tooltip feature 10"
+  },
+  "tooltipFeature11": {
+    "message": "Κλοπή OAuth token",
+    "description": "Tooltip feature 11 - OAuth token theft protection"
+  },
+  "tooltipFeature12": {
+    "message": "Ψεύτικοι έλεγχοι ασφαλείας",
+    "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
+  },
+  "tooltipFooter": {
+    "message": "15 επίπεδα ασφαλείας ενεργά"
+  },
+  "tooltipNewBadge": {
+    "message": "Νέο",
+    "description": "Badge text for new features"
   },
   "shadowDomLoginForm": {
     "message": "Εντοπίστηκε φόρμα σύνδεσης κρυμμένη σε Shadow DOM (υψηλός κίνδυνος). Αυτή η τεχνική χρησιμοποιείται για αποφυγή σαρωτών ασφαλείας."
@@ -1547,5 +1624,146 @@
   "brandImpersonation": {
     "message": "Possible brand impersonation attempt",
     "description": ""
+  },
+  "dangerousUriBlocked": {
+    "message": "Ένας επικίνδυνος τύπος συνδέσμου (όπως javascript:) αποκλείστηκε για την ασφάλειά σας."
+  },
+  "TEST_MODE_ENABLED": {
+    "message": "Η λειτουργία δοκιμής είναι ενεργή - αυτό είναι μόνο για σκοπούς ανάπτυξης."
+  },
+  "webTransportSuspiciousPattern": {
+    "message": "Εντοπίστηκε ύποπτο μοτίβο σύνδεσης δικτύου (πιθανή διαρροή δεδομένων)."
+  },
+  "webTransportHighStreamCount": {
+    "message": "Εντοπίστηκε ασυνήθιστος αριθμός ροών δικτύου (πιθανή δραστηριότητα C2)."
+  },
+  "imagelessQR": {
+    "message": "Εντοπίστηκε κρυφός κώδικας QR (κατασκευασμένος από στοιχεία HTML αντί εικόνας - τεχνική αποφυγής)."
+  },
+  "imagelessQrDangerTitle": {
+    "message": "ΚΙΝΔΥΝΟΣ: Εντοπίστηκε κρυφός κώδικας QR!"
+  },
+  "imagelessQrCautionTitle": {
+    "message": "Προσοχή: Εντοπίστηκε κρυφός κώδικας QR"
+  },
+  "quotaDailyScans": {
+    "message": "Καθημερινές σαρώσεις"
+  },
+  "quotaResetsAt": {
+    "message": "Επαναφέρεται στις $TIME$ UTC",
+    "placeholders": {
+      "TIME": {
+        "content": "$1",
+        "example": "00:00"
+      }
+    }
+  },
+  "quotaUpgrade": {
+    "message": "Αναβάθμιση"
+  },
+  "quotaExceededDesc": {
+    "message": "Επιτεύχθηκε το ημερήσιο όριο - επαναφορά τα μεσάνυχτα UTC"
+  },
+  "licenseHaveKey": {
+    "message": "Έχετε ήδη κλειδί;"
+  },
+  "threatsTodayCount": {
+    "message": "+$1 σήμερα",
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "847"
+      }
+    }
+  },
+  "threatsTotalCount": {
+    "message": "$1 αποκλείστηκαν",
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "2431"
+      }
+    }
+  },
+  "oauthTheftTitle": {
+    "message": "🛡️ Αποκλείστηκε κλοπή διακριτικού OAuth"
+  },
+  "oauthTheftMessage": {
+    "message": "Προσπαθήσατε να επικολλήσετε URL ελέγχου ταυτότητας. Αυτή είναι μια γνωστή τεχνική phishing που ονομάζεται 'ConsentFix' που κλέβει την πρόσβαση στο λογαριασμό σας."
+  },
+  "oauthTheftTip": {
+    "message": "Μην επικολλάτε ποτέ URL που περιέχουν ?code= ή διακριτικά πρόσβασης σε ιστότοπους."
+  },
+  "fakeTurnstileTitle": {
+    "message": "⚠️ Εντοπίστηκε ψεύτικος έλεγχος ασφαλείας"
+  },
+  "fakeTurnstileMessage": {
+    "message": "Αυτή η σελίδα εμφανίζει ψεύτικη επαλήθευση Cloudflare. Αυτό χρησιμοποιείται συχνά σε επιθέσεις phishing."
+  },
+  "fakeTurnstileDetected": {
+    "message": "Εντοπίστηκε ψεύτικη επαλήθευση ασφαλείας (υψηλός κίνδυνος). Αυτή η σελίδα μιμείται το Cloudflare/CAPTCHA για να σας εξαπατήσει."
+  },
+  "splitQrTitle": {
+    "message": "🔍 Εντοπίστηκε διαχωρισμένος κωδικός QR"
+  },
+  "splitQrMessage": {
+    "message": "Εντοπίστηκε κωδικός QR χωρισμένος σε πολλές εικόνες. Αυτή η τεχνική χρησιμοποιείται για την αποφυγή σαρωτών ασφαλείας."
+  },
+  "understoodButton": {
+    "message": "Κατάλαβα"
+  },
+  "aitmProxyTitle": {
+    "message": "Εντοπίστηκε proxy phishing!"
+  },
+  "aitmProxyMessage": {
+    "message": "Αυτή η σελίδα φαίνεται να είναι ένα proxy phishing που υποδύεται τον {provider}. Τα διαπιστευτήριά σας θα κλαπούν αν συνδεθείτε εδώ."
+  },
+  "aitmProxyTip": {
+    "message": "Επαληθεύετε πάντα το URL στη γραμμή διευθύνσεων πριν εισάγετε διαπιστευτήρια."
+  },
+  "aitmProxyDetected": {
+    "message": "Εντοπίστηκε proxy phishing - πλαστοπροσωπία σελίδας σύνδεσης (κρίσιμος κίνδυνος)."
+  },
+  "svgPayloadTitle": {
+    "message": "Εντοπίστηκε κακόβουλο SVG!"
+  },
+  "svgPayloadMessage": {
+    "message": "Αυτή η σελίδα περιέχει ένα SVG με ενσωματωμένο κακόβουλο κώδικα που μπορεί να κλέψει τα δεδομένα σας."
+  },
+  "svgPayloadTip": {
+    "message": "Προσέξτε τα συνημμένα SVG από άγνωστες πηγές."
+  },
+  "svgPayloadDetected": {
+    "message": "Εντοπίστηκε κακόβουλο SVG με ενσωματωμένα scripts (κρίσιμος κίνδυνος)."
+  },
+  "tooltipFeature13": {
+    "message": "Phishing proxy σύνδεσης (AiTM)"
+  },
+  "tooltipFeature14": {
+    "message": "Κακόβουλα SVG scripts"
+  },
+  "tooltipFeature15": {
+    "message": "Ανίχνευση ύποπτων trackers"
+  },
+  "trackingRiskTitle": {
+    "message": "Προειδοποίηση Tracker"
+  },
+  "trackingRiskHostile": {
+    "message": "ύποπτοι trackers"
+  },
+  "trackingRiskThirdParty": {
+    "message": "εξωτερικές πηγές"
+  },
+  "trackingRiskDetected": {
+    "message": "Αυτή η σελίδα φορτώνει trackers που χρησιμοποιούνται συχνά σε επιθέσεις phishing."
+  },
+  "trackingRiskLow": {
+    "message": "Κανονικό"
+  },
+  "trackingRiskElevated": {
+    "message": "Αυξημένο"
+  },
+  "trackingRiskHigh": {
+    "message": "Υψηλό"
   }
 }

@@ -155,6 +155,9 @@
   "lastRuleUpdate": {
     "message": "آخر تحديث لقاعدة البيانات: "
   },
+  "rulesLoaded": {
+    "message": "موقع تصيد محظور"
+  },
   "licenseStatus": {
     "message": "حالة الترخيص:"
   },
@@ -597,7 +600,7 @@
     "message": "أنت محمي بالكامل. جميع الميزات نشطة."
   },
   "licenseUpgradeLink": {
-    "message": "الترقية إلى Premium — €1.99/شهر (3 أجهزة) ←"
+    "message": "الترقية إلى Premium — €4.99/شهر (3 أجهزة) ←"
   },
   "licenseAlreadyHaveCode": {
     "message": "هل لديك رمز ترخيص بالفعل؟"
@@ -995,6 +998,12 @@
   "reason_brandSubdomainPhishing": {
     "message": "تم اكتشاف اسم العلامة التجارية على منصة استضافة مجانية (خطر عالٍ). الشركات الشرعية لا تستخدم الاستضافة المجانية للخدمات الرسمية."
   },
+  "hostnameBrandKeywordPhishing": {
+    "message": "نطاق مشبوه: اسم علامة تجارية مدمج مع كلمات تصيد احتيالي (خطر عالٍ). مثال: login-microsoft-verify.com ليس موقع Microsoft."
+  },
+  "reason_hostnameBrandKeywordPhishing": {
+    "message": "نطاق مشبوه: اسم علامة تجارية مدمج مع كلمات تصيد احتيالي (خطر عالٍ). مثال: login-microsoft-verify.com ليس موقع Microsoft."
+  },
   "nrdTelCombo": {
     "message": "رقم هاتف على نطاق مسجل حديثاً مع كلمات تصيد احتيالي (خطر متوسط). قد يكون هذا محاولة تصيد صوتي."
   },
@@ -1037,7 +1046,7 @@
   "reason_bitbPadlockIcon": {
     "message": "تم اكتشاف رمز قفل أمان مزيف (خطر متوسط). الأقفال الحقيقية تظهر في شريط عنوان المتصفح، وليس في محتوى الصفحة."
   },
-  "reason_bitbWindowChrome": {
+  "reason_bitbWindowStyling": {
     "message": "تم اكتشاف تنسيق نافذة متصفح محاكى (خطر متوسط). الطبقة العلوية مصممة لتبدو كنافذة نظام تشغيل."
   },
   "reason_bitbIframeInModal": {
@@ -1066,6 +1075,74 @@
   },
   "bitbAttackTip": {
     "message": "تحقق دائماً من شريط عنوان المتصفح للحصول على عنوان URL الحقيقي، وليس النص المعروض داخل الصفحة."
+  },
+  "formHijackingTitle": {
+    "message": "تم اكتشاف اختطاف النموذج!"
+  },
+  "formHijackingMessage": {
+    "message": "حاولت هذه الصفحة إعادة توجيه بيانات اعتمادك إلى خادم خارجي. لم يتم إرسال بياناتك."
+  },
+  "formHijackingTip": {
+    "message": "تم تعديل النموذج سراً لإرسال بياناتك إلى: "
+  },
+  "tooltipTitle": {
+    "message": "محمي ضد:",
+    "description": "Title for smart link scanning tooltip"
+  },
+  "tooltipFeature1": {
+    "message": "روابط التصيد وامتدادات النطاق المشبوهة",
+    "description": "Tooltip feature 1"
+  },
+  "tooltipFeature2": {
+    "message": "نطاقات Unicode المشابهة",
+    "description": "Tooltip feature 2"
+  },
+  "tooltipFeature3": {
+    "message": "نوافذ المتصفح المزيفة (BitB)",
+    "description": "Tooltip feature 3"
+  },
+  "tooltipFeature4": {
+    "message": "مشغلات PowerShell/البرامج الضارة",
+    "description": "Tooltip feature 4"
+  },
+  "tooltipFeature5": {
+    "message": "هجمات الطبقات غير المرئية",
+    "description": "Tooltip feature 5"
+  },
+  "tooltipFeature6": {
+    "message": "رموز QR الضارة",
+    "description": "Tooltip feature 6"
+  },
+  "tooltipFeature7": {
+    "message": "أنواع الروابط الخطيرة",
+    "description": "Tooltip feature 7"
+  },
+  "tooltipFeature8": {
+    "message": "اختطاف النماذج",
+    "description": "Tooltip feature 8"
+  },
+  "tooltipFeature9": {
+    "message": "التلاعب بالحافظة",
+    "description": "Tooltip feature 9"
+  },
+  "tooltipFeature10": {
+    "message": "الكود المخفي (Shadow DOM)",
+    "description": "Tooltip feature 10"
+  },
+  "tooltipFeature11": {
+    "message": "سرقة رمز OAuth",
+    "description": "Tooltip feature 11 - OAuth token theft protection"
+  },
+  "tooltipFeature12": {
+    "message": "فحوصات أمان مزيفة",
+    "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
+  },
+  "tooltipFooter": {
+    "message": "15 طبقة أمان نشطة"
+  },
+  "tooltipNewBadge": {
+    "message": "جديد",
+    "description": "Badge text for new features"
   },
   "shadowDomLoginForm": {
     "message": "تم اكتشاف نموذج تسجيل دخول مخفي في Shadow DOM (خطر عالٍ). تُستخدم هذه التقنية للتهرب من فاحصات الأمان."
@@ -1221,7 +1298,7 @@
     "message": "الترقية إلى Premium"
   },
   "ctaUpgradePrice": {
-    "message": "€1.99/شهر · 3 أجهزة"
+    "message": "€4.99/شهر · 3 أجهزة"
   },
   "ctaRenewText": {
     "message": "استعادة الحماية"
@@ -1547,5 +1624,146 @@
   "brandImpersonation": {
     "message": "Possible brand impersonation attempt",
     "description": ""
+  },
+  "dangerousUriBlocked": {
+    "message": "تم حظر نوع رابط خطير (مثل javascript:) لحماية أمانك."
+  },
+  "TEST_MODE_ENABLED": {
+    "message": "وضع الاختبار نشط - هذا لأغراض التطوير فقط."
+  },
+  "webTransportSuspiciousPattern": {
+    "message": "تم اكتشاف نمط اتصال شبكة مشبوه (احتمال تسريب بيانات)."
+  },
+  "webTransportHighStreamCount": {
+    "message": "تم اكتشاف عدد غير عادي من تدفقات الشبكة (احتمال نشاط قيادة وتحكم)."
+  },
+  "imagelessQR": {
+    "message": "تم اكتشاف رمز QR مخفي (مبني من عناصر HTML بدلاً من صورة - تقنية تهرب)."
+  },
+  "imagelessQrDangerTitle": {
+    "message": "خطر: تم اكتشاف رمز QR مخفي!"
+  },
+  "imagelessQrCautionTitle": {
+    "message": "تنبيه: تم اكتشاف رمز QR مخفي"
+  },
+  "quotaDailyScans": {
+    "message": "عمليات الفحص اليومية"
+  },
+  "quotaResetsAt": {
+    "message": "يُعاد التعيين في $TIME$ بالتوقيت العالمي",
+    "placeholders": {
+      "TIME": {
+        "content": "$1",
+        "example": "00:00"
+      }
+    }
+  },
+  "quotaUpgrade": {
+    "message": "ترقية"
+  },
+  "quotaExceededDesc": {
+    "message": "تم الوصول إلى الحد اليومي - يتم إعادة التعيين في منتصف الليل بالتوقيت العالمي"
+  },
+  "licenseHaveKey": {
+    "message": "هل لديك مفتاح بالفعل؟"
+  },
+  "threatsTodayCount": {
+    "message": "+$1 اليوم",
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "847"
+      }
+    }
+  },
+  "threatsTotalCount": {
+    "message": "$1 محظور",
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "2431"
+      }
+    }
+  },
+  "oauthTheftTitle": {
+    "message": "🛡️ تم حظر سرقة رمز OAuth"
+  },
+  "oauthTheftMessage": {
+    "message": "حاولت لصق عنوان URL للمصادقة. هذه تقنية تصيد معروفة تسمى 'ConsentFix' تسرق الوصول إلى حسابك."
+  },
+  "oauthTheftTip": {
+    "message": "لا تلصق أبدًا عناوين URL التي تحتوي على ?code= أو رموز الوصول في المواقع."
+  },
+  "fakeTurnstileTitle": {
+    "message": "⚠️ تم اكتشاف فحص أمني مزيف"
+  },
+  "fakeTurnstileMessage": {
+    "message": "هذه الصفحة تعرض تحقق Cloudflare مزيف. يُستخدم هذا غالبًا في هجمات التصيد الاحتيالي."
+  },
+  "fakeTurnstileDetected": {
+    "message": "تم اكتشاف فحص أمني مزيف (خطر عالٍ). هذه الصفحة تقلد Cloudflare/CAPTCHA لخداعك."
+  },
+  "splitQrTitle": {
+    "message": "🔍 تم اكتشاف رمز QR مقسم"
+  },
+  "splitQrMessage": {
+    "message": "تم اكتشاف رمز QR مقسم إلى صور متعددة. تُستخدم هذه التقنية للتهرب من ماسحات الأمان."
+  },
+  "understoodButton": {
+    "message": "فهمت"
+  },
+  "aitmProxyTitle": {
+    "message": "تم اكتشاف وكيل تصيد!"
+  },
+  "aitmProxyMessage": {
+    "message": "يبدو أن هذه الصفحة وكيل تصيد ينتحل صفة {provider}. سيتم سرقة بيانات اعتمادك إذا قمت بتسجيل الدخول هنا."
+  },
+  "aitmProxyTip": {
+    "message": "تحقق دائمًا من عنوان URL في شريط العناوين قبل إدخال بيانات الاعتماد."
+  },
+  "aitmProxyDetected": {
+    "message": "تم اكتشاف وكيل تصيد - انتحال صفحة تسجيل الدخول (خطر حرج)."
+  },
+  "svgPayloadTitle": {
+    "message": "تم اكتشاف SVG ضار!"
+  },
+  "svgPayloadMessage": {
+    "message": "تحتوي هذه الصفحة على SVG مع كود ضار مضمن يمكنه سرقة بياناتك."
+  },
+  "svgPayloadTip": {
+    "message": "كن حذرًا مع مرفقات SVG من مصادر غير معروفة."
+  },
+  "svgPayloadDetected": {
+    "message": "تم اكتشاف SVG ضار مع نصوص برمجية مضمنة (خطر حرج)."
+  },
+  "tooltipFeature13": {
+    "message": "تصيد وكيل تسجيل الدخول (AiTM)"
+  },
+  "tooltipFeature14": {
+    "message": "نصوص SVG الضارة"
+  },
+  "tooltipFeature15": {
+    "message": "كشف المتتبعات المشبوهة"
+  },
+  "trackingRiskTitle": {
+    "message": "تحذير من المتتبعات"
+  },
+  "trackingRiskHostile": {
+    "message": "متتبعات مشبوهة"
+  },
+  "trackingRiskThirdParty": {
+    "message": "مصادر خارجية"
+  },
+  "trackingRiskDetected": {
+    "message": "تحمّل هذه الصفحة متتبعات تُستخدم عادةً في هجمات التصيد."
+  },
+  "trackingRiskLow": {
+    "message": "عادي"
+  },
+  "trackingRiskElevated": {
+    "message": "مرتفع"
+  },
+  "trackingRiskHigh": {
+    "message": "عالي"
   }
 }

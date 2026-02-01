@@ -55,6 +55,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const tooltipFeature12 = document.getElementById('tooltipFeature12');
     const tooltipFeature13 = document.getElementById('tooltipFeature13');
     const tooltipFeature14 = document.getElementById('tooltipFeature14');
+    const tooltipFeature15 = document.getElementById('tooltipFeature15');
     const tooltipFooter = document.getElementById('tooltipFooter');
     const freeTag = document.getElementById('freeTag');
     const proTag = document.getElementById('proTag');
@@ -220,12 +221,15 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
         if (tooltipFeature14) {
-            const newBadge = tooltipFeature14.querySelector('.new-badge');
+            tooltipFeature14.textContent = msg('tooltipFeature14');
+        }
+        if (tooltipFeature15) {
+            const newBadge = tooltipFeature15.querySelector('.new-badge');
             if (newBadge) {
                 newBadge.textContent = msg('tooltipNewBadge');
-                tooltipFeature14.firstChild.textContent = msg('tooltipFeature14') + ' ';
+                tooltipFeature15.firstChild.textContent = msg('tooltipFeature15') + ' ';
             } else {
-                tooltipFeature14.textContent = msg('tooltipFeature14');
+                tooltipFeature15.textContent = msg('tooltipFeature15');
             }
         }
         if (tooltipFooter) tooltipFooter.textContent = msg('tooltipFooter');
@@ -395,12 +399,17 @@ document.addEventListener('DOMContentLoaded', function () {
     async function displayLastUpdate() {
         if (!dbUpdateText) return;
         try {
-            const { lastRuleUpdate } = await chrome.storage.local.get('lastRuleUpdate');
+            const { lastRuleUpdate, ruleStats } = await chrome.storage.local.get(['lastRuleUpdate', 'ruleStats']);
             if (lastRuleUpdate) {
                 const d = new Intl.DateTimeFormat(chrome.i18n.getUILanguage() || 'en', {
                     day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
                 }).format(new Date(lastRuleUpdate));
-                dbUpdateText.textContent = msg('lastRuleUpdate') + d;
+
+                // v8.7.1: Show rule count on new line
+                dbUpdateText.innerHTML = msg('lastRuleUpdate') + d;
+                if (ruleStats && ruleStats.loadedAfterFiltering) {
+                    dbUpdateText.innerHTML += `<br>${ruleStats.loadedAfterFiltering.toLocaleString()} ${msg('rulesLoaded', 'phishing sites blocked')}`;
+                }
             } else {
                 dbUpdateText.textContent = msg('lastRuleUpdate') + '–';
             }

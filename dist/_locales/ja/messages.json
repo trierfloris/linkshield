@@ -155,6 +155,9 @@
   "lastRuleUpdate": {
     "message": "最終データベース更新日： "
   },
+  "rulesLoaded": {
+    "message": "フィッシングサイトをブロック"
+  },
   "licenseStatus": {
     "message": "ライセンスステータス："
   },
@@ -597,7 +600,7 @@
     "message": "完全に保護されています。すべての機能が有効です。"
   },
   "licenseUpgradeLink": {
-    "message": "プレミアムにアップグレード — €1.99/月（3台まで）→"
+    "message": "プレミアムにアップグレード — €4.99/月（3台まで）→"
   },
   "licenseAlreadyHaveCode": {
     "message": "ライセンスコードをお持ちですか？"
@@ -995,6 +998,12 @@
   "reason_brandSubdomainPhishing": {
     "message": "無料ホスティングプラットフォームでブランド名を検出（高リスク）。正規の企業は公式サービスに無料ホスティングを使用しません。"
   },
+  "hostnameBrandKeywordPhishing": {
+    "message": "疑わしいドメイン：ブランド名とフィッシングキーワードの組み合わせ（高リスク）。例：login-microsoft-verify.comはMicrosoftサイトではありません。"
+  },
+  "reason_hostnameBrandKeywordPhishing": {
+    "message": "疑わしいドメイン：ブランド名とフィッシングキーワードの組み合わせ（高リスク）。例：login-microsoft-verify.comはMicrosoftサイトではありません。"
+  },
   "nrdTelCombo": {
     "message": "フィッシングキーワードを含む新規登録ドメインに電話番号（中リスク）。これはビッシング（音声フィッシング）の試みかもしれません。"
   },
@@ -1037,7 +1046,7 @@
   "reason_bitbPadlockIcon": {
     "message": "偽のセキュリティ南京錠アイコンを検出（中リスク）。本物の南京錠はページコンテンツではなくブラウザのアドレスバーに表示されます。"
   },
-  "reason_bitbWindowChrome": {
+  "reason_bitbWindowStyling": {
     "message": "シミュレートされたブラウザウィンドウスタイリングを検出（中リスク）。オーバーレイはオペレーティングシステムウィンドウのようにスタイル設定されています。"
   },
   "reason_bitbIframeInModal": {
@@ -1066,6 +1075,74 @@
   },
   "bitbAttackTip": {
     "message": "常にブラウザのアドレスバーで実際のURLを確認してください。ページ内に表示されているテキストではありません。"
+  },
+  "formHijackingTitle": {
+    "message": "フォームハイジャックを検出！"
+  },
+  "formHijackingMessage": {
+    "message": "このページはあなたの認証情報を外部サーバーにリダイレクトしようとしました。データは送信されませんでした。"
+  },
+  "formHijackingTip": {
+    "message": "フォームが密かに変更され、データの送信先が変わりました: "
+  },
+  "tooltipTitle": {
+    "message": "以下から保護:",
+    "description": "Title for smart link scanning tooltip"
+  },
+  "tooltipFeature1": {
+    "message": "フィッシングURLと不審なTLD",
+    "description": "Tooltip feature 1"
+  },
+  "tooltipFeature2": {
+    "message": "Unicode類似ドメイン",
+    "description": "Tooltip feature 2"
+  },
+  "tooltipFeature3": {
+    "message": "偽のブラウザウィンドウ (BitB)",
+    "description": "Tooltip feature 3"
+  },
+  "tooltipFeature4": {
+    "message": "PowerShell/マルウェアトリガー",
+    "description": "Tooltip feature 4"
+  },
+  "tooltipFeature5": {
+    "message": "不可視オーバーレイ攻撃",
+    "description": "Tooltip feature 5"
+  },
+  "tooltipFeature6": {
+    "message": "悪意のあるQRコード",
+    "description": "Tooltip feature 6"
+  },
+  "tooltipFeature7": {
+    "message": "危険なリンクタイプ",
+    "description": "Tooltip feature 7"
+  },
+  "tooltipFeature8": {
+    "message": "フォームハイジャック",
+    "description": "Tooltip feature 8"
+  },
+  "tooltipFeature9": {
+    "message": "クリップボード操作",
+    "description": "Tooltip feature 9"
+  },
+  "tooltipFeature10": {
+    "message": "隠しコード (Shadow DOM)",
+    "description": "Tooltip feature 10"
+  },
+  "tooltipFeature11": {
+    "message": "OAuthトークンの窃取",
+    "description": "Tooltip feature 11 - OAuth token theft protection"
+  },
+  "tooltipFeature12": {
+    "message": "偽のセキュリティチェック",
+    "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
+  },
+  "tooltipFooter": {
+    "message": "15のセキュリティレイヤーがアクティブ"
+  },
+  "tooltipNewBadge": {
+    "message": "新機能",
+    "description": "Badge text for new features"
   },
   "shadowDomLoginForm": {
     "message": "Shadow DOMに隠されたログインフォームを検出（高リスク）。この技術はセキュリティスキャナーを回避するために使用されます。"
@@ -1547,5 +1624,146 @@
   "brandImpersonation": {
     "message": "Possible brand impersonation attempt",
     "description": ""
+  },
+  "dangerousUriBlocked": {
+    "message": "危険なリンクタイプ（javascript:など）がセキュリティのためにブロックされました。"
+  },
+  "TEST_MODE_ENABLED": {
+    "message": "テストモードがアクティブです - これは開発目的のみです。"
+  },
+  "webTransportSuspiciousPattern": {
+    "message": "疑わしいネットワーク接続パターンが検出されました（データ流出の可能性）。"
+  },
+  "webTransportHighStreamCount": {
+    "message": "異常な数のネットワークストリームが検出されました（C2活動の可能性）。"
+  },
+  "imagelessQR": {
+    "message": "隠しQRコードが検出されました（画像ではなくHTML要素から構築 - 回避技術）。"
+  },
+  "imagelessQrDangerTitle": {
+    "message": "危険: 隠しQRコードが検出されました！"
+  },
+  "imagelessQrCautionTitle": {
+    "message": "注意: 隠しQRコードが検出されました"
+  },
+  "quotaDailyScans": {
+    "message": "1日のスキャン数"
+  },
+  "quotaResetsAt": {
+    "message": "$TIME$ UTCにリセット",
+    "placeholders": {
+      "TIME": {
+        "content": "$1",
+        "example": "00:00"
+      }
+    }
+  },
+  "quotaUpgrade": {
+    "message": "アップグレード"
+  },
+  "quotaExceededDesc": {
+    "message": "1日の上限に達しました - UTC午前0時にリセットされます"
+  },
+  "licenseHaveKey": {
+    "message": "すでにキーをお持ちですか？"
+  },
+  "threatsTodayCount": {
+    "message": "+$1 本日",
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "847"
+      }
+    }
+  },
+  "threatsTotalCount": {
+    "message": "$1 ブロック済み",
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "2431"
+      }
+    }
+  },
+  "oauthTheftTitle": {
+    "message": "🛡️ OAuthトークン盗難をブロックしました"
+  },
+  "oauthTheftMessage": {
+    "message": "認証URLを貼り付けようとしました。これは「ConsentFix」と呼ばれる既知のフィッシング手法で、アカウントへのアクセスを盗みます。"
+  },
+  "oauthTheftTip": {
+    "message": "?code=やアクセストークンを含むURLをウェブサイトに貼り付けないでください。"
+  },
+  "fakeTurnstileTitle": {
+    "message": "⚠️ 偽のセキュリティチェックを検出しました"
+  },
+  "fakeTurnstileMessage": {
+    "message": "このページは偽のCloudflare検証を表示しています。これはフィッシング攻撃でよく使用されます。"
+  },
+  "fakeTurnstileDetected": {
+    "message": "偽のセキュリティ検証を検出しました（高リスク）。このページはCloudflare/CAPTCHAを模倣してあなたを欺こうとしています。"
+  },
+  "splitQrTitle": {
+    "message": "🔍 分割QRコードを検出しました"
+  },
+  "splitQrMessage": {
+    "message": "複数の画像に分割されたQRコードが検出されました。この技術はセキュリティスキャナーを回避するために使用されます。"
+  },
+  "understoodButton": {
+    "message": "理解しました"
+  },
+  "aitmProxyTitle": {
+    "message": "フィッシングプロキシを検出！"
+  },
+  "aitmProxyMessage": {
+    "message": "このページは{provider}を偽装するフィッシングプロキシです。ここでログインすると認証情報が盗まれます。"
+  },
+  "aitmProxyTip": {
+    "message": "認証情報を入力する前に、必ずアドレスバーのURLを確認してください。"
+  },
+  "aitmProxyDetected": {
+    "message": "フィッシングプロキシ検出 - ログインページの偽装（重大リスク）。"
+  },
+  "svgPayloadTitle": {
+    "message": "悪意のあるSVGを検出！"
+  },
+  "svgPayloadMessage": {
+    "message": "このページにはデータを盗む可能性のある悪意のあるコードが埋め込まれたSVGが含まれています。"
+  },
+  "svgPayloadTip": {
+    "message": "不明なソースからのSVG添付ファイルに注意してください。"
+  },
+  "svgPayloadDetected": {
+    "message": "埋め込みスクリプト付き悪意のあるSVGを検出（重大リスク）。"
+  },
+  "tooltipFeature13": {
+    "message": "ログインプロキシフィッシング（AiTM）"
+  },
+  "tooltipFeature14": {
+    "message": "悪意のあるSVGスクリプト"
+  },
+  "tooltipFeature15": {
+    "message": "不審なトラッカー検出"
+  },
+  "trackingRiskTitle": {
+    "message": "トラッカー警告"
+  },
+  "trackingRiskHostile": {
+    "message": "不審なトラッカー"
+  },
+  "trackingRiskThirdParty": {
+    "message": "外部ソース"
+  },
+  "trackingRiskDetected": {
+    "message": "このページはフィッシング攻撃でよく使用されるトラッカーを読み込んでいます。"
+  },
+  "trackingRiskLow": {
+    "message": "通常"
+  },
+  "trackingRiskElevated": {
+    "message": "中"
+  },
+  "trackingRiskHigh": {
+    "message": "高"
   }
 }

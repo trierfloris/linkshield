@@ -155,6 +155,9 @@
   "lastRuleUpdate": {
     "message": "上次数据库更新："
   },
+  "rulesLoaded": {
+    "message": "个钓鱼网站已拦截"
+  },
   "licenseStatus": {
     "message": "许可证状态："
   },
@@ -597,7 +600,7 @@
     "message": "您已获得全面保护。所有功能均已激活。"
   },
   "licenseUpgradeLink": {
-    "message": "升级到高级版 — €1.99/月（3台设备）→"
+    "message": "升级到高级版 — €4.99/月（3台设备）→"
   },
   "licenseAlreadyHaveCode": {
     "message": "已有许可证代码？"
@@ -995,6 +998,12 @@
   "reason_brandSubdomainPhishing": {
     "message": "在免费托管平台上检测到品牌名称（高风险）。合法公司不会使用免费托管来提供官方服务。"
   },
+  "hostnameBrandKeywordPhishing": {
+    "message": "可疑域名：品牌名称与钓鱼关键词组合（高风险）。示例：login-microsoft-verify.com 不是微软网站。"
+  },
+  "reason_hostnameBrandKeywordPhishing": {
+    "message": "可疑域名：品牌名称与钓鱼关键词组合（高风险）。示例：login-microsoft-verify.com 不是微软网站。"
+  },
   "nrdTelCombo": {
     "message": "在包含钓鱼关键词的新注册域名上发现电话号码（中等风险）。这可能是语音钓鱼尝试。"
   },
@@ -1037,7 +1046,7 @@
   "reason_bitbPadlockIcon": {
     "message": "检测到虚假安全锁图标（中等风险）。真正的锁出现在浏览器地址栏中，而不是页面内容中。"
   },
-  "reason_bitbWindowChrome": {
+  "reason_bitbWindowStyling": {
     "message": "检测到模拟的浏览器窗口样式（中等风险）。覆盖层被设计成看起来像操作系统窗口。"
   },
   "reason_bitbIframeInModal": {
@@ -1066,6 +1075,74 @@
   },
   "bitbAttackTip": {
     "message": "请始终检查浏览器地址栏中的实际URL，而不是页面内显示的文本。"
+  },
+  "formHijackingTitle": {
+    "message": "检测到表单劫持！"
+  },
+  "formHijackingMessage": {
+    "message": "此页面试图将您的凭证重定向到外部服务器。您的数据未被发送。"
+  },
+  "formHijackingTip": {
+    "message": "表单被秘密修改以将您的数据发送到: "
+  },
+  "tooltipTitle": {
+    "message": "防护以下威胁:",
+    "description": "Title for smart link scanning tooltip"
+  },
+  "tooltipFeature1": {
+    "message": "钓鱼网址和可疑顶级域名",
+    "description": "Tooltip feature 1"
+  },
+  "tooltipFeature2": {
+    "message": "Unicode相似域名",
+    "description": "Tooltip feature 2"
+  },
+  "tooltipFeature3": {
+    "message": "虚假浏览器窗口 (BitB)",
+    "description": "Tooltip feature 3"
+  },
+  "tooltipFeature4": {
+    "message": "PowerShell/恶意软件触发器",
+    "description": "Tooltip feature 4"
+  },
+  "tooltipFeature5": {
+    "message": "隐形覆盖层攻击",
+    "description": "Tooltip feature 5"
+  },
+  "tooltipFeature6": {
+    "message": "恶意二维码",
+    "description": "Tooltip feature 6"
+  },
+  "tooltipFeature7": {
+    "message": "危险链接类型",
+    "description": "Tooltip feature 7"
+  },
+  "tooltipFeature8": {
+    "message": "表单劫持",
+    "description": "Tooltip feature 8"
+  },
+  "tooltipFeature9": {
+    "message": "剪贴板操控",
+    "description": "Tooltip feature 9"
+  },
+  "tooltipFeature10": {
+    "message": "隐藏代码 (Shadow DOM)",
+    "description": "Tooltip feature 10"
+  },
+  "tooltipFeature11": {
+    "message": "窃取OAuth令牌",
+    "description": "Tooltip feature 11 - OAuth token theft protection"
+  },
+  "tooltipFeature12": {
+    "message": "虚假安全检查",
+    "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
+  },
+  "tooltipFooter": {
+    "message": "15个安全层已激活"
+  },
+  "tooltipNewBadge": {
+    "message": "新功能",
+    "description": "Badge text for new features"
   },
   "shadowDomLoginForm": {
     "message": "检测到隐藏在Shadow DOM中的登录表单（高风险）。此技术用于规避安全扫描器。"
@@ -1221,7 +1298,7 @@
     "message": "升级到高级版"
   },
   "ctaUpgradePrice": {
-    "message": "€1.99/月 · 3台设备"
+    "message": "€4.99/月 · 3台设备"
   },
   "ctaRenewText": {
     "message": "恢复保护"
@@ -1547,5 +1624,146 @@
   "brandImpersonation": {
     "message": "Possible brand impersonation attempt",
     "description": ""
+  },
+  "dangerousUriBlocked": {
+    "message": "危险的链接类型（如 javascript:）已被阻止以保护您的安全。"
+  },
+  "TEST_MODE_ENABLED": {
+    "message": "测试模式已激活 - 仅用于开发目的。"
+  },
+  "webTransportSuspiciousPattern": {
+    "message": "检测到可疑的网络连接模式（可能存在数据外泄）。"
+  },
+  "webTransportHighStreamCount": {
+    "message": "检测到异常数量的网络流（可能存在命令与控制活动）。"
+  },
+  "imagelessQR": {
+    "message": "检测到隐藏的二维码（由HTML元素构建而非图像 - 规避技术）。"
+  },
+  "imagelessQrDangerTitle": {
+    "message": "危险：检测到隐藏的二维码！"
+  },
+  "imagelessQrCautionTitle": {
+    "message": "注意：检测到隐藏的二维码"
+  },
+  "quotaDailyScans": {
+    "message": "每日扫描"
+  },
+  "quotaResetsAt": {
+    "message": "于 $TIME$ UTC 重置",
+    "placeholders": {
+      "TIME": {
+        "content": "$1",
+        "example": "00:00"
+      }
+    }
+  },
+  "quotaUpgrade": {
+    "message": "升级"
+  },
+  "quotaExceededDesc": {
+    "message": "已达到每日限额 - UTC午夜重置"
+  },
+  "licenseHaveKey": {
+    "message": "已有密钥？"
+  },
+  "threatsTodayCount": {
+    "message": "+$1 今日",
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "847"
+      }
+    }
+  },
+  "threatsTotalCount": {
+    "message": "$1 已拦截",
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "2431"
+      }
+    }
+  },
+  "oauthTheftTitle": {
+    "message": "🛡️ OAuth令牌盗窃已阻止"
+  },
+  "oauthTheftMessage": {
+    "message": "您尝试粘贴身份验证URL。这是一种名为'ConsentFix'的已知钓鱼技术，会窃取您的帐户访问权限。"
+  },
+  "oauthTheftTip": {
+    "message": "切勿将包含?code=或访问令牌的URL粘贴到网站中。"
+  },
+  "fakeTurnstileTitle": {
+    "message": "⚠️ 检测到虚假安全检查"
+  },
+  "fakeTurnstileMessage": {
+    "message": "此页面正在显示虚假的Cloudflare验证。这通常用于网络钓鱼攻击。"
+  },
+  "fakeTurnstileDetected": {
+    "message": "检测到虚假安全验证（高风险）。此页面模仿Cloudflare/CAPTCHA来欺骗您。"
+  },
+  "splitQrTitle": {
+    "message": "🔍 检测到分割的二维码"
+  },
+  "splitQrMessage": {
+    "message": "检测到分割成多个图像的二维码。此技术用于逃避安全扫描器。"
+  },
+  "understoodButton": {
+    "message": "我明白了"
+  },
+  "aitmProxyTitle": {
+    "message": "检测到钓鱼代理！"
+  },
+  "aitmProxyMessage": {
+    "message": "此页面似乎是冒充{provider}的钓鱼代理。如果您在此登录，您的凭据将被窃取。"
+  },
+  "aitmProxyTip": {
+    "message": "在输入凭据之前，请始终验证地址栏中的URL。"
+  },
+  "aitmProxyDetected": {
+    "message": "检测到钓鱼代理 - 登录页面伪装（严重风险）。"
+  },
+  "svgPayloadTitle": {
+    "message": "检测到恶意SVG！"
+  },
+  "svgPayloadMessage": {
+    "message": "此页面包含嵌入恶意代码的SVG，可能窃取您的数据。"
+  },
+  "svgPayloadTip": {
+    "message": "对来自未知来源的SVG附件保持警惕。"
+  },
+  "svgPayloadDetected": {
+    "message": "检测到带有嵌入脚本的恶意SVG（严重风险）。"
+  },
+  "tooltipFeature13": {
+    "message": "登录代理钓鱼（AiTM）"
+  },
+  "tooltipFeature14": {
+    "message": "恶意SVG脚本"
+  },
+  "tooltipFeature15": {
+    "message": "可疑追踪器检测"
+  },
+  "trackingRiskTitle": {
+    "message": "追踪器警告"
+  },
+  "trackingRiskHostile": {
+    "message": "可疑追踪器"
+  },
+  "trackingRiskThirdParty": {
+    "message": "外部来源"
+  },
+  "trackingRiskDetected": {
+    "message": "此页面加载了常用于钓鱼攻击的追踪器。"
+  },
+  "trackingRiskLow": {
+    "message": "正常"
+  },
+  "trackingRiskElevated": {
+    "message": "中"
+  },
+  "trackingRiskHigh": {
+    "message": "高"
   }
 }

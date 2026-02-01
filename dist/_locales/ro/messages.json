@@ -155,6 +155,9 @@
   "lastRuleUpdate": {
     "message": "Ultima actualizare a bazei de date: "
   },
+  "rulesLoaded": {
+    "message": "site-uri de phishing blocate"
+  },
   "licenseStatus": {
     "message": "Stare licență:"
   },
@@ -483,7 +486,7 @@
     "message": "Sunteți complet protejat. Toate funcțiile sunt active."
   },
   "licenseUpgradeLink": {
-    "message": "Upgrade la Premium pentru 1,99 €/lună (3 dispozitive) →"
+    "message": "Upgrade la Premium pentru 4,99 €/lună (3 dispozitive) →"
   },
   "licenseAlreadyHaveCode": {
     "message": "Aveți deja un cod de licență?"
@@ -932,6 +935,12 @@
   "reason_brandSubdomainPhishing": {
     "message": "Cuvânt cheie de brand detectat pe platforma de găzduire gratuită (risc ridicat). Companiile legitime nu folosesc găzduire gratuită pentru servicii oficiale."
   },
+  "hostnameBrandKeywordPhishing": {
+    "message": "Domeniu suspect: nume de brand combinat cu cuvinte cheie de phishing (risc ridicat). Exemplu: login-microsoft-verify.com NU este un site Microsoft."
+  },
+  "reason_hostnameBrandKeywordPhishing": {
+    "message": "Domeniu suspect: nume de brand combinat cu cuvinte cheie de phishing (risc ridicat). Exemplu: login-microsoft-verify.com NU este un site Microsoft."
+  },
   "nrdTelCombo": {
     "message": "Număr de telefon pe un domeniu recent înregistrat cu cuvinte cheie de phishing (risc mediu). Aceasta poate fi o încercare de vishing (phishing vocal)."
   },
@@ -974,7 +983,7 @@
   "reason_bitbPadlockIcon": {
     "message": "Pictogramă de lacăt de securitate falsă detectată (risc mediu). Lacătele reale apar în bara de adrese a browserului, nu în conținutul paginii."
   },
-  "reason_bitbWindowChrome": {
+  "reason_bitbWindowStyling": {
     "message": "Stil de fereastră de browser simulat detectat (risc mediu). Suprapunerea este stilizată să arate ca o fereastră de sistem de operare."
   },
   "reason_bitbIframeInModal": {
@@ -1003,6 +1012,74 @@
   },
   "bitbAttackTip": {
     "message": "Verificați întotdeauna bara de adrese a browserului pentru URL-ul real, nu textul afișat în pagină."
+  },
+  "formHijackingTitle": {
+    "message": "Deturnare formular detectată!"
+  },
+  "formHijackingMessage": {
+    "message": "Această pagină a încercat să redirecționeze credențialele dvs. către un server extern. Datele dvs. NU au fost trimise."
+  },
+  "formHijackingTip": {
+    "message": "Formularul a fost modificat în secret pentru a trimite datele dvs. la: "
+  },
+  "tooltipTitle": {
+    "message": "Protejat impotriva:",
+    "description": "Title for smart link scanning tooltip"
+  },
+  "tooltipFeature1": {
+    "message": "URL-uri de phishing si TLD-uri suspecte",
+    "description": "Tooltip feature 1"
+  },
+  "tooltipFeature2": {
+    "message": "Domenii Unicode similare",
+    "description": "Tooltip feature 2"
+  },
+  "tooltipFeature3": {
+    "message": "Ferestre de browser false (BitB)",
+    "description": "Tooltip feature 3"
+  },
+  "tooltipFeature4": {
+    "message": "Declansatori PowerShell/malware",
+    "description": "Tooltip feature 4"
+  },
+  "tooltipFeature5": {
+    "message": "Atacuri cu suprapuneri invizibile",
+    "description": "Tooltip feature 5"
+  },
+  "tooltipFeature6": {
+    "message": "Coduri QR malitioase",
+    "description": "Tooltip feature 6"
+  },
+  "tooltipFeature7": {
+    "message": "Tipuri de linkuri periculoase",
+    "description": "Tooltip feature 7"
+  },
+  "tooltipFeature8": {
+    "message": "Deturnarea formularelor",
+    "description": "Tooltip feature 8"
+  },
+  "tooltipFeature9": {
+    "message": "Manipularea clipboard-ului",
+    "description": "Tooltip feature 9"
+  },
+  "tooltipFeature10": {
+    "message": "Cod ascuns (Shadow DOM)",
+    "description": "Tooltip feature 10"
+  },
+  "tooltipFeature11": {
+    "message": "Furt de jetoane OAuth",
+    "description": "Tooltip feature 11 - OAuth token theft protection"
+  },
+  "tooltipFeature12": {
+    "message": "Verificări de securitate false",
+    "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
+  },
+  "tooltipFooter": {
+    "message": "15 straturi de securitate active"
+  },
+  "tooltipNewBadge": {
+    "message": "Nou",
+    "description": "Badge text for new features"
   },
   "shadowDomLoginForm": {
     "message": "Formular de autentificare ascuns în Shadow DOM detectat (risc ridicat). Această tehnică este folosită pentru a evita scanerele de securitate."
@@ -1547,5 +1624,146 @@
   "brandImpersonation": {
     "message": "Possible brand impersonation attempt",
     "description": ""
+  },
+  "dangerousUriBlocked": {
+    "message": "Un tip de link periculos (precum javascript:) a fost blocat pentru siguranța dumneavoastră."
+  },
+  "TEST_MODE_ENABLED": {
+    "message": "Modul de testare este activ - aceasta este doar pentru scopuri de dezvoltare."
+  },
+  "webTransportSuspiciousPattern": {
+    "message": "Model de conexiune de rețea suspect detectat (posibilă exfiltrare de date)."
+  },
+  "webTransportHighStreamCount": {
+    "message": "Număr neobișnuit de fluxuri de rețea detectat (posibilă activitate C2)."
+  },
+  "imagelessQR": {
+    "message": "Cod QR ascuns detectat (construit din elemente HTML în loc de imagine - tehnică de evitare)."
+  },
+  "imagelessQrDangerTitle": {
+    "message": "PERICOL: Cod QR ascuns detectat!"
+  },
+  "imagelessQrCautionTitle": {
+    "message": "Atenție: Cod QR ascuns detectat"
+  },
+  "quotaDailyScans": {
+    "message": "Scanări zilnice"
+  },
+  "quotaResetsAt": {
+    "message": "Se resetează la $TIME$ UTC",
+    "placeholders": {
+      "TIME": {
+        "content": "$1",
+        "example": "00:00"
+      }
+    }
+  },
+  "quotaUpgrade": {
+    "message": "Actualizare"
+  },
+  "quotaExceededDesc": {
+    "message": "Limita zilnică atinsă - se resetează la miezul nopții UTC"
+  },
+  "licenseHaveKey": {
+    "message": "Ai deja o cheie?"
+  },
+  "threatsTodayCount": {
+    "message": "+$1 astăzi",
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "847"
+      }
+    }
+  },
+  "threatsTotalCount": {
+    "message": "$1 blocate",
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "2431"
+      }
+    }
+  },
+  "oauthTheftTitle": {
+    "message": "🛡️ Furt de token OAuth blocat"
+  },
+  "oauthTheftMessage": {
+    "message": "Ați încercat să lipiți un URL de autentificare. Aceasta este o tehnică de phishing cunoscută numită 'ConsentFix' care fură accesul la contul dvs."
+  },
+  "oauthTheftTip": {
+    "message": "Nu lipiți niciodată URL-uri care conțin ?code= sau jetoane de acces pe site-uri web."
+  },
+  "fakeTurnstileTitle": {
+    "message": "⚠️ Verificare de securitate falsă detectată"
+  },
+  "fakeTurnstileMessage": {
+    "message": "Această pagină afișează o verificare Cloudflare falsă. Aceasta este adesea folosită în atacuri de phishing."
+  },
+  "fakeTurnstileDetected": {
+    "message": "Verificare de securitate falsă detectată (risc ridicat). Această pagină imită Cloudflare/CAPTCHA pentru a vă înșela."
+  },
+  "splitQrTitle": {
+    "message": "🔍 Cod QR împărțit detectat"
+  },
+  "splitQrMessage": {
+    "message": "A fost detectat un cod QR împărțit în mai multe imagini. Această tehnică este folosită pentru a evita scanerele de securitate."
+  },
+  "understoodButton": {
+    "message": "Am Înțeles"
+  },
+  "aitmProxyTitle": {
+    "message": "Proxy de phishing detectat!"
+  },
+  "aitmProxyMessage": {
+    "message": "Această pagină pare a fi un proxy de phishing care se dă drept {provider}. Datele dvs. de autentificare vor fi furate dacă vă conectați aici."
+  },
+  "aitmProxyTip": {
+    "message": "Verificați întotdeauna URL-ul din bara de adrese înainte de a introduce datele de autentificare."
+  },
+  "aitmProxyDetected": {
+    "message": "Proxy de phishing detectat - imitarea paginii de autentificare (risc critic)."
+  },
+  "svgPayloadTitle": {
+    "message": "SVG malițios detectat!"
+  },
+  "svgPayloadMessage": {
+    "message": "Această pagină conține un SVG cu cod malițios încorporat care vă poate fura datele."
+  },
+  "svgPayloadTip": {
+    "message": "Fiți precaut cu atașamentele SVG din surse necunoscute."
+  },
+  "svgPayloadDetected": {
+    "message": "SVG malițios cu scripturi încorporate detectat (risc critic)."
+  },
+  "tooltipFeature13": {
+    "message": "Phishing prin proxy de autentificare (AiTM)"
+  },
+  "tooltipFeature14": {
+    "message": "Scripturi SVG malițioase"
+  },
+  "tooltipFeature15": {
+    "message": "Detectarea trackerelor suspecte"
+  },
+  "trackingRiskTitle": {
+    "message": "Avertisment Trackere"
+  },
+  "trackingRiskHostile": {
+    "message": "trackere suspecte"
+  },
+  "trackingRiskThirdParty": {
+    "message": "surse externe"
+  },
+  "trackingRiskDetected": {
+    "message": "Această pagină încarcă trackere folosite frecvent în atacuri de phishing."
+  },
+  "trackingRiskLow": {
+    "message": "Normal"
+  },
+  "trackingRiskElevated": {
+    "message": "Ridicat"
+  },
+  "trackingRiskHigh": {
+    "message": "Înalt"
   }
 }

@@ -16,19 +16,20 @@ window.CONFIG = {
     // Uitgebreid met nieuwe TLD's die in 2025-2026 veel voor phishing worden gebruikt
     // NOTE: .dev, .app, .io VERWIJDERD - dit zijn legitieme Google TLDs gebruikt door developers
     // SECURITY FIX v8.1.1: Vervangen door Set voor O(1) lookup en ReDoS preventie
+    // FIX v8.7.3: Verwijderd: 'ai', 'cloud', 'tech', 'digital', 'link', 'space' - te veel legitiem gebruik
     SUSPICIOUS_TLDS_SET: new Set([
-        // Originele verdachte TLD's
-        'beauty', 'bond', 'buzz', 'cc', 'cf', 'club', 'cn', 'es', 'ga', 'gq',
+        // Originele verdachte TLD's (hoog risico, weinig legitiem gebruik)
+        'beauty', 'bond', 'buzz', 'cc', 'cf', 'club', 'cn', 'ga', 'gq',
         'hair', 'li', 'live', 'ml', 'mov', 'pro', 'rest', 'ru', 'sbs', 'shop', 'tk',
         'top', 'uno', 'win', 'xin', 'xyz', 'zip',
         // Nieuwe TLD's 2025-2026 (veel misbruikt voor phishing)
-        'autos', 'boats', 'cam', 'casa', 'cfd', 'click', 'cloud', 'cyou', 'desi',
-        'digital', 'fit', 'fun', 'gdn', 'gives', 'icu', 'lat', 'lol', 'mom', 'monster',
+        'autos', 'boats', 'cam', 'casa', 'cfd', 'click', 'cyou', 'desi',
+        'fit', 'fun', 'gdn', 'gives', 'icu', 'lat', 'lol', 'mom', 'monster',
         'nexus', 'observer', 'online', 'ooo', 'pics', 'quest', 'racing', 'realty',
-        'rodeo', 'site', 'skin', 'space', 'store', 'stream', 'surf', 'tech',
+        'rodeo', 'site', 'skin', 'store', 'stream', 'surf',
         'today', 'vip', 'wang', 'webcam', 'website', 'work', 'world', 'wtf', 'yachts',
-        // AI/Tech gerelateerde TLD's (hoog risico in 2026)
-        'ai', 'bot', 'chat', 'crypto', 'dao', 'data', 'dex', 'eth', 'gpt', 'link', 'llm',
+        // Crypto/Web3 TLD's (hoog risico)
+        'bot', 'chat', 'crypto', 'dao', 'data', 'dex', 'eth', 'gpt', 'llm',
         'metaverse', 'nft', 'sol', 'token', 'wallet', 'web3'
     ]),
 
@@ -45,7 +46,8 @@ window.CONFIG = {
 
     // Legacy regex voor backwards compatibility (statisch, geen dynamische constructie)
     // Kan verwijderd worden na volledige migratie naar isSuspiciousTLD()
-    SUSPICIOUS_TLDS: /\.(beauty|bond|buzz|cc|cf|club|cn|es|ga|gq|hair|li|live|ml|mov|pro|rest|ru|sbs|shop|tk|top|uno|win|xin|xyz|zip|autos|boats|cam|casa|cfd|click|cloud|cyou|desi|digital|fit|fun|gdn|gives|icu|lat|lol|mom|monster|nexus|observer|online|ooo|pics|quest|racing|realty|rodeo|site|skin|space|store|stream|surf|tech|today|vip|wang|webcam|website|work|world|wtf|yachts|ai|bot|chat|crypto|dao|data|dex|eth|gpt|link|llm|metaverse|nft|sol|token|wallet|web3)$/i,
+    // FIX v8.7.3: Verwijderd: ai, cloud, tech, digital, link, space, es (legitiem gebruik)
+    SUSPICIOUS_TLDS: /\.(beauty|bond|buzz|cc|cf|club|cn|ga|gq|hair|li|live|ml|mov|pro|rest|ru|sbs|shop|tk|top|uno|win|xin|xyz|zip|autos|boats|cam|casa|cfd|click|cyou|desi|fit|fun|gdn|gives|icu|lat|lol|mom|monster|nexus|observer|online|ooo|pics|quest|racing|realty|rodeo|site|skin|store|stream|surf|today|vip|wang|webcam|website|work|world|wtf|yachts|bot|chat|crypto|dao|data|dex|eth|gpt|llm|metaverse|nft|sol|token|wallet|web3)$/i,
 
     // ==== Risicodrempels voor gefaseerde analyse en UI-feedback ====
     LOW_THRESHOLD: 4,      //  risico < 4 → safe
@@ -766,6 +768,32 @@ SUSPICIOUS_URL_PATTERNS: [
                 maliciousEventHandler: 5,    // Event handler met gevaarlijk patroon (alleen mee als andere indicators)
                 base64Eval: 8,               // atob + eval combinatie
                 foreignObjectRedirect: 10    // foreignObject met redirect code
+            }
+        },
+
+        // v8.7.0: Tracking Infrastructure Risk Detection (Layer 15)
+        // Detecteert tracking domeinen geassocieerd met phishing/malware infrastructuur
+        // Strategisch gepositioneerd als security feature, niet als privacy score
+        trackingInfrastructureRisk: {
+            enabled: true,
+            scoreThreshold: 15,           // Minimum score om waarschuwing te tonen
+            maxThirdPartyDomains: 20,     // Meer dan dit = excessive tracking
+
+            scores: {
+                KNOWN_HOSTILE_TRACKER: 20,    // Domein in hostileTrackers.json
+                HOSTILE_PATTERN_MATCH: 15,    // Match op hostile pattern
+                SUSPICIOUS_SUBDOMAIN: 10,     // Random/hex/base64 subdomain
+                DANGEROUS_TLD_TRACKER: 8,     // Tracker op verdachte TLD
+                FINGERPRINTING_SCRIPT: 6,     // Known fingerprinting library
+                EXCESSIVE_THIRD_PARTIES: 5,   // >20 tracking domeinen
+                UNKNOWN_TRACKER: 3            // Onbekend tracking domein (niet trusted)
+            },
+
+            thresholds: {
+                none: 0,
+                low: 5,
+                elevated: 15,
+                high: 25
             }
         }
     }

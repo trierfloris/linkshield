@@ -155,6 +155,9 @@
   "lastRuleUpdate": {
     "message": "अंतिम डेटाबेस अपडेट: "
   },
+  "rulesLoaded": {
+    "message": "फ़िशिंग साइट्स ब्लॉक की गईं"
+  },
   "licenseStatus": {
     "message": "लाइसेंस स्थिति:"
   },
@@ -597,7 +600,7 @@
     "message": "आप पूरी तरह से सुरक्षित हैं। सभी सुविधाएं सक्रिय हैं।"
   },
   "licenseUpgradeLink": {
-    "message": "प्रीमियम में अपग्रेड करें — €1.99/माह (3 डिवाइस) →"
+    "message": "प्रीमियम में अपग्रेड करें — €4.99/माह (3 डिवाइस) →"
   },
   "licenseAlreadyHaveCode": {
     "message": "क्या आपके पास पहले से लाइसेंस कोड है?"
@@ -1043,7 +1046,7 @@
   "reason_bitbPadlockIcon": {
     "message": "नकली सुरक्षा ताला आइकन का पता चला (मध्यम जोखिम)। असली ताले ब्राउज़र एड्रेस बार में दिखाई देते हैं, पेज सामग्री में नहीं।"
   },
-  "reason_bitbWindowChrome": {
+  "reason_bitbWindowStyling": {
     "message": "सिम्युलेटेड ब्राउज़र विंडो स्टाइलिंग का पता चला (मध्यम जोखिम)। ओवरले ऑपरेटिंग सिस्टम विंडो जैसा दिखने के लिए स्टाइल किया गया है।"
   },
   "reason_bitbIframeInModal": {
@@ -1135,7 +1138,7 @@
     "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
   },
   "tooltipFooter": {
-    "message": "14 सुरक्षा परतें सक्रिय"
+    "message": "15 सुरक्षा परतें सक्रिय"
   },
   "tooltipNewBadge": {
     "message": "नया",
@@ -1738,5 +1741,29 @@
   },
   "tooltipFeature14": {
     "message": "दुर्भावनापूर्ण SVG स्क्रिप्ट"
+  },
+  "tooltipFeature15": {
+    "message": "संदिग्ध ट्रैकर पहचान"
+  },
+  "trackingRiskTitle": {
+    "message": "ट्रैकर चेतावनी"
+  },
+  "trackingRiskHostile": {
+    "message": "संदिग्ध ट्रैकर्स"
+  },
+  "trackingRiskThirdParty": {
+    "message": "बाहरी स्रोत"
+  },
+  "trackingRiskDetected": {
+    "message": "यह पेज ऐसे ट्रैकर्स लोड करता है जो अक्सर फ़िशिंग हमलों में उपयोग होते हैं।"
+  },
+  "trackingRiskLow": {
+    "message": "सामान्य"
+  },
+  "trackingRiskElevated": {
+    "message": "उन्नत"
+  },
+  "trackingRiskHigh": {
+    "message": "उच्च"
   }
 }

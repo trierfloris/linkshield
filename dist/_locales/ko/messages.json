@@ -155,6 +155,9 @@
   "lastRuleUpdate": {
     "message": "마지막 데이터베이스 업데이트: "
   },
+  "rulesLoaded": {
+    "message": "피싱 사이트 차단됨"
+  },
   "licenseStatus": {
     "message": "라이선스 상태:"
   },
@@ -597,7 +600,7 @@
     "message": "완전히 보호되고 있습니다. 모든 기능이 활성화되어 있습니다."
   },
   "licenseUpgradeLink": {
-    "message": "프리미엄으로 업그레이드 — €1.99/월 (3대) →"
+    "message": "프리미엄으로 업그레이드 — €4.99/월 (3대) →"
   },
   "licenseAlreadyHaveCode": {
     "message": "이미 라이선스 코드가 있으신가요?"
@@ -995,6 +998,12 @@
   "reason_brandSubdomainPhishing": {
     "message": "무료 호스팅 플랫폼에서 브랜드 이름 감지됨 (높은 위험). 합법적인 회사는 공식 서비스에 무료 호스팅을 사용하지 않습니다."
   },
+  "hostnameBrandKeywordPhishing": {
+    "message": "의심스러운 도메인: 브랜드 이름과 피싱 키워드 조합 (높은 위험). 예: login-microsoft-verify.com은 Microsoft 사이트가 아닙니다."
+  },
+  "reason_hostnameBrandKeywordPhishing": {
+    "message": "의심스러운 도메인: 브랜드 이름과 피싱 키워드 조합 (높은 위험). 예: login-microsoft-verify.com은 Microsoft 사이트가 아닙니다."
+  },
   "nrdTelCombo": {
     "message": "피싱 키워드가 있는 신규 등록 도메인에 전화번호 (중간 위험). 비싱(음성 피싱) 시도일 수 있습니다."
   },
@@ -1037,7 +1046,7 @@
   "reason_bitbPadlockIcon": {
     "message": "가짜 보안 자물쇠 아이콘 감지됨 (중간 위험). 실제 자물쇠는 페이지 내용이 아닌 브라우저 주소 표시줄에 나타납니다."
   },
-  "reason_bitbWindowChrome": {
+  "reason_bitbWindowStyling": {
     "message": "시뮬레이션된 브라우저 창 스타일링 감지됨 (중간 위험). 오버레이가 운영 체제 창처럼 보이도록 스타일되었습니다."
   },
   "reason_bitbIframeInModal": {
@@ -1066,6 +1075,74 @@
   },
   "bitbAttackTip": {
     "message": "항상 브라우저 주소 표시줄에서 실제 URL을 확인하세요. 페이지 내에 표시된 텍스트가 아닙니다."
+  },
+  "formHijackingTitle": {
+    "message": "폼 하이재킹 감지됨!"
+  },
+  "formHijackingMessage": {
+    "message": "이 페이지가 귀하의 자격 증명을 외부 서버로 리디렉션하려고 시도했습니다. 데이터가 전송되지 않았습니다."
+  },
+  "formHijackingTip": {
+    "message": "폼이 비밀리에 수정되어 데이터를 다음으로 전송하려고 했습니다: "
+  },
+  "tooltipTitle": {
+    "message": "다음으로부터 보호:",
+    "description": "Title for smart link scanning tooltip"
+  },
+  "tooltipFeature1": {
+    "message": "피싱 URL 및 의심스러운 TLD",
+    "description": "Tooltip feature 1"
+  },
+  "tooltipFeature2": {
+    "message": "Unicode 유사 도메인",
+    "description": "Tooltip feature 2"
+  },
+  "tooltipFeature3": {
+    "message": "가짜 브라우저 창 (BitB)",
+    "description": "Tooltip feature 3"
+  },
+  "tooltipFeature4": {
+    "message": "PowerShell/악성코드 트리거",
+    "description": "Tooltip feature 4"
+  },
+  "tooltipFeature5": {
+    "message": "보이지 않는 오버레이 공격",
+    "description": "Tooltip feature 5"
+  },
+  "tooltipFeature6": {
+    "message": "악성 QR 코드",
+    "description": "Tooltip feature 6"
+  },
+  "tooltipFeature7": {
+    "message": "위험한 링크 유형",
+    "description": "Tooltip feature 7"
+  },
+  "tooltipFeature8": {
+    "message": "폼 하이재킹",
+    "description": "Tooltip feature 8"
+  },
+  "tooltipFeature9": {
+    "message": "클립보드 조작",
+    "description": "Tooltip feature 9"
+  },
+  "tooltipFeature10": {
+    "message": "숨겨진 코드 (Shadow DOM)",
+    "description": "Tooltip feature 10"
+  },
+  "tooltipFeature11": {
+    "message": "OAuth 토큰 탈취",
+    "description": "Tooltip feature 11 - OAuth token theft protection"
+  },
+  "tooltipFeature12": {
+    "message": "가짜 보안 검사",
+    "description": "Tooltip feature 12 - Fake Turnstile/CAPTCHA detection"
+  },
+  "tooltipFooter": {
+    "message": "15개 보안 레이어 활성화"
+  },
+  "tooltipNewBadge": {
+    "message": "신규",
+    "description": "Badge text for new features"
   },
   "shadowDomLoginForm": {
     "message": "Shadow DOM에 숨겨진 로그인 폼 감지됨 (높은 위험). 이 기술은 보안 스캐너를 회피하는 데 사용됩니다."
@@ -1547,5 +1624,146 @@
   "brandImpersonation": {
     "message": "Possible brand impersonation attempt",
     "description": ""
+  },
+  "dangerousUriBlocked": {
+    "message": "위험한 링크 유형(예: javascript:)이 보안을 위해 차단되었습니다."
+  },
+  "TEST_MODE_ENABLED": {
+    "message": "테스트 모드가 활성화되어 있습니다 - 개발 목적으로만 사용됩니다."
+  },
+  "webTransportSuspiciousPattern": {
+    "message": "의심스러운 네트워크 연결 패턴이 감지되었습니다 (데이터 유출 가능성)."
+  },
+  "webTransportHighStreamCount": {
+    "message": "비정상적인 수의 네트워크 스트림이 감지되었습니다 (C2 활동 가능성)."
+  },
+  "imagelessQR": {
+    "message": "숨겨진 QR 코드가 감지되었습니다 (이미지 대신 HTML 요소로 구성 - 회피 기술)."
+  },
+  "imagelessQrDangerTitle": {
+    "message": "위험: 숨겨진 QR 코드 감지!"
+  },
+  "imagelessQrCautionTitle": {
+    "message": "주의: 숨겨진 QR 코드 감지"
+  },
+  "quotaDailyScans": {
+    "message": "일일 스캔"
+  },
+  "quotaResetsAt": {
+    "message": "$TIME$ UTC에 재설정",
+    "placeholders": {
+      "TIME": {
+        "content": "$1",
+        "example": "00:00"
+      }
+    }
+  },
+  "quotaUpgrade": {
+    "message": "업그레이드"
+  },
+  "quotaExceededDesc": {
+    "message": "일일 한도에 도달했습니다 - UTC 자정에 재설정됩니다"
+  },
+  "licenseHaveKey": {
+    "message": "이미 키가 있으신가요?"
+  },
+  "threatsTodayCount": {
+    "message": "+$1 오늘",
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "847"
+      }
+    }
+  },
+  "threatsTotalCount": {
+    "message": "$1 차단됨",
+    "placeholders": {
+      "COUNT": {
+        "content": "$1",
+        "example": "2431"
+      }
+    }
+  },
+  "oauthTheftTitle": {
+    "message": "🛡️ OAuth 토큰 도용 차단됨"
+  },
+  "oauthTheftMessage": {
+    "message": "인증 URL을 붙여넣으려고 했습니다. 이것은 계정 액세스를 훔치는 'ConsentFix'라는 알려진 피싱 기술입니다."
+  },
+  "oauthTheftTip": {
+    "message": "?code= 또는 액세스 토큰이 포함된 URL을 웹사이트에 붙여넣지 마세요."
+  },
+  "fakeTurnstileTitle": {
+    "message": "⚠️ 가짜 보안 검사 감지됨"
+  },
+  "fakeTurnstileMessage": {
+    "message": "이 페이지에 가짜 Cloudflare 인증이 표시되고 있습니다. 이것은 피싱 공격에 자주 사용됩니다."
+  },
+  "fakeTurnstileDetected": {
+    "message": "가짜 보안 인증이 감지되었습니다 (높은 위험). 이 페이지는 당신을 속이기 위해 Cloudflare/CAPTCHA를 모방합니다."
+  },
+  "splitQrTitle": {
+    "message": "🔍 분할 QR 코드 감지됨"
+  },
+  "splitQrMessage": {
+    "message": "여러 이미지로 분할된 QR 코드가 감지되었습니다. 이 기술은 보안 스캐너를 우회하는 데 사용됩니다."
+  },
+  "understoodButton": {
+    "message": "이해했습니다"
+  },
+  "aitmProxyTitle": {
+    "message": "피싱 프록시 감지!"
+  },
+  "aitmProxyMessage": {
+    "message": "이 페이지는 {provider}을(를) 사칭하는 피싱 프록시로 보입니다. 여기서 로그인하면 자격 증명이 도난됩니다."
+  },
+  "aitmProxyTip": {
+    "message": "자격 증명을 입력하기 전에 항상 주소 표시줄의 URL을 확인하세요."
+  },
+  "aitmProxyDetected": {
+    "message": "피싱 프록시 감지 - 로그인 페이지 사칭 (심각한 위험)."
+  },
+  "svgPayloadTitle": {
+    "message": "악성 SVG 감지!"
+  },
+  "svgPayloadMessage": {
+    "message": "이 페이지에는 데이터를 훔칠 수 있는 악성 코드가 포함된 SVG가 있습니다."
+  },
+  "svgPayloadTip": {
+    "message": "알 수 없는 출처의 SVG 첨부 파일에 주의하세요."
+  },
+  "svgPayloadDetected": {
+    "message": "내장 스크립트가 있는 악성 SVG 감지 (심각한 위험)."
+  },
+  "tooltipFeature13": {
+    "message": "로그인 프록시 피싱 (AiTM)"
+  },
+  "tooltipFeature14": {
+    "message": "악성 SVG 스크립트"
+  },
+  "tooltipFeature15": {
+    "message": "의심스러운 트래커 탐지"
+  },
+  "trackingRiskTitle": {
+    "message": "트래커 경고"
+  },
+  "trackingRiskHostile": {
+    "message": "의심스러운 트래커"
+  },
+  "trackingRiskThirdParty": {
+    "message": "외부 소스"
+  },
+  "trackingRiskDetected": {
+    "message": "이 페이지는 피싱 공격에 자주 사용되는 트래커를 로드합니다."
+  },
+  "trackingRiskLow": {
+    "message": "정상"
+  },
+  "trackingRiskElevated": {
+    "message": "높음"
+  },
+  "trackingRiskHigh": {
+    "message": "매우 높음"
   }
 }

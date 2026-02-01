@@ -7437,10 +7437,12 @@ async function calculateRiskScore(url) {
         addRisk(4, "noHttps", "medium"); // Was 15 (aanzienlijk verlaagd)
       }
     }
-    // 2. Phishing-trefwoorden (contextuele indicator)
-    if (urlParts.some(word => globalConfig.PHISHING_KEYWORDS.has(word))) {
-      addRisk(1.5, "suspiciousKeywords", "low"); // Was 10
-    }
+    // 2. Phishing-trefwoorden - UITGESCHAKELD (te veel false positives)
+    // Keywords zoals "login", "account", "verify" staan op elke legitieme site
+    // De combinatie-checks (brandKeyword, suspiciousTLD) vangen echte phishing op
+    // if (urlParts.some(word => globalConfig.PHISHING_KEYWORDS.has(word))) {
+    //   addRisk(0, "suspiciousKeywords", "low");
+    // }
     // 3. BrandKeyword subdomein check (alleen als niet trusted)
     if (!isTrusted && /^(login|secure|auth|signin|verify|portal|account|access)\b/i.test(subdomain)) {
       addRisk(4, `brandKeyword:${subdomain}`, "medium"); // Was 5
@@ -7454,7 +7456,8 @@ async function calculateRiskScore(url) {
       addRisk(10, "malwareExtension", "high"); // Was 12
     }
     // 6. IP-adres als domeinnaam (sterke technische indicator)
-    if (/^(?:https?:\/\/)?(\d{1,3}\.){3}\d{1,3}(?::\d+)?(?:\/|$)/.test(url)) {
+    // Skip for private networks (localhost, LAN) - used by sysadmins
+    if (/^(?:https?:\/\/)?(\d{1,3}\.){3}\d{1,3}(?::\d+)?(?:\/|$)/.test(url) && !isPrivateNetwork(urlObj.hostname)) {
       addRisk(8, "ipAsDomain", "high"); // Was 12, nu verfijnd
       // Check op ongebruikelijke poort als extra risico
       if (urlObj.port && !["80", "443"].includes(urlObj.port)) {
@@ -7476,9 +7479,10 @@ async function calculateRiskScore(url) {
         handleError(error, `calculateRiskScore: Kon verkorte URL ${url} niet oplossen`);
       }
     }
-    // 8. Verdachte TLD's (sterke technische indicator)
+    // 8. Verdachte TLD's (contextuele indicator, niet standalone alarmerend)
+    // FIX v8.7.3: Score 7→4, severity high→medium (TLD alleen is geen sterk signaal)
     if (globalConfig.SUSPICIOUS_TLDS.test(domain)) {
-      addRisk(7, "suspiciousTLD", "high"); // Was 15
+      addRisk(4, "suspiciousTLD", "medium");
     }
     // 9. Ongewoon lange URL's (zwakke indicator)
     if (url.length > maxLength) {
@@ -9856,12 +9860,13 @@ function checkStaticConditions(url, reasons, totalRiskRef) {
       weight: globalConfig.PROTOCOL_RISK,
       reason: 'noHttps'
     },
-    // Verdachte TLD's
+    // Verdachte TLD's (contextuele indicator)
+    // FIX v8.7.3: weight 7→4 (TLD alleen is geen sterk signaal)
     {
       condition: (globalConfig.SUSPICIOUS_TLDS instanceof RegExp)
         ? globalConfig.SUSPICIOUS_TLDS.test(hostNFC)
         : false,
-      weight: 7,
+      weight: 4,
       reason: 'suspiciousTLD'
     },
     // IP-adres als domeinnaam
@@ -10090,11 +10095,12 @@ function applyStaticChecks(url, reasons, totalRiskRef) {
     }
     const subdomainCount = parts.length - (tldLen + 1);
     // De overige statische checks
+    // FIX v8.7.3: suspiciousTLD weight 6→4 (TLD alleen is geen sterk signaal)
     const staticChecks = [
         {
             condition: (globalConfig.SUSPICIOUS_TLDS instanceof RegExp)
                        && globalConfig.SUSPICIOUS_TLDS.test(hostNFC),
-            weight: 6,
+            weight: 4,
             reason: 'suspiciousTLD'
         },
         {
@@ -10215,8 +10221,8 @@ async function applyMediumChecks(url, reasons, totalRiskRef) {
     { func: async () => await hasJavascriptScheme(url), messageKey: 'javascriptScheme', risk: 4.0 },
     { func: async () => await usesUrlFragmentTrick(url), messageKey: 'urlFragmentTrick', risk: 2.0 },
     { func: async () => await isCryptoPhishingUrl(url), messageKey: 'cryptoPhishing', risk: 10.0 },
-    { func: async () => await isFreeHostingDomain(url), messageKey: 'freeHosting', risk: 5 },
-    { func: async () => await hasSuspiciousKeywords(url), messageKey: 'suspiciousKeywords', risk: 2.0 },
+    // { func: async () => await isFreeHostingDomain(url), messageKey: 'freeHosting', risk: 5 }, // UITGESCHAKELD - te veel false positives (github.io, vercel.app, netlify.app zijn legitiem)
+    // { func: async () => await hasSuspiciousKeywords(url), messageKey: 'suspiciousKeywords', risk: 0 }, // UITGESCHAKELD - te veel false positives
     { func: async () => await hasSuspiciousUrlPattern(url), messageKey: 'suspiciousPattern', risk: 3.0 },
     // Scripts en Iframes checks zijn vaak iets zwaarder door DOM-traversal / head requests
     // Deze retourneren al arrays van redenen.
@@ -10323,11 +10329,13 @@ async function checkDynamicConditionsPhase2(url, reasons, totalRiskRef) {
       risk: 5.0 // Was 3.5. Hetzelfde als scripts; dit is een significant risico.
     },
     // --- Contextuele Indicatoren ---
-    {
-      func: () => isFreeHostingDomain(url),
-      messageKey: 'freeHosting',
-      risk: 4 // Was 5. Verlaagd, maar blijft een belangrijke contextuele factor.
-    },
+    // UITGESCHAKELD - freeHosting standalone geeft te veel false positives (github.io, vercel.app, etc.)
+    // Blijft actief in AiTM detectie waar het gecombineerd wordt met login form detectie
+    // {
+    //   func: () => isFreeHostingDomain(url),
+    //   messageKey: 'freeHosting',
+    //   risk: 4
+    // },
     {
       func: () => isShortenedUrl(url),
       messageKey: 'shortenedUrl',
@@ -10353,11 +10361,12 @@ async function checkDynamicConditionsPhase2(url, reasons, totalRiskRef) {
       messageKey: 'mixedContent',
       risk: 2.0 // Blijft 2.0.
     },
-    {
-      func: () => hasSuspiciousKeywords(url),
-      messageKey: 'suspiciousKeywords',
-      risk: 1.5 // Was 2.0. Verlaagd, dit is een van de zwakste indicatoren.
-    },
+    // UITGESCHAKELD - standalone keywords geven te veel false positives
+    // {
+    //   func: () => hasSuspiciousKeywords(url),
+    //   messageKey: 'suspiciousKeywords',
+    //   risk: 0
+    // },
     {
       func: () => usesUrlFragmentTrick(url),
       messageKey: 'urlFragmentTrick',
@@ -10533,10 +10542,52 @@ function hasMixedContent(url) {
   }
   return false;
 }
+/**
+ * Checks if a hostname belongs to a private/local network
+ * Private networks cannot be used for phishing (not publicly accessible)
+ */
+function isPrivateNetwork(hostname) {
+  if (!hostname) return false;
+
+  const h = hostname.toLowerCase();
+
+  // Localhost
+  if (h === 'localhost' || h === '127.0.0.1' || h === '::1') return true;
+
+  // .local domains (mDNS/Bonjour)
+  if (h.endsWith('.local')) return true;
+
+  // .localhost TLD (RFC 6761)
+  if (h.endsWith('.localhost')) return true;
+
+  // Private IPv4 ranges
+  const ipv4Match = h.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
+  if (ipv4Match) {
+    const [, a, b] = ipv4Match.map(Number);
+    // 10.0.0.0/8
+    if (a === 10) return true;
+    // 172.16.0.0/12
+    if (a === 172 && b >= 16 && b <= 31) return true;
+    // 192.168.0.0/16
+    if (a === 192 && b === 168) return true;
+    // 169.254.0.0/16 (link-local)
+    if (a === 169 && b === 254) return true;
+  }
+
+  return false;
+}
+
 function hasUnusualPort(url) {
   const commonPorts = [80, 443];
   try {
     const urlObj = new URL(url);
+
+    // Skip port check for private networks (localhost, LAN, .local)
+    // These are used by sysadmins and developers, not phishing
+    if (isPrivateNetwork(urlObj.hostname)) {
+      return false;
+    }
+
     const port = urlObj.port ? parseInt(urlObj.port, 10) : (urlObj.protocol === "http:" ? 80 : 443);
     return !commonPorts.includes(port);
   } catch (error) {
@@ -12859,7 +12910,7 @@ if (_isTopFrame) {
 
 // =============================================================================
 // QR CODE IMAGE SCANNER - Using jsQR
-// OCR (OCRAD.js) disabled due to Chrome Extension CSP incompatibility
+// OCR (OCRAD.js) disabled due to Extension CSP incompatibility
 // Integrates with IntersectionObserver for viewport-based scanning
 // =============================================================================
 
@@ -14720,7 +14771,7 @@ async function scanImageForQR(imgEl) {
 
 /**
  * Scan image for text using OCR
- * DISABLED: OCRAD.js is incompatible with Chrome Extension CSP (requires unsafe-eval)
+ * DISABLED: OCRAD.js is incompatible with Extension CSP (requires unsafe-eval)
  * QR code scanning via jsQR still works and is the primary image scanning method.
  */
 async function scanImageForOCR(imgEl) {

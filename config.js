@@ -937,13 +937,50 @@ SUSPICIOUS_URL_PATTERNS: [
             // Known legitimate third-party visa services (whitelist)
             // These will still show a soft warning but not be flagged as scams
             legitimateThirdParties: [
+                // Major visa service companies
                 'ivisa.com',
                 'visahq.com',
                 'cibtvisas.com',
                 'travisa.com',
                 'visacentral.com',
                 'visasexpress.com',
-                'expeditedvisa.com'
+                'expeditedvisa.com',
+                'visatorussia.com',
+                'myvisa.com',
+                'visaexpress.com',
+                'travisaoutsourcing.com',
+                // Travel agencies with visa services
+                'expedia.com',
+                'booking.com',
+                'kayak.com',
+                'tripadvisor.com',
+                'lonelyplanet.com',
+                'roughguides.com',
+                // Airline visa info pages
+                'united.com',
+                'aa.com',
+                'delta.com',
+                'britishairways.com',
+                'lufthansa.com',
+                'klm.com',
+                'airfrance.com',
+                'emirates.com',
+                'qantas.com',
+                // News and travel media (informational)
+                'cnn.com',
+                'bbc.com',
+                'theguardian.com',
+                'nytimes.com',
+                'washingtonpost.com',
+                'forbes.com',
+                'businessinsider.com',
+                'travelandleisure.com',
+                'cntraveler.com',
+                'frommers.com',
+                'fodors.com',
+                'nomadicmatt.com',
+                'thepoints guy.com',
+                'onemileatatime.com'
             ],
 
             scores: {

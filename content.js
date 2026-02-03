@@ -6966,10 +6966,39 @@ async function detectUnofficialGovernmentService() {
         }
     } catch (e) { /* Continue */ }
 
+    const pathname = window.location.pathname.toLowerCase();
+    const fullUrl = window.location.href.toLowerCase();
+
+    // === IMPROVEMENT 1: Skip informational/educational domains ===
+    const informationalDomains = ['.edu', '.ac.uk', '.edu.au', '.ac.nz', 'wikipedia.org', 'wikihow.com'];
+    if (informationalDomains.some(d => hostname.endsWith(d) || hostname.includes(d))) {
+        logDebug('[GovService] Skipping educational/informational domain:', hostname);
+        return { detected: false, serviceId: null, score: 0, isLegitimateThirdParty: false };
+    }
+
+    // === IMPROVEMENT 2: Skip informational URL paths ===
+    const informationalPaths = ['/blog', '/news', '/article', '/guide', '/how-to', '/wiki',
+        '/help', '/faq', '/about', '/learn', '/resources', '/tips', '/advice', '/posts'];
+    if (informationalPaths.some(p => pathname.includes(p))) {
+        logDebug('[GovService] Skipping informational path:', pathname);
+        return { detected: false, serviceId: null, score: 0, isLegitimateThirdParty: false };
+    }
+
     // Get page title and headers for matching
     const pageTitle = (document.title || '').toLowerCase();
     const headers = Array.from(document.querySelectorAll('h1, h2')).map(h => (h.textContent || '').toLowerCase());
     const allSearchText = [pageTitle, ...headers].join(' ');
+
+    // === IMPROVEMENT 3: Helper for word boundary matching ===
+    const matchesWithWordBoundary = (text, phrase) => {
+        // Normalize whitespace in both text and phrase (collapse multiple spaces)
+        const normalizedText = text.replace(/\s+/g, ' ');
+        const normalizedPhrase = phrase.replace(/\s+/g, ' ');
+        // Escape special regex characters in phrase, then add word boundaries
+        const escaped = normalizedPhrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const regex = new RegExp(`\\b${escaped}\\b`, 'i');
+        return regex.test(normalizedText);
+    };
 
     let detectedService = null;
     let matchedServiceConfig = null;
@@ -6979,9 +7008,9 @@ async function detectUnofficialGovernmentService() {
     try {
         // Check each known government service
         for (const [serviceId, service] of Object.entries(config.services)) {
-            // Check if page mentions this service (exact phrase match)
+            // Check if page mentions this service (word boundary match to prevent partial matches)
             const hasMatch = service.matchPhrases.some(phrase =>
-                allSearchText.includes(phrase.toLowerCase())
+                matchesWithWordBoundary(allSearchText, phrase)
             );
 
             if (!hasMatch) continue;
@@ -6995,6 +7024,53 @@ async function detectUnofficialGovernmentService() {
             if (isOfficial) {
                 // This is the official site, no warning needed
                 logDebug(`[GovService] ${serviceId} - Official domain: ${hostname}`);
+                continue;
+            }
+
+            // === IMPROVEMENT 4: Require application signals ===
+            // Only flag if the page appears to OFFER a service, not just MENTION it
+            const pageText = (document.body?.innerText || '').toLowerCase();
+            const pageHtml = (document.body?.innerHTML || '').toLowerCase();
+
+            // Check for application/service offering signals
+            const applicationSignals = {
+                // Forms with relevant fields
+                hasPassportField: !!document.querySelector('input[name*="passport"], input[placeholder*="passport"], input[id*="passport"]'),
+                hasNationalityField: !!document.querySelector('select[name*="nation"], select[name*="country"], input[name*="nationality"]'),
+                hasApplicationForm: !!document.querySelector('form[action*="apply"], form[action*="submit"], form[id*="application"]'),
+
+                // Apply/Submit buttons
+                hasApplyButton: /\b(apply now|start application|begin application|submit application|get your|order now|apply online|apply here)\b/i.test(pageText),
+
+                // Pricing display (specific to visa services)
+                hasPricingDisplay: /\b(total:?\s*[\$€£]|price:?\s*[\$€£]|fee:?\s*[\$€£]|cost:?\s*[\$€£]|\$\d{2,}|€\d{2,}|£\d{2,})\b/i.test(pageText),
+
+                // Service-specific form elements
+                hasDateFields: !!document.querySelector('input[type="date"], input[name*="travel"], input[name*="arrival"]'),
+
+                // Multiple step indicators (common in scam application sites)
+                hasStepIndicator: /\b(step\s*[123]|stage\s*[123])\b/i.test(pageText) || !!document.querySelector('[class*="step"], [class*="wizard"], [class*="progress"]')
+            };
+
+            const signalCount = Object.values(applicationSignals).filter(Boolean).length;
+            const hasApplicationSignals = signalCount >= 2; // Require at least 2 signals
+
+            if (!hasApplicationSignals) {
+                logDebug(`[GovService] ${serviceId} - Skipping: insufficient application signals (${signalCount}/2)`, applicationSignals);
+                continue;
+            }
+
+            // === IMPROVEMENT 5: Check for news/article indicators in page content ===
+            const newsIndicators = [
+                /\b(published|posted|written by|author:|byline|read more articles)\b/i,
+                /\b(news|article|opinion|editorial|report|coverage)\b/i.test(pageTitle),
+                !!document.querySelector('article, [itemtype*="Article"], [class*="article"], [class*="post-content"]'),
+                !!document.querySelector('time[datetime], [class*="publish"], [class*="date-posted"]')
+            ];
+            const newsSignalCount = newsIndicators.filter(Boolean).length;
+
+            if (newsSignalCount >= 2) {
+                logDebug(`[GovService] ${serviceId} - Skipping: appears to be news/article content`);
                 continue;
             }
 
@@ -7015,9 +7091,7 @@ async function detectUnofficialGovernmentService() {
 
             // Check for payment indicators (increases score for non-legitimate sites)
             if (!isLegitimateThirdParty) {
-                const pageText = (document.body?.innerText || '').toLowerCase();
-                const paymentKeywords = ['payment', 'pay now', 'checkout', 'credit card', 'debit card',
-                    '€', '$', '£', 'price', 'fee', 'cost', 'total', 'amount'];
+                const paymentKeywords = ['payment', 'pay now', 'checkout', 'credit card', 'debit card', 'visa card', 'mastercard'];
                 const hasPayment = paymentKeywords.some(kw => pageText.includes(kw));
                 if (hasPayment) {
                     score += config.scores.paymentFormPresent;
@@ -7025,10 +7099,16 @@ async function detectUnofficialGovernmentService() {
 
                 // Check for urgency tactics
                 const urgencyKeywords = ['limited time', 'act now', 'don\'t miss', 'expires soon',
-                    'urgent', 'immediately', 'fast processing', 'quick approval'];
+                    'urgent', 'immediately', 'fast processing', 'quick approval', 'processing time'];
                 const hasUrgency = urgencyKeywords.some(kw => pageText.includes(kw));
                 if (hasUrgency) {
                     score += config.scores.urgencyTactics;
+                }
+
+                // Bonus: inflated pricing indicator (charging way more than official)
+                const priceMatch = pageText.match(/[\$€£]\s*(\d+)/);
+                if (priceMatch && parseInt(priceMatch[1]) > 50) {
+                    score += 2; // Additional score for high pricing
                 }
             }
 

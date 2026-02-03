@@ -1342,6 +1342,18 @@
   "clipboardHijackingTip": {
     "message": "Deze site probeert mogelijk inhoud te vervangen die je kopieert. Controleer altijd geplakte inhoud."
   },
+  "pasteReplacementTitle": {
+    "message": "🚨 Crypto-adres verwisseling gedetecteerd!"
+  },
+  "pasteReplacementMessage": {
+    "message": "Deze pagina heeft geprobeerd je cryptocurrency-adres te vervangen door een ander adres. Je originele adres is hersteld."
+  },
+  "pasteReplacementTip": {
+    "message": "Controleer ALTIJD het wallet-adres voordat je een transactie bevestigt. De aanvaller probeerde je geld naar zijn wallet om te leiden."
+  },
+  "reason_cryptoAddressReplacement": {
+    "message": "KRITIEK: Deze pagina heeft je crypto-adres verwisseld met het adres van een aanvaller toen je het plakte."
+  },
   "webTransportWarningTitle": {
     "message": "Verdachte netwerkactiviteit"
   },

@@ -1339,6 +1339,18 @@
   "clipboardHijackingTip": {
     "message": "Questo sito potrebbe tentare di sostituire il contenuto copiato. Verifica sempre il contenuto incollato."
   },
+  "pasteReplacementTitle": {
+    "message": "🚨 Scambio di indirizzo crypto rilevato!"
+  },
+  "pasteReplacementMessage": {
+    "message": "Questa pagina ha tentato di sostituire il tuo indirizzo di criptovaluta con un altro. Il tuo indirizzo originale è stato ripristinato."
+  },
+  "pasteReplacementTip": {
+    "message": "Verifica SEMPRE l'indirizzo del portafoglio prima di confermare qualsiasi transazione. L'attaccante ha cercato di reindirizzare i tuoi fondi al suo portafoglio."
+  },
+  "reason_cryptoAddressReplacement": {
+    "message": "CRITICO: Questa pagina ha scambiato il tuo indirizzo crypto con quello di un attaccante durante l'incollaggio."
+  },
   "webTransportWarningTitle": {
     "message": "Attività di rete sospetta"
   },

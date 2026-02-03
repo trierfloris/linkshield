@@ -1339,6 +1339,18 @@
   "clipboardHijackingTip": {
     "message": "Bu site kopyaladığınız içeriği değiştirmeye çalışıyor olabilir. Yapıştırılan içeriği her zaman doğrulayın."
   },
+  "pasteReplacementTitle": {
+    "message": "🚨 Kripto adres değişimi tespit edildi!"
+  },
+  "pasteReplacementMessage": {
+    "message": "Bu sayfa kripto para adresinizi başka bir adresle değiştirmeye çalıştı. Orijinal adresiniz geri yüklendi."
+  },
+  "pasteReplacementTip": {
+    "message": "Herhangi bir işlemi onaylamadan önce HER ZAMAN cüzdan adresini doğrulayın. Saldırgan fonlarınızı kendi cüzdanına yönlendirmeye çalıştı."
+  },
+  "reason_cryptoAddressReplacement": {
+    "message": "KRİTİK: Bu sayfa yapıştırma sırasında kripto adresinizi saldırganın adresiyle değiştirdi."
+  },
   "webTransportWarningTitle": {
     "message": "Şüpheli ağ etkinliği"
   },

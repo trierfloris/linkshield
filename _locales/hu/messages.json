@@ -1339,6 +1339,18 @@
   "clipboardHijackingTip": {
     "message": "Ez a webhely megpróbálhatja lecserélni a másolt tartalmat. Mindig ellenőrizze a beillesztett tartalmat."
   },
+  "pasteReplacementTitle": {
+    "message": "🚨 Kriptocím csere észlelve!"
+  },
+  "pasteReplacementMessage": {
+    "message": "Ez az oldal megpróbálta lecserélni az Ön kriptovaluta címét egy másikra. Az eredeti címe visszaállításra került."
+  },
+  "pasteReplacementTip": {
+    "message": "MINDIG ellenőrizze a pénztárca címét bármilyen tranzakció megerősítése előtt. A támadó megpróbálta átirányítani az Ön pénzeszközeit a saját pénztárcájába."
+  },
+  "reason_cryptoAddressReplacement": {
+    "message": "KRITIKUS: Ez az oldal beillesztéskor lecserélte az Ön kriptocímét a támadó címére."
+  },
   "webTransportWarningTitle": {
     "message": "Gyanús hálózati tevékenység"
   },

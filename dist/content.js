@@ -1281,6 +1281,237 @@ function showClipboardWarning(type, score) {
 }
 
 // =============================
+// PASTE ADDRESS REPLACEMENT GUARD (v8.8.2)
+// Detecteert crypto-address swapping bij paste events
+// =============================
+
+let pasteGuardInitialized = false;
+let pasteReplacementDetected = false;
+
+/**
+ * SECURITY FIX v8.8.2: Paste Address Replacement Guard
+ * Detecteert wanneer een malafide pagina crypto-adressen vervangt tijdens paste.
+ *
+ * Attack vector:
+ * 1. User kopieert legitiem crypto-adres (bijv. bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh)
+ * 2. User plakt in input field op malafide site
+ * 3. Malafide JavaScript vervangt het adres met aanvaller's adres
+ * 4. User ziet aanvaller's adres, niet eigen adres
+ *
+ * Detectie:
+ * - Monitort paste events op input/textarea elements
+ * - Vergelijkt originele clipboard content met uiteindelijke field value
+ * - Als beide crypto-adressen zijn maar verschillend -> ALERT
+ */
+function initPasteAddressGuard() {
+    if (pasteGuardInitialized) return;
+    pasteGuardInitialized = true;
+
+    // Crypto address patterns voor detectie
+    const cryptoPatterns = {
+        bitcoin: /^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,62}$/,
+        ethereum: /^0x[a-fA-F0-9]{40}$/,
+        solana: /^[1-9A-HJ-NP-Za-km-z]{32,44}$/,
+        litecoin: /^[LM3][a-km-zA-HJ-NP-Z1-9]{26,33}$/,
+        ripple: /^r[0-9a-zA-Z]{24,34}$/,
+        dogecoin: /^D{1}[5-9A-HJ-NP-U]{1}[1-9A-HJ-NP-Za-km-z]{32}$/,
+        monero: /^4[0-9AB][1-9A-HJ-NP-Za-km-z]{93}$/,
+        tron: /^T[a-zA-Z0-9]{33}$/
+    };
+
+    /**
+     * Check of een string een crypto-adres is
+     * @returns {string|null} Type crypto of null
+     */
+    function detectCryptoAddress(text) {
+        if (!text || typeof text !== 'string') return null;
+        const trimmed = text.trim();
+
+        for (const [type, pattern] of Object.entries(cryptoPatterns)) {
+            if (pattern.test(trimmed)) {
+                return type;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Normaliseert een adres voor vergelijking (trim, lowercase voor non-case-sensitive)
+     */
+    function normalizeAddress(addr, type) {
+        if (!addr) return '';
+        const trimmed = addr.trim();
+        // Ethereum adressen zijn case-insensitive (checksum encoding)
+        if (type === 'ethereum') {
+            return trimmed.toLowerCase();
+        }
+        return trimmed;
+    }
+
+    /**
+     * Handler voor paste events op input fields
+     */
+    function handlePasteEvent(e) {
+        const target = e.target;
+
+        // Alleen monitoren op input en textarea elements
+        if (!target || (target.tagName !== 'INPUT' && target.tagName !== 'TEXTAREA')) {
+            return;
+        }
+
+        // Haal originele geplakte content op
+        let pastedContent = '';
+        try {
+            pastedContent = (e.clipboardData || window.clipboardData)?.getData('text') || '';
+        } catch (err) {
+            return; // Kan clipboard niet lezen
+        }
+
+        if (!pastedContent || pastedContent.length < 10) return;
+
+        // Check of geplakte content een crypto-adres is
+        const pastedCryptoType = detectCryptoAddress(pastedContent);
+        if (!pastedCryptoType) return; // Geen crypto-adres geplakt
+
+        const normalizedPasted = normalizeAddress(pastedContent, pastedCryptoType);
+
+        // Wacht kort tot eventuele malafide scripts de waarde vervangen
+        setTimeout(() => {
+            try {
+                const currentValue = target.value || '';
+                const currentCryptoType = detectCryptoAddress(currentValue);
+
+                // Als huidige waarde ook een crypto-adres is
+                if (currentCryptoType) {
+                    const normalizedCurrent = normalizeAddress(currentValue, currentCryptoType);
+
+                    // DETECTIE: Beide zijn crypto-adressen, maar VERSCHILLEND!
+                    if (normalizedPasted !== normalizedCurrent) {
+                        reportPasteReplacement(pastedContent, currentValue, pastedCryptoType, target);
+                    }
+                }
+            } catch (err) {
+                // Target may have been removed from DOM
+            }
+        }, 50); // 50ms delay om scripts de kans te geven
+    }
+
+    /**
+     * Rapporteert een gedetecteerde paste replacement attack
+     */
+    function reportPasteReplacement(originalAddr, replacedAddr, cryptoType, inputElement) {
+        if (pasteReplacementDetected) return; // Voorkom spam
+        pasteReplacementDetected = true;
+
+        const hostname = window.location.hostname;
+        const score = 15; // CRITICAL - dit is een actieve aanval
+        const reason = 'cryptoAddressReplacement';
+
+        logDebug(`[PasteGuard] 🚨 CRYPTO ADDRESS REPLACEMENT DETECTED!`);
+        logDebug(`[PasteGuard] Original: ${originalAddr.substring(0, 20)}...`);
+        logDebug(`[PasteGuard] Replaced with: ${replacedAddr.substring(0, 20)}...`);
+        logDebug(`[PasteGuard] Crypto type: ${cryptoType}`);
+
+        // Herstel het originele adres in het input field
+        try {
+            inputElement.value = originalAddr;
+            inputElement.dispatchEvent(new Event('input', { bubbles: true }));
+            logDebug(`[PasteGuard] ✅ Original address restored`);
+        } catch (err) {
+            logDebug(`[PasteGuard] Could not restore address: ${err.message}`);
+        }
+
+        // Stuur naar background voor icon update
+        chrome.runtime.sendMessage({
+            action: 'clipboardHijackingDetected',
+            data: {
+                hostname,
+                type: 'pasteAddressReplacement',
+                score,
+                reason,
+                cryptoType,
+                contentPreview: `Original: ${originalAddr.substring(0, 15)}... → Replaced: ${replacedAddr.substring(0, 15)}...`
+            }
+        }).catch(() => {});
+
+        // Toon waarschuwing aan gebruiker
+        showPasteReplacementWarning(originalAddr, replacedAddr, cryptoType);
+    }
+
+    /**
+     * Toont waarschuwing voor paste replacement attack
+     */
+    function showPasteReplacementWarning(originalAddr, replacedAddr, cryptoType) {
+        const cryptoNames = {
+            bitcoin: 'Bitcoin',
+            ethereum: 'Ethereum',
+            solana: 'Solana',
+            litecoin: 'Litecoin',
+            ripple: 'Ripple (XRP)',
+            dogecoin: 'Dogecoin',
+            monero: 'Monero',
+            tron: 'TRON'
+        };
+
+        const cryptoName = cryptoNames[cryptoType] || cryptoType;
+
+        const title = getTranslatedMessage('pasteReplacementTitle') ||
+            '🚨 Crypto Address Swap Detected!';
+
+        const message = getTranslatedMessage('pasteReplacementMessage') ||
+            `This page attempted to replace your ${cryptoName} address with a different one. Your original address has been restored.`;
+
+        const tip = getTranslatedMessage('pasteReplacementTip') ||
+            `ALWAYS verify the wallet address before confirming any transaction. The attacker tried to redirect your funds to their wallet.`;
+
+        showSecurityWarning({
+            id: 'paste-replacement',
+            severity: 'critical',
+            title: title.replace('{crypto}', cryptoName),
+            message: message.replace('{crypto}', cryptoName),
+            tip: tip,
+            icon: '💸',
+            showTrust: false, // Geen trust optie voor actieve aanval
+            details: [
+                `Your address: ${originalAddr.substring(0, 12)}...${originalAddr.slice(-6)}`,
+                `Attacker address: ${replacedAddr.substring(0, 12)}...${replacedAddr.slice(-6)}`
+            ]
+        });
+    }
+
+    // Registreer paste event listener op document (capture phase)
+    document.addEventListener('paste', handlePasteEvent, { capture: true, passive: true });
+
+    // Observeer ook dynamisch toegevoegde iframes
+    const observer = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+            for (const node of mutation.addedNodes) {
+                if (node.nodeType === Node.ELEMENT_NODE) {
+                    // Check voor iframes met same-origin
+                    if (node.tagName === 'IFRAME') {
+                        try {
+                            const iframeDoc = node.contentDocument || node.contentWindow?.document;
+                            if (iframeDoc) {
+                                iframeDoc.addEventListener('paste', handlePasteEvent, { capture: true, passive: true });
+                            }
+                        } catch (e) {
+                            // Cross-origin iframe, skip
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    observer.observe(document.body || document.documentElement, {
+        childList: true,
+        subtree: true
+    });
+
+    logDebug('[PasteGuard] Crypto address replacement guard initialized');
+}
+
+// =============================
 // OAUTH PASTE GUARD (v8.5.0)
 // Beschermt tegen ConsentFix en OAuth token theft aanvallen
 // =============================
@@ -2221,6 +2452,79 @@ const monitoredForms = new WeakSet();
 const originalFormActions = new WeakMap();
 
 /**
+ * SECURITY FIX v8.8.2: Whitelist voor legitieme payment gateways
+ * Forms die naar deze domeinen redirecten worden NIET als hijacking gemarkeerd.
+ * Dit voorkomt false positives tijdens checkout flows op e-commerce sites.
+ */
+const PAYMENT_GATEWAY_WHITELIST = new Set([
+  // Stripe
+  'checkout.stripe.com',
+  'js.stripe.com',
+  'api.stripe.com',
+  'stripe.com',
+  // PayPal
+  'paypal.com',
+  'www.paypal.com',
+  'checkout.paypal.com',
+  'api.paypal.com',
+  'paypalobjects.com',
+  'www.sandbox.paypal.com',
+  // Adyen
+  'adyen.com',
+  'checkout.adyen.com',
+  'checkoutshopper-live.adyen.com',
+  'checkoutshopper-test.adyen.com',
+  'pay.adyen.com',
+  // Mollie (NL populair)
+  'mollie.com',
+  'checkout.mollie.com',
+  'api.mollie.com',
+  // Klarna
+  'klarna.com',
+  'pay.klarna.com',
+  'api.klarna.com',
+  // iDEAL / Banken (NL)
+  'ideal.nl',
+  'abnamro.nl',
+  'ing.nl',
+  'rabobank.nl',
+  // Andere populaire gateways
+  'braintreegateway.com',
+  'braintree-api.com',
+  'checkout.shopify.com',
+  'shop.app',
+  'apple.com', // Apple Pay
+  'pay.google.com', // Google Pay
+  'worldpay.com',
+  'secure.worldpay.com',
+  '2checkout.com',
+  'secure.2checkout.com',
+  'authorize.net',
+  'square.com',
+  'squareup.com'
+]);
+
+/**
+ * Check of een hostname een whitelisted payment gateway is
+ * @param {string} hostname - De hostname om te checken
+ * @returns {boolean} true als het een bekende payment gateway is
+ */
+function isWhitelistedPaymentGateway(hostname) {
+  if (!hostname) return false;
+  const lowerHost = hostname.toLowerCase();
+
+  // Exacte match
+  if (PAYMENT_GATEWAY_WHITELIST.has(lowerHost)) return true;
+
+  // Subdomain check (bijv. eu.checkout.stripe.com)
+  for (const gateway of PAYMENT_GATEWAY_WHITELIST) {
+    if (lowerHost.endsWith('.' + gateway)) return true;
+  }
+
+  return false;
+}
+
+/**
  * Initialiseert Form Hijacking Protection
  * Moet worden aangeroepen na DOMContentLoaded
  */
@@ -2351,6 +2655,13 @@ function checkFormActionChange(form) {
   const wasInternal = originalHost === currentHost || originalHost.endsWith('.' + currentHost);
   const isNowExternal = newHost !== currentHost && !newHost.endsWith('.' + currentHost);
 
+  // SECURITY FIX v8.8.2: Skip hijacking check voor whitelisted payment gateways
+  // Dit voorkomt false positives bij checkout naar Stripe, PayPal, Adyen, etc.
+  if (isNowExternal && isWhitelistedPaymentGateway(newHost)) {
+    logDebug(`[FormHijacking] Skipping - whitelisted payment gateway: ${newHost}`);
+    return false;
+  }
+
   if (wasInternal && isNowExternal) {
     // HIJACKING GEDETECTEERD
     formHijackingDetected = true;
@@ -2416,6 +2727,12 @@ function checkJITHijacking(form, originalAction, originalHost, phase) {
   if (currentAction !== originalAction &&
       currentHost !== pageHost &&
       !currentHost.endsWith('.' + pageHost)) {
+
+    // SECURITY FIX v8.8.2: Skip voor whitelisted payment gateways
+    if (isWhitelistedPaymentGateway(currentHost)) {
+      logDebug(`[FormHijacking] JIT skip - whitelisted payment gateway: ${currentHost}`);
+      return;
+    }
 
     formHijackingDetected = true;
     logDebug(`[FormHijacking] JIT hijacking detected in ${phase} phase`);
@@ -5103,17 +5420,31 @@ function classifyAndCheckLink(link) {
       (globalConfig?.SUSPICIOUS_TLDS instanceof RegExp && globalConfig.SUSPICIOUS_TLDS.test(hostname));
 
     // Known brands that are commonly impersonated
+    // NOTE: Short brands (<=3 chars) need word boundary matching to avoid false positives
+    // e.g., "ing" would match "hosting", "shopping", etc.
     const brandPatterns = ['microsoft', 'paypal', 'apple', 'google', 'amazon', 'netflix',
       'facebook', 'instagram', 'whatsapp', 'coinbase', 'binance', 'metamask', 'chase',
       'wellsfargo', 'bankofamerica', 'citibank', 'hsbc', 'barclays', 'ing', 'rabobank',
-      'abnamro', 'linkedin', 'twitter', 'dropbox', 'adobe', 'zoom', 'slack', 'spotify'];
+      'abnamro', 'linkedin', 'twitter', 'dropbox', 'adobe', 'zoom', 'slack', 'spotify',
+      'dhl', 'ups', 'sns', 'abn'];
 
     // Extract base domain (without TLD) for brand checking
     const baseDomain = parts.length >= 2 ? parts.slice(0, -1).join('.') : hostname;
     // Check if a brand keyword appears in the domain but domain is NOT the brand itself
     let detectedBrand = null;
     for (const brand of brandPatterns) {
-      if (baseDomain.includes(brand)) {
+      // FIX v8.8.2: For short brands (<=3 chars), require word boundaries to avoid
+      // false positives like "hostinger" → "ing", "groups" → "ups", "shopping" → "ing"
+      let brandMatched = false;
+      if (brand.length <= 3) {
+        // Use word boundary regex for short brands
+        const wordBoundaryRegex = new RegExp(`(^|[^a-z])${brand}([^a-z]|$)`, 'i');
+        brandMatched = wordBoundaryRegex.test(baseDomain);
+      } else {
+        brandMatched = baseDomain.includes(brand);
+      }
+
+      if (brandMatched) {
         // Verify it's not the actual brand domain (e.g., microsoft.com is legit)
         const brandDomain = brand + '.' + tld;
         const brandWithWww = 'www.' + brand + '.' + tld;
@@ -5295,10 +5626,25 @@ async function warnLinkByLevel(link, { level, reasons }) {
   if (level === 'safe') {
     return;
   }
-  // Vertaal de reden-keys (houd camelCase, vervang alleen ongeldige tekens)
+  // Vertaal de reden-keys (handle dynamic parts like brandImpersonation:ing)
   const translatedReasons = reasons.map(r => {
-    const key = r.replace(/[^a-zA-Z0-9_]/g, '_');
-    return getTranslatedMessage(key) || r;
+    // Extract base key (remove dynamic parts like :brand)
+    const baseKey = r.split(':')[0];
+    const dynamicPart = r.includes(':') ? r.split(':').slice(1).join(':') : '';
+
+    // Try translation with base key (most keys like brandImpersonation don't have reason_ prefix)
+    let translated = getTranslatedMessage(baseKey);
+
+    // If translation equals the key, it wasn't found in i18n - use as fallback
+    if (translated === baseKey) {
+      translated = baseKey; // Keep readable key as fallback
+    }
+
+    // Append brand/dynamic info if present (e.g., "Possible brand impersonation attempt (ing)")
+    if (dynamicPart) {
+      return `${translated} (${dynamicPart})`;
+    }
+    return translated;
   });
   // Alert: direct rood icoon + SECURITY FIX v8.0.0 (Vector 3): Blokkeer navigatie op netwerkniveau
   if (level === 'alert') {
@@ -6940,6 +7286,264 @@ async function initSVGPayloadDetection() {
     }
 
     logDebug('[SVG] Payload detection initialized with immediate scanning');
+}
+
+// =============================================================================
+// v8.8.0: Unofficial Government Service Detection (Layer 16)
+// Detecteert websites die officiële overheidsdiensten aanbieden maar niet de officiële site zijn
+// Beschermt tegen visa scam sites zoals uk-eta.visasyst.com
+// =============================================================================
+async function detectUnofficialGovernmentService() {
+    const config = globalConfig?.ADVANCED_THREAT_DETECTION?.unofficialGovernmentService;
+    if (!config?.enabled) {
+        return { detected: false, serviceId: null, score: 0, isLegitimateThirdParty: false };
+    }
+
+    // Check integratedProtection enabled
+    if (!(await isProtectionEnabled())) {
+        return { detected: false, serviceId: null, score: 0, isLegitimateThirdParty: false };
+    }
+
+    // Skip trusted domains
+    const hostname = window.location.hostname.toLowerCase();
+    try {
+        if (await isTrustedDomain(hostname)) {
+            return { detected: false, serviceId: null, score: 0, isLegitimateThirdParty: false };
+        }
+    } catch (e) { /* Continue */ }
+
+    const pathname = window.location.pathname.toLowerCase();
+    const fullUrl = window.location.href.toLowerCase();
+
+    // === IMPROVEMENT 1: Skip informational/educational domains ===
+    const informationalDomains = ['.edu', '.ac.uk', '.edu.au', '.ac.nz', 'wikipedia.org', 'wikihow.com'];
+    if (informationalDomains.some(d => hostname.endsWith(d) || hostname.includes(d))) {
+        logDebug('[GovService] Skipping educational/informational domain:', hostname);
+        return { detected: false, serviceId: null, score: 0, isLegitimateThirdParty: false };
+    }
+
+    // === IMPROVEMENT 2: Skip informational URL paths ===
+    const informationalPaths = ['/blog', '/news', '/article', '/guide', '/how-to', '/wiki',
+        '/help', '/faq', '/about', '/learn', '/resources', '/tips', '/advice', '/posts'];
+    if (informationalPaths.some(p => pathname.includes(p))) {
+        logDebug('[GovService] Skipping informational path:', pathname);
+        return { detected: false, serviceId: null, score: 0, isLegitimateThirdParty: false };
+    }
+
+    // Get page title and headers for matching
+    const pageTitle = (document.title || '').toLowerCase();
+    const headers = Array.from(document.querySelectorAll('h1, h2')).map(h => (h.textContent || '').toLowerCase());
+    const allSearchText = [pageTitle, ...headers].join(' ');
+
+    // === IMPROVEMENT 3: Helper for word boundary matching ===
+    const matchesWithWordBoundary = (text, phrase) => {
+        // Normalize whitespace in both text and phrase (collapse multiple spaces)
+        const normalizedText = text.replace(/\s+/g, ' ');
+        const normalizedPhrase = phrase.replace(/\s+/g, ' ');
+        // Escape special regex characters in phrase, then add word boundaries
+        const escaped = normalizedPhrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const regex = new RegExp(`\\b${escaped}\\b`, 'i');
+        return regex.test(normalizedText);
+    };
+
+    let detectedService = null;
+    let matchedServiceConfig = null;
+    let score = 0;
+    let isLegitimateThirdParty = false;
+
+    try {
+        // Check each known government service
+        for (const [serviceId, service] of Object.entries(config.services)) {
+            // Check if page mentions this service (word boundary match to prevent partial matches)
+            const hasMatch = service.matchPhrases.some(phrase =>
+                matchesWithWordBoundary(allSearchText, phrase)
+            );
+
+            if (!hasMatch) continue;
+
+            // Check if current domain is official
+            const isOfficial = service.officialDomains.some(officialDomain =>
+                hostname === officialDomain ||
+                hostname.endsWith('.' + officialDomain)
+            );
+
+            if (isOfficial) {
+                // This is the official site, no warning needed
+                logDebug(`[GovService] ${serviceId} - Official domain: ${hostname}`);
+                continue;
+            }
+
+            // === IMPROVEMENT 4: Require application signals ===
+            // Only flag if the page appears to OFFER a service, not just MENTION it
+            const pageText = (document.body?.innerText || '').toLowerCase();
+            const pageHtml = (document.body?.innerHTML || '').toLowerCase();
+
+            // Check for application/service offering signals
+            const applicationSignals = {
+                // Forms with relevant fields
+                hasPassportField: !!document.querySelector('input[name*="passport"], input[placeholder*="passport"], input[id*="passport"]'),
+                hasNationalityField: !!document.querySelector('select[name*="nation"], select[name*="country"], input[name*="nationality"]'),
+                hasApplicationForm: !!document.querySelector('form[action*="apply"], form[action*="submit"], form[id*="application"]'),
+
+                // Apply/Submit buttons
+                hasApplyButton: /\b(apply now|start application|begin application|submit application|get your|order now|apply online|apply here)\b/i.test(pageText),
+
+                // Pricing display (specific to visa services)
+                hasPricingDisplay: /\b(total:?\s*[\$€£]|price:?\s*[\$€£]|fee:?\s*[\$€£]|cost:?\s*[\$€£]|\$\d{2,}|€\d{2,}|£\d{2,})\b/i.test(pageText),
+
+                // Service-specific form elements
+                hasDateFields: !!document.querySelector('input[type="date"], input[name*="travel"], input[name*="arrival"]'),
+
+                // Multiple step indicators (common in scam application sites)
+                hasStepIndicator: /\b(step\s*[123]|stage\s*[123])\b/i.test(pageText) || !!document.querySelector('[class*="step"], [class*="wizard"], [class*="progress"]')
+            };
+
+            const signalCount = Object.values(applicationSignals).filter(Boolean).length;
+            const hasApplicationSignals = signalCount >= 2; // Require at least 2 signals
+
+            if (!hasApplicationSignals) {
+                logDebug(`[GovService] ${serviceId} - Skipping: insufficient application signals (${signalCount}/2)`, applicationSignals);
+                continue;
+            }
+
+            // === IMPROVEMENT 5: Check for news/article indicators in page content ===
+            const newsIndicators = [
+                /\b(published|posted|written by|author:|byline|read more articles)\b/i,
+                /\b(news|article|opinion|editorial|report|coverage)\b/i.test(pageTitle),
+                !!document.querySelector('article, [itemtype*="Article"], [class*="article"], [class*="post-content"]'),
+                !!document.querySelector('time[datetime], [class*="publish"], [class*="date-posted"]')
+            ];
+            const newsSignalCount = newsIndicators.filter(Boolean).length;
+
+            if (newsSignalCount >= 2) {
+                logDebug(`[GovService] ${serviceId} - Skipping: appears to be news/article content`);
+                continue;
+            }
+
+            // Detected unofficial site offering government service
+            detectedService = serviceId;
+            matchedServiceConfig = service;
+            score = config.scores.unofficialDomain;
+
+            // Check if it's a known legitimate third-party
+            isLegitimateThirdParty = config.legitimateThirdParties.some(legit =>
+                hostname === legit || hostname.endsWith('.' + legit)
+            );
+
+            if (isLegitimateThirdParty) {
+                score = config.scores.legitimateThirdParty;
+                logDebug(`[GovService] ${serviceId} - Legitimate third-party: ${hostname}`);
+            }
+
+            // Check for payment indicators (increases score for non-legitimate sites)
+            if (!isLegitimateThirdParty) {
+                const paymentKeywords = ['payment', 'pay now', 'checkout', 'credit card', 'debit card', 'visa card', 'mastercard'];
+                const hasPayment = paymentKeywords.some(kw => pageText.includes(kw));
+                if (hasPayment) {
+                    score += config.scores.paymentFormPresent;
+                }
+
+                // Check for urgency tactics
+                const urgencyKeywords = ['limited time', 'act now', 'don\'t miss', 'expires soon',
+                    'urgent', 'immediately', 'fast processing', 'quick approval', 'processing time'];
+                const hasUrgency = urgencyKeywords.some(kw => pageText.includes(kw));
+                if (hasUrgency) {
+                    score += config.scores.urgencyTactics;
+                }
+
+                // Bonus: inflated pricing indicator (charging way more than official)
+                const priceMatch = pageText.match(/[\$€£]\s*(\d+)/);
+                if (priceMatch && parseInt(priceMatch[1]) > 50) {
+                    score += 2; // Additional score for high pricing
+                }
+            }
+
+            break; // Found a match, stop searching
+        }
+
+        // Threshold check
+        const detected = score >= config.scoreThreshold;
+
+        if (detected && matchedServiceConfig) {
+            logDebug(`[GovService] 🚨 DETECTED - Service: ${detectedService}, Score: ${score}, Legitimate: ${isLegitimateThirdParty}`);
+
+            // Report to background
+            if (typeof chrome !== 'undefined' && chrome.runtime?.sendMessage) {
+                chrome.runtime.sendMessage({
+                    type: 'unofficialGovernmentService',
+                    url: window.location.href,
+                    serviceId: detectedService,
+                    country: matchedServiceConfig.country,
+                    officialUrl: matchedServiceConfig.officialUrl,
+                    officialPrice: matchedServiceConfig.officialPrice,
+                    isLegitimateThirdParty: isLegitimateThirdParty,
+                    score: score,
+                    timestamp: Date.now()
+                }).catch(() => {});
+            }
+
+            // Show appropriate warning
+            const severity = isLegitimateThirdParty ? 'warning' : 'critical';
+            const serviceName = detectedService.replace(/-/g, ' ').toUpperCase();
+
+            showSecurityWarning({
+                id: 'unofficial-gov-service',
+                severity: severity,
+                title: getTranslatedMessage('unofficialGovServiceTitle') || 'Unofficial Government Service Website',
+                message: (getTranslatedMessage('unofficialGovServiceMessage') ||
+                    'This website offers {service} applications but is not the official government website. Third-party sites often charge higher fees.')
+                    .replace('{service}', serviceName)
+                    .replace('{country}', matchedServiceConfig.country),
+                tip: (getTranslatedMessage('unofficialGovServiceTip') ||
+                    'Official website: {url} (Official price: {price})')
+                    .replace('{url}', matchedServiceConfig.officialUrl)
+                    .replace('{price}', matchedServiceConfig.officialPrice),
+                icon: '🏛️',
+                showTrust: true,
+                buttons: [
+                    {
+                        text: getTranslatedMessage('goToOfficialSite') || 'Go to official site',
+                        action: () => window.open(matchedServiceConfig.officialUrl, '_blank'),
+                        primary: true
+                    },
+                    {
+                        text: getTranslatedMessage('understandRisk') || 'I understand the risk',
+                        action: 'dismiss'
+                    }
+                ]
+            });
+        }
+
+        return {
+            detected,
+            serviceId: detectedService,
+            score,
+            isLegitimateThirdParty,
+            officialUrl: matchedServiceConfig?.officialUrl,
+            officialPrice: matchedServiceConfig?.officialPrice
+        };
+
+    } catch (err) {
+        handleError(err, 'UnofficialGovernmentServiceDetection');
+        return { detected: false, serviceId: null, score: 0, isLegitimateThirdParty: false };
+    }
+}
+
+// Initialize Unofficial Government Service Detection
+async function initUnofficialGovernmentServiceDetection() {
+    // Skip on trusted domains
+    const hostname = window.location.hostname.toLowerCase();
+    if (await isTrustedDomain(hostname)) {
+        logDebug('[GovService] Skipping for trusted domain:', hostname);
+        return;
+    }
+
+    // Initial scan after page has loaded (3000ms to allow full render)
+    setTimeout(async () => {
+        await detectUnofficialGovernmentService();
+    }, 3000);
+
+    logDebug('[GovService] Unofficial government service detection initialized');
 }
 
 // Run proactive scan after page load
@@ -9119,8 +9723,17 @@ async function isHomoglyphAttack(domain, homoglyphMap, knownBrands, tld = '', re
             // Check of het genormaliseerde domein een merk-keyword bevat
             for (const brand of brandKeywords) {
                 const brandLower = brand.toLowerCase();
+                // FIX v8.8.2: Word boundary check voor korte brands (<=3 chars)
+                // Voorkomt false positives zoals "hostinger" matching "ing"
+                let brandMatched = false;
+                if (brandLower.length <= 3) {
+                    const wordBoundaryRegex = new RegExp(`(^|[^a-z])${brandLower}([^a-z]|$)`, 'i');
+                    brandMatched = wordBoundaryRegex.test(skeletonDomain);
+                } else {
+                    brandMatched = skeletonDomain.includes(brandLower);
+                }
                 // Check in het skeleton domein (genormaliseerd)
-                if (skeletonDomain.includes(brandLower)) {
+                if (brandMatched) {
                     // Als het originele domein non-ASCII bevat EN het merk bevat na normalisatie
                     if (hasNonAscii) {
                         logDebug(`Brand-keyword homoglyph: "${cleanHostname}" bevat "${brand}" met homoglyfen`);
@@ -9972,7 +10585,16 @@ function checkStaticConditions(url, reasons, totalRiskRef) {
       'google', 'amazon', 'netflix', 'facebook', 'linkedin', 'bank', 'verify', 'secure'];
 
     for (const brand of brandKeywords) {
-      if (normalizedDomain.includes(brand)) {
+      // FIX v8.8.2: Word boundary check voor korte brands (<=3 chars)
+      // Voorkomt false positives zoals "hostinger" matching "ing"
+      let brandMatched = false;
+      if (brand.length <= 3) {
+        const wordBoundaryRegex = new RegExp(`(^|[^a-z])${brand}([^a-z]|$)`, 'i');
+        brandMatched = wordBoundaryRegex.test(normalizedDomain);
+      } else {
+        brandMatched = normalizedDomain.includes(brand);
+      }
+      if (brandMatched) {
         const key = `brandKeywordHomoglyph:${brand}`;
         if (!reasons.has(key)) {
           logDebug(`Static: ${key} gedetecteerd - homoglyph attack op merk "${brand}"`);
@@ -11473,6 +12095,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       // Initialiseer Clipboard Guard voor crypto hijacking detectie
       initClipboardGuard();
 
+      // v8.8.2: Initialiseer Paste Address Replacement Guard voor crypto address swapping detectie
+      initPasteAddressGuard();
+
       // Initialiseer OAuth Paste Guard voor ConsentFix/token theft detectie (v8.5.0)
       await initOAuthPasteGuard();
 
@@ -11493,6 +12118,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       // v8.6.0: Initialiseer SVG Payload Detection voor kwaadaardige SVG scripts
       initSVGPayloadDetection();
+
+      // v8.8.0: Initialiseer Unofficial Government Service Detection voor visa scam sites
+      initUnofficialGovernmentServiceDetection();
 
       // Initialiseer Table QR Scanner voor imageless QR-code detectie (AI-phishing kits)
       initTableQRScanner();
@@ -14895,14 +15523,21 @@ function translateReason(reasonKey) {
   const dynamicPart = reasonKey.includes(':') ? reasonKey.split(':').slice(1).join(':') : '';
 
   // Try to get translation from chrome.i18n
-  const translationKey = `reason_${baseKey}`;
-  let translated = getTranslatedMessage(translationKey);
+  // First try with reason_ prefix (for keys like reason_brandSubdomainPhishing)
+  const translationKeyWithPrefix = `reason_${baseKey}`;
+  let translated = getTranslatedMessage(translationKeyWithPrefix);
 
-  // If no translation found, use fallback mapping (English)
-  if (!translated) {
+  // If not found with prefix, try without (for keys like brandImpersonation)
+  if (!translated || translated === translationKeyWithPrefix) {
+    translated = getTranslatedMessage(baseKey);
+  }
+
+  // If no translation found (getTranslatedMessage returns key itself as fallback), use fallback mapping
+  if (!translated || translated === baseKey) {
     const fallbackMap = {
       'nonAscii': 'Suspicious characters detected (homoglyphs)',
       'brandKeywordHomoglyph': 'Brand imitation detected',
+      'brandImpersonation': 'Possible brand impersonation attempt',
       'noHttps': 'No secure connection (HTTPS)',
       'suspiciousTLD': 'Suspicious domain extension',
       'ipAsDomain': 'IP address as domain name',

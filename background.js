@@ -59,6 +59,12 @@ async function initializeProtectionImmediately() {
 
         // v8.4.0: Always enable protection - Automatic Protection is FREE
         await manageDNRules();
+
+        // v8.8.2: Initialize WebSocket monitoring (non-blocking)
+        initWebSocketBlocking().catch(err =>
+            console.error('[INIT-FAST] WebSocket blocking init failed:', err)
+        );
+
         console.log(`[INIT-FAST] Protection enabled in ${Date.now() - startTime}ms (always free)`);
         return { initialized: true, timeMs: Date.now() - startTime };
     } catch (err) {
@@ -1196,6 +1202,262 @@ async function updateLastRuleUpdate() {
         if (globalThresholds.DEBUG_MODE) console.log("Last rule update timestamp saved:", now);
     } catch (error) {
         console.error('[ERROR] Error saving lastRuleUpdate:', error.message);
+    }
+}
+
+
+// ==== WebSocket Monitoring (v8.8.2) ====
+// Blocks WebSocket connections to hostile trackers using declarativeNetRequest
+
+// Rule ID range for WebSocket rules: 800000-899999
+const WEBSOCKET_RULE_ID_START = 800000;
+const WEBSOCKET_RULE_ID_MAX = 899999;
+
+// Payment gateway whitelist - never block legitimate financial services
+const PAYMENT_GATEWAY_WHITELIST = new Set([
+    // Stripe
+    'stripe.com', 'checkout.stripe.com', 'js.stripe.com', 'api.stripe.com',
+    // PayPal
+    'paypal.com', 'www.paypal.com', 'checkout.paypal.com', 'api.paypal.com',
+    'paypalobjects.com', 'www.sandbox.paypal.com',
+    // Adyen
+    'adyen.com', 'checkout.adyen.com', 'checkoutshopper-live.adyen.com',
+    'checkoutshopper-test.adyen.com', 'pay.adyen.com',
+    // Mollie (NL)
+    'mollie.com', 'checkout.mollie.com', 'api.mollie.com',
+    // Klarna
+    'klarna.com', 'pay.klarna.com', 'api.klarna.com',
+    // iDEAL / Dutch Banks
+    'ideal.nl', 'abnamro.nl', 'ing.nl', 'rabobank.nl', 'bunq.com',
+    'asnbank.nl', 'snsbank.nl', 'regiobank.nl', 'triodos.nl',
+    // Other payment gateways
+    'braintreegateway.com', 'braintree-api.com', 'checkout.shopify.com',
+    'shop.app', 'apple.com', 'pay.google.com', 'worldpay.com',
+    'secure.worldpay.com', '2checkout.com', 'secure.2checkout.com',
+    'authorize.net', 'square.com', 'squareup.com'
+]);
+
+/**
+ * Checks if a domain is a whitelisted payment gateway
+ * @param {string} domain - The domain to check
+ * @returns {boolean} - True if whitelisted
+ */
+function isWhitelistedPaymentGatewayBG(domain) {
+    if (!domain) return false;
+    const lowerDomain = domain.toLowerCase();
+
+    // Exact match
+    if (PAYMENT_GATEWAY_WHITELIST.has(lowerDomain)) return true;
+
+    // Subdomain check
+    for (const gateway of PAYMENT_GATEWAY_WHITELIST) {
+        if (lowerDomain.endsWith('.' + gateway)) return true;
+    }
+
+    return false;
+}
+
+// Cached hostile trackers data
+let hostileTrackersData = null;
+let hostileTrackersLoadTime = 0;
+const HOSTILE_TRACKERS_CACHE_TTL = 60 * 60 * 1000; // 1 hour cache
+
+/**
+ * Loads hostile trackers database from local file
+ * @returns {Promise<Object|null>} - The hostile trackers data or null on error
+ */
+async function loadHostileTrackers() {
+    const now = Date.now();
+
+    // Return cached data if still valid
+    if (hostileTrackersData && (now - hostileTrackersLoadTime < HOSTILE_TRACKERS_CACHE_TTL)) {
+        return hostileTrackersData;
+    }
+
+    try {
+        const url = chrome.runtime.getURL('hostileTrackers.json');
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`Failed to load hostileTrackers.json: ${response.status}`);
+        }
+
+        hostileTrackersData = await response.json();
+        hostileTrackersLoadTime = now;
+
+        if (globalThresholds.DEBUG_MODE) {
+            console.log(`[WebSocket] Loaded hostile trackers: ${hostileTrackersData.trustedTrackers?.length || 0} trusted, ${hostileTrackersData.dangerousTLDs?.length || 0} dangerous TLDs`);
+        }
+
+        return hostileTrackersData;
+    } catch (error) {
+        console.error('[WebSocket] Error loading hostileTrackers.json:', error);
+        return null;
+    }
+}
+
+/**
+ * Initializes WebSocket blocking rules based on hostile trackers database
+ * Uses declarativeNetRequest with resourceType: ['websocket']
+ */
+async function initWebSocketBlocking() {
+    try {
+        // Check if background security is enabled
+        const { backgroundSecurity } = await chrome.storage.sync.get('backgroundSecurity');
+        if (backgroundSecurity === false) {
+            if (globalThresholds.DEBUG_MODE) {
+                console.log('[WebSocket] Skipping - backgroundSecurity is disabled');
+            }
+            return;
+        }
+
+        // Load hostile trackers database
+        const trackersData = await loadHostileTrackers();
+        if (!trackersData) {
+            console.error('[WebSocket] Cannot initialize - hostile trackers not loaded');
+            return;
+        }
+
+        const trustedDomains = new Set(trackersData.trustedTrackers || []);
+        const dangerousTLDs = trackersData.dangerousTLDs || [];
+
+        // Create blocking rules for dangerous TLDs
+        const newRules = [];
+        let ruleId = WEBSOCKET_RULE_ID_START;
+
+        // SECURITY FIX v8.8.2: Split TLDs into groups of max 10 per rule
+        // Chrome has a 2KB limit for regexFilter rules - splitting prevents exceeding this
+        // Filter TLDs to only valid alphanumeric ones
+        const validTLDs = dangerousTLDs.filter(tld => /^[a-z0-9]+$/i.test(tld));
+        const TLD_GROUP_SIZE = 10; // Max TLDs per rule to stay under 2KB limit
+
+        // Create multiple rules for TLD blocking (800000, 800001, etc.)
+        for (let i = 0; i < validTLDs.length && ruleId <= WEBSOCKET_RULE_ID_MAX; i += TLD_GROUP_SIZE) {
+            const tldGroup = validTLDs.slice(i, i + TLD_GROUP_SIZE);
+            const tldPattern = tldGroup.join('|');
+
+            newRules.push({
+                id: ruleId++,
+                priority: 1,
+                action: { type: 'block' },
+                condition: {
+                    // Match wss:// or ws:// URLs with dangerous TLDs
+                    // Pattern: wss?://...domain.tld/ or wss?://...domain.tld:port/
+                    regexFilter: `^wss?://[^/]*\\.(${tldPattern})([:/]|$)`,
+                    resourceTypes: ['websocket']
+                }
+            });
+
+            if (globalThresholds.DEBUG_MODE) {
+                console.log(`[WebSocket] TLD rule ${ruleId - 1}: blocking .${tldGroup.join(', .')}`);
+            }
+        }
+
+        // Block WebSocket connections to IP addresses (common C2 pattern)
+        if (ruleId <= WEBSOCKET_RULE_ID_MAX) {
+            newRules.push({
+                id: ruleId++,
+                priority: 2,
+                action: { type: 'block' },
+                condition: {
+                    // Match WebSocket to IPv4 addresses: wss://192.168.1.1/ or ws://10.0.0.1:8080/
+                    regexFilter: '^wss?://[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}([:/]|$)',
+                    resourceTypes: ['websocket']
+                }
+            });
+        }
+
+        // Note: High port blocking (>10000) skipped to avoid false positives
+        // TLD + IP blocking provides sufficient protection
+
+        // Add allow rules for payment gateways (higher priority to override blocks)
+        for (const gateway of PAYMENT_GATEWAY_WHITELIST) {
+            if (ruleId > WEBSOCKET_RULE_ID_MAX) break;
+
+            // Validate domain format
+            if (!gateway || gateway.includes(' ')) continue;
+
+            newRules.push({
+                id: ruleId++,
+                priority: 10, // Higher priority than block rules
+                action: { type: 'allow' },
+                condition: {
+                    // ||domain^ matches domain and all subdomains
+                    urlFilter: `||${gateway}`,
+                    resourceTypes: ['websocket']
+                }
+            });
+        }
+
+        // Add allow rules for trusted trackers (analytics, CDNs, etc.)
+        const trustedDomainsArray = Array.from(trustedDomains);
+        for (let i = 0; i < Math.min(trustedDomainsArray.length, 200) && ruleId <= WEBSOCKET_RULE_ID_MAX; i++) {
+            const domain = trustedDomainsArray[i];
+
+            // Skip if already in payment whitelist or invalid
+            if (PAYMENT_GATEWAY_WHITELIST.has(domain)) continue;
+            if (!domain || domain.includes(' ')) continue;
+
+            newRules.push({
+                id: ruleId++,
+                priority: 5, // Medium priority - allows trusted but doesn't override explicit blocks
+                action: { type: 'allow' },
+                condition: {
+                    urlFilter: `||${domain}`,
+                    resourceTypes: ['websocket']
+                }
+            });
+        }
+
+        // Apply all rules in a single call to avoid ID conflicts
+        // Include removeRuleIds to ensure clean state before adding new rules
+        const allRuleIdsToRemove = [];
+        for (let id = WEBSOCKET_RULE_ID_START; id <= Math.min(WEBSOCKET_RULE_ID_START + newRules.length + 10, WEBSOCKET_RULE_ID_MAX); id++) {
+            allRuleIdsToRemove.push(id);
+        }
+
+        await chrome.declarativeNetRequest.updateDynamicRules({
+            removeRuleIds: allRuleIdsToRemove,
+            addRules: newRules
+        });
+
+        // Store stats
+        const tldRuleCount = Math.ceil(validTLDs.length / TLD_GROUP_SIZE);
+        await chrome.storage.local.set({
+            webSocketRuleStats: {
+                lastUpdate: new Date().toISOString(),
+                totalRules: newRules.length,
+                dangerousTLDs: validTLDs.length,
+                dangerousTLDRules: tldRuleCount,
+                paymentWhitelistRules: PAYMENT_GATEWAY_WHITELIST.size,
+                trustedDomainRules: Math.min(trustedDomainsArray.length, 200)
+            }
+        });
+
+        console.log(`[WebSocket] Initialized ${newRules.length} rules (${tldRuleCount} TLD rules for ${validTLDs.length} TLDs, 1 IP rule, ${PAYMENT_GATEWAY_WHITELIST.size} payment whitelist, ${Math.min(trustedDomainsArray.length, 200)} trusted domains)`);
+
+    } catch (error) {
+        console.error('[WebSocket] Error initializing WebSocket blocking:', error);
+    }
+}
+
+/**
+ * Clears all WebSocket blocking rules
+ */
+async function clearWebSocketRules() {
+    try {
+        const existingRules = await chrome.declarativeNetRequest.getDynamicRules();
+        const wsRuleIds = existingRules
+            .filter(r => r.id >= WEBSOCKET_RULE_ID_START && r.id <= WEBSOCKET_RULE_ID_MAX)
+            .map(r => r.id);
+
+        if (wsRuleIds.length > 0) {
+            await chrome.declarativeNetRequest.updateDynamicRules({
+                removeRuleIds: wsRuleIds
+            });
+            console.log(`[WebSocket] Cleared ${wsRuleIds.length} WebSocket rules`);
+        }
+    } catch (error) {
+        console.error('[WebSocket] Error clearing WebSocket rules:', error);
     }
 }
 
@@ -3246,6 +3508,13 @@ chrome.storage.onChanged.addListener(async (changes, area) => {
                 }
                 await fetchAndLoadRules();
                 await manageDNRules();
+
+                // v8.8.2: Update WebSocket rules based on new setting
+                if (changes.backgroundSecurity.newValue === false) {
+                    await clearWebSocketRules();
+                } else {
+                    await initWebSocketBlocking();
+                }
             }
         }
 

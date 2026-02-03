@@ -1339,6 +1339,18 @@
   "clipboardHijackingTip": {
     "message": "Trang web này có thể đang cố thay thế nội dung bạn sao chép. Luôn xác minh nội dung đã dán."
   },
+  "pasteReplacementTitle": {
+    "message": "🚨 Phát hiện hoán đổi địa chỉ crypto!"
+  },
+  "pasteReplacementMessage": {
+    "message": "Trang này đã cố gắng thay thế địa chỉ tiền điện tử của bạn bằng địa chỉ khác. Địa chỉ gốc của bạn đã được khôi phục."
+  },
+  "pasteReplacementTip": {
+    "message": "LUÔN xác minh địa chỉ ví trước khi xác nhận bất kỳ giao dịch nào. Kẻ tấn công đã cố chuyển hướng tiền của bạn đến ví của chúng."
+  },
+  "reason_cryptoAddressReplacement": {
+    "message": "NGHIÊM TRỌNG: Trang này đã hoán đổi địa chỉ crypto của bạn với địa chỉ của kẻ tấn công khi dán."
+  },
   "webTransportWarningTitle": {
     "message": "Hoạt động mạng đáng ngờ"
   },

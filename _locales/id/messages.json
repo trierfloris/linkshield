@@ -1339,6 +1339,18 @@
   "clipboardHijackingTip": {
     "message": "Situs ini mungkin mencoba mengganti konten yang Anda salin. Selalu verifikasi konten yang ditempel."
   },
+  "pasteReplacementTitle": {
+    "message": "🚨 Pertukaran alamat crypto terdeteksi!"
+  },
+  "pasteReplacementMessage": {
+    "message": "Halaman ini mencoba mengganti alamat cryptocurrency Anda dengan yang lain. Alamat asli Anda telah dipulihkan."
+  },
+  "pasteReplacementTip": {
+    "message": "SELALU verifikasi alamat dompet sebelum mengonfirmasi transaksi apa pun. Penyerang mencoba mengalihkan dana Anda ke dompet mereka."
+  },
+  "reason_cryptoAddressReplacement": {
+    "message": "KRITIS: Halaman ini menukar alamat crypto Anda dengan alamat penyerang saat menempel."
+  },
   "webTransportWarningTitle": {
     "message": "Aktivitas jaringan mencurigakan"
   },

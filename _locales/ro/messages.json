@@ -1339,6 +1339,18 @@
   "clipboardHijackingTip": {
     "message": "Acest site poate încerca să înlocuiască conținutul pe care îl copiezi. Verifică întotdeauna conținutul lipit."
   },
+  "pasteReplacementTitle": {
+    "message": "🚨 Înlocuire adresă crypto detectată!"
+  },
+  "pasteReplacementMessage": {
+    "message": "Această pagină a încercat să înlocuiască adresa ta de criptomonedă cu alta. Adresa ta originală a fost restaurată."
+  },
+  "pasteReplacementTip": {
+    "message": "VERIFICĂ ÎNTOTDEAUNA adresa portofelului înainte de a confirma orice tranzacție. Atacatorul a încercat să redirecționeze fondurile tale către portofelul său."
+  },
+  "reason_cryptoAddressReplacement": {
+    "message": "CRITIC: Această pagină a înlocuit adresa ta crypto cu adresa atacatorului la lipire."
+  },
   "webTransportWarningTitle": {
     "message": "Activitate de rețea suspectă"
   },

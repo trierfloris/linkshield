@@ -1339,6 +1339,18 @@
   "clipboardHijackingTip": {
     "message": "Este site pode estar tentando substituir o conteúdo que você copia. Sempre verifique o conteúdo colado."
   },
+  "pasteReplacementTitle": {
+    "message": "🚨 Troca de endereço crypto detectada!"
+  },
+  "pasteReplacementMessage": {
+    "message": "Esta página tentou substituir seu endereço de criptomoeda por outro. Seu endereço original foi restaurado."
+  },
+  "pasteReplacementTip": {
+    "message": "SEMPRE verifique o endereço da carteira antes de confirmar qualquer transação. O atacante tentou redirecionar seus fundos para a carteira dele."
+  },
+  "reason_cryptoAddressReplacement": {
+    "message": "CRÍTICO: Esta página trocou seu endereço crypto pelo endereço de um atacante ao colar."
+  },
   "webTransportWarningTitle": {
     "message": "Atividade de rede suspeita"
   },

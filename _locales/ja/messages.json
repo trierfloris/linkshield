@@ -1339,6 +1339,18 @@
   "clipboardHijackingTip": {
     "message": "このサイトはコピーした内容を置き換えようとしている可能性があります。貼り付けた内容を必ず確認してください。"
   },
+  "pasteReplacementTitle": {
+    "message": "🚨 暗号資産アドレスの置換を検出！"
+  },
+  "pasteReplacementMessage": {
+    "message": "このページはあなたの暗号通貨アドレスを別のアドレスに置き換えようとしました。元のアドレスは復元されました。"
+  },
+  "pasteReplacementTip": {
+    "message": "取引を確認する前に、必ずウォレットアドレスを確認してください。攻撃者はあなたの資金を自分のウォレットにリダイレクトしようとしました。"
+  },
+  "reason_cryptoAddressReplacement": {
+    "message": "重大：このページは貼り付け時にあなたの暗号アドレスを攻撃者のアドレスと交換しました。"
+  },
   "webTransportWarningTitle": {
     "message": "疑わしいネットワークアクティビティ"
   },

@@ -1339,6 +1339,18 @@
   "clipboardHijackingTip": {
     "message": "Tento web se může pokoušet nahradit obsah, který kopírujete. Vždy ověřte vložený obsah."
   },
+  "pasteReplacementTitle": {
+    "message": "🚨 Zjištěna záměna krypto adresy!"
+  },
+  "pasteReplacementMessage": {
+    "message": "Tato stránka se pokusila nahradit vaši kryptoměnovou adresu jinou. Vaše původní adresa byla obnovena."
+  },
+  "pasteReplacementTip": {
+    "message": "VŽDY ověřte adresu peněženky před potvrzením jakékoli transakce. Útočník se pokusil přesměrovat vaše prostředky do své peněženky."
+  },
+  "reason_cryptoAddressReplacement": {
+    "message": "KRITICKÉ: Tato stránka při vkládání zaměnila vaši krypto adresu za adresu útočníka."
+  },
   "webTransportWarningTitle": {
     "message": "Podezřelá síťová aktivita"
   },

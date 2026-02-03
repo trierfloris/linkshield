@@ -42,6 +42,43 @@
 
 ## Recent Implementations
 
+### v8.8.1 - Tab Mismatch Bug Fix (2026-02)
+
+**Purpose:** Fix critical bug where warnings from one tab could be displayed when clicking the LinkShield icon on a different tab.
+
+**The Bug:**
+- `currentSiteStatus` was stored globally in `chrome.storage.local` (not per-tab)
+- When multiple tabs were open, the status from Tab A could be shown when clicking the icon on Tab B
+- This caused confusing warnings like "trusted domain" with "caution" level for sites like `mail.google.com`
+
+**The Fix:**
+- `dynamic.js` now validates that the stored status matches the active tab
+- Compares hostnames between `currentSiteStatus.url` and the active tab URL
+- If they don't match, redirects to `popup.html` (safe fallback) instead of showing wrong warning
+
+**Files Modified:**
+- `dynamic.js` - Added `getActiveTabAndValidateStatus()` with hostname comparison
+- `manifest.json` - Version bump to 8.8.1
+
+**Key Code Change:**
+```javascript
+// FIX BUG-002: Vergelijk hostnames om te voorkomen dat status van andere tab wordt getoond
+const activeHostname = getHostname(activeUrl);
+const statusHostname = getHostname(currentSiteStatus.url);
+
+if (!activeHostname || !statusHostname || activeHostname !== statusHostname) {
+    // Status is van een andere tab/site, toon normale popup
+    window.location.replace(chrome.runtime.getURL('popup.html'));
+    return;
+}
+```
+
+**Test Coverage:**
+- `tests/unit/dynamic-tab-mismatch.test.js` - 24 tests covering all scenarios
+- Tests include: hostname mismatch, subdomain mismatch, special URLs, race conditions
+
+---
+
 ### v8.8.0 - Government Service Scam Detection (2026-02)
 
 **Purpose:** Detect websites that offer official government services (visas, ETAs, travel authorizations) but are not the official government site. These scam sites charge €50-€100+ for services that cost £10 or less on official government websites.
@@ -1039,6 +1076,7 @@ if (tooltipFeature12) {
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 8.8.1 | 2026-02 | Fix: Tab mismatch bug in dynamic.js - warnings no longer shown for wrong tab |
 | 8.8.0 | 2026-02 | Government Service Scam Detection (Layer 16) - detects unofficial visa/ETA sites |
 | 8.7.3 | 2026-02 | False positive reduction: TLD optimization, disable freeHosting/suspiciousKeywords standalone, private network detection |
 | 8.7.2 | 2026-01 | Security audit fixes: ASCII I/l bypass, ClickFix split-tag, SVG race condition |

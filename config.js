@@ -820,9 +820,11 @@ SUSPICIOUS_URL_PATTERNS: [
                 },
                 'us-esta': {
                     matchPhrases: [
-                        'esta', 'esta application', 'apply for esta', 'esta usa', 'us esta',
+                        // Note: 'esta' alone removed - too generic (Spanish for "this/is")
+                        'esta application', 'apply for esta', 'esta usa', 'us esta',
                         'esta united states', 'american esta', 'usa travel authorization',
-                        'electronic system for travel authorization', 'esta online'
+                        'electronic system for travel authorization', 'esta online', 'esta visa',
+                        'esta travel', 'esta form', 'esta approval'
                     ],
                     officialDomains: ['cbp.dhs.gov'],
                     officialUrl: 'https://esta.cbp.dhs.gov/',

@@ -728,8 +728,30 @@ SUSPICIOUS_URL_PATTERNS: [
                 'login.windows.net', 'microsoft.com', 'office.com', 'office365.com',
                 'accounts.google.com', 'google.com', 'googleapis.com',
                 'login.okta.com', 'auth0.com', 'login.salesforce.com',
-                'microsoftonline.com', 'live.com', 'windows.net'
+                'microsoftonline.com', 'live.com', 'windows.net',
+                // v8.9.1: Enterprise SSO providers
+                'okta.com', '*.okta.com', 'oktapreview.com',
+                '*.auth0.com', 'eu.auth0.com', 'us.auth0.com',
+                'salesforce.com', '*.salesforce.com', '*.force.com', 'lightning.force.com'
             ],
+            // v8.9.1: Enterprise-specific DOM markers for AiTM detection
+            enterpriseMarkers: {
+                okta: {
+                    ids: ['okta-sign-in', 'okta-container', 'okta-signin-submit', 'okta-signin-username'],
+                    classes: ['okta-form-title', 'okta-form-subtitle', 'okta-sign-in-header', 'auth-content'],
+                    paths: ['/login/login.htm', '/app/UserHome', '/oauth2/v1/authorize']
+                },
+                auth0: {
+                    ids: ['auth0-lock-container', 'auth0-lock', 'auth0-widget'],
+                    classes: ['auth0-lock-header', 'auth0-lock-social-button', 'auth0-lock-form'],
+                    paths: ['/authorize', '/u/login', '/login/callback']
+                },
+                salesforce: {
+                    ids: ['sfdc_username_container', 'login_form', 'sfdc-username'],
+                    classes: ['loginForm', 'sfdc-login', 'slds-form'],
+                    paths: ['/services/oauth2/authorize', '/secur/frontdoor.jsp', '/_ui/identity']
+                }
+            },
             scores: {
                 msSpecificId: 8,       // Microsoft-specifiek element ID (#i0116, #i0118)
                 msContainer: 5,        // Microsoft container (.login-paginated-page, #lightbox)
@@ -741,7 +763,11 @@ SUSPICIOUS_URL_PATTERNS: [
                 googleLoginPath: 5,    // /ServiceLogin pad op verkeerd domein
                 passwordField: 2,      // Wachtwoordveld aanwezig
                 suspiciousTLD: 3,      // Verdachte TLD
-                freeHosting: 3         // Gratis hosting domein
+                freeHosting: 3,        // Gratis hosting domein
+                // v8.9.1: Enterprise SSO scores
+                oktaSpecificId: 8,     // Okta-specifiek element ID
+                auth0SpecificId: 8,    // Auth0-specifiek element ID
+                salesforceSpecificId: 8 // Salesforce-specifiek element ID
             }
         },
 

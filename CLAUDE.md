@@ -2,7 +2,7 @@
 
 ## Project Overview
 **LinkShield** is a Chrome extension (MV3) protecting users from phishing and web-based attacks.
-**Current Version:** 8.9.0 | **Layers of Protection:** 16
+**Current Version:** 8.9.1 | **Layers of Protection:** 16
 
 ## Architecture & Components
 | File | Purpose |
@@ -21,6 +21,43 @@
 ---
 
 ## Recent Implementations (2026)
+
+### v8.9.1 - Enterprise-Grade Security Enhancements
+
+#### Clipboard Hardening (Layer 9 Enhancement)
+- **Issue:** 50ms delay was too short to detect sophisticated paste replacement attacks.
+- **Fix:** Increased delay from 50ms to 300ms in `handlePasteEvent()`.
+- **New Feature:** Length variance detection - triggers alert if paste result differs >20% from original.
+- **Benefit:** Catches attacks that replace crypto addresses with different-length strings.
+
+#### Advanced Visibility Check (Layer 5 Enhancement)
+- **Issue:** Standard `isVisible()` couldn't detect overlays hidden via CSS transforms or clip-path.
+- **Fix:** Added `checkAdvancedVisibility(el)` function with three new checks:
+  1. **Transform Detection:** High z-index (>9000) combined with `transform: translate()` positioning element outside viewport.
+  2. **Clip-Path Masks:** High z-index (>1000) with `clip-path` that creates zero visible area (`inset(100%)`, `circle(0)`).
+  3. **Invisible Overlays:** `pointer-events: none` + high z-index + near-zero opacity.
+- **Returns:** `{visible: boolean, dangerous: boolean, reason: string}` for fine-grained control.
+
+#### Enterprise AiTM Detection (Layer 13 Enhancement)
+- **Issue:** Only Microsoft and Google AiTM markers were detected.
+- **Fix:** Added enterprise SSO provider markers to `config.js:aitmDetection`:
+  - **Okta:** IDs (`okta-sign-in`, `okta-container`), classes (`okta-form-title`, `auth-content`), paths (`/login/login.htm`).
+  - **Auth0:** IDs (`auth0-lock-container`, `auth0-widget`), classes (`auth0-lock-header`, `auth0-lock-form`).
+  - **Salesforce:** IDs (`sfdc_username_container`, `login_form`), classes (`loginForm`, `slds-form`), paths (`/services/oauth2/authorize`).
+- **Legitimate Providers Updated:** Added `okta.com`, `*.okta.com`, `*.auth0.com`, `*.salesforce.com`, `*.force.com`.
+- **New Scores:** `oktaSpecificId`, `auth0SpecificId`, `salesforceSpecificId` (all score 8).
+
+#### BitB Pseudo-Element Detection (Layer 3 Enhancement)
+- **Issue:** Attackers could hide fake URLs in CSS `::before`/`::after` pseudo-elements, bypassing DOM scanning.
+- **Fix:** Added `detectPseudoElementUrls(container)` function.
+- **Detection Method:** Uses `window.getComputedStyle(el, '::before').content` and `::after`.
+- **Patterns Detected:**
+  - `accounts.google.com`, `login.microsoft.com`, `login.okta.com`
+  - `*.auth0.com`, `login.salesforce.com`, `appleid.apple.com`
+  - OAuth paths (`/oauth`, `/signin`)
+- **Response:** Adds `pseudoElementFakeUrl` indicator with same score as `fakeUrlBar`.
+
+---
 
 ### v8.9.0 - Security Audit Fixes & Memory Leak Prevention
 
@@ -237,6 +274,7 @@ To avoid conflicts, use these reserved ranges:
 ## Changelog (Abbreviated)
 | Version | Key Change |
 |---------|------------|
+| 8.9.1 | Clipboard hardening (300ms), advanced visibility checks, enterprise AiTM (Okta/Auth0/Salesforce), BitB pseudo-element detection. |
 | 8.9.0 | Memory leak fixes, OAuth implicit flow, Fetch/XHR monitoring, Data URI hardening, Base64 PowerShell. |
 | 8.8.3 | Form Target Hijacking, SVG Data URI Detection, Shadow DOM 500ms Timeout. |
 | 8.8.2 | Paste Address Guard, Payment Gateway Whitelist, WebSocket Monitoring. |

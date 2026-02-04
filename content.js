@@ -17,12 +17,89 @@ function isHiddenInput(el) {
 }
 function isVisible(el) {
   const style = getComputedStyle(el);
-  return (
-    style.display !== 'none' &&
-    style.visibility !== 'hidden' &&
-    el.offsetParent !== null &&
-    el.getAttribute('aria-hidden') !== 'true'
-  );
+
+  // Basic visibility checks
+  if (style.display === 'none' ||
+      style.visibility === 'hidden' ||
+      el.offsetParent === null ||
+      el.getAttribute('aria-hidden') === 'true') {
+    return false;
+  }
+
+  return true;
+}
+
+/**
+ * v8.9.1: Advanced visibility check for dangerous overlays
+ * Detects elements that use advanced CSS to hide outside viewport
+ * or use clip-path masks to be technically "visible" but not seen
+ * @param {Element} el - The element to check
+ * @returns {{visible: boolean, dangerous: boolean, reason: string|null}}
+ */
+function checkAdvancedVisibility(el) {
+  try {
+    const style = getComputedStyle(el);
+    const rect = el.getBoundingClientRect();
+    const zIndex = parseInt(style.zIndex) || 0;
+
+    // Check 1: High z-index combined with transform positioning outside viewport
+    if (zIndex > 9000) {
+      const transform = style.transform;
+      if (transform && transform !== 'none') {
+        // Parse translate values from transform matrix or translate functions
+        const translateMatch = transform.match(/translate[XY3d]*\s*\(([^)]+)\)/i) ||
+                               transform.match(/matrix\([^,]+,[^,]+,[^,]+,[^,]+,([^,]+),([^)]+)\)/);
+        if (translateMatch) {
+          // Check if element is positioned far outside viewport
+          const viewportWidth = window.innerWidth;
+          const viewportHeight = window.innerHeight;
+
+          // Element bounds after transform
+          if (rect.right < -100 || rect.left > viewportWidth + 100 ||
+              rect.bottom < -100 || rect.top > viewportHeight + 100) {
+            return {
+              visible: false,
+              dangerous: true,
+              reason: 'high-z-index-transform-offscreen'
+            };
+          }
+        }
+      }
+    }
+
+    // Check 2: Clip-path that effectively hides content
+    const clipPath = style.clipPath || style.webkitClipPath;
+    if (clipPath && clipPath !== 'none' && zIndex > 1000) {
+      // Detect clip-path that creates zero or near-zero visible area
+      if (clipPath.includes('inset(100%)') ||
+          clipPath.includes('inset(50% 50%)') ||
+          clipPath.includes('polygon(0 0, 0 0, 0 0)') ||
+          clipPath.includes('circle(0')) {
+        return {
+          visible: false,
+          dangerous: true,
+          reason: 'clip-path-hidden-overlay'
+        };
+      }
+    }
+
+    // Check 3: Combination of pointer-events:none with high z-index (click-through overlay)
+    if (style.pointerEvents === 'none' && zIndex > 9000) {
+      // This could be a transparent overlay for visual hijacking
+      const opacity = parseFloat(style.opacity);
+      if (opacity < 0.1) {
+        return {
+          visible: true,
+          dangerous: true,
+          reason: 'invisible-high-z-overlay'
+        };
+      }
+    }
+
+    return { visible: true, dangerous: false, reason: null };
+  } catch (e) {
+    return { visible: true, dangerous: false, reason: null };
+  }
 }
 /**
  * Zorgt ervoor dat de globale configuratie (`globalConfig`) beschikbaar en geldig is.
@@ -1441,7 +1518,10 @@ function initPasteAddressGuard() {
 
         const normalizedPasted = normalizeAddress(pastedContent, pastedCryptoType);
 
-        // Wacht kort tot eventuele malafide scripts de waarde vervangen
+        // v8.9.1: Verhoogde delay van 50ms naar 300ms voor betere detectie
+        // Sommige malafide scripts wachten langer voordat ze de waarde vervangen
+        const originalLength = pastedContent.length;
+
         setTimeout(() => {
             try {
                 const currentValue = target.value || '';
@@ -1455,11 +1535,27 @@ function initPasteAddressGuard() {
                     if (normalizedPasted !== normalizedCurrent) {
                         reportPasteReplacement(pastedContent, currentValue, pastedCryptoType, target);
                     }
+                } else {
+                    // v8.9.1: Length variance check - als lengte >20% veranderd is
+                    // Dit detecteert ook aanvallen die het adres naar iets anders vervangen
+                    const currentLength = currentValue.length;
+                    const lengthDiff = Math.abs(currentLength - originalLength);
+                    const lengthVariance = originalLength > 0 ? (lengthDiff / originalLength) : 0;
+
+                    if (lengthVariance > 0.2 && originalLength > 20) {
+                        // Significante lengte verandering na paste - verdacht
+                        logDebug(`[PasteGuard] Significant length change detected: ${originalLength} -> ${currentLength} (${(lengthVariance * 100).toFixed(1)}%)`);
+
+                        // Check of het resultaat nog steeds lijkt op een adres-achtige string
+                        if (currentLength > 15 && /^[a-zA-Z0-9]+$/.test(currentValue.trim())) {
+                            reportPasteReplacement(pastedContent, currentValue, pastedCryptoType, target);
+                        }
+                    }
                 }
             } catch (err) {
                 // Target may have been removed from DOM
             }
-        }, 50); // 50ms delay om scripts de kans te geven
+        }, 300); // v8.9.1: Verhoogd van 50ms naar 300ms
     }
 
     /**
@@ -2442,6 +2538,19 @@ function analyzeOverlayForBitB(overlay, config) {
             foundTypes.add('windowChromeStyle');
         }
 
+        // v8.9.1: Check voor fake URLs in CSS pseudo-elementen (::before/::after)
+        const pseudoUrlCheck = detectPseudoElementUrls(overlay);
+        if (pseudoUrlCheck.found) {
+            indicators.push({
+                type: 'pseudoElementFakeUrl',
+                content: pseudoUrlCheck.content,
+                element: pseudoUrlCheck.elementType
+            });
+            score += scores.fakeUrlBar; // Zelfde score als fake URL bar
+            foundTypes.add('fakeUrlBar'); // Telt als fake URL bar
+            logDebug('[BitB] Fake URL detected in pseudo-element:', pseudoUrlCheck.content);
+        }
+
         // 6. Check voor iframe binnen modal met login
         const iframes = overlay.querySelectorAll('iframe');
         if (iframes.length > 0 && loginInputs.length > 0) {
@@ -2455,6 +2564,85 @@ function analyzeOverlayForBitB(overlay, config) {
     }
 
     return { score, indicators, foundTypes };
+}
+
+/**
+ * v8.9.1: Detecteert fake URLs verborgen in CSS pseudo-elementen (::before/::after)
+ * Aanvallers kunnen URLs in 'content' property van pseudo-elementen verbergen
+ * om fake browser URL bars te creëren zonder echte DOM elementen
+ */
+function detectPseudoElementUrls(container) {
+    const result = { found: false, content: null, elementType: null };
+
+    try {
+        // URL patterns die wijzen op OAuth/login pagina's
+        const urlPatterns = [
+            /https?:\/\/accounts\.google\.com/i,
+            /https?:\/\/login\.microsoft(online)?\.com/i,
+            /https?:\/\/www\.facebook\.com/i,
+            /https?:\/\/login\.okta\.com/i,
+            /https?:\/\/.*\.auth0\.com/i,
+            /https?:\/\/login\.salesforce\.com/i,
+            /https?:\/\/appleid\.apple\.com/i,
+            /https?:\/\/github\.com\/login/i,
+            /https?:\/\/.*\.(com|org|net)\/oauth/i,
+            /https?:\/\/.*\.(com|org|net)\/signin/i
+        ];
+
+        // Scan elementen binnen de container die pseudo-elementen zouden kunnen hebben
+        const elementsToCheck = container.querySelectorAll('div, span, p, a, button, label');
+
+        for (const el of elementsToCheck) {
+            // Check ::before
+            try {
+                const beforeStyle = window.getComputedStyle(el, '::before');
+                const beforeContent = beforeStyle.content;
+
+                if (beforeContent && beforeContent !== 'none' && beforeContent !== 'normal') {
+                    // Strip quotes from content value
+                    const cleanContent = beforeContent.replace(/^["']|["']$/g, '');
+
+                    if (cleanContent.length > 10) {
+                        for (const pattern of urlPatterns) {
+                            if (pattern.test(cleanContent)) {
+                                return {
+                                    found: true,
+                                    content: cleanContent.substring(0, 80),
+                                    elementType: '::before'
+                                };
+                            }
+                        }
+                    }
+                }
+            } catch (e) { /* ignore */ }
+
+            // Check ::after
+            try {
+                const afterStyle = window.getComputedStyle(el, '::after');
+                const afterContent = afterStyle.content;
+
+                if (afterContent && afterContent !== 'none' && afterContent !== 'normal') {
+                    const cleanContent = afterContent.replace(/^["']|["']$/g, '');
+
+                    if (cleanContent.length > 10) {
+                        for (const pattern of urlPatterns) {
+                            if (pattern.test(cleanContent)) {
+                                return {
+                                    found: true,
+                                    content: cleanContent.substring(0, 80),
+                                    elementType: '::after'
+                                };
+                            }
+                        }
+                    }
+                }
+            } catch (e) { /* ignore */ }
+        }
+    } catch (error) {
+        handleError(error, '[BitB] detectPseudoElementUrls');
+    }
+
+    return result;
 }
 
 /**

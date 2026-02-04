@@ -101,6 +101,151 @@ function checkAdvancedVisibility(el) {
     return { visible: true, dangerous: false, reason: null };
   }
 }
+
+/**
+ * v8.9.2: Zero-Width Character Detection
+ * Detects invisible Unicode characters that can be used to bypass URL validation
+ * and create misleading domain names or form labels
+ *
+ * Dangerous characters:
+ * - U+200B: Zero Width Space (ZWSP)
+ * - U+200C: Zero Width Non-Joiner (ZWNJ)
+ * - U+200D: Zero Width Joiner (ZWJ)
+ * - U+FEFF: Byte Order Mark (BOM) - invisible when used mid-string
+ * - U+202E: Right-to-Left Override (RLO) - CRITICAL: reverses text direction
+ * - U+202D: Left-to-Right Override (LRO)
+ * - U+202C: Pop Directional Formatting
+ * - U+2060: Word Joiner
+ * - U+2061-U+2064: Invisible math operators
+ *
+ * @param {string} text - The text to scan for zero-width characters
+ * @returns {{found: boolean, chars: string[], score: number, hasBidiOverride: boolean}}
+ */
+function detectZeroWidthCharacters(text) {
+  const result = { found: false, chars: [], score: 0, hasBidiOverride: false };
+
+  if (!text || typeof text !== 'string') {
+    return result;
+  }
+
+  // Map of dangerous zero-width/invisible characters
+  const dangerousChars = {
+    '\u200B': { name: 'ZWSP', score: 8 },           // Zero Width Space
+    '\u200C': { name: 'ZWNJ', score: 8 },           // Zero Width Non-Joiner
+    '\u200D': { name: 'ZWJ', score: 8 },            // Zero Width Joiner
+    '\uFEFF': { name: 'BOM', score: 10 },           // Byte Order Mark (suspicious mid-string)
+    '\u202E': { name: 'RLO', score: 20 },           // Right-to-Left Override - CRITICAL
+    '\u202D': { name: 'LRO', score: 15 },           // Left-to-Right Override
+    '\u202C': { name: 'PDF', score: 10 },           // Pop Directional Formatting
+    '\u202A': { name: 'LRE', score: 10 },           // Left-to-Right Embedding
+    '\u202B': { name: 'RLE', score: 15 },           // Right-to-Left Embedding
+    '\u2060': { name: 'WJ', score: 6 },             // Word Joiner
+    '\u2061': { name: 'FUNC', score: 8 },           // Function Application
+    '\u2062': { name: 'TIMES', score: 8 },          // Invisible Times
+    '\u2063': { name: 'SEP', score: 8 },            // Invisible Separator
+    '\u2064': { name: 'PLUS', score: 8 },           // Invisible Plus
+    '\u00AD': { name: 'SHY', score: 5 },            // Soft Hyphen
+    '\u034F': { name: 'CGJ', score: 6 },            // Combining Grapheme Joiner
+    '\u115F': { name: 'HFILL', score: 6 },          // Hangul Choseong Filler
+    '\u1160': { name: 'JFILL', score: 6 },          // Hangul Jungseong Filler
+    '\u17B4': { name: 'KVOWEL', score: 6 },         // Khmer Vowel Inherent Aq
+    '\u17B5': { name: 'KVOWEL2', score: 6 },        // Khmer Vowel Inherent Aa
+    '\u180E': { name: 'MVS', score: 6 }             // Mongolian Vowel Separator
+  };
+
+  // BiDi override characters are especially dangerous
+  const bidiOverrides = ['\u202E', '\u202D', '\u202B', '\u202A'];
+
+  const foundSet = new Set();
+
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
+    const charInfo = dangerousChars[char];
+
+    if (charInfo && !foundSet.has(char)) {
+      foundSet.add(char);
+      result.found = true;
+      result.chars.push(charInfo.name);
+      result.score += charInfo.score;
+
+      if (bidiOverrides.includes(char)) {
+        result.hasBidiOverride = true;
+      }
+    }
+  }
+
+  // Extra penalty for BiDi override in URLs (can make malicious URLs look legitimate)
+  if (result.hasBidiOverride) {
+    result.score += 10; // Additional penalty
+    logDebug(`[ZeroWidth v8.9.2] 🚨 CRITICAL: BiDi override character detected - text direction manipulation!`);
+  }
+
+  return result;
+}
+
+/**
+ * v8.9.2: Scan form labels and inputs for zero-width character attacks
+ * Attackers can use invisible characters to make fake form labels
+ * that look identical to legitimate ones
+ */
+function scanFormsForZeroWidthAttacks() {
+  const results = [];
+
+  try {
+    // Check all form labels
+    const labels = document.querySelectorAll('label, .form-label, [class*="label"]');
+    for (const label of labels) {
+      const text = label.textContent || '';
+      const check = detectZeroWidthCharacters(text);
+      if (check.found) {
+        results.push({
+          type: 'label',
+          element: label,
+          chars: check.chars,
+          score: check.score,
+          hasBidiOverride: check.hasBidiOverride
+        });
+      }
+    }
+
+    // Check input placeholders
+    const inputs = document.querySelectorAll('input[placeholder], textarea[placeholder]');
+    for (const input of inputs) {
+      const placeholder = input.getAttribute('placeholder') || '';
+      const check = detectZeroWidthCharacters(placeholder);
+      if (check.found) {
+        results.push({
+          type: 'placeholder',
+          element: input,
+          chars: check.chars,
+          score: check.score,
+          hasBidiOverride: check.hasBidiOverride
+        });
+      }
+    }
+
+    // Check button text
+    const buttons = document.querySelectorAll('button, input[type="submit"], [role="button"]');
+    for (const button of buttons) {
+      const text = button.textContent || button.value || '';
+      const check = detectZeroWidthCharacters(text);
+      if (check.found) {
+        results.push({
+          type: 'button',
+          element: button,
+          chars: check.chars,
+          score: check.score,
+          hasBidiOverride: check.hasBidiOverride
+        });
+      }
+    }
+  } catch (e) {
+    logDebug('[ZeroWidth] Error scanning forms:', e.message);
+  }
+
+  return results;
+}
+
 /**
  * Zorgt ervoor dat de globale configuratie (`globalConfig`) beschikbaar en geldig is.
  *
@@ -1827,15 +1972,24 @@ let clickFixDetected = false;
 
 /**
  * SECURITY FIX v8.9.0: Decode Base64-encoded PowerShell commands
+ * ENHANCED v8.9.2: Recursive decoding up to 3 levels for nested payloads
  * PowerShell uses UTF-16LE encoding for -EncodedCommand/-e parameter
  *
  * @param {string} base64String - The Base64 encoded command
- * @returns {{decoded: string, isMalicious: boolean, indicators: string[]}}
+ * @param {number} depth - Current recursion depth (default 0, max 3)
+ * @returns {{decoded: string, isMalicious: boolean, indicators: string[], nestedPayloads: string[]}}
  */
-function decodeBase64PowerShell(base64String) {
-  const result = { decoded: '', isMalicious: false, indicators: [] };
+function decodeBase64PowerShell(base64String, depth = 0) {
+  const MAX_RECURSION_DEPTH = 3;
+  const result = { decoded: '', isMalicious: false, indicators: [], nestedPayloads: [] };
 
   if (!base64String || typeof base64String !== 'string') {
+    return result;
+  }
+
+  // Prevent infinite recursion
+  if (depth >= MAX_RECURSION_DEPTH) {
+    logDebug(`[ClickFix-Base64] Max recursion depth (${MAX_RECURSION_DEPTH}) reached`);
     return result;
   }
 
@@ -1898,14 +2052,51 @@ function decodeBase64PowerShell(base64String) {
       }
     }
 
-    logDebug(`[ClickFix-Base64] Decoded ${cleanBase64.length} chars -> "${decoded.substring(0, 100)}..."`);
+    // v8.9.2: RECURSIVE DECODING - Check for nested Base64 payloads
+    // Look for patterns like: [Convert]::FromBase64String('...') or atob('...')
+    const nestedBase64Patterns = [
+      /\[(?:System\.)?Convert\]::FromBase64String\s*\(\s*['"]([A-Za-z0-9+/]+=*)['"]?\s*\)/gi,
+      /FromBase64String\s*\(\s*['"]([A-Za-z0-9+/]+=*)['"]?\s*\)/gi,
+      /-e(?:nc(?:odedcommand)?)?[\s'"]+([A-Za-z0-9+/]{20,}=*)/gi,
+      /atob\s*\(\s*['"]([A-Za-z0-9+/]+=*)['"]?\s*\)/gi,
+      /base64\s*[=:]\s*['"]?([A-Za-z0-9+/]{30,}=*)['"]?/gi
+    ];
+
+    for (const pattern of nestedBase64Patterns) {
+      let match;
+      while ((match = pattern.exec(decoded)) !== null) {
+        const nestedBase64 = match[1];
+        if (nestedBase64 && nestedBase64.length >= 20) {
+          logDebug(`[ClickFix-Base64] Found nested Base64 at depth ${depth + 1}: ${nestedBase64.substring(0, 30)}...`);
+
+          // Recursively decode nested payload
+          const nestedResult = decodeBase64PowerShell(nestedBase64, depth + 1);
+
+          if (nestedResult.decoded.length > 0) {
+            result.nestedPayloads.push(nestedResult.decoded);
+            result.decoded += '\n[NESTED PAYLOAD]:\n' + nestedResult.decoded;
+
+            // Merge indicators from nested payload
+            if (nestedResult.isMalicious) {
+              result.isMalicious = true;
+              result.indicators.push(...nestedResult.indicators.map(i => `nested:${i}`));
+            }
+
+            // Merge nested payloads
+            result.nestedPayloads.push(...nestedResult.nestedPayloads);
+          }
+        }
+      }
+    }
+
+    logDebug(`[ClickFix-Base64] Decoded ${cleanBase64.length} chars at depth ${depth} -> "${decoded.substring(0, 100)}..."`);
     if (result.isMalicious) {
       logDebug(`[ClickFix-Base64] 🚨 MALICIOUS INDICATORS: ${result.indicators.join(', ')}`);
     }
 
   } catch (e) {
     // Invalid base64 or decoding error
-    logDebug(`[ClickFix-Base64] Decode error: ${e.message}`);
+    logDebug(`[ClickFix-Base64] Decode error at depth ${depth}: ${e.message}`);
   }
 
   return result;
@@ -2446,6 +2637,184 @@ function findOverlayContainers() {
     }
 
     return candidates.slice(0, 10); // Limiteer voor performance
+}
+
+/**
+ * v8.9.2: Canvas/WebGL Overlay Detection (Layer 3/5 Enhancement)
+ * Detects suspicious canvas/WebGL elements that may be used to render
+ * fake browser windows, overlays, or phishing UI that bypasses DOM scanning
+ *
+ * Detection heuristics:
+ * 1. Large canvas covering significant viewport area
+ * 2. Canvas with high z-index (overlay-like behavior)
+ * 3. Canvas with pointer-events enabled (interactive)
+ * 4. WebGL context with suspicious drawing activity
+ * 5. Canvas near login forms or password fields
+ *
+ * @returns {{detected: boolean, score: number, indicators: string[], elements: Element[]}}
+ */
+function detectCanvasWebGLOverlays() {
+    const result = { detected: false, score: 0, indicators: [], elements: [] };
+
+    try {
+        const canvases = document.querySelectorAll('canvas');
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        const viewportArea = viewportWidth * viewportHeight;
+
+        for (const canvas of canvases) {
+            const rect = canvas.getBoundingClientRect();
+            const style = window.getComputedStyle(canvas);
+            const zIndex = parseInt(style.zIndex) || 0;
+            const canvasArea = rect.width * rect.height;
+            const coveragePercent = (canvasArea / viewportArea) * 100;
+
+            // Skip tiny or off-screen canvases
+            if (canvasArea < 10000 || rect.right < 0 || rect.bottom < 0) {
+                continue;
+            }
+
+            let suspiciousScore = 0;
+            const canvasIndicators = [];
+
+            // Check 1: Large canvas (>30% viewport coverage)
+            if (coveragePercent > 30) {
+                suspiciousScore += 5;
+                canvasIndicators.push('large_canvas_overlay');
+            }
+
+            // Check 2: High z-index (overlay behavior)
+            if (zIndex > 1000) {
+                suspiciousScore += 8;
+                canvasIndicators.push('high_zindex_canvas');
+            }
+
+            // Check 3: Fixed/absolute positioning
+            if (style.position === 'fixed' || style.position === 'absolute') {
+                suspiciousScore += 4;
+                canvasIndicators.push('positioned_canvas');
+            }
+
+            // Check 4: Interactive canvas (pointer-events not disabled)
+            if (style.pointerEvents !== 'none') {
+                // Check for click handlers
+                const hasClickHandler = canvas.onclick !== null ||
+                                        canvas.hasAttribute('onclick') ||
+                                        canvas.dataset.interactive === 'true';
+                if (hasClickHandler && coveragePercent > 20) {
+                    suspiciousScore += 6;
+                    canvasIndicators.push('interactive_canvas');
+                }
+            }
+
+            // Check 5: WebGL context with recent activity
+            try {
+                const gl = canvas.getContext('webgl') || canvas.getContext('webgl2');
+                if (gl) {
+                    // Canvas has WebGL - could be rendering fake UI
+                    if (coveragePercent > 40) {
+                        suspiciousScore += 7;
+                        canvasIndicators.push('webgl_large_overlay');
+                    }
+                }
+            } catch (e) { /* No WebGL context */ }
+
+            // Check 6: Canvas near login forms
+            const nearbyForms = document.querySelectorAll('form');
+            for (const form of nearbyForms) {
+                const formRect = form.getBoundingClientRect();
+                const hasPassword = form.querySelector('input[type="password"]');
+
+                if (hasPassword) {
+                    // Check if canvas overlaps or is near the form
+                    const overlaps = !(rect.right < formRect.left ||
+                                      rect.left > formRect.right ||
+                                      rect.bottom < formRect.top ||
+                                      rect.top > formRect.bottom);
+
+                    if (overlaps && zIndex > 100) {
+                        suspiciousScore += 12;
+                        canvasIndicators.push('canvas_over_login_form');
+                        logDebug('[Canvas-Detect v8.9.2] 🚨 Canvas overlapping login form detected!');
+                    }
+                }
+            }
+
+            // Threshold to flag this canvas as suspicious
+            if (suspiciousScore >= 10) {
+                result.detected = true;
+                result.score += suspiciousScore;
+                result.indicators.push(...canvasIndicators);
+                result.elements.push(canvas);
+
+                logDebug(`[Canvas-Detect v8.9.2] Suspicious canvas: ${rect.width}x${rect.height}, z:${zIndex}, score:${suspiciousScore}`);
+            }
+        }
+
+    } catch (e) {
+        logDebug('[Canvas-Detect] Error:', e.message);
+    }
+
+    return result;
+}
+
+/**
+ * v8.9.2: Domain Reputation API Placeholder
+ * Future integration point for external WHOIS/reputation services
+ * Currently returns a placeholder result - can be implemented with:
+ * - VirusTotal API
+ * - Google Safe Browsing API
+ * - WHOIS domain age lookup
+ * - URLhaus/PhishTank databases
+ *
+ * @param {string} domain - The domain to check
+ * @returns {Promise<{reputation: string, score: number, age: number|null, registrar: string|null}>}
+ */
+async function checkDomainReputation(domain) {
+    // Placeholder implementation - returns unknown status
+    // TODO: Implement actual API integration in future versions
+    const result = {
+        reputation: 'unknown',  // 'safe', 'suspicious', 'malicious', 'unknown'
+        score: 0,               // 0-100, higher = more trustworthy
+        age: null,              // Domain age in days
+        registrar: null,        // Registrar name
+        cached: false,
+        source: 'placeholder'
+    };
+
+    // Basic heuristic: check for suspicious TLD patterns
+    const suspiciousTLDs = [
+        '.xyz', '.tk', '.ml', '.ga', '.cf', '.gq', '.click', '.link',
+        '.top', '.work', '.date', '.racing', '.download', '.stream'
+    ];
+
+    const domainLower = domain.toLowerCase();
+
+    for (const tld of suspiciousTLDs) {
+        if (domainLower.endsWith(tld)) {
+            result.reputation = 'suspicious';
+            result.score = 30;
+            break;
+        }
+    }
+
+    // Check for subdomain depth (many subdomains = suspicious)
+    const subdomainDepth = domainLower.split('.').length - 2;
+    if (subdomainDepth > 3) {
+        result.reputation = 'suspicious';
+        result.score = Math.max(result.score, 25);
+    }
+
+    // Check for random-looking subdomains (hex/base64 patterns)
+    const subdomain = domainLower.split('.')[0];
+    if (/^[a-f0-9]{8,}$/i.test(subdomain) || /^[a-z0-9]{20,}$/i.test(subdomain)) {
+        result.reputation = 'suspicious';
+        result.score = Math.max(result.score, 20);
+    }
+
+    logDebug(`[Reputation v8.9.2] Domain ${domain}: ${result.reputation} (score: ${result.score})`);
+
+    return result;
 }
 
 /**
@@ -5603,6 +5972,16 @@ function detectHomoglyphAndPunycode(href) {
       return result;
     }
 
+    // v8.9.2: ZERO-WIDTH CHARACTER DETECTION
+    // These invisible characters can be used to bypass URL validation
+    const zeroWidthCheck = detectZeroWidthCharacters(href);
+    if (zeroWidthCheck.found) {
+      result.isSuspicious = true;
+      result.reasons.push('zeroWidthBypass');
+      result.risk += zeroWidthCheck.score;
+      logDebug(`[SecurityFix v8.9.2] 🚨 Zero-width characters detected in URL: ${zeroWidthCheck.chars.join(', ')}`);
+    }
+
     // 1) PUNYCODE DETECTION - CASE-INSENSITIVE (catches xn--, XN--, Xn--)
     // AUDIT FIX: Use case-insensitive regex instead of includes()
     if (/xn--/i.test(hostname)) {
@@ -7993,8 +8372,97 @@ function scanDataUriSVG(dataUri, config) {
             result.indicators.push('datauri_svg_base64_eval');
         }
 
+        // v8.9.2: RECURSIVE BASE64 SCANNING - up to 3 levels
+        const nestedResult = scanNestedBase64InSVG(svgContent, config, 0);
+        if (nestedResult.found) {
+            result.score += nestedResult.score;
+            result.indicators.push(...nestedResult.indicators);
+        }
+
     } catch (e) {
         logDebug('[SVGPayload] Error scanning data URI:', e.message);
+    }
+
+    return result;
+}
+
+/**
+ * v8.9.2: Recursively scan for nested Base64 payloads in SVG content
+ * Attackers use multiple layers of encoding to bypass detection
+ *
+ * @param {string} content - The decoded SVG/script content
+ * @param {object} config - SVG payload detection config
+ * @param {number} depth - Current recursion depth (max 3)
+ * @returns {{found: boolean, score: number, indicators: string[]}}
+ */
+function scanNestedBase64InSVG(content, config, depth = 0) {
+    const MAX_DEPTH = 3;
+    const result = { found: false, score: 0, indicators: [] };
+
+    if (!content || depth >= MAX_DEPTH) {
+        return result;
+    }
+
+    try {
+        // Look for Base64 strings in the content
+        // Match atob('...'), btoa('...'), or raw base64 strings in JS
+        const base64Patterns = [
+            /atob\s*\(\s*['"]([A-Za-z0-9+/]+=*)['"]?\s*\)/gi,
+            /['"]([A-Za-z0-9+/]{40,}=*)['"](?:\s*\)|\s*;|\s*,)/g,
+            /data:[^;]+;base64,([A-Za-z0-9+/]+=*)/gi
+        ];
+
+        for (const pattern of base64Patterns) {
+            let match;
+            while ((match = pattern.exec(content)) !== null) {
+                const base64String = match[1];
+
+                // Skip if too short
+                if (!base64String || base64String.length < 20) continue;
+
+                try {
+                    // Decode the base64
+                    const decoded = atob(base64String);
+
+                    if (decoded.length < 5) continue;
+
+                    logDebug(`[SVG-Nested] Depth ${depth}: Decoded ${base64String.length} -> ${decoded.length} chars`);
+
+                    // Check decoded content for dangerous patterns
+                    const dangerousPatterns = config?.dangerousScriptPatterns || [
+                        /\beval\s*\(/i,
+                        /document\.cookie/i,
+                        /window\.location\s*=/i,
+                        /fetch\s*\(/i,
+                        /XMLHttpRequest/i,
+                        /document\.write/i
+                    ];
+
+                    for (const dangerPattern of dangerousPatterns) {
+                        if (dangerPattern.test(decoded)) {
+                            result.found = true;
+                            result.score += 10;
+                            result.indicators.push(`nested_base64_depth${depth}_malicious`);
+                            logDebug(`[SVG-Nested] 🚨 Malicious pattern in nested base64 at depth ${depth}`);
+                            break;
+                        }
+                    }
+
+                    // Recursively scan for more nested payloads
+                    const nestedResult = scanNestedBase64InSVG(decoded, config, depth + 1);
+                    if (nestedResult.found) {
+                        result.found = true;
+                        result.score += nestedResult.score;
+                        result.indicators.push(...nestedResult.indicators);
+                    }
+
+                } catch (e) {
+                    // Invalid base64, skip
+                }
+            }
+        }
+    } catch (e) {
+        logDebug(`[SVG-Nested] Error at depth ${depth}:`, e.message);
     }
 
     return result;

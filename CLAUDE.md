@@ -2,7 +2,7 @@
 
 ## Project Overview
 **LinkShield** is a Chrome extension (MV3) protecting users from phishing and web-based attacks.
-**Current Version:** 8.9.1 | **Layers of Protection:** 16
+**Current Version:** 8.9.2 | **Layers of Protection:** 16
 
 ## Architecture & Components
 | File | Purpose |
@@ -21,6 +21,65 @@
 ---
 
 ## Recent Implementations (2026)
+
+### v8.9.2 - Security Audit Remediation
+
+#### Zero-Width Character Detection (Layer 2 Enhancement)
+- **Issue:** Invisible Unicode characters (ZWSP, ZWNJ, ZWJ, BOM, RLO) could bypass URL validation.
+- **Fix:** Added `detectZeroWidthCharacters(text)` function with comprehensive detection.
+- **Characters Detected:**
+  - `\u200B` (ZWSP), `\u200C` (ZWNJ), `\u200D` (ZWJ) - Zero-width characters
+  - `\uFEFF` (BOM) - Invisible byte order mark
+  - `\u202E` (RLO), `\u202D` (LRO) - **CRITICAL** BiDi override attacks
+  - `\u202A-\u202C` - Directional embedding/formatting
+  - `\u2060-\u2064` - Invisible operators
+- **Scoring:** ZWSP/ZWNJ/ZWJ: +8, BOM: +10, RLO/LRO: +20 (with extra +10 penalty for BiDi)
+- **Form Scanning:** `scanFormsForZeroWidthAttacks()` checks labels, placeholders, buttons.
+
+#### Recursive Base64 Decoding (Layer 4 & 14 Enhancement)
+- **Issue:** Nested Base64 payloads (2-3 layers) bypassed single-pass decoding.
+- **Fix:** Made `decodeBase64PowerShell()` and `scanNestedBase64InSVG()` recursive (max 3 levels).
+- **Nested Patterns Detected:**
+  - `[Convert]::FromBase64String('...')` in PowerShell
+  - `atob('...')` in JavaScript/SVG
+  - `data:...;base64,...` nested data URIs
+- **Indicators:** Adds `nested:` prefix for indicators found in nested payloads.
+
+#### Canvas/WebGL Overlay Detection (Layer 3/5 Enhancement)
+- **Issue:** Attackers could render fake browser UI via Canvas/WebGL, bypassing DOM scanning.
+- **Fix:** Added `detectCanvasWebGLOverlays()` with heuristic analysis.
+- **Detection Criteria:**
+  1. Large canvas (>30% viewport coverage): +5 points
+  2. High z-index (>1000): +8 points
+  3. Fixed/absolute positioning: +4 points
+  4. Interactive canvas with click handlers: +6 points
+  5. WebGL context on large canvas: +7 points
+  6. Canvas overlapping login form: +12 points **(CRITICAL)**
+- **Threshold:** Score ≥10 triggers alert.
+
+#### Domain Reputation API Placeholder (Layer 15 Enhancement)
+- **Purpose:** Future integration point for WHOIS/reputation services.
+- **Function:** `checkDomainReputation(domain)` returns `{reputation, score, age, registrar}`.
+- **Current Implementation:** Placeholder with basic heuristics:
+  - Suspicious TLD check (-30 score)
+  - Subdomain depth analysis (>3 = suspicious)
+  - Random subdomain pattern detection (hex/base64 strings)
+- **Planned Integrations:** VirusTotal, Google Safe Browsing, URLhaus, PhishTank.
+
+#### Visa Service Whitelist Expansion (Layer 16 Enhancement)
+- **Issue:** Legitimate visa services triggered false positives.
+- **Fix:** Added regional domains to `legitimateThirdParties`:
+  - `ivisa.co.uk`, `ivisa.de`, `ivisa.fr`
+  - `visahq.co.uk`, `visahq.nl`
+  - `traveldoc.aero`
+
+#### Known Limitations - Closed Shadow DOM (Documented)
+- **Status:** Confirmed as architectural limitation in Manifest V3.
+- **Reason:** Browser security boundary prevents access to `attachShadow({ mode: 'closed' })`.
+- **Mitigation:** Other detection layers (URL analysis, TLD checking) still apply when users click links.
+- **Documentation:** Added to CLAUDE.md as accepted residual risk.
+
+---
 
 ### v8.9.1 - Enterprise-Grade Security Enhancements
 
@@ -274,6 +333,7 @@ To avoid conflicts, use these reserved ranges:
 ## Changelog (Abbreviated)
 | Version | Key Change |
 |---------|------------|
+| 8.9.2 | Zero-width character detection, recursive Base64 decoding (3 levels), Canvas/WebGL overlay detection, domain reputation API placeholder, visa whitelist expansion. |
 | 8.9.1 | Clipboard hardening (300ms), advanced visibility checks, enterprise AiTM (Okta/Auth0/Salesforce), BitB pseudo-element detection. |
 | 8.9.0 | Memory leak fixes, OAuth implicit flow, Fetch/XHR monitoring, Data URI hardening, Base64 PowerShell. |
 | 8.8.3 | Form Target Hijacking, SVG Data URI Detection, Shadow DOM 500ms Timeout. |

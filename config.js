@@ -976,7 +976,13 @@ SUSPICIOUS_URL_PATTERNS: [
             legitimateThirdParties: [
                 // Major visa service companies
                 'ivisa.com',
+                'ivisa.co.uk',          // v8.9.2: UK domain
+                'ivisa.de',             // v8.9.2: German domain
+                'ivisa.fr',             // v8.9.2: French domain
                 'visahq.com',
+                'visahq.co.uk',         // v8.9.2: UK domain
+                'visahq.nl',            // v8.9.2: Dutch domain
+                'traveldoc.aero',       // v8.9.2: Travel document service
                 'cibtvisas.com',
                 'travisa.com',
                 'visacentral.com',

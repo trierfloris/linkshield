@@ -2,7 +2,7 @@
 
 ## Project Overview
 **LinkShield** is a Chrome extension (MV3) protecting users from phishing and web-based attacks.
-**Current Version:** 8.8.3 | **Layers of Protection:** 16
+**Current Version:** 8.9.0 | **Layers of Protection:** 16
 
 ## Architecture & Components
 | File | Purpose |
@@ -21,6 +21,53 @@
 ---
 
 ## Recent Implementations (2026)
+
+### v8.9.0 - Security Audit Fixes & Memory Leak Prevention
+
+#### Memory Leak Fixes (All Observers)
+- **Issue:** MutationObservers and IntersectionObservers were not disconnected on page unload, causing memory leaks on SPAs.
+- **Fix:** Added centralized observer registry (`activeObservers[]`) with automatic cleanup.
+- **Functions Added:**
+  - `registerObserver(observer, name)` - Registers observer for cleanup
+  - `disconnectAllObservers()` - Disconnects all registered observers
+- **Observers Fixed:** `formObserver`, `svgObserver`, `hijackMutationObserver`, `visualHijackingIntersectionObserver`, `aitmObserver`, `clickFixObserver`, `bitbObserver`, `dynamicDetectionObserver`
+- **Cleanup:** Triggers on `beforeunload` and `pagehide` events via `cleanupOnUnload()`.
+
+#### OAuth Implicit Flow Protection (Layer 11 Enhancement)
+- **Issue:** Fragment-based tokens (`#access_token=`) used in OAuth implicit flow were not detected.
+- **Fix:** Added `fragmentPatterns` to `config.js:oauthProtection` configuration.
+- **Patterns Added:**
+  - `#access_token=`, `#id_token=`, `#code=`
+  - `#token_type=bearer`, `#expires_in=`
+  - Localhost callback variants
+- **Detection:** `initOAuthPasteGuard()` now checks both query string AND fragment patterns.
+
+#### Fetch/XHR Credential Exfiltration Monitoring (New Layer)
+- **Attack Vector:** Attackers bypass form hijacking by using `fetch()` or `XMLHttpRequest` to exfiltrate credentials.
+- **Detection:** `content.js:initFetchMonitoring()` monkey-patches `window.fetch` and `XMLHttpRequest.prototype.send`.
+- **Logic:**
+  - Detects cross-origin requests with credential-containing bodies
+  - Checks for keywords: `password`, `credential`, `token`, `apikey`, `cvv`, etc.
+  - Respects payment gateway whitelist
+- **Response:** Blocks request and shows critical warning.
+- **Functions Added:** `installFetchMonitor()`, `installXHRMonitor()`, `analyzeRequestTarget()`, `checkForCredentials()`
+
+#### Data URI Hardening (Layer 7 Enhancement)
+- **Issue:** Executable MIME types like `data:application/javascript;base64,...` were not blocked.
+- **Fix:** Rewrote `detectDangerousScheme()` with explicit MIME type validation.
+- **Safe MIME Types:** `image/*`, `audio/*`, `video/*`, `font/*`, `text/plain` (non-base64)
+- **Blocked MIME Types:** `text/html`, `text/javascript`, `application/javascript`, `application/x-shockwave-flash`, etc.
+- **Unknown MIME Types:** Blocked by default for safety (risk score: 20).
+
+#### ClickFix Base64 PowerShell Decoding (Layer 4 Enhancement)
+- **Issue:** Base64-encoded PowerShell commands (via `-e` or `-EncodedCommand` flags) bypassed detection.
+- **Fix:** Added `decodeBase64PowerShell()` and `scanForEncodedPowerShell()` helper functions.
+- **Decoding:** Handles UTF-16LE encoding used by PowerShell.
+- **Malicious Patterns Detected in Decoded Content:**
+  - `Invoke-Expression`, `Invoke-WebRequest`, `DownloadString`
+  - `Set-ExecutionPolicy Bypass`, `Add-MpPreference ExclusionPath`
+  - Nested encoding (`FromBase64String`), hidden execution, registry modification
+- **Scoring:** +15 points for encoded malicious commands, +8 for any encoded command.
 
 ### v8.8.3 - Critical Security Fixes & Performance Optimizations
 
@@ -190,6 +237,7 @@ To avoid conflicts, use these reserved ranges:
 ## Changelog (Abbreviated)
 | Version | Key Change |
 |---------|------------|
+| 8.9.0 | Memory leak fixes, OAuth implicit flow, Fetch/XHR monitoring, Data URI hardening, Base64 PowerShell. |
 | 8.8.3 | Form Target Hijacking, SVG Data URI Detection, Shadow DOM 500ms Timeout. |
 | 8.8.2 | Paste Address Guard, Payment Gateway Whitelist, WebSocket Monitoring. |
 | 8.8.1 | Fixed Tab Mismatch bug in popup/dynamic logic. |

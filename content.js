@@ -660,6 +660,44 @@ function scanAllShadowDOMs(root, depth = 0) {
 // ============================================================================
 const activeIntervals = []; // Track all setInterval IDs for cleanup
 
+// =============================================================================
+// SECURITY FIX v8.9.0: Observer Registry for Memory Leak Prevention
+// =============================================================================
+// Tracks all MutationObservers and IntersectionObservers for proper cleanup
+// on page unload/navigation. Prevents memory leaks on SPAs (React, Vue, etc.)
+const activeObservers = [];
+
+/**
+ * Registers an observer for cleanup on page unload
+ * @param {MutationObserver|IntersectionObserver} observer - The observer to track
+ * @param {string} name - Debug name for the observer
+ */
+function registerObserver(observer, name) {
+  if (observer && typeof observer.disconnect === 'function') {
+    activeObservers.push({ observer, name });
+    logDebug(`[ObserverRegistry] Registered: ${name}`);
+  }
+}
+
+/**
+ * Disconnects all registered observers
+ * Called on page unload to prevent memory leaks
+ */
+function disconnectAllObservers() {
+  let disconnected = 0;
+  for (const { observer, name } of activeObservers) {
+    try {
+      observer.disconnect();
+      disconnected++;
+      logDebug(`[ObserverRegistry] Disconnected: ${name}`);
+    } catch (e) {
+      // Observer may already be disconnected
+    }
+  }
+  activeObservers.length = 0;
+  logDebug(`[ObserverRegistry] 🧹 Disconnected ${disconnected} observers`);
+}
+
 /**
  * Enforces cache size limit using LRU-style eviction (oldest entries first)
  * @param {Map} cache - The cache Map to limit
@@ -703,9 +741,13 @@ function trackedSetInterval(callback, delay) {
 
 /**
  * Cleanup function to be called on page unload
- * Clears all tracked intervals and caches to prevent memory leaks
+ * Clears all tracked intervals, observers, and caches to prevent memory leaks
+ * SECURITY FIX v8.9.0: Added observer disconnection to fix memory leaks on SPAs
  */
 function cleanupOnUnload() {
+  // SECURITY FIX v8.9.0: Disconnect all registered observers
+  disconnectAllObservers();
+
   // Clear all tracked intervals
   activeIntervals.forEach(id => clearInterval(id));
   activeIntervals.length = 0;
@@ -1572,8 +1614,11 @@ async function initOAuthPasteGuard() {
 
     const config = globalConfig.ADVANCED_THREAT_DETECTION.oauthProtection;
 
-    // Compile patterns eenmalig
+    // Compile patterns eenmalig (query string patterns)
     const dangerousPatterns = config.patterns.map(p => new RegExp(p, 'i'));
+
+    // SECURITY FIX v8.9.0: Compile fragment patterns for implicit flow token detection
+    const fragmentPatterns = (config.fragmentPatterns || []).map(p => new RegExp(p, 'i'));
 
     // Check of huidige domein paste mag toestaan (extra config-based whitelist)
     const isPasteAllowed = config.allowedPasteDomains.some(domain =>
@@ -1586,7 +1631,7 @@ async function initOAuthPasteGuard() {
     }
 
     document.addEventListener('paste', handleOAuthPaste, true);
-    logDebug('[OAuthGuard] Initialized');
+    logDebug('[OAuthGuard] Initialized with fragment token detection (v8.9.0)');
 
     function handleOAuthPaste(e) {
         try {
@@ -1594,13 +1639,13 @@ async function initOAuthPasteGuard() {
 
             if (!pastedText || pastedText.length < 10) return;
 
-            // Check tegen alle gevaarlijke patronen
+            // Check tegen alle gevaarlijke patronen (query string)
             for (const pattern of dangerousPatterns) {
                 if (pattern.test(pastedText)) {
                     e.preventDefault();
                     e.stopPropagation();
 
-                    logDebug(`[OAuthGuard] 🛑 BLOCKED OAuth token paste attempt`);
+                    logDebug(`[OAuthGuard] 🛑 BLOCKED OAuth token paste attempt (query string)`);
                     logDebug(`[OAuthGuard] Pattern matched: ${pattern.source}`);
 
                     showOAuthTheftWarning(pastedText, pattern.source);
@@ -1612,6 +1657,35 @@ async function initOAuthPasteGuard() {
                             url: window.location.href,
                             pattern: pattern.source,
                             blocked: true,
+                            tokenType: 'query_string',
+                            timestamp: Date.now()
+                        }).catch(() => {});
+                    }
+
+                    return false;
+                }
+            }
+
+            // SECURITY FIX v8.9.0: Check tegen fragment patterns (implicit flow tokens)
+            // Implicit flow returns tokens in URL fragment (#access_token=...)
+            for (const pattern of fragmentPatterns) {
+                if (pattern.test(pastedText)) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    logDebug(`[OAuthGuard] 🛑 BLOCKED OAuth implicit flow token paste attempt (fragment)`);
+                    logDebug(`[OAuthGuard] Fragment pattern matched: ${pattern.source}`);
+
+                    showOAuthTheftWarning(pastedText, pattern.source);
+
+                    // Rapporteer aan background met token type
+                    if (typeof chrome !== 'undefined' && chrome.runtime?.sendMessage) {
+                        chrome.runtime.sendMessage({
+                            type: 'oauthTheftAttempt',
+                            url: window.location.href,
+                            pattern: pattern.source,
+                            blocked: true,
+                            tokenType: 'fragment_implicit_flow',
                             timestamp: Date.now()
                         }).catch(() => {});
                     }
@@ -1656,6 +1730,143 @@ let clickFixDetectionInitialized = false;
 let clickFixDetected = false;
 
 /**
+ * SECURITY FIX v8.9.0: Decode Base64-encoded PowerShell commands
+ * PowerShell uses UTF-16LE encoding for -EncodedCommand/-e parameter
+ *
+ * @param {string} base64String - The Base64 encoded command
+ * @returns {{decoded: string, isMalicious: boolean, indicators: string[]}}
+ */
+function decodeBase64PowerShell(base64String) {
+  const result = { decoded: '', isMalicious: false, indicators: [] };
+
+  if (!base64String || typeof base64String !== 'string') {
+    return result;
+  }
+
+  try {
+    // Clean up the base64 string (remove whitespace, quotes)
+    const cleanBase64 = base64String.replace(/[\s'"]/g, '');
+
+    // Validate it looks like valid base64
+    if (!/^[A-Za-z0-9+/]+=*$/.test(cleanBase64)) {
+      return result;
+    }
+
+    // Decode base64 to bytes
+    const binaryString = atob(cleanBase64);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+
+    // PowerShell uses UTF-16LE encoding
+    // Try to decode as UTF-16LE
+    let decoded = '';
+    for (let i = 0; i < bytes.length - 1; i += 2) {
+      const charCode = bytes[i] | (bytes[i + 1] << 8);
+      if (charCode > 0 && charCode < 0x10000) {
+        decoded += String.fromCharCode(charCode);
+      }
+    }
+
+    // If UTF-16LE decoding produces garbage, try plain ASCII/UTF-8
+    if (decoded.length < 5 || !/[a-zA-Z]/.test(decoded)) {
+      decoded = binaryString;
+    }
+
+    result.decoded = decoded;
+
+    // Check for malicious patterns in the decoded content
+    const maliciousPatterns = [
+      { pattern: /Invoke-Expression|IEX\s*[\(\$]/i, name: 'Invoke-Expression' },
+      { pattern: /Invoke-WebRequest|Invoke-RestMethod/i, name: 'Download cradle' },
+      { pattern: /DownloadString|DownloadFile/i, name: 'Download method' },
+      { pattern: /Start-Process/i, name: 'Process execution' },
+      { pattern: /\[System\.Net\.WebClient\]/i, name: '.NET WebClient' },
+      { pattern: /Set-ExecutionPolicy\s*(Bypass|Unrestricted)/i, name: 'Policy bypass' },
+      { pattern: /New-Object\s+System\.Net/i, name: '.NET networking' },
+      { pattern: /\$env:|%TEMP%|%APPDATA%/i, name: 'Environment variable' },
+      { pattern: /Add-MpPreference.*ExclusionPath/i, name: 'Defender exclusion' },
+      { pattern: /hidden|WindowStyle\s*Hidden/i, name: 'Hidden execution' },
+      { pattern: /FromBase64String|ToBase64String/i, name: 'Nested encoding' },
+      { pattern: /http:\/\/|https:\/\//i, name: 'URL download' },
+      { pattern: /cmd\.exe|powershell\.exe/i, name: 'Shell execution' },
+      { pattern: /reg\s+(add|delete)|regedit/i, name: 'Registry modification' },
+      { pattern: /schtasks|at\s+\d+:/i, name: 'Scheduled task' }
+    ];
+
+    for (const { pattern, name } of maliciousPatterns) {
+      if (pattern.test(decoded)) {
+        result.isMalicious = true;
+        result.indicators.push(name);
+      }
+    }
+
+    logDebug(`[ClickFix-Base64] Decoded ${cleanBase64.length} chars -> "${decoded.substring(0, 100)}..."`);
+    if (result.isMalicious) {
+      logDebug(`[ClickFix-Base64] 🚨 MALICIOUS INDICATORS: ${result.indicators.join(', ')}`);
+    }
+
+  } catch (e) {
+    // Invalid base64 or decoding error
+    logDebug(`[ClickFix-Base64] Decode error: ${e.message}`);
+  }
+
+  return result;
+}
+
+/**
+ * SECURITY FIX v8.9.0: Extract and analyze Base64-encoded PowerShell commands
+ * Finds -e, -enc, -EncodedCommand flags and decodes the following base64 string
+ *
+ * @param {string} content - The text content to scan
+ * @returns {{found: boolean, decoded: string, indicators: string[], score: number}}
+ */
+function scanForEncodedPowerShell(content) {
+  const result = { found: false, decoded: '', indicators: [], score: 0 };
+
+  if (!content || typeof content !== 'string') {
+    return result;
+  }
+
+  // Pattern to match PowerShell encoded command flags followed by base64
+  // Matches: powershell -e <base64>, powershell -enc <base64>, powershell -EncodedCommand <base64>
+  const encodedPatterns = [
+    /powershell(?:\.exe)?\s+(?:-\w+\s+)*-e(?:nc(?:odedcommand)?)?[\s'"]+([A-Za-z0-9+/]+=*)/gi,
+    /-e(?:nc(?:odedcommand)?)?[\s'"]+([A-Za-z0-9+/]{20,}=*)/gi
+  ];
+
+  for (const pattern of encodedPatterns) {
+    let match;
+    while ((match = pattern.exec(content)) !== null) {
+      const base64String = match[1];
+
+      // Skip if too short (likely not a real encoded command)
+      if (base64String.length < 20) continue;
+
+      const decoded = decodeBase64PowerShell(base64String);
+
+      if (decoded.decoded.length > 0) {
+        result.found = true;
+        result.decoded += decoded.decoded + '\n';
+
+        if (decoded.isMalicious) {
+          result.indicators.push(...decoded.indicators);
+          result.score += 15; // High score for encoded malicious commands
+        } else {
+          result.score += 8; // Medium score for any encoded command (suspicious)
+        }
+      }
+    }
+  }
+
+  // Deduplicate indicators
+  result.indicators = [...new Set(result.indicators)];
+
+  return result;
+}
+
+/**
  * Initialiseert ClickFix Attack detectie
  * Scant de pagina voor verdachte PowerShell/CMD commando's en nep UI patronen
  */
@@ -1689,6 +1900,9 @@ async function initClickFixDetection() {
         childList: true,
         subtree: true
     });
+
+    // SECURITY FIX v8.9.0: Register observer for cleanup on page unload
+    registerObserver(observer, 'clickFixObserver');
 
     logDebug('[ClickFix] Detection initialized');
 }
@@ -1748,6 +1962,20 @@ async function scanForClickFixAttack() {
         const allContent = normalizeForScan(textContent + ' ' + codeContent);
         const detectedPatterns = [];
         let totalScore = 0;
+
+        // SECURITY FIX v8.9.0: Check for Base64-encoded PowerShell commands
+        // This catches obfuscated attacks using -e, -enc, or -EncodedCommand flags
+        const base64Result = scanForEncodedPowerShell(allContent);
+        if (base64Result.found) {
+            detectedPatterns.push({
+                type: 'encodedPowerShell',
+                pattern: `Base64 encoded command (${base64Result.indicators.length} indicators)`,
+                decoded: base64Result.decoded.substring(0, 200),
+                indicators: base64Result.indicators
+            });
+            totalScore += base64Result.score;
+            logDebug(`[ClickFix] 🚨 Encoded PowerShell detected! Score: ${base64Result.score}`);
+        }
 
         // Check PowerShell patterns
         // Patterns common in tutorials get lower score to avoid false positives on docs sites
@@ -1930,6 +2158,8 @@ async function initBitBDetection() {
 
     if (document.body) {
         observer.observe(document.body, { childList: true, subtree: true });
+        // SECURITY FIX v8.9.0: Register observer for cleanup on page unload
+        registerObserver(observer, 'bitbObserver');
     }
 
     // Click listener voor popup triggers (OAuth buttons etc.)
@@ -2641,6 +2871,9 @@ function startFormMonitoring() {
     attributeFilter: ['action', 'target']
   });
 
+  // SECURITY FIX v8.9.0: Register observer for cleanup on page unload
+  registerObserver(formObserver, 'formObserver');
+
   // Globale focusin handler voor JIT detectie
   document.addEventListener('focusin', handlePasswordFocus, true);
 
@@ -2936,6 +3169,275 @@ function showFormHijackingWarning(targetHost, attackType = 'action_change') {
 
 // =============================================================================
 // END FORM HIJACKING PROTECTION
+// =============================================================================
+
+// =============================================================================
+// SECURITY FIX v8.9.0: FETCH & XHR CREDENTIAL EXFILTRATION MONITORING
+// =============================================================================
+// Detects attempts to steal credentials via JavaScript fetch() or XMLHttpRequest
+// instead of form submissions. This is a common bypass for form hijacking protection.
+// =============================================================================
+
+let fetchMonitoringInitialized = false;
+
+/**
+ * Initializes fetch() and XMLHttpRequest monitoring for credential exfiltration
+ * Must be called after DOMContentLoaded
+ */
+function initFetchMonitoring() {
+  if (fetchMonitoringInitialized) return;
+  fetchMonitoringInitialized = true;
+
+  const currentHostname = window.location.hostname.toLowerCase();
+
+  // Skip on trusted domains
+  if (typeof isTrustedDomain === 'function') {
+    isTrustedDomain(currentHostname).then(trusted => {
+      if (trusted) {
+        logDebug('[FetchMonitor] Skipping for trusted domain:', currentHostname);
+        return;
+      }
+      installFetchMonitor(currentHostname);
+      installXHRMonitor(currentHostname);
+    });
+  } else {
+    installFetchMonitor(currentHostname);
+    installXHRMonitor(currentHostname);
+  }
+}
+
+/**
+ * Checks if a URL points to an external domain (cross-origin request)
+ * @param {string} url - The target URL
+ * @param {string} currentHost - The current page hostname
+ * @returns {{isExternal: boolean, targetHost: string}}
+ */
+function analyzeRequestTarget(url, currentHost) {
+  try {
+    const targetUrl = new URL(url, window.location.href);
+    const targetHost = targetUrl.hostname.toLowerCase();
+
+    // Same domain check (including subdomains)
+    if (targetHost === currentHost ||
+        targetHost.endsWith('.' + currentHost) ||
+        currentHost.endsWith('.' + targetHost)) {
+      return { isExternal: false, targetHost };
+    }
+
+    return { isExternal: true, targetHost };
+  } catch (e) {
+    return { isExternal: false, targetHost: '' };
+  }
+}
+
+/**
+ * Checks if the request body contains potential credentials
+ * @param {any} body - The request body (FormData, string, object, etc.)
+ * @returns {{hasCredentials: boolean, type: string}}
+ */
+function checkForCredentials(body) {
+  if (!body) return { hasCredentials: false, type: '' };
+
+  const credentialKeywords = [
+    'password', 'passwd', 'pwd', 'pass', 'wachtwoord',
+    'credential', 'secret', 'token', 'auth', 'apikey', 'api_key',
+    'session', 'cookie', 'jwt', 'bearer',
+    'credit', 'card', 'cvv', 'expiry', 'cardnumber'
+  ];
+
+  let stringContent = '';
+
+  try {
+    if (body instanceof FormData) {
+      // Check FormData keys
+      for (const key of body.keys()) {
+        stringContent += key.toLowerCase() + ' ';
+      }
+    } else if (typeof body === 'string') {
+      stringContent = body.toLowerCase();
+    } else if (body instanceof URLSearchParams) {
+      for (const key of body.keys()) {
+        stringContent += key.toLowerCase() + ' ';
+      }
+    } else if (typeof body === 'object') {
+      stringContent = JSON.stringify(body).toLowerCase();
+    }
+  } catch (e) {
+    return { hasCredentials: false, type: '' };
+  }
+
+  for (const keyword of credentialKeywords) {
+    if (stringContent.includes(keyword)) {
+      return { hasCredentials: true, type: keyword };
+    }
+  }
+
+  return { hasCredentials: false, type: '' };
+}
+
+/**
+ * Install fetch() monkey patch to monitor cross-origin requests
+ * @param {string} currentHost - Current page hostname
+ */
+function installFetchMonitor(currentHost) {
+  const originalFetch = window.fetch;
+  if (!originalFetch) return;
+
+  window.fetch = function(input, init) {
+    try {
+      // Get the URL from input (can be string, URL, or Request)
+      let url = '';
+      if (typeof input === 'string') {
+        url = input;
+      } else if (input instanceof URL) {
+        url = input.href;
+      } else if (input instanceof Request) {
+        url = input.url;
+      }
+
+      // Analyze the target
+      const { isExternal, targetHost } = analyzeRequestTarget(url, currentHost);
+
+      // Skip if same-origin or whitelisted payment gateway
+      if (!isExternal || isWhitelistedPaymentGateway(targetHost)) {
+        return originalFetch.apply(this, arguments);
+      }
+
+      // Check request body for credentials
+      const body = init?.body || (input instanceof Request ? input.body : null);
+      const { hasCredentials, type } = checkForCredentials(body);
+
+      if (hasCredentials) {
+        logDebug(`[FetchMonitor] 🚨 CREDENTIAL EXFILTRATION DETECTED via fetch()`);
+        logDebug(`[FetchMonitor] Target: ${targetHost}, Credential type: ${type}`);
+
+        // Report to background
+        if (typeof chrome !== 'undefined' && chrome.runtime?.sendMessage) {
+          chrome.runtime.sendMessage({
+            type: 'credentialExfiltration',
+            method: 'fetch',
+            url: window.location.href,
+            targetHost,
+            credentialType: type,
+            blocked: true,
+            timestamp: Date.now()
+          }).catch(() => {});
+        }
+
+        // Show warning
+        showFetchExfiltrationWarning(targetHost, 'fetch', type);
+
+        // Block the request by returning a rejected promise
+        return Promise.reject(new Error('LinkShield blocked credential exfiltration attempt'));
+      }
+    } catch (e) {
+      // Don't break legitimate requests on error
+      logDebug('[FetchMonitor] Error analyzing request:', e.message);
+    }
+
+    return originalFetch.apply(this, arguments);
+  };
+
+  logDebug('[FetchMonitor] fetch() monitoring installed');
+}
+
+/**
+ * Install XMLHttpRequest monkey patch to monitor cross-origin requests
+ * @param {string} currentHost - Current page hostname
+ */
+function installXHRMonitor(currentHost) {
+  const originalOpen = XMLHttpRequest.prototype.open;
+  const originalSend = XMLHttpRequest.prototype.send;
+
+  if (!originalOpen || !originalSend) return;
+
+  // Store the URL when open() is called
+  XMLHttpRequest.prototype.open = function(method, url, async, user, password) {
+    this._linkshieldUrl = url;
+    this._linkshieldMethod = method;
+    return originalOpen.apply(this, arguments);
+  };
+
+  // Check the body when send() is called
+  XMLHttpRequest.prototype.send = function(body) {
+    try {
+      const url = this._linkshieldUrl;
+      if (url) {
+        const { isExternal, targetHost } = analyzeRequestTarget(url, currentHost);
+
+        // Skip if same-origin or whitelisted payment gateway
+        if (isExternal && !isWhitelistedPaymentGateway(targetHost)) {
+          const { hasCredentials, type } = checkForCredentials(body);
+
+          if (hasCredentials) {
+            logDebug(`[FetchMonitor] 🚨 CREDENTIAL EXFILTRATION DETECTED via XMLHttpRequest`);
+            logDebug(`[FetchMonitor] Target: ${targetHost}, Credential type: ${type}`);
+
+            // Report to background
+            if (typeof chrome !== 'undefined' && chrome.runtime?.sendMessage) {
+              chrome.runtime.sendMessage({
+                type: 'credentialExfiltration',
+                method: 'xhr',
+                url: window.location.href,
+                targetHost,
+                credentialType: type,
+                blocked: true,
+                timestamp: Date.now()
+              }).catch(() => {});
+            }
+
+            // Show warning
+            showFetchExfiltrationWarning(targetHost, 'xhr', type);
+
+            // Block the request by throwing
+            throw new Error('LinkShield blocked credential exfiltration attempt');
+          }
+        }
+      }
+    } catch (e) {
+      if (e.message.includes('LinkShield blocked')) {
+        throw e; // Re-throw our intentional block
+      }
+      // Don't break legitimate requests on other errors
+      logDebug('[FetchMonitor] Error analyzing XHR request:', e.message);
+    }
+
+    return originalSend.apply(this, arguments);
+  };
+
+  logDebug('[FetchMonitor] XMLHttpRequest monitoring installed');
+}
+
+/**
+ * Show warning for credential exfiltration attempt
+ * @param {string} targetHost - Target hostname
+ * @param {string} method - 'fetch' or 'xhr'
+ * @param {string} credentialType - Type of credential detected
+ */
+function showFetchExfiltrationWarning(targetHost, method, credentialType) {
+  const title = getTranslatedMessage('fetchExfiltrationTitle') || 'Credential Theft Blocked!';
+  const message = (getTranslatedMessage('fetchExfiltrationMessage') ||
+    'This page attempted to send your credentials to an external server.') +
+    ` (${method.toUpperCase()})`;
+  const tip = (getTranslatedMessage('fetchExfiltrationTip') ||
+    'A hidden script tried to steal your ') + credentialType +
+    (getTranslatedMessage('fetchExfiltrationTip2') || ' and send it to: ') + targetHost;
+
+  if (typeof showSecurityWarning === 'function') {
+    showSecurityWarning({
+      id: 'fetch-exfiltration',
+      severity: 'critical',
+      title: title,
+      message: message,
+      tip: tip,
+      icon: '🔓',
+      showTrust: false  // Never trust sites that try to steal credentials
+    });
+  }
+}
+
+// =============================================================================
+// END FETCH & XHR MONITORING
 // =============================================================================
 
 /**
@@ -3332,6 +3834,8 @@ function startDynamicDetection(callback) {
     }
   });
   observer.observe(document.body, { childList: true, subtree: true });
+  // SECURITY FIX v8.9.0: Register observer for cleanup on page unload
+  registerObserver(observer, 'dynamicDetectionObserver');
 }
 /**
  * Laadt de configuratie uit window.CONFIG en valideert deze.
@@ -4810,12 +5314,57 @@ function detectDangerousScheme(href) {
           return { isDangerous: false, scheme: '', reason: '', risk: 0 };
         }
       }
-      // Data URIs: image/audio/video/font en text/plain zijn veilig
+      // SECURITY FIX v8.9.0: Enhanced data URI validation
+      // Only allow explicitly safe MIME types, block all others
       if (scheme === 'data:') {
-        if (/^data:(image|audio|video|font)\//i.test(normalized) ||
-            (/^data:text\/plain[,;]/.test(normalized) && !normalized.includes('base64'))) {
+        // Extract MIME type from data URI (data:MIME;... or data:MIME,...)
+        const mimeMatch = normalized.match(/^data:([^;,]+)/i);
+        const mimeType = mimeMatch ? mimeMatch[1].toLowerCase() : '';
+
+        // SAFE MIME types (non-executable)
+        const safeMimeTypes = [
+          'image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/webp',
+          'image/svg+xml', // Note: SVG is scanned separately by SVG payload detection
+          'image/bmp', 'image/ico', 'image/x-icon', 'image/vnd.microsoft.icon',
+          'audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/ogg', 'audio/webm',
+          'video/mp4', 'video/webm', 'video/ogg',
+          'font/woff', 'font/woff2', 'font/ttf', 'font/otf',
+          'application/font-woff', 'application/font-woff2',
+          'text/plain' // Only plain text without base64
+        ];
+
+        // Check if MIME starts with safe prefix
+        const startsWithSafePrefix = ['image/', 'audio/', 'video/', 'font/'].some(
+          prefix => mimeType.startsWith(prefix)
+        );
+
+        // Allow safe MIME types
+        if (startsWithSafePrefix || safeMimeTypes.includes(mimeType)) {
+          // Special case: text/plain with base64 could hide executable content
+          if (mimeType === 'text/plain' && normalized.includes('base64')) {
+            logDebug(`[SecurityFix v8.9.0] 🚨 BLOCKED: base64-encoded text/plain data URI`);
+            return { isDangerous: true, scheme, reason: 'dangerousBase64TextUri', risk: 25 };
+          }
           return { isDangerous: false, scheme: '', reason: '', risk: 0 };
         }
+
+        // DANGEROUS MIME types - explicitly block
+        const dangerousMimeTypes = [
+          'text/html', 'text/javascript', 'text/ecmascript', 'text/x-javascript',
+          'application/javascript', 'application/x-javascript', 'application/ecmascript',
+          'application/x-shockwave-flash', 'application/x-sharedlib',
+          'application/octet-stream', 'application/x-msdownload',
+          'application/hta', 'application/x-ms-application'
+        ];
+
+        if (dangerousMimeTypes.some(type => mimeType.includes(type) || mimeType.startsWith(type.split('/')[0] + '/'))) {
+          logDebug(`[SecurityFix v8.9.0] 🚨 BLOCKED: Dangerous MIME type in data URI: ${mimeType}`);
+          return { isDangerous: true, scheme, reason: 'dangerousExecutableMimeType', risk: 25 };
+        }
+
+        // Any other unknown MIME type - block for safety
+        logDebug(`[SecurityFix v8.9.0] 🚨 BLOCKED: Unknown/unsafe MIME type in data URI: ${mimeType}`);
+        return { isDangerous: true, scheme, reason: 'unknownDataUriMimeType', risk: 20 };
       }
       logDebug(`[SecurityFix v8.3.0] 🚨 CRITICAL: Dangerous URI scheme detected: ${scheme}`);
       logDebug(`[SecurityFix v8.3.0] Original: ${href.substring(0, 80)}...`);
@@ -7168,6 +7717,8 @@ async function initAiTMDetection() {
 
     if (document.body) {
         aitmObserver.observe(document.body, { childList: true, subtree: true });
+        // SECURITY FIX v8.9.0: Register observer for cleanup on page unload
+        registerObserver(aitmObserver, 'aitmObserver');
     }
 }
 
@@ -7536,6 +8087,8 @@ async function initSVGPayloadDetection() {
 
     if (document.body) {
         svgObserver.observe(document.body, { childList: true, subtree: true });
+        // SECURITY FIX v8.9.0: Register observer for cleanup on page unload
+        registerObserver(svgObserver, 'svgObserver');
     }
 
     logDebug('[SVG] Payload detection initialized with immediate scanning');
@@ -7904,6 +8457,10 @@ async function initProactiveVisualHijackingScan() {
     childList: true,
     subtree: true
   });
+
+  // SECURITY FIX v8.9.0: Register observers for cleanup on page unload
+  registerObserver(hijackMutationObserver, 'hijackMutationObserver');
+  registerObserver(intersectionObserver, 'visualHijackingIntersectionObserver');
 
   logDebug('[Vector3-Proactive] Proactive Visual Hijacking scanner initialized (Intersection Observer mode)');
 }
@@ -12439,6 +12996,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       // Initialiseer Form Hijacking Protection voor credential theft detectie
       initFormHijackingProtection();
+
+      // v8.9.0: Initialiseer Fetch/XHR Monitoring voor credential exfiltration via JavaScript
+      initFetchMonitoring();
 
       // Initialiseer WebTransport/HTTP3 monitor voor C2/exfiltration detectie
       initWebTransportMonitor();

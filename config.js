@@ -665,7 +665,7 @@ SUSPICIOUS_URL_PATTERNS: [
         // OAuth/Localhost protection
         oauthProtection: {
             enabled: true,
-            // Patronen voor OAuth codes in localhost URLs
+            // Patronen voor OAuth codes in localhost URLs (query string)
             patterns: [
                 'localhost.*\\?code=',
                 '127\\.0\\.0\\.1.*\\?code=',
@@ -674,6 +674,17 @@ SUSPICIOUS_URL_PATTERNS: [
                 'localhost.*id_token',
                 '\\?code=M\\.R3_',           // Microsoft specifiek
                 '\\?code=4/'                  // Google specifiek
+            ],
+            // SECURITY FIX v8.9.0: Fragment-based token patterns (implicit flow)
+            // Detects #access_token=, #id_token=, #code= which are used in OAuth implicit flow
+            fragmentPatterns: [
+                '#access_token=',             // Implicit flow access token
+                '#id_token=',                 // Implicit/hybrid flow ID token
+                '#code=',                     // Hybrid flow authorization code
+                '#token_type=bearer',         // Token type indicator
+                '#expires_in=\\d+.*access_token',  // Token with expiry
+                'localhost.*#access_token=',  // Localhost callback with implicit token
+                '127\\.0\\.0\\.1.*#access_token='  // Localhost callback with implicit token
             ],
             // Domeinen waar paste WEL is toegestaan (legitieme dev omgevingen)
             allowedPasteDomains: [

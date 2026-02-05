@@ -415,7 +415,9 @@ if (IS_PRODUCTION) {
  */
 async function fetchWithTimeout(url, options = {}, timeout = API_TIMEOUT_MS) {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), timeout);
+    const timeoutId = setTimeout(() => {
+        controller.abort(new DOMException(`Request timeout after ${timeout}ms for ${url}`, 'TimeoutError'));
+    }, timeout);
 
     try {
         const response = await fetch(url, {
